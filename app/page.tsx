@@ -1,21 +1,23 @@
 import Header from "../components/Header";
-import Hero from "../components/Hero";
-import CalculatorCard from "../components/CalculatorCard";
 
 export default function Home() {
   return (
-    <main>
+    <main className="min-h-screen bg-slate-50">
       <Header />
-      <Hero />
 
-      <h2>Popular Calculators</h2>
+      <section className="mx-auto max-w-7xl px-6 py-16">
+        <h1 className="text-5xl font-bold text-slate-900">
+          USA Construction Calculators
+        </h1>
 
-      <CalculatorCard title="Concrete Calculator" />
-      <CalculatorCard title="Brick Calculator" />
-      <CalculatorCard title="Steel Calculator" />
-      <CalculatorCard title="Paint Calculator" />
-      <CalculatorCard title="Tile Calculator" />
-      <CalculatorCard title="Roofing Calculator" />
+        <p className="mt-4 text-lg text-slate-600">
+          Professional estimating tools for contractors.
+        </p>
+
+        <button className="mt-8 rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white hover:bg-blue-700">
+          Browse Calculators
+        </button>
+      </section>
     </main>
   );
 }
