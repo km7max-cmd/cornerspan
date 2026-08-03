@@ -1,6 +1,6 @@
 import Header from "../components/Header";
 import Hero from "../components/Hero";
-
+import SearchBar from "../components/SearchBar";
 export default function Home() {
   return (
     <>
