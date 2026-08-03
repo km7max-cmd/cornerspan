@@ -17,10 +17,12 @@ export default function Home() {
             Popular Calculators
           </h2>
 
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            <div className="rounded-2xl border bg-white p-6 shadow-sm">
-              Concrete Calculator
-            </div>
+          <CategoryCard title="Concrete Calculator" />
+<CategoryCard title="Brick Calculator" />
+<CategoryCard title="Steel Calculator" />
+<CategoryCard title="Paint Calculator" />
+<CategoryCard title="Tile Calculator" />
+<CategoryCard title="Roofing Calculator" />
 
             <div className="rounded-2xl border bg-white p-6 shadow-sm">
               Brick Calculator
