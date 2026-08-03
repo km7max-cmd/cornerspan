@@ -8,7 +8,7 @@ export default function Home() {
       }}
     >
       <h1>CornerSpan</h1>
-      <p>Professional Estimating Tools for Contractors</p>
+      <p>Welcome to CornerSpan.</p>
     </main>
   );
 }
