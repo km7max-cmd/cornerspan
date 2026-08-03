@@ -1,42 +1,34 @@
+import Header from "../components/Header";
+
+const cards = [
+  "Concrete",
+  "Brick",
+  "Steel",
+  "Paint",
+  "Tile",
+  "Roofing",
+];
+
 export default function Home() {
-  const cards = [
-    "Concrete",
-    "Brick",
-    "Steel",
-    "Paint",
-    "Tile",
-    "Roofing",
-  ];
-
   return (
-    <main style={{ padding: 20, fontFamily: "Arial" }}>
-      <h1 style={{ color: "#2563eb" }}>CornerSpan</h1>
+    <main>
+      <Header />
 
-      <p>USA Construction Calculators</p>
+      <h1>USA Construction Calculators</h1>
 
-      <button
-        style={{
-          padding: "10px 18px",
-          background: "#2563eb",
-          color: "#fff",
-          border: "none",
-          borderRadius: 8,
-          margin: "20px 0",
-        }}
-      >
-        Browse Calculators
-      </button>
+      <p>Professional estimating tools for contractors.</p>
 
-      <h2>Popular Calculators</h2>
+      <br />
 
       {cards.map((item) => (
         <div
           key={item}
           style={{
+            padding: 15,
+            marginBottom: 12,
             border: "1px solid #ddd",
             borderRadius: 10,
-            padding: 15,
-            marginTop: 12,
+            background: "#fff",
           }}
         >
           {item}
