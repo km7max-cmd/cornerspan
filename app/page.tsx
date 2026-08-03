@@ -8,7 +8,9 @@ export default function Home() {
 
       <main>
         <Hero />
-
+<div className="mx-auto max-w-7xl px-6 pb-10">
+  <SearchBar />
+</div>
         <section className="mx-auto max-w-7xl px-6 pb-20">
           <h2 className="mb-8 text-3xl font-bold">
             Popular Calculators
