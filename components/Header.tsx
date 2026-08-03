@@ -1,24 +1,18 @@
 export default function Header() {
   return (
-    <header
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        padding: "18px 20px",
-        background: "#2563eb",
-        color: "#fff",
-        borderRadius: 12,
-        marginBottom: 20,
-      }}
-    >
-      <h2>CornerSpan</h2>
+    <header className="border-b bg-white">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+        <h1 className="text-2xl font-bold text-blue-600">
+          CornerSpan
+        </h1>
 
-      <nav style={{ display: "flex", gap: 15 }}>
-        <span>Home</span>
-        <span>Calculators</span>
-        <span>About</span>
-      </nav>
+        <nav className="flex gap-6 text-sm font-medium text-slate-700">
+          <a href="/">Home</a>
+          <a href="/calculators">Calculators</a>
+          <a href="/blog">Blog</a>
+          <a href="/contact">Contact</a>
+        </nav>
+      </div>
     </header>
   );
 }
