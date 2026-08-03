@@ -1,23 +1,46 @@
 import Header from "../components/Header";
+import Hero from "../components/Hero";
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-slate-50">
+    <>
       <Header />
 
-      <section className="mx-auto max-w-7xl px-6 py-16">
-        <h1 className="text-5xl font-bold text-slate-900">
-          USA Construction Calculators
-        </h1>
+      <main>
+        <Hero />
 
-        <p className="mt-4 text-lg text-slate-600">
-          Professional estimating tools for contractors.
-        </p>
+        <section className="mx-auto max-w-7xl px-6 pb-20">
+          <h2 className="mb-8 text-3xl font-bold">
+            Popular Calculators
+          </h2>
 
-        <button className="mt-8 rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white hover:bg-blue-700">
-          Browse Calculators
-        </button>
-      </section>
-    </main>
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <div className="rounded-2xl border bg-white p-6 shadow-sm">
+              Concrete Calculator
+            </div>
+
+            <div className="rounded-2xl border bg-white p-6 shadow-sm">
+              Brick Calculator
+            </div>
+
+            <div className="rounded-2xl border bg-white p-6 shadow-sm">
+              Paint Calculator
+            </div>
+
+            <div className="rounded-2xl border bg-white p-6 shadow-sm">
+              Tile Calculator
+            </div>
+
+            <div className="rounded-2xl border bg-white p-6 shadow-sm">
+              Roofing Calculator
+            </div>
+
+            <div className="rounded-2xl border bg-white p-6 shadow-sm">
+              Flooring Calculator
+            </div>
+          </div>
+        </section>
+      </main>
+    </>
   );
 }
