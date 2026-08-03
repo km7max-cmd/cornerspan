@@ -1,13 +1,6 @@
 import Header from "../components/Header";
-
-const cards = [
-  "Concrete",
-  "Brick",
-  "Steel",
-  "Paint",
-  "Tile",
-  "Roofing",
-];
+import Button from "../components/Button";
+import CalculatorCard from "../components/CalculatorCard";
 
 export default function Home() {
   return (
@@ -20,20 +13,13 @@ export default function Home() {
 
       <br />
 
-      {cards.map((item) => (
-        <div
-          key={item}
-          style={{
-            padding: 15,
-            marginBottom: 12,
-            border: "1px solid #ddd",
-            borderRadius: 10,
-            background: "#fff",
-          }}
-        >
-          {item}
-        </div>
-      ))}
+      <Button text="Browse Calculators" />
+
+      <CalculatorCard title="Concrete Calculator" />
+      <CalculatorCard title="Brick Calculator" />
+      <CalculatorCard title="Steel Calculator" />
+      <CalculatorCard title="Paint Calculator" />
+      <CalculatorCard title="Tile Calculator" />
     </main>
   );
 }
