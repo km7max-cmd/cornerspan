@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Breadcrumb from "../../../components/Breadcrumb";
 
 export default function PaintCalculator() {
   const [length, setLength] = useState("");
@@ -30,8 +31,9 @@ export default function PaintCalculator() {
 
   return (
     <main className="mx-auto max-w-xl p-6">
+      <Breadcrumb current="Paint Calculator" />
       <h1 className="mb-2 text-4xl font-bold">
-        USA Paint Calculator
+        Paint Calculator
       </h1>
 
       <p className="mb-6 text-slate-600">
