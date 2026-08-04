@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Breadcrumb from "../../../components/Breadcrumb";
 
 export default function BrickCalculator() {
   const [wallLength, setWallLength] = useState("");
@@ -43,8 +44,9 @@ export default function BrickCalculator() {
 
   return (
     <main className="mx-auto max-w-xl p-6">
+      <Breadcrumb current="Brick Calculator" />
       <h1 className="mb-2 text-4xl font-bold">
-        USA Brick Calculator
+        Brick Calculator
       </h1>
 
       <p className="mb-6 text-slate-600">
