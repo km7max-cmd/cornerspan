@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import FAQ from "../../../components/FAQ";
+import Breadcrumb from "../../../components/Breadcrumb";
 
 export default function ConcreteCalculator() {
   const [projectType, setProjectType] = useState("Slab");
@@ -42,9 +43,12 @@ export default function ConcreteCalculator() {
 
   return (
     <main className="mx-auto max-w-3xl p-6">
-      <h1 className="text-4xl font-bold">
-        USA Concrete Calculator
-      </h1>
+
+  <Breadcrumb current="Concrete Calculator" />
+
+  <h1 className="text-4xl font-bold">
+    Concrete Calculator
+  </h1>
 
       <p className="mt-2 text-slate-600">
         Professional Ready-Mix Concrete Estimator
