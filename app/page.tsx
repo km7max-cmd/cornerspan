@@ -2,6 +2,7 @@ import Header from "../components/Header";
 import Hero from "../components/Hero";
 import SearchBar from "../components/SearchBar";
 import CategoryCard from "../components/CategoryCard";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -21,7 +22,9 @@ export default function Home() {
           </h2>
 
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            <CategoryCard title="Concrete Calculator" />
+            <Link href="/calculators/concrete">
+  <CategoryCard title="Concrete Calculator" />
+</Link>
             <CategoryCard title="Brick Calculator" />
             <CategoryCard title="Steel Calculator" />
             <CategoryCard title="Paint Calculator" />
