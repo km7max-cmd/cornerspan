@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from "react";
@@ -14,40 +13,67 @@ export default function ConcreteCalculator() {
       (Number(thickness) || 0)) /
     324;
 
+  const bags60 = Math.ceil(volume * 45);
+  const bags80 = Math.ceil(volume * 34);
+  const cost = (volume * 170).toFixed(2);
+
   return (
-    <main className="max-w-xl mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-6">
+    <main className="mx-auto max-w-xl p-6">
+      <h1 className="mb-2 text-4xl font-bold">
         Concrete Calculator
       </h1>
 
+      <p className="mb-6 text-slate-600">
+        USA Ready-Mix Concrete Calculator
+      </p>
+
       <input
-        className="border p-3 w-full mb-3 rounded"
+        className="mb-4 w-full rounded-lg border p-3"
+        type="number"
         placeholder="Length (ft)"
         value={length}
         onChange={(e) => setLength(e.target.value)}
       />
 
       <input
-        className="border p-3 w-full mb-3 rounded"
+        className="mb-4 w-full rounded-lg border p-3"
+        type="number"
         placeholder="Width (ft)"
         value={width}
         onChange={(e) => setWidth(e.target.value)}
       />
 
       <input
-        className="border p-3 w-full mb-4 rounded"
+        className="mb-4 w-full rounded-lg border p-3"
+        type="number"
         placeholder="Thickness (in)"
         value={thickness}
         onChange={(e) => setThickness(e.target.value)}
       />
 
-      <button className="bg-blue-600 text-white px-5 py-3 rounded w-full">
+      <button className="w-full rounded-lg bg-blue-600 py-3 font-semibold text-white">
         Calculate
       </button>
 
-      <h2 className="text-2xl font-bold mt-6">
-        {volume.toFixed(2)} Cubic Yards
-      </h2>
+      <div className="mt-8 rounded-xl border bg-white p-5 shadow-sm">
+        <h2 className="mb-4 text-2xl font-bold">Results</h2>
+
+        <p className="mb-2">
+          🧱 Volume: <b>{volume.toFixed(2)} Cubic Yards</b>
+        </p>
+
+        <p className="mb-2">
+          📦 60 lb Bags: <b>{bags60}</b>
+        </p>
+
+        <p className="mb-2">
+          📦 80 lb Bags: <b>{bags80}</b>
+        </p>
+
+        <p>
+          💲 Estimated Cost: <b>${cost}</b>
+        </p>
+      </div>
     </main>
   );
 }
