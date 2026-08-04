@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import FAQ from "../../../components/FAQ";
 
 export default function ConcreteCalculator() {
   const [projectType, setProjectType] = useState("Slab");
@@ -135,6 +136,25 @@ export default function ConcreteCalculator() {
           <li>Use 4000 PSI concrete for most residential slabs unless your engineer specifies otherwise.</li>
         </ul>
       </div>
+      <FAQ
+  items={[
+    {
+      question: "How do I calculate concrete volume?",
+      answer:
+        "Multiply length × width × thickness and convert the result to cubic yards.",
+    },
+    {
+      question: "How many 80 lb bags make one cubic yard?",
+      answer:
+        "Approximately 45 bags are required for one cubic yard of concrete.",
+    },
+    {
+      question: "Should I order extra concrete?",
+      answer:
+        "Yes. Contractors usually order 5–10% extra to avoid shortages.",
+    },
+  ]}
+/>
     </main>
   );
 }
