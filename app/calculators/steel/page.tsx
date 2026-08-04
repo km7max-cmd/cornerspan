@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Breadcrumb from "../../../components/Breadcrumb";
 
 export default function SteelCalculator() {
   const [diameter, setDiameter] = useState("12");
@@ -26,8 +27,9 @@ export default function SteelCalculator() {
 
   return (
     <main className="mx-auto max-w-xl p-6">
+      <Breadcrumb current="Steel Calculator" />
       <h1 className="mb-2 text-4xl font-bold">
-        USA Steel Calculator
+        Steel Calculator
       </h1>
 
       <p className="mb-6 text-slate-600">
