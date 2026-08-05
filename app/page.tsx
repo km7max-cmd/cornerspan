@@ -11,6 +11,32 @@ export default function Home() {
 
       <main className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-slate-100">
         <Hero />
+        <section className="mx-auto max-w-7xl px-6 py-12">
+  <div className="grid gap-6 md:grid-cols-3">
+
+    <div className="rounded-2xl bg-white p-6 shadow-sm">
+      <h3 className="text-xl font-bold">⚡ Fast</h3>
+      <p className="mt-2 text-slate-600">
+        Get instant calculations.
+      </p>
+    </div>
+
+    <div className="rounded-2xl bg-white p-6 shadow-sm">
+      <h3 className="text-xl font-bold">🎯 Accurate</h3>
+      <p className="mt-2 text-slate-600">
+        Professional construction estimates.
+      </p>
+    </div>
+
+    <div className="rounded-2xl bg-white p-6 shadow-sm">
+      <h3 className="text-xl font-bold">🆓 Free</h3>
+      <p className="mt-2 text-slate-600">
+        Unlimited calculations for everyone.
+      </p>
+    </div>
+
+  </div>
+</section>
 
         <div className="mx-auto max-w-7xl px-6 pb-10">
           <SearchBar />
