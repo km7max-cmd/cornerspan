@@ -4,25 +4,61 @@ type Props = {
   title: string;
 };
 
-const icons: Record<string, string> = {
-  "Concrete Calculator": "🏗️",
-  "Brick Calculator": "🧱",
-  "Steel Calculator": "🦾",
-  "Paint Calculator": "🎨",
-  "Tile Calculator": "🟫",
-  "Roofing Calculator": "🏠",
-};
+const data: Record<
+  string,
+  {
+    icon: string;
+    badge: string;
+    description: string;
+    color: string;
+  }
+> = {
+  "Concrete Calculator": {
+    icon: "🏗️",
+    badge: "Popular",
+    description: "Estimate concrete volume, bags and total cost.",
+    color: "from-blue-500 to-indigo-600",
+  },
 
-const descriptions: Record<string, string> = {
-  "Concrete Calculator": "Estimate concrete volume and material.",
-  "Brick Calculator": "Calculate bricks and mortar required.",
-  "Steel Calculator": "Estimate reinforcement steel quantity.",
-  "Paint Calculator": "Find paint quantity and coverage.",
-  "Tile Calculator": "Calculate tiles and wastage.",
-  "Roofing Calculator": "Estimate roofing materials quickly.",
+  "Brick Calculator": {
+    icon: "🧱",
+    badge: "Trending",
+    description: "Calculate bricks and mortar requirements.",
+    color: "from-orange-500 to-red-500",
+  },
+
+  "Steel Calculator": {
+    icon: "🦾",
+    badge: "Professional",
+    description: "Estimate reinforcement steel quantity.",
+    color: "from-slate-600 to-slate-900",
+  },
+
+  "Paint Calculator": {
+    icon: "🎨",
+    badge: "Popular",
+    description: "Estimate paint quantity and coverage area.",
+    color: "from-pink-500 to-purple-600",
+  },
+
+  "Tile Calculator": {
+    icon: "🟫",
+    badge: "Accurate",
+    description: "Calculate tiles, wastage and material.",
+    color: "from-amber-500 to-yellow-600",
+  },
+
+  "Roofing Calculator": {
+    icon: "🏠",
+    badge: "New",
+    description: "Estimate roofing sheets and materials.",
+    color: "from-emerald-500 to-green-600",
+  },
 };
 
 export default function CategoryCard({ title }: Props) {
+  const item = data[title];
+
   const slug = title
     .toLowerCase()
     .replace(" calculator", "")
@@ -30,29 +66,38 @@ export default function CategoryCard({ title }: Props) {
 
   return (
     <Link href={`/calculators/${slug}`}>
-      <div className="group h-full rounded-3xl border border-slate-200 bg-white p-7 shadow-sm transition-all duration-300 hover:-translate-y-2 hover:border-blue-500 hover:shadow-2xl">
+      <div className="group relative overflow-hidden rounded-3xl border border-slate-200 bg-white p-7 shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
 
-        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-100 text-4xl transition group-hover:bg-blue-600 group-hover:text-white">
-          {icons[title] ?? "📐"}
+        <div
+          className={`absolute right-0 top-0 rounded-bl-2xl bg-gradient-to-r ${item.color} px-4 py-2 text-xs font-bold text-white`}
+        >
+          {item.badge}
         </div>
 
-        <h3 className="mt-6 text-2xl font-bold text-slate-900">
+        <div
+          className={`flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-br ${item.color} text-5xl shadow-lg transition duration-300 group-hover:scale-110`}
+        >
+          {item.icon}
+        </div>
+
+        <h3 className="mt-7 text-2xl font-black text-slate-900">
           {title}
         </h3>
 
-        <p className="mt-3 leading-7 text-slate-600">
-          {descriptions[title] ??
-            "Professional construction estimation tool."}
+        <p className="mt-4 leading-7 text-slate-600">
+          {item.description}
         </p>
 
         <div className="mt-8 flex items-center justify-between">
+
           <span className="font-semibold text-blue-600">
             Open Calculator
           </span>
 
-          <span className="text-2xl transition group-hover:translate-x-1">
+          <span className="text-2xl transition group-hover:translate-x-2">
             →
           </span>
+
         </div>
 
       </div>
