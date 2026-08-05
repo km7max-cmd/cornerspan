@@ -2,7 +2,10 @@ import Header from "../components/Header";
 import Hero from "../components/Hero";
 import SearchBar from "../components/SearchBar";
 import CategoryCard from "../components/CategoryCard";
-import Link from "next/link";
+import Stats from "../components/Stats";
+import Features from "../components/Features";
+import CTA from "../components/CTA";
+import Footer from "../components/Footer";
 
 export default function Home() {
   return (
@@ -10,129 +13,49 @@ export default function Home() {
       <Header />
 
       <main className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-slate-100">
+
         <Hero />
-        <section className="mx-auto max-w-7xl px-6 py-20">
-  <h2 className="text-center text-4xl font-bold">
-    Why Choose CornerSpan?
-  </h2>
 
-  <p className="mx-auto mt-4 max-w-2xl text-center text-slate-600">
-    Professional construction calculators designed for contractors,
-    builders and DIY projects.
-  </p>
-
-  <div className="mt-12 grid gap-6 md:grid-cols-3">
-
-    <div className="rounded-2xl bg-white p-8 shadow-sm transition hover:-translate-y-2 hover:shadow-xl">
-      <div className="mb-4 text-5xl">🏗️</div>
-      <h3 className="text-xl font-bold">Professional</h3>
-      <p className="mt-2 text-slate-600">
-        Industry-standard calculations.
-      </p>
-    </div>
-
-    <div className="rounded-2xl bg-white p-8 shadow-sm transition hover:-translate-y-2 hover:shadow-xl">
-      <div className="mb-4 text-5xl">⚡</div>
-      <h3 className="text-xl font-bold">Fast</h3>
-      <p className="mt-2 text-slate-600">
-        Instant results without waiting.
-      </p>
-    </div>
-
-    <div className="rounded-2xl bg-white p-8 shadow-sm transition hover:-translate-y-2 hover:shadow-xl">
-      <div className="mb-4 text-5xl">🎯</div>
-      <h3 className="text-xl font-bold">Accurate</h3>
-      <p className="mt-2 text-slate-600">
-        Trusted calculations for every project.
-      </p>
-    </div>
-
-  </div>
-</section>
-        <section className="mx-auto max-w-7xl px-6 py-12">
-  <div className="grid gap-6 md:grid-cols-3">
-
-    <div className="rounded-2xl bg-white p-6 shadow-sm">
-      <h3 className="text-xl font-bold">⚡ Fast</h3>
-      <p className="mt-2 text-slate-600">
-        Get instant calculations.
-      </p>
-    </div>
-
-    <div className="rounded-2xl bg-white p-6 shadow-sm">
-      <h3 className="text-xl font-bold">🎯 Accurate</h3>
-      <p className="mt-2 text-slate-600">
-        Professional construction estimates.
-      </p>
-    </div>
-
-    <div className="rounded-2xl bg-white p-6 shadow-sm">
-      <h3 className="text-xl font-bold">🆓 Free</h3>
-      <p className="mt-2 text-slate-600">
-        Unlimited calculations for everyone.
-      </p>
-    </div>
-
-  </div>
-</section>
-
-        <div className="mx-auto max-w-7xl px-6 pb-10">
+        <div className="relative z-10 mx-auto -mt-8 max-w-3xl px-6">
           <SearchBar />
         </div>
 
-        <section className="mx-auto max-w-7xl px-6 pb-20">
-          <h2 className="mb-8 text-3xl font-bold">
-            Popular Calculators
-          </h2>
-          <section className="mx-auto max-w-7xl px-6 py-20">
-  <h2 className="text-4xl font-bold text-center">
-    Most Popular Calculators
-  </h2>
+        <Stats />
 
-  <p className="mt-4 text-center text-slate-600">
-    The most frequently used construction estimation tools.
-  </p>
+        <section
+          id="calculators"
+          className="mx-auto max-w-7xl px-6 py-20"
+        >
+          <div className="mb-12 text-center">
 
-  <div className="mt-12 grid gap-6 md:grid-cols-3">
+            <h2 className="text-4xl font-black text-slate-900">
+              Popular Calculators
+            </h2>
 
-    <div className="rounded-2xl border bg-white p-6 shadow-sm">
-      <div className="text-4xl">🏗️</div>
-      <h3 className="mt-4 text-xl font-bold">Concrete Calculator</h3>
-      <p className="mt-2 text-slate-600">
-        Estimate concrete volume, bags and cost.
-      </p>
-    </div>
+            <p className="mx-auto mt-4 max-w-2xl text-lg text-slate-600">
+              Professional construction estimation tools for contractors,
+              engineers, builders and homeowners.
+            </p>
 
-    <div className="rounded-2xl border bg-white p-6 shadow-sm">
-      <div className="text-4xl">🧱</div>
-      <h3 className="mt-4 text-xl font-bold">Brick Calculator</h3>
-      <p className="mt-2 text-slate-600">
-        Calculate bricks and mortar requirements.
-      </p>
-    </div>
-
-    <div className="rounded-2xl border bg-white p-6 shadow-sm">
-      <div className="text-4xl">🎨</div>
-      <h3 className="mt-4 text-xl font-bold">Paint Calculator</h3>
-      <p className="mt-2 text-slate-600">
-        Estimate paint quantity and project cost.
-      </p>
-    </div>
-
-  </div>
-</section>
+          </div>
 
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            <Link href="/calculators/concrete">
-  <CategoryCard title="Concrete Calculator" />
-</Link>
+
+            <CategoryCard title="Concrete Calculator" />
             <CategoryCard title="Brick Calculator" />
             <CategoryCard title="Steel Calculator" />
             <CategoryCard title="Paint Calculator" />
             <CategoryCard title="Tile Calculator" />
             <CategoryCard title="Roofing Calculator" />
-          </div>
+                      </div>
         </section>
+
+        <Features />
+
+        <CTA />
+
+        <Footer />
+
       </main>
     </>
   );
