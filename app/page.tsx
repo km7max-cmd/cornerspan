@@ -2,7 +2,6 @@ import Header from "../components/Header";
 import Hero from "../components/Hero";
 import SearchBar from "../components/SearchBar";
 import CategoryCard from "../components/CategoryCard";
-import Stats from "../components/Stats";
 import Features from "../components/Features";
 import CTA from "../components/CTA";
 import Footer from "../components/Footer";
@@ -19,8 +18,6 @@ export default function Home() {
         <div className="relative z-10 mx-auto -mt-8 max-w-3xl px-6">
           <SearchBar />
         </div>
-
-        <Stats />
 
         <section
           id="calculators"
