@@ -15,13 +15,15 @@ export default function Home() {
 
         <Hero />
 
-        <div className="relative z-10 mx-auto -mt-8 max-w-3xl px-6">
+        {/* Search Bar */}
+        <section className="mx-auto max-w-5xl px-6 py-10">
           <SearchBar />
-        </div>
+        </section>
 
+        {/* Popular Calculators */}
         <section
           id="calculators"
-          className="mx-auto max-w-7xl px-6 py-20"
+          className="mx-auto max-w-7xl px-6 pb-20"
         >
           <div className="mb-12 text-center">
 
@@ -44,7 +46,9 @@ export default function Home() {
             <CategoryCard title="Paint Calculator" />
             <CategoryCard title="Tile Calculator" />
             <CategoryCard title="Roofing Calculator" />
-                      </div>
+
+          </div>
+
         </section>
 
         <Features />
