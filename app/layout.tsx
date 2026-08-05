@@ -1,5 +1,5 @@
 import "./globals.css";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://cornerspan.com"),
@@ -41,14 +41,19 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "CornerSpan",
-    description:
-      "Professional Construction Calculators",
+    description: "Professional Construction Calculators",
   },
 
   robots: {
     index: true,
     follow: true,
   },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: "#2563eb",
 };
 
 export default function RootLayout({
