@@ -11,6 +11,44 @@ export default function Home() {
 
       <main className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-slate-100">
         <Hero />
+        <section className="mx-auto max-w-7xl px-6 py-20">
+  <h2 className="text-center text-4xl font-bold">
+    Why Choose CornerSpan?
+  </h2>
+
+  <p className="mx-auto mt-4 max-w-2xl text-center text-slate-600">
+    Professional construction calculators designed for contractors,
+    builders and DIY projects.
+  </p>
+
+  <div className="mt-12 grid gap-6 md:grid-cols-3">
+
+    <div className="rounded-2xl bg-white p-8 shadow-sm transition hover:-translate-y-2 hover:shadow-xl">
+      <div className="mb-4 text-5xl">🏗️</div>
+      <h3 className="text-xl font-bold">Professional</h3>
+      <p className="mt-2 text-slate-600">
+        Industry-standard calculations.
+      </p>
+    </div>
+
+    <div className="rounded-2xl bg-white p-8 shadow-sm transition hover:-translate-y-2 hover:shadow-xl">
+      <div className="mb-4 text-5xl">⚡</div>
+      <h3 className="text-xl font-bold">Fast</h3>
+      <p className="mt-2 text-slate-600">
+        Instant results without waiting.
+      </p>
+    </div>
+
+    <div className="rounded-2xl bg-white p-8 shadow-sm transition hover:-translate-y-2 hover:shadow-xl">
+      <div className="mb-4 text-5xl">🎯</div>
+      <h3 className="text-xl font-bold">Accurate</h3>
+      <p className="mt-2 text-slate-600">
+        Trusted calculations for every project.
+      </p>
+    </div>
+
+  </div>
+</section>
         <section className="mx-auto max-w-7xl px-6 py-12">
   <div className="grid gap-6 md:grid-cols-3">
 
