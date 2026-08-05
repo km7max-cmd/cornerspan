@@ -15,30 +15,30 @@ export default function Home() {
 
         <Hero />
 
-        {/* Search Bar */}
-        <section className="mx-auto max-w-5xl px-6 py-10">
+        {/* Search */}
+        <section className="mx-auto max-w-5xl px-6 py-6 md:py-8">
           <SearchBar />
         </section>
 
         {/* Popular Calculators */}
         <section
           id="calculators"
-          className="mx-auto max-w-7xl px-6 pb-20"
+          className="mx-auto max-w-7xl px-6 py-12 md:py-16"
         >
-          <div className="mb-12 text-center">
+          <div className="mb-8 text-center md:mb-10">
 
-            <h2 className="text-4xl font-black text-slate-900">
+            <h2 className="text-3xl font-black text-slate-900 md:text-4xl">
               Popular Calculators
             </h2>
 
-            <p className="mx-auto mt-4 max-w-2xl text-lg text-slate-600">
+            <p className="mx-auto mt-3 max-w-2xl text-base text-slate-600 md:text-lg">
               Professional construction estimation tools for contractors,
               engineers, builders and homeowners.
             </p>
 
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
 
             <CategoryCard title="Concrete Calculator" />
             <CategoryCard title="Brick Calculator" />
