@@ -66,40 +66,44 @@ export default function CategoryCard({ title }: Props) {
 
   return (
     <Link href={`/calculators/${slug}`}>
-      <article className="group relative flex h-full flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white p-6 shadow-md transition-all duration-300 hover:-translate-y-2 hover:border-blue-200 hover:shadow-2xl">
 
-        <span
-          className={`absolute right-4 top-4 rounded-full bg-gradient-to-r ${item.color} px-3 py-1 text-[11px] font-semibold text-white`}
-        >
-          {item.badge}
-        </span>
+      <div className="group relative overflow-hidden rounded-[28px] border border-slate-200 bg-white p-6 shadow-md transition-all duration-500 hover:-translate-y-2 hover:border-blue-200 hover:shadow-2xl">
 
         <div
-          className={`flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br ${item.color} text-4xl shadow-lg transition-transform duration-300 group-hover:scale-110`}
+          className={`absolute right-5 top-5 rounded-full bg-gradient-to-r ${item.color} px-4 py-1 text-xs font-semibold text-white shadow`}
+        >
+          {item.badge}
+        </div>
+
+        <div
+          className={`flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-br ${item.color} text-5xl shadow-xl transition-all duration-500 group-hover:scale-110 group-hover:rotate-6`}
         >
           {item.icon}
         </div>
-                <h3 className="mt-6 text-xl font-black text-slate-900">
+
+        <h3 className="mt-6 text-3xl font-extrabold tracking-tight text-slate-900">
           {title}
         </h3>
 
-        <p className="mt-3 flex-1 text-[15px] leading-7 text-slate-600">
+        <p className="mt-3 text-[17px] leading-8 text-slate-600">
           {item.description}
         </p>
 
-        <div className="mt-6 flex items-center justify-between border-t border-slate-100 pt-5">
+        <div className="mt-8 h-px bg-slate-100" />
+                <div className="mt-6 flex items-center justify-between">
 
-          <span className="font-semibold text-blue-600 transition-colors group-hover:text-blue-700">
+          <span className="text-lg font-semibold text-blue-600 transition-colors group-hover:text-blue-700">
             Open Calculator
           </span>
 
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-50 text-blue-600 transition-all duration-300 group-hover:translate-x-1 group-hover:bg-blue-600 group-hover:text-white">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-50 text-xl text-blue-600 transition-all duration-300 group-hover:bg-blue-600 group-hover:text-white group-hover:translate-x-1">
             →
           </div>
 
         </div>
 
-      </article>
+      </div>
+
     </Link>
   );
 }
