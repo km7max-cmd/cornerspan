@@ -84,6 +84,43 @@ export default function Home() {
           <h2 className="mb-8 text-3xl font-bold">
             Popular Calculators
           </h2>
+          <section className="mx-auto max-w-7xl px-6 py-20">
+  <h2 className="text-4xl font-bold text-center">
+    Most Popular Calculators
+  </h2>
+
+  <p className="mt-4 text-center text-slate-600">
+    The most frequently used construction estimation tools.
+  </p>
+
+  <div className="mt-12 grid gap-6 md:grid-cols-3">
+
+    <div className="rounded-2xl border bg-white p-6 shadow-sm">
+      <div className="text-4xl">🏗️</div>
+      <h3 className="mt-4 text-xl font-bold">Concrete Calculator</h3>
+      <p className="mt-2 text-slate-600">
+        Estimate concrete volume, bags and cost.
+      </p>
+    </div>
+
+    <div className="rounded-2xl border bg-white p-6 shadow-sm">
+      <div className="text-4xl">🧱</div>
+      <h3 className="mt-4 text-xl font-bold">Brick Calculator</h3>
+      <p className="mt-2 text-slate-600">
+        Calculate bricks and mortar requirements.
+      </p>
+    </div>
+
+    <div className="rounded-2xl border bg-white p-6 shadow-sm">
+      <div className="text-4xl">🎨</div>
+      <h3 className="mt-4 text-xl font-bold">Paint Calculator</h3>
+      <p className="mt-2 text-slate-600">
+        Estimate paint quantity and project cost.
+      </p>
+    </div>
+
+  </div>
+</section>
 
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             <Link href="/calculators/concrete">
