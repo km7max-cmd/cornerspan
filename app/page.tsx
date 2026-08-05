@@ -9,7 +9,7 @@ export default function Home() {
     <>
       <Header />
 
-      <main>
+      <main className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-slate-100">
         <Hero />
 
         <div className="mx-auto max-w-7xl px-6 pb-10">
