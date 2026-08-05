@@ -66,41 +66,40 @@ export default function CategoryCard({ title }: Props) {
 
   return (
     <Link href={`/calculators/${slug}`}>
-      <div className="group relative overflow-hidden rounded-3xl border border-slate-200 bg-white p-7 shadow-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl">
+      <article className="group relative flex h-full flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white p-6 shadow-md transition-all duration-300 hover:-translate-y-2 hover:border-blue-200 hover:shadow-2xl">
 
-        <div
-          className={`absolute right-0 top-0 rounded-bl-2xl bg-gradient-to-r ${item.color} px-4 py-2 text-xs font-bold text-white`}
+        <span
+          className={`absolute right-4 top-4 rounded-full bg-gradient-to-r ${item.color} px-3 py-1 text-[11px] font-semibold text-white`}
         >
           {item.badge}
-        </div>
+        </span>
 
         <div
-          className={`flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-br ${item.color} text-5xl shadow-lg transition duration-300 group-hover:scale-110`}
+          className={`flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br ${item.color} text-4xl shadow-lg transition-transform duration-300 group-hover:scale-110`}
         >
           {item.icon}
         </div>
-
-        <h3 className="mt-7 text-2xl font-black text-slate-900">
+                <h3 className="mt-6 text-xl font-black text-slate-900">
           {title}
         </h3>
 
-        <p className="mt-4 leading-7 text-slate-600">
+        <p className="mt-3 flex-1 text-[15px] leading-7 text-slate-600">
           {item.description}
         </p>
 
-        <div className="mt-8 flex items-center justify-between">
+        <div className="mt-6 flex items-center justify-between border-t border-slate-100 pt-5">
 
-          <span className="font-semibold text-blue-600">
+          <span className="font-semibold text-blue-600 transition-colors group-hover:text-blue-700">
             Open Calculator
           </span>
 
-          <span className="text-2xl transition group-hover:translate-x-2">
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-50 text-blue-600 transition-all duration-300 group-hover:translate-x-1 group-hover:bg-blue-600 group-hover:text-white">
             →
-          </span>
+          </div>
 
         </div>
 
-      </div>
+      </article>
     </Link>
   );
 }
