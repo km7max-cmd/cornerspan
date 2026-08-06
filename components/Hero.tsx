@@ -25,23 +25,17 @@ export default function Hero() {
           {/* Heading */}
           <h1 className="mt-6 max-w-3xl text-[34px] font-black leading-[1.05] tracking-tight text-slate-900 sm:text-5xl md:text-6xl lg:text-7xl">
 
-            Smart{" "}
+  Smart{" "}
 
-            <span className="bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent">
-              Construction
-            </span>
+  <span className="bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent">
+    Construction
+  </span>
 
-            <br />
+  <br />
 
-            Calculators
+  Calculators
 
-            <br />
-
-            <span className="bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent">
-              For Professionals
-            </span>
-
-          </h1>
+</h1>
 
           {/* Description */}
           <p className="mt-5 max-w-sm text-[17px] leading-8 text-slate-600 sm:max-w-md md:max-w-xl md:text-lg">
