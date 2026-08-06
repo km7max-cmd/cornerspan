@@ -36,8 +36,8 @@ export default function Home() {
 
           </div>
 
-          <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
-
+          <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
+            
             <CategoryCard title="Concrete Calculator" />
             <CategoryCard title="Brick Calculator" />
             <CategoryCard title="Steel Calculator" />
