@@ -1,6 +1,5 @@
 import Header from "../components/Header";
 import Hero from "../components/Hero";
-import SearchBar from "../components/SearchBar";
 import CategoryCard from "../components/CategoryCard";
 import Features from "../components/Features";
 import CTA from "../components/CTA";
@@ -15,30 +14,29 @@ export default function Home() {
 
         <Hero />
 
-        {/* Search */}
-        <section className="mx-auto max-w-5xl px-6 py-6 md:py-8">
-          <SearchBar />
-        </section>
-
         {/* Popular Calculators */}
         <section
           id="calculators"
-          className="mx-auto max-w-7xl px-6 py-12 md:py-16"
+          className="mx-auto max-w-7xl px-6 py-16 md:py-20"
         >
-          <div className="mb-8 text-center md:mb-10">
+          <div className="mx-auto mb-12 max-w-3xl text-center">
 
-            <h2 className="text-3xl font-black text-slate-900 md:text-4xl">
-              Popular Calculators
+            <span className="inline-flex rounded-full bg-blue-100 px-4 py-1 text-sm font-semibold text-blue-700">
+              Popular Tools
+            </span>
+
+            <h2 className="mt-4 text-3xl font-black tracking-tight text-slate-900 md:text-5xl">
+              Construction Calculators
             </h2>
 
-            <p className="mx-auto mt-3 max-w-2xl text-base text-slate-600 md:text-lg">
-              Professional construction estimation tools for contractors,
-              engineers, builders and homeowners.
+            <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-slate-600 md:text-lg">
+              Professional estimation tools for contractors, engineers,
+              builders and homeowners.
             </p>
 
           </div>
 
-          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
 
             <CategoryCard title="Concrete Calculator" />
             <CategoryCard title="Brick Calculator" />
