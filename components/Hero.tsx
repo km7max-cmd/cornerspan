@@ -7,7 +7,7 @@ export default function Hero() {
 
       <div className="absolute left-1/2 top-0 h-[420px] w-[420px] -translate-x-1/2 rounded-full bg-blue-400/20 blur-3xl" />
 
-      <div className="relative mx-auto max-w-7xl px-6">
+      <div className="relative -mt-16 mx-auto max-w-7xl px-6 pt-16">
 
         <div className="mx-auto flex max-w-5xl flex-col items-center pt-8 pb-8 text-center">
 
