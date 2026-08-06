@@ -56,21 +56,21 @@ export default function Hero() {
 
           </div>
                     {/* Search */}
-<div className="mt-6 w-full max-w-xl">
+<div className="mt-6 w-full max-w-md">
 
-  <div className="relative rounded-full border border-slate-200 bg-white px-3 py-2 shadow-lg">
-
-    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-base text-slate-400">
-      🔍
-    </span>
+  <div className="relative">
 
     <input
       type="text"
-      placeholder="Search calculators..."
-      className="h-10 w-full bg-transparent pl-10 pr-14 text-sm text-slate-700 outline-none placeholder:text-slate-400"
+      placeholder="Search..."
+      className="h-11 w-full rounded-full border border-slate-200 bg-white pl-11 pr-12 text-sm shadow-md outline-none placeholder:text-slate-400 focus:border-blue-500"
     />
 
-    <button className="absolute right-2 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-blue-600 text-sm font-bold text-white shadow-md transition hover:bg-blue-700">
+    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm text-slate-400">
+      🔍
+    </span>
+
+    <button className="absolute right-1 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-blue-600 text-white transition hover:bg-blue-700">
       →
     </button>
 
