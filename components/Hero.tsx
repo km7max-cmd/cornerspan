@@ -56,27 +56,27 @@ export default function Hero() {
 
           </div>
                     {/* Search */}
-          <div className="mt-7 w-full max-w-2xl">
+<div className="mt-6 w-full max-w-xl">
 
-            <div className="relative rounded-full border border-slate-200 bg-white p-2 shadow-xl">
+  <div className="relative rounded-full border border-slate-200 bg-white px-3 py-2 shadow-lg">
 
-              <span className="absolute left-5 top-1/2 -translate-y-1/2 text-lg text-slate-400">
-                🔍
-              </span>
+    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-base text-slate-400">
+      🔍
+    </span>
 
-              <input
-                type="text"
-                placeholder="Search calculators..."
-                className="h-12 w-full rounded-full bg-transparent pl-12 pr-16 text-[15px] text-slate-700 outline-none placeholder:text-slate-400"
-              />
+    <input
+      type="text"
+      placeholder="Search calculators..."
+      className="h-10 w-full bg-transparent pl-10 pr-14 text-sm text-slate-700 outline-none placeholder:text-slate-400"
+    />
 
-              <button className="absolute right-2 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-blue-600 text-lg font-bold text-white shadow-lg transition-all hover:scale-105 hover:bg-blue-700">
-                →
-              </button>
+    <button className="absolute right-2 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-blue-600 text-sm font-bold text-white shadow-md transition hover:bg-blue-700">
+      →
+    </button>
 
-            </div>
+  </div>
 
-          </div>
+</div>
 
           {/* Statistics */}
           <div className="mt-7 w-full max-w-4xl rounded-3xl border border-slate-200 bg-white/90 p-5 shadow-xl backdrop-blur">
