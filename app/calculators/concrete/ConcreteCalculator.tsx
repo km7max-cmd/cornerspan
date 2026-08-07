@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 
 import Hero from "./components/Hero";
 import CalculatorForm from "./components/CalculatorForm";
@@ -14,23 +14,42 @@ export default function ConcreteCalculator() {
   const [depth, setDepth] = useState("");
   const [unit, setUnit] = useState("Meter");
 
-  const result = useMemo(() => {
+  const [error, setError] = useState("");
+
+  const [result, setResult] = useState({
+    volume: 0,
+    dryVolume: 0,
+    cementBags: 0,
+    sand: 0,
+    aggregate: 0,
+  });
+
+  const handleCalculate = () => {
     const l = Number(length);
     const w = Number(width);
     const d = Number(depth);
 
-    if (!l || !w || !d) {
-      return {
-        volume: 0,
-        dryVolume: 0,
-        cementBags: 0,
-        sand: 0,
-        aggregate: 0,
-      };
+    if (!length || !width || !depth) {
+      setError("Please fill in all fields.");
+      return;
     }
 
-    return calculateConcrete(l, w, d, unit as any);
-  }, [length, width, depth, unit]);
+    if (l <= 0 || w <= 0 || d <= 0) {
+      setError("Values must be greater than zero.");
+      return;
+    }
+
+    setError("");
+
+    const output = calculateConcrete(
+      l,
+      w,
+      d,
+      unit as any
+    );
+
+    setResult(output);
+  };
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-slate-100">
@@ -46,19 +65,21 @@ export default function ConcreteCalculator() {
             width={width}
             depth={depth}
             unit={unit}
+            error={error}
             setLength={setLength}
             setWidth={setWidth}
             setDepth={setDepth}
             setUnit={setUnit}
+            onCalculate={handleCalculate}
           />
 
           <ResultCard
-  volume={result.volume}
-  dryVolume={result.dryVolume}
-  bags={result.cementBags}
-  sand={result.sand}
-  aggregate={result.aggregate}
-/>
+            volume={result.volume}
+            dryVolume={result.dryVolume}
+            bags={result.cementBags}
+            sand={result.sand}
+            aggregate={result.aggregate}
+          />
 
         </div>
 
