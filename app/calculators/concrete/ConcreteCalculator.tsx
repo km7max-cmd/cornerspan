@@ -7,7 +7,6 @@ import CalculatorForm from "./components/CalculatorForm";
 import ResultCard from "./components/ResultCard";
 import Formula from "./components/Formula";
 import FAQ from "./components/FAQ";
-
 import RelatedCalculators from "./components/RelatedCalculators";
 import Example from "./components/Example";
 import { calculateConcrete } from "./utils/calculateConcrete";
@@ -73,6 +72,23 @@ export default function ConcreteCalculator() {
     setResult(output);
   };
 
+  const handleCopy = async () => {
+    const text = `Concrete Calculator Result
+
+Concrete Volume : ${result.volume.toFixed(2)} m³
+Dry Volume      : ${result.dryVolume.toFixed(2)} m³
+Cement Bags     : ${result.cementBags} Bags
+Sand            : ${result.sand} m³
+Aggregate       : ${result.aggregate} m³`;
+
+    try {
+      await navigator.clipboard.writeText(text);
+      alert("✅ Results copied successfully!");
+    } catch {
+      alert("❌ Failed to copy results.");
+    }
+  };
+
   return (
     <main className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-slate-100">
       <div className="mx-auto max-w-7xl px-6 py-10">
@@ -100,6 +116,7 @@ export default function ConcreteCalculator() {
             bags={result.cementBags}
             sand={result.sand}
             aggregate={result.aggregate}
+            onCopy={handleCopy}
           />
 
         </div>
@@ -107,15 +124,19 @@ export default function ConcreteCalculator() {
         <div className="mt-12">
           <Formula />
         </div>
-  <div className="mt-12">
-  <Example />
-</div>
+
         <div className="mt-12">
-  <FAQ />
-</div>
+          <Example />
+        </div>
+
         <div className="mt-12">
-  <RelatedCalculators />
-</div>
+          <FAQ />
+        </div>
+
+        <div className="mt-12">
+          <RelatedCalculators />
+        </div>
+
       </div>
     </main>
   );
