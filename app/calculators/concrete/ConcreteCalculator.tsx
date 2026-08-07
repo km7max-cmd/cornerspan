@@ -8,6 +8,7 @@ import ResultCard from "./components/ResultCard";
 import Formula from "./components/Formula";
 import FAQ from "./components/FAQ";
 
+import RelatedCalculators from "./components/RelatedCalculators";
 import Example from "./components/Example";
 import { calculateConcrete } from "./utils/calculateConcrete";
 
@@ -111,6 +112,9 @@ export default function ConcreteCalculator() {
 </div>
         <div className="mt-12">
   <FAQ />
+</div>
+        <div className="mt-12">
+  <RelatedCalculators />
 </div>
       </div>
     </main>
