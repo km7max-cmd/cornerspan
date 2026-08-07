@@ -188,6 +188,7 @@ Aggregate       : ${result.aggregate.toFixed(2)} m³`;
               aggregate={result.aggregate}
               onCopy={handleCopy}
               onShare={handleShare}
+              onDownload={handleDownloadPDF}
             />
 
           </div>
