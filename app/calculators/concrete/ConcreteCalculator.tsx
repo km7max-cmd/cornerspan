@@ -6,29 +6,31 @@ import Hero from "./components/Hero";
 import CalculatorForm from "./components/CalculatorForm";
 import ResultCard from "./components/ResultCard";
 
+import { calculateConcrete } from "./utils/calculateConcrete";
+
 export default function ConcreteCalculator() {
   const [length, setLength] = useState("");
   const [width, setWidth] = useState("");
   const [depth, setDepth] = useState("");
   const [unit, setUnit] = useState("Meter");
 
-  const volume = useMemo(() => {
+  const result = useMemo(() => {
     const l = Number(length);
     const w = Number(width);
     const d = Number(depth);
 
-    if (!l || !w || !d) return 0;
+    if (!l || !w || !d) {
+      return {
+        volume: 0,
+        dryVolume: 0,
+        cementBags: 0,
+        sand: 0,
+        aggregate: 0,
+      };
+    }
 
-    return l * w * d;
-  }, [length, width, depth]);
-
-  const dryVolume = useMemo(() => {
-    return volume * 1.54;
-  }, [volume]);
-
-  const bags = useMemo(() => {
-    return Math.ceil(volume * 29);
-  }, [volume]);
+    return calculateConcrete(l, w, d, unit as any);
+  }, [length, width, depth, unit]);
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-slate-100">
@@ -51,9 +53,9 @@ export default function ConcreteCalculator() {
           />
 
           <ResultCard
-            volume={volume}
-            dryVolume={dryVolume}
-            bags={bags}
+            volume={result.volume}
+            dryVolume={result.dryVolume}
+            bags={result.cementBags}
           />
 
         </div>
