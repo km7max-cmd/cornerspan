@@ -4,6 +4,7 @@ type Props = {
   bags: number;
   sand: number;
   aggregate: number;
+  onCopy: () => void;
 };
 
 export default function ResultCard({
@@ -12,15 +13,29 @@ export default function ResultCard({
   bags,
   sand,
   aggregate,
+  onCopy,
 }: Props) {
   const hasResult = volume > 0;
 
   return (
     <section className="rounded-3xl bg-white p-6 shadow-xl">
 
-      <h2 className="mb-6 text-2xl font-bold text-slate-900">
-        Calculation Result
-      </h2>
+      <div className="mb-6 flex items-center justify-between">
+
+        <h2 className="text-2xl font-bold text-slate-900">
+          Calculation Result
+        </h2>
+
+        {hasResult && (
+          <button
+            onClick={onCopy}
+            className="rounded-xl bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700"
+          >
+            📋 Copy
+          </button>
+        )}
+
+      </div>
 
       {!hasResult ? (
         <div className="rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50 p-10 text-center">
