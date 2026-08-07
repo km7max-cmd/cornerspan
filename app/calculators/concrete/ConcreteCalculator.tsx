@@ -88,7 +88,30 @@ Aggregate       : ${result.aggregate} m³`;
       alert("❌ Failed to copy results.");
     }
   };
+  
+const handleShare = async () => {
+  const text = `Concrete Calculator Result
 
+Concrete Volume : ${result.volume.toFixed(2)} m³
+Dry Volume      : ${result.dryVolume.toFixed(2)} m³
+Cement Bags     : ${result.cementBags} Bags
+Sand            : ${result.sand} m³
+Aggregate       : ${result.aggregate} m³`;
+
+  try {
+    if (navigator.share) {
+      await navigator.share({
+        title: "Concrete Calculator Result",
+        text,
+      });
+    } else {
+      alert("Sharing is not supported on this device.");
+    }
+  } catch {
+    // User cancelled or share failed
+  }
+};
+  
   return (
     <main className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-slate-100">
       <div className="mx-auto max-w-7xl px-6 py-10">
