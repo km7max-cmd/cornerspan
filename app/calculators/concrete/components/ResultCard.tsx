@@ -6,6 +6,7 @@ type Props = {
   aggregate: number;
   onCopy: () => void;
   onShare: () => void;
+  onDownload: () => void;
 };
 
 export default function ResultCard({
@@ -16,6 +17,7 @@ export default function ResultCard({
   aggregate,
   onCopy,
   onShare,
+  onDownload,
 }: Props) {
   const hasResult = volume > 0;
 
@@ -43,6 +45,13 @@ export default function ResultCard({
               className="rounded-xl bg-green-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-green-700"
             >
               📤 Share
+            </button>
+
+            <button
+              onClick={onDownload}
+              className="rounded-xl bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-700"
+            >
+              📄 PDF
             </button>
 
           </div>
