@@ -53,10 +53,12 @@ export default function ConcreteCalculator() {
           />
 
           <ResultCard
-            volume={result.volume}
-            dryVolume={result.dryVolume}
-            bags={result.cementBags}
-          />
+  volume={result.volume}
+  dryVolume={result.dryVolume}
+  bags={result.cementBags}
+  sand={result.sand}
+  aggregate={result.aggregate}
+/>
 
         </div>
 
