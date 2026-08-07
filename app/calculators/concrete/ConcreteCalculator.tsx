@@ -7,6 +7,7 @@ import CalculatorForm from "./components/CalculatorForm";
 import ResultCard from "./components/ResultCard";
 import Formula from "./components/Formula";
 
+import Example from "./components/Example";
 import { calculateConcrete } from "./utils/calculateConcrete";
 
 export default function ConcreteCalculator() {
@@ -104,7 +105,9 @@ export default function ConcreteCalculator() {
         <div className="mt-12">
           <Formula />
         </div>
-
+  <div className="mt-12">
+  <Example />
+</div>
       </div>
     </main>
   );
