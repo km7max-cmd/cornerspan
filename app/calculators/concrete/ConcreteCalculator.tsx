@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import Hero from "./components/Hero";
 import CalculatorForm from "./components/CalculatorForm";
@@ -10,6 +10,8 @@ import FAQ from "./components/FAQ";
 import RelatedCalculators from "./components/RelatedCalculators";
 import Example from "./components/Example";
 import { calculateConcrete } from "./utils/calculateConcrete";
+
+import Toast from "@/app/components/Toast";
 
 export default function ConcreteCalculator() {
   const [length, setLength] = useState("");
@@ -27,6 +29,29 @@ export default function ConcreteCalculator() {
     aggregate: 0,
   });
 
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+  const [toastType, setToastType] = useState<"success" | "error">("success");
+
+  useEffect(() => {
+    if (!showToast) return;
+
+    const timer = setTimeout(() => {
+      setShowToast(false);
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, [showToast]);
+
+  const showNotification = (
+    message: string,
+    type: "success" | "error" = "success"
+  ) => {
+    setToastMessage(message);
+    setToastType(type);
+    setShowToast(true);
+  };
+
   const handleCalculate = () => {
     const l = Number(length);
     const w = Number(width);
@@ -43,6 +68,7 @@ export default function ConcreteCalculator() {
         aggregate: 0,
       });
 
+      showNotification("Please fill in all fields.", "error");
       return;
     }
 
@@ -57,6 +83,7 @@ export default function ConcreteCalculator() {
         aggregate: 0,
       });
 
+      showNotification("Values must be greater than zero.", "error");
       return;
     }
 
@@ -78,90 +105,99 @@ export default function ConcreteCalculator() {
 Concrete Volume : ${result.volume.toFixed(2)} m³
 Dry Volume      : ${result.dryVolume.toFixed(2)} m³
 Cement Bags     : ${result.cementBags} Bags
-Sand            : ${result.sand} m³
-Aggregate       : ${result.aggregate} m³`;
+Sand            : ${result.sand.toFixed(2)} m³
+Aggregate       : ${result.aggregate.toFixed(2)} m³`;
 
     try {
       await navigator.clipboard.writeText(text);
-      alert("✅ Results copied successfully!");
+      showNotification("Results copied successfully!");
     } catch {
-      alert("❌ Failed to copy results.");
+      showNotification("Failed to copy results.", "error");
     }
   };
-  
-const handleShare = async () => {
-  const text = `Concrete Calculator Result
+
+  const handleShare = async () => {
+    const text = `Concrete Calculator Result
 
 Concrete Volume : ${result.volume.toFixed(2)} m³
 Dry Volume      : ${result.dryVolume.toFixed(2)} m³
 Cement Bags     : ${result.cementBags} Bags
-Sand            : ${result.sand} m³
-Aggregate       : ${result.aggregate} m³`;
+Sand            : ${result.sand.toFixed(2)} m³
+Aggregate       : ${result.aggregate.toFixed(2)} m³`;
 
-  try {
-    if (navigator.share) {
-      await navigator.share({
-        title: "Concrete Calculator Result",
-        text,
-      });
-    } else {
-      alert("Sharing is not supported on this device.");
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: "Concrete Calculator Result",
+          text,
+        });
+
+        showNotification("Results shared successfully!");
+      } else {
+        showNotification("Sharing is not supported.", "error");
+      }
+    } catch {
+      // User cancelled share
     }
-  } catch {
-    // User cancelled or share failed
-  }
-};
-  
-  return (
-    <main className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-slate-100">
-      <div className="mx-auto max-w-7xl px-6 py-10">
+  };
+    return (
+    <>
+      <main className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-slate-100">
+        <div className="mx-auto max-w-7xl px-6 py-10">
 
-        <Hero />
+          <Hero />
 
-        <div className="mt-10 grid gap-8 lg:grid-cols-2">
+          <div className="mt-10 grid gap-8 lg:grid-cols-2">
 
-          <CalculatorForm
-            length={length}
-            width={width}
-            depth={depth}
-            unit={unit}
-            error={error}
-            setLength={setLength}
-            setWidth={setWidth}
-            setDepth={setDepth}
-            setUnit={setUnit}
-            onCalculate={handleCalculate}
-          />
+            <CalculatorForm
+              length={length}
+              width={width}
+              depth={depth}
+              unit={unit}
+              error={error}
+              setLength={setLength}
+              setWidth={setWidth}
+              setDepth={setDepth}
+              setUnit={setUnit}
+              onCalculate={handleCalculate}
+            />
 
-          <ResultCard
-  volume={result.volume}
-  dryVolume={result.dryVolume}
-  bags={result.cementBags}
-  sand={result.sand}
-  aggregate={result.aggregate}
-  onCopy={handleCopy}
-  onShare={handleShare}
-/>
+            <ResultCard
+              volume={result.volume}
+              dryVolume={result.dryVolume}
+              bags={result.cementBags}
+              sand={result.sand}
+              aggregate={result.aggregate}
+              onCopy={handleCopy}
+              onShare={handleShare}
+            />
+
+          </div>
+
+          <div className="mt-12">
+            <Formula />
+          </div>
+
+          <div className="mt-12">
+            <Example />
+          </div>
+
+          <div className="mt-12">
+            <FAQ />
+          </div>
+
+          <div className="mt-12">
+            <RelatedCalculators />
+          </div>
 
         </div>
+      </main>
 
-        <div className="mt-12">
-          <Formula />
-        </div>
-
-        <div className="mt-12">
-          <Example />
-        </div>
-
-        <div className="mt-12">
-          <FAQ />
-        </div>
-
-        <div className="mt-12">
-          <RelatedCalculators />
-        </div>
-
-      </div>
-    </main>
+      <Toast
+        show={showToast}
+        message={toastMessage}
+        type={toastType}
+      />
+    </>
   );
 }
