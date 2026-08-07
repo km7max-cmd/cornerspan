@@ -28,7 +28,11 @@ export default function ConcreteCalculator() {
     const l = Number(length);
     const w = Number(width);
     const d = Number(depth);
-
+   const clearError = () => {
+  if (error) {
+    setError("");
+  }
+};
     if (!length || !width || !depth) {
   setError("Please fill in all fields.");
 
