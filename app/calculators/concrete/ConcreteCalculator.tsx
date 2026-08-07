@@ -5,9 +5,9 @@ import { useState } from "react";
 import Hero from "./components/Hero";
 import CalculatorForm from "./components/CalculatorForm";
 import ResultCard from "./components/ResultCard";
+import Formula from "./components/Formula";
 
 import { calculateConcrete } from "./utils/calculateConcrete";
-import Formula from "./components/Formula";
 
 export default function ConcreteCalculator() {
   const [length, setLength] = useState("");
@@ -29,38 +29,34 @@ export default function ConcreteCalculator() {
     const l = Number(length);
     const w = Number(width);
     const d = Number(depth);
-   const clearError = () => {
-  if (error) {
-    setError("");
-  }
-};
+
     if (!length || !width || !depth) {
-  setError("Please fill in all fields.");
+      setError("Please fill in all fields.");
 
-  setResult({
-    volume: 0,
-    dryVolume: 0,
-    cementBags: 0,
-    sand: 0,
-    aggregate: 0,
-  });
+      setResult({
+        volume: 0,
+        dryVolume: 0,
+        cementBags: 0,
+        sand: 0,
+        aggregate: 0,
+      });
 
-  return;
-}
+      return;
+    }
 
-if (l <= 0 || w <= 0 || d <= 0) {
-  setError("Values must be greater than zero.");
+    if (l <= 0 || w <= 0 || d <= 0) {
+      setError("Values must be greater than zero.");
 
-  setResult({
-    volume: 0,
-    dryVolume: 0,
-    cementBags: 0,
-    sand: 0,
-    aggregate: 0,
-  });
+      setResult({
+        volume: 0,
+        dryVolume: 0,
+        cementBags: 0,
+        sand: 0,
+        aggregate: 0,
+      });
 
-  return;
-}
+      return;
+    }
 
     setError("");
 
@@ -76,7 +72,6 @@ if (l <= 0 || w <= 0 || d <= 0) {
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-slate-100">
-
       <div className="mx-auto max-w-7xl px-6 py-10">
 
         <Hero />
@@ -106,10 +101,11 @@ if (l <= 0 || w <= 0 || d <= 0) {
 
         </div>
 
+        <div className="mt-12">
+          <Formula />
+        </div>
+
       </div>
-  <div className="mx-auto mt-12 max-w-7xl px-6">
-  <Formula />
-</div>
     </main>
   );
 }
