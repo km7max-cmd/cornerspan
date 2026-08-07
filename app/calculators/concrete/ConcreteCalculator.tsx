@@ -10,7 +10,7 @@ import FAQ from "./components/FAQ";
 import RelatedCalculators from "./components/RelatedCalculators";
 import Example from "./components/Example";
 import { calculateConcrete } from "./utils/calculateConcrete";
-
+import { jsPDF } from "jspdf";
 import Toast from "../../components/Toast";
 export default function ConcreteCalculator() {
   const [length, setLength] = useState("");
@@ -139,6 +139,25 @@ Aggregate       : ${result.aggregate.toFixed(2)} m³`;
       // User cancelled share
     }
   };
+
+  const handleDownloadPDF = () => {
+  const doc = new jsPDF();
+
+  doc.setFontSize(20);
+  doc.text("Concrete Calculator Result", 20, 20);
+
+  doc.setFontSize(12);
+
+  doc.text(`Concrete Volume : ${result.volume.toFixed(2)} m³`, 20, 40);
+  doc.text(`Dry Volume      : ${result.dryVolume.toFixed(2)} m³`, 20, 50);
+  doc.text(`Cement Bags     : ${result.cementBags} Bags`, 20, 60);
+  doc.text(`Sand            : ${result.sand.toFixed(2)} m³`, 20, 70);
+  doc.text(`Aggregate       : ${result.aggregate.toFixed(2)} m³`, 20, 80);
+
+  doc.save("Concrete-Calculation.pdf");
+
+  showNotification("PDF downloaded successfully!");
+};
     return (
     <>
       <main className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-slate-100">
