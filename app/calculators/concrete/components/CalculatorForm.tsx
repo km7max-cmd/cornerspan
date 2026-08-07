@@ -4,7 +4,6 @@ type CalculatorFormProps = {
   depth: string;
   unit: string;
   error: string;
-  clearError: () => void;
   setLength: (value: string) => void;
   setWidth: (value: string) => void;
   setDepth: (value: string) => void;
@@ -71,6 +70,7 @@ export default function CalculatorForm({
           <input
             type="number"
             min="0"
+            step="any"
             value={depth}
             onChange={(e) => setDepth(e.target.value)}
             placeholder="Enter depth"
@@ -103,6 +103,7 @@ export default function CalculatorForm({
         )}
 
         <button
+          type="button"
           onClick={onCalculate}
           className="h-12 w-full rounded-xl bg-blue-600 font-semibold text-white transition hover:bg-blue-700"
         >
