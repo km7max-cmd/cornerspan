@@ -134,13 +134,14 @@ Aggregate       : ${result.aggregate} m³`;
           />
 
           <ResultCard
-            volume={result.volume}
-            dryVolume={result.dryVolume}
-            bags={result.cementBags}
-            sand={result.sand}
-            aggregate={result.aggregate}
-            onCopy={handleCopy}
-          />
+  volume={result.volume}
+  dryVolume={result.dryVolume}
+  bags={result.cementBags}
+  sand={result.sand}
+  aggregate={result.aggregate}
+  onCopy={handleCopy}
+  onShare={handleShare}
+/>
 
         </div>
 
