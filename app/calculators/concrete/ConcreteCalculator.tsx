@@ -30,14 +30,32 @@ export default function ConcreteCalculator() {
     const d = Number(depth);
 
     if (!length || !width || !depth) {
-      setError("Please fill in all fields.");
-      return;
-    }
+  setError("Please fill in all fields.");
 
-    if (l <= 0 || w <= 0 || d <= 0) {
-      setError("Values must be greater than zero.");
-      return;
-    }
+  setResult({
+    volume: 0,
+    dryVolume: 0,
+    cementBags: 0,
+    sand: 0,
+    aggregate: 0,
+  });
+
+  return;
+}
+
+if (l <= 0 || w <= 0 || d <= 0) {
+  setError("Values must be greater than zero.");
+
+  setResult({
+    volume: 0,
+    dryVolume: 0,
+    cementBags: 0,
+    sand: 0,
+    aggregate: 0,
+  });
+
+  return;
+}
 
     setError("");
 
