@@ -9,6 +9,7 @@ import Formula from "./components/Formula";
 import FAQ from "./components/FAQ";
 import RelatedCalculators from "./components/RelatedCalculators";
 import Example from "./components/Example";
+import History from "./components/History";
 import { calculateConcrete } from "./utils/calculateConcrete";
 import { jsPDF } from "jspdf";
 import Toast from "../../components/Toast";
@@ -27,6 +28,14 @@ export default function ConcreteCalculator() {
     sand: 0,
     aggregate: 0,
   });
+  const [history, setHistory] = useState<
+  {
+    length: number;
+    width: number;
+    depth: number;
+    volume: number;
+  }[]
+>([]);
 
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
@@ -96,6 +105,15 @@ export default function ConcreteCalculator() {
     );
 
     setResult(output);
+    setHistory((prev) => [
+  {
+    length: l,
+    width: w,
+    depth: d,
+    volume: output.volume,
+  },
+  ...prev.slice(0, 4),
+]);
   };
 
   const handleCopy = async () => {
@@ -208,7 +226,9 @@ Aggregate       : ${result.aggregate.toFixed(2)} m³`;
           <div className="mt-12">
             <RelatedCalculators />
           </div>
-
+<div className="mt-12">
+  <History history={history} />
+</div>
         </div>
       </main>
 
