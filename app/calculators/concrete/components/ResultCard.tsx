@@ -5,6 +5,7 @@ type Props = {
   sand: number;
   aggregate: number;
   onCopy: () => void;
+  onShare: () => void;
 };
 
 export default function ResultCard({
@@ -14,6 +15,7 @@ export default function ResultCard({
   sand,
   aggregate,
   onCopy,
+  onShare,
 }: Props) {
   const hasResult = volume > 0;
 
@@ -27,12 +29,23 @@ export default function ResultCard({
         </h2>
 
         {hasResult && (
-          <button
-            onClick={onCopy}
-            className="rounded-xl bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700"
-          >
-            📋 Copy
-          </button>
+          <div className="flex gap-2">
+
+            <button
+              onClick={onCopy}
+              className="rounded-xl bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700"
+            >
+              📋 Copy
+            </button>
+
+            <button
+              onClick={onShare}
+              className="rounded-xl bg-green-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-green-700"
+            >
+              📤 Share
+            </button>
+
+          </div>
         )}
 
       </div>
@@ -85,7 +98,7 @@ export default function ResultCard({
               </p>
 
               <h3 className="mt-2 text-xl font-bold text-slate-900">
-                {bags}
+                {bags} Bags
               </h3>
             </div>
 
@@ -95,7 +108,7 @@ export default function ResultCard({
               </p>
 
               <h3 className="mt-2 text-xl font-bold text-slate-900">
-                {sand} m³
+                {sand.toFixed(2)} m³
               </h3>
             </div>
 
@@ -105,7 +118,7 @@ export default function ResultCard({
               </p>
 
               <h3 className="mt-2 text-xl font-bold text-slate-900">
-                {aggregate} m³
+                {aggregate.toFixed(2)} m³
               </h3>
             </div>
 
