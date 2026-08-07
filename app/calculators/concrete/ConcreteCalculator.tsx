@@ -7,6 +7,7 @@ import CalculatorForm from "./components/CalculatorForm";
 import ResultCard from "./components/ResultCard";
 
 import { calculateConcrete } from "./utils/calculateConcrete";
+import Formula from "./components/Formula";
 
 export default function ConcreteCalculator() {
   const [length, setLength] = useState("");
@@ -106,7 +107,9 @@ if (l <= 0 || w <= 0 || d <= 0) {
         </div>
 
       </div>
-
+  <div className="mx-auto mt-12 max-w-7xl px-6">
+  <Formula />
+</div>
     </main>
   );
 }
