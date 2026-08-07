@@ -11,8 +11,7 @@ import RelatedCalculators from "./components/RelatedCalculators";
 import Example from "./components/Example";
 import { calculateConcrete } from "./utils/calculateConcrete";
 
-import Toast from "@/app/components/Toast";
-
+import Toast from "../../components/Toast";
 export default function ConcreteCalculator() {
   const [length, setLength] = useState("");
   const [width, setWidth] = useState("");
