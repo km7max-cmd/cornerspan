@@ -3,10 +3,12 @@ type CalculatorFormProps = {
   width: string;
   depth: string;
   unit: string;
+  error: string;
   setLength: (value: string) => void;
   setWidth: (value: string) => void;
   setDepth: (value: string) => void;
   setUnit: (value: string) => void;
+  onCalculate: () => void;
 };
 
 export default function CalculatorForm({
@@ -14,10 +16,12 @@ export default function CalculatorForm({
   width,
   depth,
   unit,
+  error,
   setLength,
   setWidth,
   setDepth,
   setUnit,
+  onCalculate,
 }: CalculatorFormProps) {
   return (
     <section className="rounded-3xl bg-white p-6 shadow-xl">
@@ -35,6 +39,7 @@ export default function CalculatorForm({
 
           <input
             type="number"
+            min="0"
             value={length}
             onChange={(e) => setLength(e.target.value)}
             placeholder="Enter length"
@@ -49,6 +54,7 @@ export default function CalculatorForm({
 
           <input
             type="number"
+            min="0"
             value={width}
             onChange={(e) => setWidth(e.target.value)}
             placeholder="Enter width"
@@ -63,6 +69,7 @@ export default function CalculatorForm({
 
           <input
             type="number"
+            min="0"
             value={depth}
             onChange={(e) => setDepth(e.target.value)}
             placeholder="Enter depth"
@@ -87,6 +94,19 @@ export default function CalculatorForm({
             <option value="Inch">Inch</option>
           </select>
         </div>
+
+        {error && (
+          <div className="rounded-xl bg-red-50 p-3 text-sm font-medium text-red-600">
+            {error}
+          </div>
+        )}
+
+        <button
+          onClick={onCalculate}
+          className="h-12 w-full rounded-xl bg-blue-600 font-semibold text-white transition hover:bg-blue-700"
+        >
+          Calculate
+        </button>
 
       </div>
 
