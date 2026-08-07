@@ -4,6 +4,7 @@ type CalculatorFormProps = {
   depth: string;
   unit: string;
   error: string;
+  clearError: () => void;
   setLength: (value: string) => void;
   setWidth: (value: string) => void;
   setDepth: (value: string) => void;
