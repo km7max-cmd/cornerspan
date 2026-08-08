@@ -105,7 +105,14 @@ export default function ConcreteCalculator() {
       d,
       unit as any
     );
+const qty = Number(quantity);
 
+output.volume *= qty;
+output.dryVolume *= qty;
+output.cementBags *= qty;
+output.sand *= qty;
+output.aggregate *= qty;
+    
     setResult(output);
     setHistory((prev) => [
   {
