@@ -37,7 +37,13 @@ export default function ConcreteCalculator() {
     volume: number;
   }[]
 >([]);
+useEffect(() => {
+  const savedHistory = localStorage.getItem("concrete-history");
 
+  if (savedHistory) {
+    setHistory(JSON.parse(savedHistory));
+  }
+}, []);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
   const [toastType, setToastType] = useState<"success" | "error">("success");
