@@ -5,6 +5,7 @@ type Props = {
   sand: number;
   aggregate: number;
   totalCost: number;
+  currency: string;
   onCopy: () => void;
   onShare: () => void;
   onDownload: () => void;
@@ -17,6 +18,7 @@ export default function ResultCard({
   sand,
   aggregate,
   totalCost,
+  currency,
   onCopy,
   onShare,
   onDownload,
