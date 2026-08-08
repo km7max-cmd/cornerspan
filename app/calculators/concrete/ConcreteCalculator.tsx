@@ -130,7 +130,18 @@ output.aggregate *= qty;
   ...prev.slice(0, 4),
 ]);
   };
-
+localStorage.setItem(
+  "concrete-history",
+  JSON.stringify([
+    {
+      length: l,
+      width: w,
+      depth: d,
+      volume: output.volume,
+    },
+    ...history.slice(0, 4),
+  ])
+);
   const handleCopy = async () => {
     const text = `Concrete Calculator Result
 
