@@ -188,17 +188,19 @@ Aggregate       : ${result.aggregate.toFixed(2)} m³`;
           <div className="mt-10 grid gap-8 lg:grid-cols-2">
 
             <CalculatorForm
-              length={length}
-              width={width}
-              depth={depth}
-              unit={unit}
-              error={error}
-              setLength={setLength}
-              setWidth={setWidth}
-              setDepth={setDepth}
-              setUnit={setUnit}
-              onCalculate={handleCalculate}
-            />
+  length={length}
+  width={width}
+  depth={depth}
+  quantity={quantity}
+  unit={unit}
+  error={error}
+  setLength={setLength}
+  setWidth={setWidth}
+  setDepth={setDepth}
+  setQuantity={setQuantity}
+  setUnit={setUnit}
+  onCalculate={handleCalculate}
+/>
 
             <ResultCard
               volume={result.volume}
