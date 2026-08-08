@@ -208,6 +208,12 @@ Aggregate       : ${result.aggregate.toFixed(2)} m³`;
 
   showNotification("PDF downloaded successfully!");
 };
+const handleClearHistory = () => {
+  setHistory([]);
+  localStorage.removeItem("concrete-history");
+  showNotification("History cleared successfully!");
+};
+    
     return (
     <>
       <main className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-slate-100">
@@ -261,7 +267,10 @@ Aggregate       : ${result.aggregate.toFixed(2)} m³`;
             <RelatedCalculators />
           </div>
 <div className="mt-12">
-  <History history={history} />
+  <History
+  history={history}
+  onClear={handleClearHistory}
+/>
 </div>
         </div>
       </main>
