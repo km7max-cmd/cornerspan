@@ -120,16 +120,22 @@ output.sand *= qty;
 output.aggregate *= qty;
     
     setResult(output);
-    setHistory((prev) => [
+    const newHistory = [
   {
     length: l,
     width: w,
     depth: d,
     volume: output.volume,
   },
-  ...prev.slice(0, 4),
-]);
-  };
+  ...history,
+].slice(0, 5);
+
+setHistory(newHistory);
+
+localStorage.setItem(
+  "concrete-history",
+  JSON.stringify(newHistory)
+);
 localStorage.setItem(
   "concrete-history",
   JSON.stringify([
