@@ -11,7 +11,14 @@ type CalculatorFormProps = {
   setQuantity: (value: string) => void;
   setUnit: (value: string) => void;
   onCalculate: () => void;
-};
+  
+};cementPrice: string;
+sandPrice: string;
+aggregatePrice: string;
+
+setCementPrice: (value: string) => void;
+setSandPrice: (value: string) => void;
+setAggregatePrice: (value: string) => void;
 
 export default function CalculatorForm({
   length,
