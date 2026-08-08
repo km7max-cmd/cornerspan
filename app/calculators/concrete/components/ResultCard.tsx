@@ -4,6 +4,7 @@ type Props = {
   bags: number;
   sand: number;
   aggregate: number;
+  totalCost: number;
   onCopy: () => void;
   onShare: () => void;
   onDownload: () => void;
@@ -15,6 +16,7 @@ export default function ResultCard({
   bags,
   sand,
   aggregate,
+  totalCost,
   onCopy,
   onShare,
   onDownload,
