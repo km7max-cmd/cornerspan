@@ -7,6 +7,8 @@ type CalculatorFormProps = {
   cementPrice: string;
   sandPrice: string;
   aggregatePrice: string;
+  currency: string;
+setCurrency: (value: string) => void;
 
   unit: string;
   error: string;
@@ -33,7 +35,8 @@ export default function CalculatorForm({
   cementPrice,
 sandPrice,
 aggregatePrice,
-  
+  currency,
+setCurrency,
 setCementPrice,
 setSandPrice,
 setAggregatePrice,
