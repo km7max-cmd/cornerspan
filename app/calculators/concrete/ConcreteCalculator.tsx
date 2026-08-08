@@ -269,7 +269,10 @@ setCurrency={setCurrency}
               bags={result.cementBags}
               sand={result.sand}
               aggregate={result.aggregate}
-              totalCost={result.totalCost}
+              totalCost={
+  result.totalCost *
+  exchangeRates[currency as keyof typeof exchangeRates]
+}
               currency={currency}
               onCopy={handleCopy}
               onShare={handleShare}
