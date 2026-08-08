@@ -141,11 +141,13 @@ output.aggregate *= qty;
   output.sand * Number(sandPrice) +
   output.aggregate * Number(aggregatePrice);
 
-output.totalCost = totalInUSD * exchangeRates[currency as keyof typeof exchangeRates];
+
     
     setResult({
   ...output,
-  totalCost,
+  totalCost:
+    totalInUSD *
+    exchangeRates[currency as keyof typeof exchangeRates],
 });
     const newHistory = [
   {
