@@ -23,6 +23,15 @@ export default function ResultCard({
   onShare,
   onDownload,
 }: Props) {
+  const currencySymbol = {
+  USD: "$",
+  INR: "₹",
+  EUR: "€",
+  GBP: "£",
+  AED: "AED ",
+  AUD: "A$",
+  CAD: "C$",
+}[currency] || "$";
   const hasResult = volume > 0;
 
   return (
@@ -141,9 +150,12 @@ export default function ResultCard({
   </p>
 
   <h3 className="mt-2 text-2xl font-bold text-green-700">
-    {totalCost.toFixed(2)}
-  </h3>
-</div>
+  {currencySymbol}
+  {totalCost.toLocaleString(undefined, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })}
+</h3>
           </div>
 
         </div>
