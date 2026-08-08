@@ -127,8 +127,15 @@ output.dryVolume *= qty;
 output.cementBags *= qty;
 output.sand *= qty;
 output.aggregate *= qty;
+    const totalCost =
+  output.cementBags * Number(cementPrice) +
+  output.sand * Number(sandPrice) +
+  output.aggregate * Number(aggregatePrice);
     
-    setResult(output);
+    setResult({
+  ...output,
+  totalCost,
+});
     const newHistory = [
   {
     length: l,
