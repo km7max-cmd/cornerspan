@@ -25,6 +25,13 @@ export default function CalculatorForm({
   width,
   depth,
   quantity,
+  cementPrice,
+sandPrice,
+aggregatePrice,
+  
+setCementPrice,
+setSandPrice,
+setAggregatePrice,
   unit,
   error,
   setLength,
