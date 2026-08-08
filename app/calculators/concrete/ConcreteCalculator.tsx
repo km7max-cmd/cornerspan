@@ -18,6 +18,12 @@ export default function ConcreteCalculator() {
   const [width, setWidth] = useState("");
   const [depth, setDepth] = useState("");
   const [quantity, setQuantity] = useState("1");
+
+const [cementPrice, setCementPrice] = useState("450");
+const [sandPrice, setSandPrice] = useState("1800");
+const [aggregatePrice, setAggregatePrice] = useState("1400");
+
+const [unit, setUnit] = useState("Meter");
   const [unit, setUnit] = useState("Meter");
 
   const [error, setError] = useState("");
