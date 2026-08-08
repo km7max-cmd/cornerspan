@@ -24,7 +24,7 @@ const [sandPrice, setSandPrice] = useState("1800");
 const [aggregatePrice, setAggregatePrice] = useState("1400");
 
 const [unit, setUnit] = useState("Meter");
-  const [unit, setUnit] = useState("Meter");
+  
 
   const [error, setError] = useState("");
 
