@@ -175,6 +175,25 @@ setAggregatePrice,
             <option value="Inch">Inch</option>
           </select>
         </div>
+        <div>
+  <label className="mb-2 block text-sm font-semibold">
+    Currency
+  </label>
+
+  <select
+    value={currency}
+    onChange={(e) => setCurrency(e.target.value)}
+    className="h-12 w-full rounded-xl border border-slate-300 px-4 outline-none focus:border-blue-600"
+  >
+    <option value="USD">🇺🇸 US Dollar ($)</option>
+    <option value="INR">🇮🇳 Indian Rupee (₹)</option>
+    <option value="EUR">🇪🇺 Euro (€)</option>
+    <option value="GBP">🇬🇧 British Pound (£)</option>
+    <option value="AED">🇦🇪 UAE Dirham (AED)</option>
+    <option value="AUD">🇦🇺 Australian Dollar (A$)</option>
+    <option value="CAD">🇨🇦 Canadian Dollar (C$)</option>
+  </select>
+</div>
 
         {error && (
           <div className="rounded-xl bg-red-50 p-3 text-sm font-medium text-red-600">
