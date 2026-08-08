@@ -145,9 +145,7 @@ output.aggregate *= qty;
     
     setResult({
   ...output,
-  totalCost:
-    totalInUSD *
-    exchangeRates[currency as keyof typeof exchangeRates],
+  totalCost: totalInUSD,
 });
     const newHistory = [
   {
