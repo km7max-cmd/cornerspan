@@ -238,6 +238,7 @@ const handleClearHistory = () => {
 cementPrice={cementPrice}
 sandPrice={sandPrice}
 aggregatePrice={aggregatePrice}
+  currency={currency}
   unit={unit}
   error={error}
   setLength={setLength}
@@ -246,7 +247,8 @@ aggregatePrice={aggregatePrice}
   setQuantity={setQuantity}
 setCementPrice={setCementPrice}
 setSandPrice={setSandPrice}
-setAggregatePrice={setAggregatePrice}     
+setAggregatePrice={setAggregatePrice}   
+setCurrency={setCurrency}
   setUnit={setUnit}
   onCalculate={handleCalculate}
 />
