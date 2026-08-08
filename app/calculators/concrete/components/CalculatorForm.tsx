@@ -3,21 +3,26 @@ type CalculatorFormProps = {
   width: string;
   depth: string;
   quantity: string;
+
+  cementPrice: string;
+  sandPrice: string;
+  aggregatePrice: string;
+
   unit: string;
   error: string;
+
   setLength: (value: string) => void;
   setWidth: (value: string) => void;
   setDepth: (value: string) => void;
   setQuantity: (value: string) => void;
-  setUnit: (value: string) => void;
-  onCalculate: () => void;
-  cementPrice: string;
-sandPrice: string;
-aggregatePrice: string;
 
-setCementPrice: (value: string) => void;
-setSandPrice: (value: string) => void;
-setAggregatePrice: (value: string) => void;
+  setCementPrice: (value: string) => void;
+  setSandPrice: (value: string) => void;
+  setAggregatePrice: (value: string) => void;
+
+  setUnit: (value: string) => void;
+
+  onCalculate: () => void;
 };
 
 export default function CalculatorForm({
