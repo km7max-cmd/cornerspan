@@ -2,11 +2,13 @@ type CalculatorFormProps = {
   length: string;
   width: string;
   depth: string;
+  quantity: string;
   unit: string;
   error: string;
   setLength: (value: string) => void;
   setWidth: (value: string) => void;
   setDepth: (value: string) => void;
+  setQuantity: (value: string) => void;
   setUnit: (value: string) => void;
   onCalculate: () => void;
 };
@@ -15,11 +17,13 @@ export default function CalculatorForm({
   length,
   width,
   depth,
+  quantity,
   unit,
   error,
   setLength,
   setWidth,
   setDepth,
+  setQuantity,
   setUnit,
   onCalculate,
 }: CalculatorFormProps) {
@@ -77,6 +81,21 @@ export default function CalculatorForm({
             className="h-12 w-full rounded-xl border border-slate-300 px-4 outline-none focus:border-blue-600"
           />
         </div>
+
+        <div>
+  <label className="mb-2 block text-sm font-semibold">
+    Quantity
+  </label>
+
+  <input
+    type="number"
+    min="1"
+    value={quantity}
+    onChange={(e) => setQuantity(e.target.value)}
+    placeholder="Enter quantity"
+    className="h-12 w-full rounded-xl border border-slate-300 px-4 outline-none focus:border-blue-600"
+  />
+</div>
 
         <div>
           <label className="mb-2 block text-sm font-semibold">
