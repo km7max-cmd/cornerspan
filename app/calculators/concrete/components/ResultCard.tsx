@@ -157,7 +157,7 @@ export default function ResultCard({
   })}
 </h3>
           </div>
-
+        </div>
         </div>
       )}
 
