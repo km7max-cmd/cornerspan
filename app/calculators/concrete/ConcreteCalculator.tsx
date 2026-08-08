@@ -148,6 +148,7 @@ localStorage.setItem(
     ...history.slice(0, 4),
   ])
 );
+    };
   const handleCopy = async () => {
     const text = `Concrete Calculator Result
 
