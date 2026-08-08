@@ -29,12 +29,13 @@ const [unit, setUnit] = useState("Meter");
   const [error, setError] = useState("");
 
   const [result, setResult] = useState({
-    volume: 0,
-    dryVolume: 0,
-    cementBags: 0,
-    sand: 0,
-    aggregate: 0,
-  });
+  volume: 0,
+  dryVolume: 0,
+  cementBags: 0,
+  sand: 0,
+  aggregate: 0,
+  totalCost: 0,
+});
   const [history, setHistory] = useState<
   {
     length: number;
@@ -83,12 +84,13 @@ useEffect(() => {
       setError("Please fill in all fields.");
 
       setResult({
-        volume: 0,
-        dryVolume: 0,
-        cementBags: 0,
-        sand: 0,
-        aggregate: 0,
-      });
+  volume: 0,
+  dryVolume: 0,
+  cementBags: 0,
+  sand: 0,
+  aggregate: 0,
+  totalCost: 0,
+});
 
       showNotification("Please fill in all fields.", "error");
       return;
@@ -98,12 +100,13 @@ useEffect(() => {
       setError("Values must be greater than zero.");
 
       setResult({
-        volume: 0,
-        dryVolume: 0,
-        cementBags: 0,
-        sand: 0,
-        aggregate: 0,
-      });
+  volume: 0,
+  dryVolume: 0,
+  cementBags: 0,
+  sand: 0,
+  aggregate: 0,
+  totalCost: 0,
+});
 
       showNotification("Values must be greater than zero.", "error");
       return;
