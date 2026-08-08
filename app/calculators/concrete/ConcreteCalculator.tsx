@@ -260,6 +260,7 @@ setCurrency={setCurrency}
               sand={result.sand}
               aggregate={result.aggregate}
               totalCost={result.totalCost}
+              currency={currency}
               onCopy={handleCopy}
               onShare={handleShare}
               onDownload={handleDownloadPDF}
