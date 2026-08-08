@@ -132,7 +132,16 @@ export default function ResultCard({
                 {aggregate.toFixed(2)} m³
               </h3>
             </div>
+            
+<div className="rounded-2xl bg-green-50 p-4 col-span-2">
+  <p className="text-xs text-slate-500">
+    Total Material Cost
+  </p>
 
+  <h3 className="mt-2 text-2xl font-bold text-green-700">
+    {totalCost.toFixed(2)}
+  </h3>
+</div>
           </div>
 
         </div>
