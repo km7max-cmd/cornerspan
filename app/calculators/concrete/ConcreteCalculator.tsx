@@ -25,6 +25,7 @@ const [aggregatePrice, setAggregatePrice] = useState("1400");
 
 const [unit, setUnit] = useState("Meter");
   
+  const [currency, setCurrency] = useState("USD");
 
   const [error, setError] = useState("");
 
