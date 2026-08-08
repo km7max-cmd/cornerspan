@@ -112,6 +112,48 @@ setAggregatePrice,
 </div>
 
         <div>
+  <label className="mb-2 block text-sm font-semibold">
+    Cement Price / Bag
+  </label>
+
+  <input
+    type="number"
+    value={cementPrice}
+    onChange={(e) => setCementPrice(e.target.value)}
+    placeholder="450"
+    className="h-12 w-full rounded-xl border border-slate-300 px-4 outline-none focus:border-blue-600"
+  />
+</div>
+
+<div>
+  <label className="mb-2 block text-sm font-semibold">
+    Sand Price / m³
+  </label>
+
+  <input
+    type="number"
+    value={sandPrice}
+    onChange={(e) => setSandPrice(e.target.value)}
+    placeholder="1800"
+    className="h-12 w-full rounded-xl border border-slate-300 px-4 outline-none focus:border-blue-600"
+  />
+</div>
+
+<div>
+  <label className="mb-2 block text-sm font-semibold">
+    Aggregate Price / m³
+  </label>
+
+  <input
+    type="number"
+    value={aggregatePrice}
+    onChange={(e) => setAggregatePrice(e.target.value)}
+    placeholder="1400"
+    className="h-12 w-full rounded-xl border border-slate-300 px-4 outline-none focus:border-blue-600"
+  />
+</div>
+
+        <div>
           <label className="mb-2 block text-sm font-semibold">
             Unit
           </label>
