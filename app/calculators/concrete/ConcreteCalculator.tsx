@@ -17,6 +17,7 @@ export default function ConcreteCalculator() {
   const [length, setLength] = useState("");
   const [width, setWidth] = useState("");
   const [depth, setDepth] = useState("");
+  const [quantity, setQuantity] = useState("1");
   const [unit, setUnit] = useState("Meter");
 
   const [error, setError] = useState("");
@@ -64,6 +65,7 @@ export default function ConcreteCalculator() {
     const l = Number(length);
     const w = Number(width);
     const d = Number(depth);
+    const q = Number(quantity);
 
     if (!length || !width || !depth) {
       setError("Please fill in all fields.");
