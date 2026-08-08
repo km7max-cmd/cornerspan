@@ -74,7 +74,15 @@ useEffect(() => {
     setToastType(type);
     setShowToast(true);
   };
-
+  const exchangeRates = {
+  USD: 1,
+  INR: 87,
+  EUR: 0.86,
+  GBP: 0.74,
+  AED: 3.67,
+  AUD: 1.53,
+  CAD: 1.38,
+};
   const handleCalculate = () => {
     const l = Number(length);
     const w = Number(width);
@@ -128,10 +136,12 @@ output.dryVolume *= qty;
 output.cementBags *= qty;
 output.sand *= qty;
 output.aggregate *= qty;
-    const totalCost =
+    const totalInUSD =
   output.cementBags * Number(cementPrice) +
   output.sand * Number(sandPrice) +
   output.aggregate * Number(aggregatePrice);
+
+output.totalCost = totalInUSD * exchangeRates[currency as keyof typeof exchangeRates];
     
     setResult({
   ...output,
