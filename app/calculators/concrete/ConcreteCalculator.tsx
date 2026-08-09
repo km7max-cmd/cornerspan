@@ -122,7 +122,45 @@ useEffect(() => {
     }
 
     setError("");
+ if (q <= 0) {
+  setError("Quantity must be greater than 0.");
 
+  setResult({
+    volume: 0,
+    dryVolume: 0,
+    cementBags: 0,
+    sand: 0,
+    aggregate: 0,
+    totalCost: 0,
+  });
+
+  showNotification("Quantity must be greater than 0.", "error");
+  return;
+}
+
+const cement = Number(cementPrice);
+const sandRate = Number(sandPrice);
+const aggregateRate = Number(aggregatePrice);
+
+if (
+  cement < 0 ||
+  sandRate < 0 ||
+  aggregateRate < 0
+) {
+  setError("Material prices cannot be negative.");
+
+  setResult({
+    volume: 0,
+    dryVolume: 0,
+    cementBags: 0,
+    sand: 0,
+    aggregate: 0,
+    totalCost: 0,
+  });
+
+  showNotification("Material prices cannot be negative.", "error");
+  return;
+}
     const output = calculateConcrete(
       l,
       w,
