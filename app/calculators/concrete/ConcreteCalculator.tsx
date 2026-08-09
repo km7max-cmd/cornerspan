@@ -143,6 +143,9 @@ const sandRate = Number(sandPrice);
 const aggregateRate = Number(aggregatePrice);
 
 if (
+  !Number.isFinite(cement) ||
+  !Number.isFinite(sandRate) ||
+  !Number.isFinite(aggregateRate) ||
   cement <= 0 ||
   sandRate <= 0 ||
   aggregateRate <= 0
