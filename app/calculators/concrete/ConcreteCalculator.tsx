@@ -143,9 +143,9 @@ const sandRate = Number(sandPrice);
 const aggregateRate = Number(aggregatePrice);
 
 if (
-  cement < 0 ||
-  sandRate < 0 ||
-  aggregateRate < 0
+  cement <= 0 ||
+  sandRate <= 0 ||
+  aggregateRate <= 0
 ) {
   setError("Material prices cannot be negative.");
 
