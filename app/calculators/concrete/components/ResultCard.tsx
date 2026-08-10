@@ -1,3 +1,4 @@
+import { formatCurrency } from "../../../utils/formatters";
 type Props = {
   volume: number;
   dryVolume: number;
