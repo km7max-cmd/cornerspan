@@ -11,6 +11,7 @@ import RelatedCalculators from "./components/RelatedCalculators";
 import Example from "./components/Example";
 import History from "./components/History";
 import { calculateConcrete } from "./utils/calculateConcrete";
+import AboutCalculator from "./components/AboutCalculator";
 import {
   exchangeRates,
   getCurrencySymbol,
@@ -331,6 +332,7 @@ setCurrency={setCurrency}
 <Example />
 
 <FAQ />
+          <AboutCalculator />
 
 <RelatedCalculators />
 
