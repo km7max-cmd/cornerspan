@@ -29,38 +29,44 @@ export default function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <section className="mt-10 overflow-hidden rounded-3xl bg-white shadow-xl">
+    <section className="mt-4 w-full overflow-hidden rounded-3xl bg-white shadow-lg">
 
-      <div className="border-b p-6">
-        <h2 className="text-3xl font-black text-slate-900">
-          ❓ Frequently Asked Questions
+      {/* Header */}
+      <div className="border-b border-slate-100 px-5 py-4 sm:px-6">
+        <h2 className="text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">
+          Frequently Asked Questions
         </h2>
       </div>
 
+      {/* FAQ Items */}
       {faqs.map((faq, index) => (
-        <div key={index} className="border-b last:border-b-0">
-
+        <div
+          key={index}
+          className="border-b border-slate-100 last:border-b-0"
+        >
           <button
+            type="button"
             onClick={() =>
               setOpenIndex(openIndex === index ? null : index)
             }
-            className="flex w-full items-center justify-between p-6 text-left"
+            className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left sm:px-6"
           >
-            <span className="font-semibold text-slate-900">
+            <span className="text-sm font-semibold leading-6 text-slate-900 sm:text-base">
               {faq.question}
             </span>
 
-            <span className="text-xl">
+            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-slate-100 text-lg font-semibold text-slate-700">
               {openIndex === index ? "−" : "+"}
             </span>
           </button>
 
           {openIndex === index && (
-            <div className="px-6 pb-6 text-slate-600">
-              {faq.answer}
+            <div className="px-5 pb-4 sm:px-6">
+              <p className="text-sm leading-6 text-slate-600 sm:text-base">
+                {faq.answer}
+              </p>
             </div>
           )}
-
         </div>
       ))}
 
