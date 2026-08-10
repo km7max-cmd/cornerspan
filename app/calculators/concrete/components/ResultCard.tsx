@@ -1,4 +1,5 @@
 import { formatCurrency } from "../../../utils/formatters";
+
 type Props = {
   volume: number;
   dryVolume: number;
@@ -24,141 +25,152 @@ export default function ResultCard({
   onShare,
   onDownload,
 }: Props) {
-  const currencySymbol = {
-  USD: "$",
-  INR: "₹",
-  EUR: "€",
-  GBP: "£",
-  AED: "AED ",
-  AUD: "A$",
-  CAD: "C$",
-}[currency] || "$";
+  const currencySymbol =
+    {
+      USD: "$",
+      INR: "₹",
+      EUR: "€",
+      GBP: "£",
+      AED: "AED ",
+      AUD: "A$",
+      CAD: "C$",
+    }[currency] || "$";
+
   const hasResult = volume > 0;
 
   return (
-    <section className="rounded-3xl bg-white p-6 shadow-xl">
+    <section className="w-full rounded-3xl bg-white p-5 shadow-lg sm:p-7">
 
-      <div className="mb-6 flex items-center justify-between">
+      {/* Header */}
+      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 
-        <h2 className="text-2xl font-bold text-slate-900">
+        <h2 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
           Calculation Result
         </h2>
 
         {hasResult && (
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
 
             <button
+              type="button"
               onClick={onCopy}
-              className="rounded-xl bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700"
+              className="rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700 active:scale-[0.98]"
             >
-              📋 Copy
+              Copy
             </button>
 
             <button
+              type="button"
               onClick={onShare}
-              className="rounded-xl bg-green-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-green-700"
+              className="rounded-xl bg-green-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-green-700 active:scale-[0.98]"
             >
-              📤 Share
+              Share
             </button>
 
             <button
+              type="button"
               onClick={onDownload}
-              className="rounded-xl bg-red-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-700"
+              className="rounded-xl bg-red-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-red-700 active:scale-[0.98]"
             >
-              📄 PDF
+              PDF
             </button>
 
           </div>
         )}
-
       </div>
 
       {!hasResult ? (
-        <div className="rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50 p-10 text-center">
-
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-100 text-3xl">
-            📊
-          </div>
+        /* Empty State */
+        <div className="rounded-2xl border border-slate-200 bg-slate-50 px-5 py-10 text-center">
 
           <h3 className="text-lg font-semibold text-slate-800">
             No Results Yet
           </h3>
 
-          <p className="mt-2 text-sm leading-6 text-slate-500">
-            Enter Length, Width and Depth to calculate
-            concrete volume and material requirements.
+          <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-slate-500">
+            Enter Length, Width and Depth to calculate concrete volume
+            and material requirements.
           </p>
 
         </div>
       ) : (
         <div className="space-y-4">
 
-          <div className="rounded-2xl bg-blue-50 p-5">
-            <p className="text-sm text-slate-500">
+          {/* Concrete Volume */}
+          <div className="rounded-2xl bg-blue-50 p-5 sm:p-6">
+            <p className="text-sm font-medium text-slate-500">
               Concrete Volume
             </p>
 
-            <h3 className="mt-1 text-3xl font-black text-blue-600">
+            <h3 className="mt-1 text-3xl font-black text-blue-600 sm:text-4xl">
               {volume.toFixed(2)} m³
             </h3>
           </div>
 
+          {/* Main Results */}
           <div className="grid grid-cols-2 gap-4">
 
-            <div className="rounded-2xl bg-slate-50 p-4">
-              <p className="text-xs text-slate-500">
+            {/* Dry Volume */}
+            <div className="rounded-2xl bg-slate-50 p-4 sm:p-5">
+              <p className="text-sm text-slate-500">
                 Dry Volume
               </p>
 
-              <h3 className="mt-2 text-xl font-bold text-slate-900">
+              <h3 className="mt-2 text-xl font-bold text-slate-900 sm:text-2xl">
                 {dryVolume.toFixed(2)} m³
               </h3>
             </div>
 
-            <div className="rounded-2xl bg-slate-50 p-4">
-              <p className="text-xs text-slate-500">
+            {/* Cement */}
+            <div className="rounded-2xl bg-slate-50 p-4 sm:p-5">
+              <p className="text-sm text-slate-500">
                 Cement Bags
               </p>
 
-              <h3 className="mt-2 text-xl font-bold text-slate-900">
+              <h3 className="mt-2 text-xl font-bold text-slate-900 sm:text-2xl">
                 {bags} Bags
               </h3>
             </div>
 
-            <div className="rounded-2xl bg-slate-50 p-4">
-              <p className="text-xs text-slate-500">
+            {/* Sand */}
+            <div className="rounded-2xl bg-slate-50 p-4 sm:p-5">
+              <p className="text-sm text-slate-500">
                 Sand
               </p>
 
-              <h3 className="mt-2 text-xl font-bold text-slate-900">
+              <h3 className="mt-2 text-xl font-bold text-slate-900 sm:text-2xl">
                 {sand.toFixed(2)} m³
               </h3>
             </div>
 
-            <div className="rounded-2xl bg-slate-50 p-4">
-              <p className="text-xs text-slate-500">
+            {/* Aggregate */}
+            <div className="rounded-2xl bg-slate-50 p-4 sm:p-5">
+              <p className="text-sm text-slate-500">
                 Aggregate
               </p>
 
-              <h3 className="mt-2 text-xl font-bold text-slate-900">
+              <h3 className="mt-2 text-xl font-bold text-slate-900 sm:text-2xl">
                 {aggregate.toFixed(2)} m³
               </h3>
             </div>
-            
-<div className="rounded-2xl bg-green-50 p-4 col-span-2">
-  <p className="text-xs text-slate-500">
-    Total Material Cost
-  </p>
 
-  <h3 className="mt-2 text-2xl font-bold text-green-700">
-  {currencySymbol}
-  {totalCost.toLocaleString(undefined, {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  })}
-</h3>
           </div>
-        </div>
+
+          {/* Total Cost */}
+          <div className="rounded-2xl bg-green-50 p-5 sm:p-6">
+            <p className="text-sm font-medium text-slate-500">
+              Total Material Cost
+            </p>
+
+            <h3 className="mt-1 text-2xl font-black text-green-700 sm:text-3xl">
+              {currencySymbol}
+              {totalCost.toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}
+            </h3>
+          </div>
+
         </div>
       )}
 
