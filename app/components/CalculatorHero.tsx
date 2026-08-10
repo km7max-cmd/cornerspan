@@ -11,7 +11,7 @@ export default function CalculatorHero({
 }: Props) {
   return (
     <section className="w-full bg-transparent">
-      <div className="mx-auto w-full px-5 pt-5 pb-1 text-center sm:px-6 sm:pt-7 sm:pb-2">
+      <div className="mx-auto w-full px-5 pt-4 pb-0 text-center sm:px-6 sm:pt-5 sm:pb-0">
 
         <h1 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl md:text-5xl">
           {title}{" "}
