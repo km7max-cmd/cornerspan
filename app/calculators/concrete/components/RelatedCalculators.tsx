@@ -43,18 +43,18 @@ export default function RelatedCalculators() {
 
         {calculators.map((item) => (
           <Link
-            key={item.href}
-            href={item.href}
-            className="flex min-h-14 items-center justify-between py-3 text-slate-900 transition hover:text-blue-600"
-          >
-            <span className="text-sm font-medium sm:text-base">
-              {item.title}
-            </span>
+  key={item.href}
+  href={item.href}
+  className="flex min-h-14 items-center justify-between py-3 text-blue-600 transition hover:text-blue-800"
+>
+  <span className="text-sm font-medium sm:text-base">
+    {item.title}
+  </span>
 
-            <span className="text-lg text-slate-400">
-              →
-            </span>
-          </Link>
+  <span className="text-lg">
+    →
+  </span>
+</Link>
         ))}
 
       </div>
