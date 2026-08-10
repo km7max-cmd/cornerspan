@@ -35,11 +35,11 @@ export default function RelatedCalculators() {
         Related Calculators
       </h2>
 
-      <p className="mt-1 text-sm leading-6 text-slate-600 sm:text-base">
+      <p className="mt-1 text-sm text-slate-600 sm:text-base">
         Explore more construction calculators.
       </p>
 
-      <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-4 grid grid-cols-2 gap-3">
 
         {calculators.map((item) => (
           <Link
@@ -47,12 +47,12 @@ export default function RelatedCalculators() {
             href={item.href}
             className="group rounded-2xl border border-slate-200 bg-slate-50 p-4 transition hover:border-blue-400 hover:bg-blue-50"
           >
-            <h3 className="font-semibold text-slate-900 group-hover:text-blue-700">
+            <h3 className="text-sm font-semibold leading-5 text-slate-900 group-hover:text-blue-700 sm:text-base">
               {item.title}
             </h3>
 
-            <p className="mt-1 text-sm text-slate-500 group-hover:text-blue-600">
-              Open Calculator →
+            <p className="mt-1 text-xs text-slate-500 group-hover:text-blue-600 sm:text-sm">
+              Open →
             </p>
           </Link>
         ))}
