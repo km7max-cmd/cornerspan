@@ -326,7 +326,8 @@ setCurrency={setCurrency}
             />
 
           </div>
-
+          
+ <RelatedCalculators />
           <Formula />
 
 <Example />
