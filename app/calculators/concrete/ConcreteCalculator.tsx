@@ -280,8 +280,7 @@ const handleClearHistory = () => {
           <CalculatorHero
   title="Concrete"
   highlight="Calculator"
-  description="Calculate concrete volume, cement bags, sand, aggregate and material cost quickly and accurately. Free, fast and easy to use."
-  category="Construction Calculator"
+  description="Calculate concrete volume, cement bags, sand, aggregate, and material cost accurately."
 />
 
           <div className="mt-10 grid gap-8 lg:grid-cols-2">
