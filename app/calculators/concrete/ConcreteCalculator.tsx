@@ -283,7 +283,7 @@ const handleClearHistory = () => {
   description="Calculate concrete volume, cement bags, sand, aggregate, and material cost accurately."
 />
 
-          <div className="mt-10 grid gap-8 lg:grid-cols-2">
+          <div className="mt-6 grid gap-6 lg:grid-cols-2">
 
             <CalculatorForm
   length={length}
@@ -326,27 +326,18 @@ setCurrency={setCurrency}
 
           </div>
 
-          <div className="mt-12">
-            <Formula />
-          </div>
+          <Formula />
 
-          <div className="mt-12">
-            <Example />
-          </div>
+<Example />
 
-          <div className="mt-12">
-            <FAQ />
-          </div>
+<FAQ />
 
-          <div className="mt-12">
-            <RelatedCalculators />
-          </div>
-<div className="mt-12">
-  <History
+<RelatedCalculators />
+
+<History
   history={history}
   onClear={handleClearHistory}
 />
-</div>
         </div>
       </main>
 
