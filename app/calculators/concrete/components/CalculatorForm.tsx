@@ -7,6 +7,7 @@ type CalculatorFormProps = {
   cementPrice: string;
   sandPrice: string;
   aggregatePrice: string;
+
   currency: string;
   setCurrency: (value: string) => void;
 
@@ -65,11 +66,12 @@ export default function CalculatorForm({
         Concrete Dimensions
       </h2>
 
+      {/* Dimensions */}
       <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+
         {/* Length */}
         <div>
           <label className={labelClass}>Length</label>
-
           <input
             type="number"
             min="0"
@@ -84,7 +86,6 @@ export default function CalculatorForm({
         {/* Width */}
         <div>
           <label className={labelClass}>Width</label>
-
           <input
             type="number"
             min="0"
@@ -99,7 +100,6 @@ export default function CalculatorForm({
         {/* Depth */}
         <div>
           <label className={labelClass}>Depth</label>
-
           <input
             type="number"
             min="0"
@@ -114,7 +114,6 @@ export default function CalculatorForm({
         {/* Quantity */}
         <div>
           <label className={labelClass}>Quantity</label>
-
           <input
             type="number"
             min="1"
@@ -124,6 +123,11 @@ export default function CalculatorForm({
             className={inputClass}
           />
         </div>
+
+      </div>
+
+      {/* Unit + Currency */}
+      <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2">
 
         {/* Unit */}
         <div>
@@ -140,69 +144,6 @@ export default function CalculatorForm({
             <option value="Millimeter">Millimeters (mm)</option>
             <option value="Inch">Inches (in)</option>
           </select>
-        </div>
-
-        {/* Material Prices */}
-        <div className="border-t border-slate-100 pt-5">
-
-          <h3 className="mb-4 text-lg font-semibold text-slate-900">
-            Material Prices
-          </h3>
-
-          <div className="space-y-5">
-
-            {/* Cement */}
-            <div>
-              <label className={labelClass}>
-                Cement Price / Bag
-              </label>
-
-              <input
-                type="number"
-                min="0"
-                step="any"
-                value={cementPrice}
-                onChange={(e) => setCementPrice(e.target.value)}
-                placeholder="450"
-                className={inputClass}
-              />
-            </div>
-
-            {/* Sand */}
-            <div>
-              <label className={labelClass}>
-                Sand Price / m³
-              </label>
-
-              <input
-                type="number"
-                min="0"
-                step="any"
-                value={sandPrice}
-                onChange={(e) => setSandPrice(e.target.value)}
-                placeholder="1800"
-                className={inputClass}
-              />
-            </div>
-
-            {/* Aggregate */}
-            <div>
-              <label className={labelClass}>
-                Aggregate Price / m³
-              </label>
-
-              <input
-                type="number"
-                min="0"
-                step="any"
-                value={aggregatePrice}
-                onChange={(e) => setAggregatePrice(e.target.value)}
-                placeholder="1400"
-                className={inputClass}
-              />
-            </div>
-
-          </div>
         </div>
 
         {/* Currency */}
@@ -224,23 +165,87 @@ export default function CalculatorForm({
           </select>
         </div>
 
-        {/* Error */}
-        {error && (
-          <div className="rounded-xl border border-red-100 bg-red-50 p-3 text-sm font-medium text-red-600">
-            {error}
-          </div>
-        )}
-
-        {/* Calculate */}
-        <button
-          type="button"
-          onClick={onCalculate}
-          className="h-14 w-full rounded-xl bg-blue-600 text-base font-semibold text-white shadow-md transition hover:bg-blue-700 active:scale-[0.99]"
-        >
-          Calculate
-        </button>
-
       </div>
+
+      {/* Material Prices */}
+      <div className="mt-6 border-t border-slate-100 pt-6">
+
+        <h3 className="mb-4 text-lg font-semibold text-slate-900">
+          Material Prices
+        </h3>
+
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
+
+          {/* Cement */}
+          <div>
+            <label className={labelClass}>
+              Cement Price / Bag
+            </label>
+
+            <input
+              type="number"
+              min="0"
+              step="any"
+              value={cementPrice}
+              onChange={(e) => setCementPrice(e.target.value)}
+              placeholder="450"
+              className={inputClass}
+            />
+          </div>
+
+          {/* Sand */}
+          <div>
+            <label className={labelClass}>
+              Sand Price / m³
+            </label>
+
+            <input
+              type="number"
+              min="0"
+              step="any"
+              value={sandPrice}
+              onChange={(e) => setSandPrice(e.target.value)}
+              placeholder="1800"
+              className={inputClass}
+            />
+          </div>
+
+          {/* Aggregate */}
+          <div>
+            <label className={labelClass}>
+              Aggregate Price / m³
+            </label>
+
+            <input
+              type="number"
+              min="0"
+              step="any"
+              value={aggregatePrice}
+              onChange={(e) => setAggregatePrice(e.target.value)}
+              placeholder="1400"
+              className={inputClass}
+            />
+          </div>
+
+        </div>
+      </div>
+
+      {/* Error */}
+      {error && (
+        <div className="mt-5 rounded-xl border border-red-100 bg-red-50 p-3 text-sm font-medium text-red-600">
+          {error}
+        </div>
+      )}
+
+      {/* Calculate */}
+      <button
+        type="button"
+        onClick={onCalculate}
+        className="mt-6 h-14 w-full rounded-xl bg-blue-600 text-base font-semibold text-white shadow-md transition hover:bg-blue-700 active:scale-[0.99]"
+      >
+        Calculate
+      </button>
+
     </section>
   );
 }
