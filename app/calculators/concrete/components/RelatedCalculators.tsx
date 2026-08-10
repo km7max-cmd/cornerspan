@@ -39,21 +39,21 @@ export default function RelatedCalculators() {
         Explore more construction calculators.
       </p>
 
-      <div className="mt-4 grid grid-cols-2 gap-3">
+      <div className="mt-4 divide-y divide-slate-200 border-y border-slate-200">
 
         {calculators.map((item) => (
           <Link
             key={item.href}
             href={item.href}
-            className="group rounded-2xl border border-slate-200 bg-slate-50 p-4 transition hover:border-blue-400 hover:bg-blue-50"
+            className="flex min-h-14 items-center justify-between py-3 text-slate-900 transition hover:text-blue-600"
           >
-            <h3 className="text-sm font-semibold leading-5 text-slate-900 group-hover:text-blue-700 sm:text-base">
+            <span className="text-sm font-medium sm:text-base">
               {item.title}
-            </h3>
+            </span>
 
-            <p className="mt-1 text-xs text-slate-500 group-hover:text-blue-600 sm:text-sm">
-              Open →
-            </p>
+            <span className="text-lg text-slate-400">
+              →
+            </span>
           </Link>
         ))}
 
