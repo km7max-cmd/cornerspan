@@ -11,6 +11,14 @@ import RelatedCalculators from "./components/RelatedCalculators";
 import Example from "./components/Example";
 import History from "./components/History";
 import { calculateConcrete } from "./utils/calculateConcrete";
+import {
+  exchangeRates,
+  getCurrencySymbol,
+} from "../../utils/currency";
+
+import {
+  formatCurrency,
+} from "../../utils/formatters";
 import { jsPDF } from "jspdf";
 import Toast from "../../components/Toast";
 export default function ConcreteCalculator() {
