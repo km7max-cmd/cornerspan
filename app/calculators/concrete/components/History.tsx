@@ -19,8 +19,7 @@ export default function History({
   return (
     <section className="mt-4 w-full rounded-3xl bg-white p-5 shadow-lg sm:p-6">
 
-      {/* Header */}
-      <div className="mb-4 flex items-center justify-between gap-4">
+      <div className="mb-3 flex items-center justify-between gap-4">
 
         <h2 className="text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">
           Recent Calculations
@@ -36,23 +35,19 @@ export default function History({
 
       </div>
 
-      {/* History List */}
-      <div className="space-y-3">
+      <div className="space-y-2">
 
         {history.map((item, index) => (
           <div
             key={index}
-            className="rounded-2xl border border-slate-200 bg-slate-50 p-4"
+            className="flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-4 py-3"
           >
-            <p className="font-semibold text-slate-900">
+            <p className="font-medium text-slate-900">
               {item.length} × {item.width} × {item.depth}
             </p>
 
-            <p className="mt-1 text-sm text-slate-500">
-              Volume:{" "}
-              <span className="font-medium text-slate-700">
-                {item.volume.toFixed(2)} m³
-              </span>
+            <p className="text-sm text-slate-500">
+              {item.volume.toFixed(2)} m³
             </p>
           </div>
         ))}
