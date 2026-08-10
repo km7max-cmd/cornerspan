@@ -6,52 +6,71 @@ export default function Formula() {
   const [open, setOpen] = useState(false);
 
   return (
-    <section className="mt-10 rounded-3xl bg-white shadow-xl overflow-hidden">
+    <section className="mt-6 w-full overflow-hidden rounded-3xl bg-white shadow-lg">
 
+      {/* Header */}
       <button
+        type="button"
         onClick={() => setOpen(!open)}
-        className="flex w-full items-center justify-between p-6 text-left"
+        className="flex w-full items-center justify-between px-5 py-4 text-left sm:px-6"
       >
-        <h2 className="text-2xl font-black text-slate-900">
-          📐 Formula
+        <h2 className="text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">
+          Formula
         </h2>
 
-        <span className="text-2xl font-bold">
+        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-xl font-semibold text-slate-700">
           {open ? "−" : "+"}
         </span>
       </button>
 
+      {/* Content */}
       {open && (
-        <div className="border-t p-6">
+        <div className="border-t border-slate-100 px-5 py-5 sm:px-6">
 
-          <p className="mb-6 text-slate-600">
-            The calculator uses standard civil engineering formulas.
+          <p className="mb-5 text-sm leading-6 text-slate-600 sm:text-base">
+            The calculator uses standard civil engineering formulas to
+            estimate concrete volume and material requirements.
           </p>
 
-          <div className="space-y-5">
+          <div className="space-y-3">
 
-            <div className="rounded-2xl border p-5">
-              <h3 className="font-bold">Concrete Volume</h3>
+            {/* Concrete Volume */}
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+              <h3 className="text-base font-semibold text-slate-900">
+                Concrete Volume
+              </h3>
 
-              <code className="mt-3 block rounded-xl bg-slate-100 p-4">
-                Volume = Length × Width × Depth
-              </code>
+              <div className="mt-2 overflow-x-auto rounded-xl bg-white px-4 py-3">
+                <code className="whitespace-nowrap text-sm font-medium text-blue-700">
+                  Volume = Length × Width × Depth
+                </code>
+              </div>
             </div>
 
-            <div className="rounded-2xl border p-5">
-              <h3 className="font-bold">Dry Volume</h3>
+            {/* Dry Volume */}
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+              <h3 className="text-base font-semibold text-slate-900">
+                Dry Volume
+              </h3>
 
-              <code className="mt-3 block rounded-xl bg-slate-100 p-4">
-                Dry Volume = Wet Volume × 1.54
-              </code>
+              <div className="mt-2 overflow-x-auto rounded-xl bg-white px-4 py-3">
+                <code className="whitespace-nowrap text-sm font-medium text-blue-700">
+                  Dry Volume = Wet Volume × 1.54
+                </code>
+              </div>
             </div>
 
-            <div className="rounded-2xl border p-5">
-              <h3 className="font-bold">Cement Bags</h3>
+            {/* Cement Bags */}
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+              <h3 className="text-base font-semibold text-slate-900">
+                Cement Bags
+              </h3>
 
-              <code className="mt-3 block rounded-xl bg-slate-100 p-4">
-                Cement Bags = Concrete Volume × 29
-              </code>
+              <div className="mt-2 overflow-x-auto rounded-xl bg-white px-4 py-3">
+                <code className="whitespace-nowrap text-sm font-medium text-blue-700">
+                  Cement Bags = Concrete Volume × 29
+                </code>
+              </div>
             </div>
 
           </div>
