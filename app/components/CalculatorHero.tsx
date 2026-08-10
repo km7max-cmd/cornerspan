@@ -10,8 +10,8 @@ export default function CalculatorHero({
   description,
 }: Props) {
   return (
-    <section className="w-full bg-gradient-to-b from-blue-50 to-white">
-      <div className="mx-auto max-w-6xl px-5 py-10 text-center sm:px-6 sm:py-14">
+    <section className="w-full bg-transparent">
+      <div className="mx-auto w-full px-5 py-10 text-center sm:px-6 sm:py-14">
 
         <h1 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl md:text-5xl">
           {title}{" "}
