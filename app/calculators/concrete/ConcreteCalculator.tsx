@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-import Hero from "./components/Hero";
+import CalculatorHero from "../../components/CalculatorHero";
 import CalculatorForm from "./components/CalculatorForm";
 import ResultCard from "./components/ResultCard";
 import Formula from "./components/Formula";
