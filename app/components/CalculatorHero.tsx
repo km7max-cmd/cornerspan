@@ -18,7 +18,7 @@ export default function CalculatorHero({
           <span className="text-blue-600">{highlight}</span>
         </h1>
 
-        <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-slate-600 sm:text-lg">
+        <p className="mx-auto mt-2 max-w-2xl text-base leading-7 text-slate-600 sm:text-lg">
           {description}
         </p>
 
