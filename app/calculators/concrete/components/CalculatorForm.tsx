@@ -51,23 +51,23 @@ export default function CalculatorForm({
   onCalculate,
 }: CalculatorFormProps) {
   const inputClass =
-    "h-14 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 text-base text-slate-900 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100";
+    "h-12 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 text-base text-slate-900 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100";
 
   const selectClass =
-    "h-14 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 text-base text-slate-900 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100";
+    "h-12 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 text-base text-slate-900 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100";
 
   const labelClass =
-    "mb-2 block text-sm font-semibold text-slate-800";
+    "mb-1 block text-sm font-semibold text-slate-800";
 
   return (
     <section className="w-full rounded-3xl bg-white p-5 shadow-lg sm:p-7">
 
-      <h2 className="mb-6 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+      <h2 className="mb-4 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
         Concrete Dimensions
       </h2>
 
       {/* Dimensions */}
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
 
         {/* Length */}
         <div>
@@ -127,7 +127,7 @@ export default function CalculatorForm({
       </div>
 
       {/* Unit + Currency */}
-      <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2">
+      <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
 
         {/* Unit */}
         <div>
@@ -168,13 +168,13 @@ export default function CalculatorForm({
       </div>
 
       {/* Material Prices */}
-      <div className="mt-6 border-t border-slate-100 pt-6">
+      <div className="mt-4 border-t border-slate-100 pt-4">
 
-        <h3 className="mb-4 text-lg font-semibold text-slate-900">
+        <h3 className="mb-3 text-lg font-semibold text-slate-900">
           Material Prices
         </h3>
 
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
 
           {/* Cement */}
           <div>
@@ -232,7 +232,7 @@ export default function CalculatorForm({
 
       {/* Error */}
       {error && (
-        <div className="mt-5 rounded-xl border border-red-100 bg-red-50 p-3 text-sm font-medium text-red-600">
+        <div className="mt-3 rounded-xl border border-red-100 bg-red-50 p-3 text-sm font-medium text-red-600">
           {error}
         </div>
       )}
@@ -241,7 +241,7 @@ export default function CalculatorForm({
       <button
         type="button"
         onClick={onCalculate}
-        className="mt-6 h-14 w-full rounded-xl bg-blue-600 text-base font-semibold text-white shadow-md transition hover:bg-blue-700 active:scale-[0.99]"
+        className="mt-4 h-12 w-full rounded-xl bg-blue-600 text-base font-semibold text-white shadow-md transition hover:bg-blue-700 active:scale-[0.99]"
       >
         Calculate
       </button>
