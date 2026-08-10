@@ -8,7 +8,7 @@ type CalculatorFormProps = {
   sandPrice: string;
   aggregatePrice: string;
   currency: string;
-setCurrency: (value: string) => void;
+  setCurrency: (value: string) => void;
 
   unit: string;
   error: string;
@@ -33,13 +33,13 @@ export default function CalculatorForm({
   depth,
   quantity,
   cementPrice,
-sandPrice,
-aggregatePrice,
+  sandPrice,
+  aggregatePrice,
   currency,
-setCurrency,
-setCementPrice,
-setSandPrice,
-setAggregatePrice,
+  setCurrency,
+  setCementPrice,
+  setSandPrice,
+  setAggregatePrice,
   unit,
   error,
   setLength,
@@ -49,49 +49,57 @@ setAggregatePrice,
   setUnit,
   onCalculate,
 }: CalculatorFormProps) {
-  return (
-    <section className="rounded-3xl bg-white p-6 shadow-xl">
+  const inputClass =
+    "h-14 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 text-base text-slate-900 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100";
 
-      <h2 className="mb-6 text-2xl font-bold text-slate-900">
+  const selectClass =
+    "h-14 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 text-base text-slate-900 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100";
+
+  const labelClass =
+    "mb-2 block text-sm font-semibold text-slate-800";
+
+  return (
+    <section className="w-full rounded-3xl bg-white p-5 shadow-lg sm:p-7">
+
+      <h2 className="mb-6 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
         Concrete Dimensions
       </h2>
 
       <div className="space-y-5">
 
+        {/* Length */}
         <div>
-          <label className="mb-2 block text-sm font-semibold">
-            Length
-          </label>
+          <label className={labelClass}>Length</label>
 
           <input
             type="number"
             min="0"
+            step="any"
             value={length}
             onChange={(e) => setLength(e.target.value)}
             placeholder="Enter length"
-            className="h-12 w-full rounded-xl border border-slate-300 px-4 outline-none focus:border-blue-600"
+            className={inputClass}
           />
         </div>
 
+        {/* Width */}
         <div>
-          <label className="mb-2 block text-sm font-semibold">
-            Width
-          </label>
+          <label className={labelClass}>Width</label>
 
           <input
             type="number"
             min="0"
+            step="any"
             value={width}
             onChange={(e) => setWidth(e.target.value)}
             placeholder="Enter width"
-            className="h-12 w-full rounded-xl border border-slate-300 px-4 outline-none focus:border-blue-600"
+            className={inputClass}
           />
         </div>
 
+        {/* Depth */}
         <div>
-          <label className="mb-2 block text-sm font-semibold">
-            Depth
-          </label>
+          <label className={labelClass}>Depth</label>
 
           <input
             type="number"
@@ -100,120 +108,140 @@ setAggregatePrice,
             value={depth}
             onChange={(e) => setDepth(e.target.value)}
             placeholder="Enter depth"
-            className="h-12 w-full rounded-xl border border-slate-300 px-4 outline-none focus:border-blue-600"
+            className={inputClass}
           />
         </div>
 
+        {/* Quantity */}
         <div>
-  <label className="mb-2 block text-sm font-semibold">
-    Quantity
-  </label>
+          <label className={labelClass}>Quantity</label>
 
-  <input
-    type="number"
-    min="1"
-    value={quantity}
-    onChange={(e) => setQuantity(e.target.value)}
-    placeholder="Enter quantity"
-    className="h-12 w-full rounded-xl border border-slate-300 px-4 outline-none focus:border-blue-600"
-  />
-</div>
+          <input
+            type="number"
+            min="1"
+            value={quantity}
+            onChange={(e) => setQuantity(e.target.value)}
+            placeholder="1"
+            className={inputClass}
+          />
+        </div>
 
+        {/* Unit */}
         <div>
-  <label className="mb-2 block text-sm font-semibold">
-    Cement Price / Bag
-  </label>
-
-  <input
-    type="number"
-    value={cementPrice}
-    onChange={(e) => setCementPrice(e.target.value)}
-    placeholder="450"
-    className="h-12 w-full rounded-xl border border-slate-300 px-4 outline-none focus:border-blue-600"
-  />
-</div>
-
-<div>
-  <label className="mb-2 block text-sm font-semibold">
-    Sand Price / m³
-  </label>
-
-  <input
-    type="number"
-    value={sandPrice}
-    onChange={(e) => setSandPrice(e.target.value)}
-    placeholder="1800"
-    className="h-12 w-full rounded-xl border border-slate-300 px-4 outline-none focus:border-blue-600"
-  />
-</div>
-
-<div>
-  <label className="mb-2 block text-sm font-semibold">
-    Aggregate Price / m³
-  </label>
-
-  <input
-    type="number"
-    value={aggregatePrice}
-    onChange={(e) => setAggregatePrice(e.target.value)}
-    placeholder="1400"
-    className="h-12 w-full rounded-xl border border-slate-300 px-4 outline-none focus:border-blue-600"
-  />
-</div>
-
-        <div>
-          <label className="mb-2 block text-sm font-semibold">
-            Unit
-          </label>
+          <label className={labelClass}>Unit</label>
 
           <select
             value={unit}
             onChange={(e) => setUnit(e.target.value)}
-            className="h-12 w-full rounded-xl border border-slate-300 px-4 outline-none focus:border-blue-600"
+            className={selectClass}
           >
-            <option value="Meter">Meter</option>
-            <option value="Feet">Feet</option>
-            <option value="Centimeter">Centimeter</option>
-            <option value="Millimeter">Millimeter</option>
-            <option value="Inch">Inch</option>
+            <option value="Meter">Meters (m)</option>
+            <option value="Feet">Feet (ft)</option>
+            <option value="Centimeter">Centimeters (cm)</option>
+            <option value="Millimeter">Millimeters (mm)</option>
+            <option value="Inch">Inches (in)</option>
           </select>
         </div>
+
+        {/* Material Prices */}
+        <div className="border-t border-slate-100 pt-5">
+
+          <h3 className="mb-4 text-lg font-semibold text-slate-900">
+            Material Prices
+          </h3>
+
+          <div className="space-y-5">
+
+            {/* Cement */}
+            <div>
+              <label className={labelClass}>
+                Cement Price / Bag
+              </label>
+
+              <input
+                type="number"
+                min="0"
+                step="any"
+                value={cementPrice}
+                onChange={(e) => setCementPrice(e.target.value)}
+                placeholder="450"
+                className={inputClass}
+              />
+            </div>
+
+            {/* Sand */}
+            <div>
+              <label className={labelClass}>
+                Sand Price / m³
+              </label>
+
+              <input
+                type="number"
+                min="0"
+                step="any"
+                value={sandPrice}
+                onChange={(e) => setSandPrice(e.target.value)}
+                placeholder="1800"
+                className={inputClass}
+              />
+            </div>
+
+            {/* Aggregate */}
+            <div>
+              <label className={labelClass}>
+                Aggregate Price / m³
+              </label>
+
+              <input
+                type="number"
+                min="0"
+                step="any"
+                value={aggregatePrice}
+                onChange={(e) => setAggregatePrice(e.target.value)}
+                placeholder="1400"
+                className={inputClass}
+              />
+            </div>
+
+          </div>
+        </div>
+
+        {/* Currency */}
         <div>
-  <label className="mb-2 block text-sm font-semibold">
-    Currency
-  </label>
+          <label className={labelClass}>Currency</label>
 
-  <select
-    value={currency}
-    onChange={(e) => setCurrency(e.target.value)}
-    className="h-12 w-full rounded-xl border border-slate-300 px-4 outline-none focus:border-blue-600"
-  >
-    <option value="USD">🇺🇸 US Dollar ($)</option>
-    <option value="INR">🇮🇳 Indian Rupee (₹)</option>
-    <option value="EUR">🇪🇺 Euro (€)</option>
-    <option value="GBP">🇬🇧 British Pound (£)</option>
-    <option value="AED">🇦🇪 UAE Dirham (AED)</option>
-    <option value="AUD">🇦🇺 Australian Dollar (A$)</option>
-    <option value="CAD">🇨🇦 Canadian Dollar (C$)</option>
-  </select>
-</div>
+          <select
+            value={currency}
+            onChange={(e) => setCurrency(e.target.value)}
+            className={selectClass}
+          >
+            <option value="USD">🇺🇸 US Dollar ($)</option>
+            <option value="INR">🇮🇳 Indian Rupee (₹)</option>
+            <option value="EUR">🇪🇺 Euro (€)</option>
+            <option value="GBP">🇬🇧 British Pound (£)</option>
+            <option value="AED">🇦🇪 UAE Dirham (AED)</option>
+            <option value="AUD">🇦🇺 Australian Dollar (A$)</option>
+            <option value="CAD">🇨🇦 Canadian Dollar (C$)</option>
+          </select>
+        </div>
 
+        {/* Error */}
         {error && (
-          <div className="rounded-xl bg-red-50 p-3 text-sm font-medium text-red-600">
+          <div className="rounded-xl border border-red-100 bg-red-50 p-3 text-sm font-medium text-red-600">
             {error}
           </div>
         )}
 
+        {/* Calculate */}
         <button
           type="button"
           onClick={onCalculate}
-          className="h-12 w-full rounded-xl bg-blue-600 font-semibold text-white transition hover:bg-blue-700"
+          className="h-14 w-full rounded-xl bg-blue-600 text-base font-semibold text-white shadow-md transition hover:bg-blue-700 active:scale-[0.99]"
         >
           Calculate
         </button>
 
       </div>
-
     </section>
   );
 }
