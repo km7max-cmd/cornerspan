@@ -335,8 +335,6 @@ setCurrency={setCurrency}
 <FAQ />
           <AboutCalculator />
 
-<RelatedCalculators />
-
 <History
   history={history}
   onClear={handleClearHistory}
