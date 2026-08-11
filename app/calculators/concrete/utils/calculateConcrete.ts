@@ -7,9 +7,6 @@ export type Unit =
 
 function toMeters(value: number, unit: Unit): number {
   switch (unit) {
-    case "Meter":
-      return value;
-
     case "Feet":
       return value * 0.3048;
 
@@ -22,6 +19,7 @@ function toMeters(value: number, unit: Unit): number {
     case "Inch":
       return value * 0.0254;
 
+    case "Meter":
     default:
       return value;
   }
@@ -35,18 +33,14 @@ export function calculateConcrete(
   widthUnit: Unit,
   depthUnit: Unit
 ) {
-  // Convert each dimension separately to meters
   const l = toMeters(length, lengthUnit);
   const w = toMeters(width, widthUnit);
   const d = toMeters(depth, depthUnit);
 
-  // Wet concrete volume
   const volume = l * w * d;
 
-  // Dry volume
   const dryVolume = volume * 1.54;
 
-  // Material quantities
   const cementBags = Math.ceil(volume * 29);
 
   const sand = +(dryVolume * 0.42).toFixed(2);
@@ -54,8 +48,8 @@ export function calculateConcrete(
   const aggregate = +(dryVolume * 0.84).toFixed(2);
 
   return {
-    volume: +volume.toFixed(2),
-    dryVolume: +dryVolume.toFixed(2),
+    volume,
+    dryVolume,
     cementBags,
     sand,
     aggregate,
