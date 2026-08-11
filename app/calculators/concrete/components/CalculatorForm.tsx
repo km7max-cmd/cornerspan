@@ -13,6 +13,10 @@ type CalculatorFormProps = {
   sandPrice: string;
   aggregatePrice: string;
 
+  cementUnit: string;
+  sandUnit: string;
+  aggregateUnit: string;
+
   currency: string;
   setCurrency: (value: string) => void;
 
@@ -34,7 +38,9 @@ type CalculatorFormProps = {
   setCementPrice: (value: string) => void;
   setSandPrice: (value: string) => void;
   setAggregatePrice: (value: string) => void;
-
+  setCementUnit: (value: string) => void;
+  setSandUnit: (value: string) => void;
+  setAggregateUnit: (value: string) => void;
   onCalculate: () => void;
 };
 
@@ -74,6 +80,10 @@ export default function CalculatorForm({
   sandPrice,
   aggregatePrice,
 
+  cementUnit,
+  sandUnit,
+  aggregateUnit,
+
   currency,
   setCurrency,
 
@@ -96,19 +106,16 @@ export default function CalculatorForm({
   setSandPrice,
   setAggregatePrice,
 
+  setCementUnit,
+  setSandUnit,
+  setAggregateUnit,
+
   onCalculate,
 }: CalculatorFormProps) {
   const [concreteForm, setConcreteForm] =
     useState("Slab");
 
-  const [cementUnit, setCementUnit] =
-    useState("Bag");
-
-  const [sandUnit, setSandUnit] =
-    useState("m³");
-
-  const [aggregateUnit, setAggregateUnit] =
-    useState("m³");
+  
 
   const inputClass =
     "h-14 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-lg text-slate-900 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100";
