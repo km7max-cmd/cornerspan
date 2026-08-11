@@ -5,7 +5,16 @@ export type Unit =
   | "Millimeter"
   | "Inch";
 
-function convertToMeter(value: number, unit: Unit): number {
+export type MixRatio = {
+  cement: number;
+  sand: number;
+  aggregate: number;
+};
+
+function convertToMeter(
+  value: number,
+  unit: Unit
+): number {
   switch (unit) {
     case "Meter":
       return value;
@@ -33,52 +42,107 @@ export function calculateConcrete(
   depth: number,
   lengthUnit: Unit,
   widthUnit: Unit,
-  depthUnit: Unit
+  depthUnit: Unit,
+  mixRatio: MixRatio
 ) {
+  // --------------------------------------------------
   // Convert dimensions to meters
-  const l = convertToMeter(length, lengthUnit);
-  const w = convertToMeter(width, widthUnit);
-  const d = convertToMeter(depth, depthUnit);
-
-  // Wet concrete volume
-  const volume = l * w * d;
-
-  // Dry volume factor
-  const dryVolume = volume * 1.54;
-
-  // --------------------------------------------------
-  // Nominal mix: 1 : 2 : 4
-  // Cement : Sand : Aggregate
-  // Total parts = 7
   // --------------------------------------------------
 
-  const cementVolume = dryVolume * (1 / 7);
-  const sand = dryVolume * (2 / 7);
-  const aggregate = dryVolume * (4 / 7);
+  const l = convertToMeter(
+    length,
+    lengthUnit
+  );
 
-  // --------------------------------------------------
-  // Cement
-  // 1440 kg/m³ cement density
-  // 50 kg per bag
-  // --------------------------------------------------
+  const w = convertToMeter(
+    width,
+    widthUnit
+  );
 
-  const cementWeight = cementVolume * 1440;
-
-  const cementBags = Math.ceil(
-    cementWeight / 50
+  const d = convertToMeter(
+    depth,
+    depthUnit
   );
 
   // --------------------------------------------------
-  // Water
-  // Estimation only
+  // Wet concrete volume
+  // --------------------------------------------------
+
+  const volume = l * w * d;
+
+  // --------------------------------------------------
+  // Dry volume estimation factor
+  // --------------------------------------------------
+
+  const dryVolume = volume * 1.54;
+
+  // --------------------------------------------------
+  // Mix ratio
+  //
+  // Cement : Sand : Aggregate
+  // --------------------------------------------------
+
+  const totalRatio =
+    mixRatio.cement +
+    mixRatio.sand +
+    mixRatio.aggregate;
+
+  if (
+    !Number.isFinite(totalRatio) ||
+    totalRatio <= 0 ||
+    mixRatio.cement <= 0 ||
+    mixRatio.sand <= 0 ||
+    mixRatio.aggregate <= 0
+  ) {
+    throw new Error(
+      "Invalid concrete mix ratio."
+    );
+  }
+
+  // --------------------------------------------------
+  // Material volumes
+  // --------------------------------------------------
+
+  const cementVolume =
+    dryVolume *
+    (mixRatio.cement / totalRatio);
+
+  const sand =
+    dryVolume *
+    (mixRatio.sand / totalRatio);
+
+  const aggregate =
+    dryVolume *
+    (mixRatio.aggregate / totalRatio);
+
+  // --------------------------------------------------
+  // Cement estimation
+  //
+  // Cement density = 1440 kg/m³
+  // Default bag size = 50 kg
+  // --------------------------------------------------
+
+  const cementWeight =
+    cementVolume * 1440;
+
+  const cementBags =
+    Math.ceil(
+      cementWeight / 50
+    );
+
+  // --------------------------------------------------
+  // Water estimation
+  //
   // W/C ratio = 0.50
+  //
+  // Estimation only.
   // --------------------------------------------------
 
-  const water = cementWeight * 0.50;
+  const water =
+    cementWeight * 0.50;
 
   // --------------------------------------------------
-  // Waste
-  // Material waste is kept separate from concrete volume.
+  // Waste kept separate
   // --------------------------------------------------
 
   const wasteVolume = 0;
@@ -86,24 +150,44 @@ export function calculateConcrete(
   const totalVolume = volume;
 
   return {
-    volume: Number(volume.toFixed(3)),
+    volume: Number(
+      volume.toFixed(3)
+    ),
 
-    dryVolume: Number(dryVolume.toFixed(3)),
+    dryVolume: Number(
+      dryVolume.toFixed(3)
+    ),
 
-    totalVolume: Number(totalVolume.toFixed(3)),
+    totalVolume: Number(
+      totalVolume.toFixed(3)
+    ),
 
-    wasteVolume: Number(wasteVolume.toFixed(3)),
+    wasteVolume: Number(
+      wasteVolume.toFixed(3)
+    ),
 
-    cementVolume: Number(cementVolume.toFixed(3)),
+    cementVolume: Number(
+      cementVolume.toFixed(3)
+    ),
 
-    cementWeight: Number(cementWeight.toFixed(1)),
+    cementWeight: Number(
+      cementWeight.toFixed(1)
+    ),
 
     cementBags,
 
-    sand: Number(sand.toFixed(3)),
+    sand: Number(
+      sand.toFixed(3)
+    ),
 
-    aggregate: Number(aggregate.toFixed(3)),
+    aggregate: Number(
+      aggregate.toFixed(3)
+    ),
 
-    water: Number(water.toFixed(1)),
+    water: Number(
+      water.toFixed(1)
+    ),
+
+    mixRatio,
   };
 }
