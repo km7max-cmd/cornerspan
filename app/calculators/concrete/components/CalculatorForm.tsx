@@ -92,6 +92,8 @@ export default function CalculatorForm({
   cementUnit,
   sandUnit,
   aggregateUnit,
+  sandDensity,
+  aggregateDensity,
 
   currency,
   setCurrency,
