@@ -161,34 +161,20 @@ export function calculateConcrete(
     cementWeight * 0.40;
 
   return {
-    volume: Number(
-      volume.toFixed(3)
-    ),
+  volume: Number(volume.toFixed(3)),
+  dryVolume: Number(dryVolume.toFixed(3)),
 
-    dryVolume: Number(
-      dryVolume.toFixed(3)
-    ),
+  // Compatibility with existing calculator
+  wasteVolume: 0,
+  totalVolume: Number(dryVolume.toFixed(3)),
 
-    cementVolume: Number(
-      cementVolume.toFixed(3)
-    ),
+  cementVolume: Number(cementVolume.toFixed(3)),
+  cementWeight: Number(cementWeight.toFixed(1)),
+  cementBags,
 
-    cementWeight: Number(
-      cementWeight.toFixed(1)
-    ),
-
-    cementBags,
-
-    sand: Number(
-      sand.toFixed(3)
-    ),
-
-    aggregate: Number(
-      aggregate.toFixed(3)
-    ),
-
-    water: Number(
-      water.toFixed(1)
-    ),
+  sand: Number(sand.toFixed(3)),
+  aggregate: Number(aggregate.toFixed(3)),
+  water: Number(water.toFixed(1)),
+};
   };
 }
