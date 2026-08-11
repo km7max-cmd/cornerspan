@@ -134,7 +134,11 @@ export default function ConcreteCalculator() {
   // Calculate
   // --------------------------------------------------
 
-  const handleCalculate = () => {
+  const handleCalculate = (mixRatio: {
+  cement: number;
+  sand: number;
+  aggregate: number;
+}) => {
     const l = Number(length);
     const w = Number(width);
     const d = Number(depth);
@@ -278,13 +282,14 @@ export default function ConcreteCalculator() {
     // --------------------------------------------------
 
     const output = calculateConcrete(
-      l,
-      w,
-      d,
-      lengthUnit,
-      widthUnit,
-      depthUnit
-    );
+  l,
+  w,
+  d,
+  lengthUnit,
+  widthUnit,
+  depthUnit,
+  mixRatio
+);
 
     // Apply quantity
     output.volume *= q;
