@@ -5,7 +5,14 @@ export type Unit =
   | "Millimeter"
   | "Inch";
 
-function convertToMeter(value: number, unit: Unit): number {
+/**
+ * Convert any supported dimension unit to meters.
+ * Internal calculation unit = SI meter.
+ */
+function convertToMeter(
+  value: number,
+  unit: Unit
+): number {
   switch (unit) {
     case "Meter":
       return value;
@@ -14,10 +21,10 @@ function convertToMeter(value: number, unit: Unit): number {
       return value * 0.3048;
 
     case "Centimeter":
-      return value / 100;
+      return value * 0.01;
 
     case "Millimeter":
-      return value / 1000;
+      return value * 0.001;
 
     case "Inch":
       return value * 0.0254;
@@ -27,6 +34,14 @@ function convertToMeter(value: number, unit: Unit): number {
   }
 }
 
+/**
+ * Concrete volume calculation.
+ *
+ * IMPORTANT:
+ * This function calculates geometric concrete volume.
+ * Material quantities are estimates and must not be treated
+ * as structural mix design.
+ */
 export function calculateConcrete(
   length: number,
   width: number,
@@ -35,71 +50,145 @@ export function calculateConcrete(
   widthUnit: Unit,
   depthUnit: Unit
 ) {
-  // Convert dimensions to meters
-  const l = convertToMeter(length, lengthUnit);
-  const w = convertToMeter(width, widthUnit);
-  const d = convertToMeter(depth, depthUnit);
+  // --------------------------------------------------
+  // Validate inputs
+  // --------------------------------------------------
 
+  if (
+    !Number.isFinite(length) ||
+    !Number.isFinite(width) ||
+    !Number.isFinite(depth) ||
+    length <= 0 ||
+    width <= 0 ||
+    depth <= 0
+  ) {
+    throw new Error(
+      "Dimensions must be greater than zero."
+    );
+  }
+
+  // --------------------------------------------------
+  // Convert each dimension independently to meters
+  // --------------------------------------------------
+
+  const lengthM = convertToMeter(
+    length,
+    lengthUnit
+  );
+
+  const widthM = convertToMeter(
+    width,
+    widthUnit
+  );
+
+  const depthM = convertToMeter(
+    depth,
+    depthUnit
+  );
+
+  // --------------------------------------------------
   // Wet concrete volume
-  const volume = l * w * d;
+  // --------------------------------------------------
 
-  // Omni dry volume factor
-  const dryVolume = volume * 1.54;
+  const volume =
+    lengthM *
+    widthM *
+    depthM;
 
-  // 10% waste
-  const wasteVolume = dryVolume * 0.10;
+  // --------------------------------------------------
+  // Material estimation model
+  //
+  // This is ONLY an estimation model.
+  //
+  // Dry-volume factor:
+  // 1.54
+  //
+  // Nominal estimation ratio:
+  // Cement : Sand : Aggregate
+  // 1 : 1.5 : 3
+  //
+  // This must NOT be presented as a structural
+  // mix-design calculation.
+  // --------------------------------------------------
 
-  // Total dry volume including waste
-  const totalVolume = dryVolume + wasteVolume;
+  const dryVolume =
+    volume * 1.54;
 
-  // Concrete mix ratio = 1 : 1.5 : 3
-  const totalRatio = 1 + 1.5 + 3;
+  const totalRatio =
+    1 + 1.5 + 3;
 
-  // Cement
+  // Cement volume
   const cementVolume =
-    totalVolume * (1 / totalRatio);
+    dryVolume *
+    (1 / totalRatio);
 
-  const cementDensity = 1440;
+  // Cement density used only for estimation
+  const cementDensity =
+    1440; // kg/m³
 
   const cementWeight =
-    cementVolume * cementDensity;
+    cementVolume *
+    cementDensity;
 
-  const cementBags = Math.ceil(
-    cementWeight / 50
-  );
+  // 50 kg nominal bag for material estimation
+  const cementBags =
+    Math.ceil(
+      cementWeight / 50
+    );
 
   // Sand
   const sand =
-    totalVolume * (1.5 / totalRatio);
+    dryVolume *
+    (1.5 / totalRatio);
 
   // Aggregate
   const aggregate =
-    totalVolume * (3 / totalRatio);
+    dryVolume *
+    (3 / totalRatio);
 
+  // --------------------------------------------------
   // Water
-  // Approximate water-cement ratio
+  //
+  // Approximate estimation only.
+  // w/c ratio = 0.40
+  //
+  // Actual water requirement depends on
+  // mix design, aggregate moisture, slump,
+  // admixtures, exposure and other factors.
+  // --------------------------------------------------
+
   const water =
     cementWeight * 0.40;
 
   return {
-    volume: +volume.toFixed(3),
+    volume: Number(
+      volume.toFixed(3)
+    ),
 
-    dryVolume: +dryVolume.toFixed(3),
+    dryVolume: Number(
+      dryVolume.toFixed(3)
+    ),
 
-    wasteVolume: +wasteVolume.toFixed(3),
+    cementVolume: Number(
+      cementVolume.toFixed(3)
+    ),
 
-    totalVolume: +totalVolume.toFixed(3),
-
-    cementVolume: +cementVolume.toFixed(3),
-
-    cementWeight: +cementWeight.toFixed(1),
+    cementWeight: Number(
+      cementWeight.toFixed(1)
+    ),
 
     cementBags,
 
-    sand: +sand.toFixed(3),
+    sand: Number(
+      sand.toFixed(3)
+    ),
 
-    aggregate: +aggregate.toFixed(3),
+    aggregate: Number(
+      aggregate.toFixed(3)
+    ),
 
-    water: +water.toFixed(2),
+    water: Number(
+      water.toFixed(1)
+    ),
   };
 }
