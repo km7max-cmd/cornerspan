@@ -308,15 +308,24 @@ export default function ConcreteCalculator() {
     // --------------------------------------------------
     // Save result
     // --------------------------------------------------
-
+ 
     setResult({
-      volume: output.volume,
-      dryVolume: output.dryVolume,
-      cementBags: output.cementBags,
-      sand: output.sand,
-      aggregate: output.aggregate,
-      totalCost,
-    });
+  volume: output.volume,
+  dryVolume: output.dryVolume,
+
+  totalVolume: output.totalVolume,
+  wasteVolume: output.wasteVolume,
+
+  cementVolume: output.cementVolume,
+  cementWeight: output.cementWeight,
+  cementBags: output.cementBags,
+
+  sand: output.sand,
+  aggregate: output.aggregate,
+  water: output.water,
+
+  totalCost,
+});
 
     // --------------------------------------------------
     // Save history
