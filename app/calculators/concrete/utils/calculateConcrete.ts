@@ -175,5 +175,4 @@ export function calculateConcrete(
   aggregate: Number(aggregate.toFixed(3)),
   water: Number(water.toFixed(1)),
 };
-  };
 }
