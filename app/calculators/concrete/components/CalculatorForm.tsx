@@ -338,4 +338,440 @@ export default function CalculatorForm({
               }
               className={unitSelectClass}
             >
-              {units
+              {units.map((item) => (
+                <option
+                  key={item.value}
+                  value={item.value}
+                >
+                  {item.label}
+                </option>
+              ))}
+            </select>
+
+          </div>
+
+        </div>
+
+        {/* Depth */}
+
+        <div className="mb-5">
+
+          <label className={labelClass}>
+            Height / Depth
+          </label>
+
+          <div className="flex overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 focus-within:border-blue-500 focus-within:bg-white focus-within:ring-2 focus-within:ring-blue-100">
+
+            <input
+              type="number"
+              min="0"
+              step="any"
+              value={depth}
+              onChange={(e) =>
+                setDepth(e.target.value)
+              }
+              placeholder="Enter height / depth"
+              className="h-14 min-w-0 flex-1 bg-transparent px-4 text-lg text-slate-900 outline-none"
+            />
+
+            <select
+              value={depthUnit}
+              onChange={(e) =>
+                setDepthUnit(
+                  e.target.value as Unit
+                )
+              }
+              className={unitSelectClass}
+            >
+              {units.map((item) => (
+                <option
+                  key={item.value}
+                  value={item.value}
+                >
+                  {item.label}
+                </option>
+              ))}
+            </select>
+
+          </div>
+
+        </div>
+
+        {/* Quantity */}
+
+        <div>
+
+          <label className={labelClass}>
+            Quantity
+          </label>
+
+          <div className="flex overflow-hidden rounded-2xl border border-slate-200 bg-slate-50">
+
+            <input
+              type="number"
+              min="1"
+              step="1"
+              value={quantity}
+              onChange={(e) =>
+                setQuantity(e.target.value)
+              }
+              className="h-14 min-w-0 flex-1 bg-transparent px-4 text-lg text-slate-900 outline-none"
+            />
+
+            <div className="flex h-14 items-center border-l border-slate-200 px-5 text-base text-slate-500">
+              pieces
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      {/* ================================================= */}
+      {/* Mix Ratio */}
+      {/* ================================================= */}
+
+      <div className="border-b border-slate-100 p-5 sm:p-7">
+
+        <h2 className="mb-6 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+          Mix Ratio
+        </h2>
+
+        <label className={labelClass}>
+          Cement : Sand : Aggregate
+        </label>
+
+        <select
+          value={mixRatioType}
+          onChange={(e) =>
+            setMixRatioType(e.target.value)
+          }
+          className={inputClass}
+        >
+          <option value="1:2:4">
+            1 : 2 : 4
+          </option>
+
+          <option value="1:1.5:3">
+            1 : 1.5 : 3
+          </option>
+
+          <option value="Custom">
+            Custom
+          </option>
+        </select>
+
+        {/* Custom Ratio */}
+
+        {mixRatioType === "Custom" && (
+          <div className="mt-4 grid grid-cols-3 gap-3">
+
+            <div>
+              <label className="mb-2 block text-sm font-medium text-slate-700">
+                Cement
+              </label>
+
+              <input
+                type="number"
+                min="0"
+                step="any"
+                value={customCement}
+                onChange={(e) =>
+                  setCustomCement(
+                    e.target.value
+                  )
+                }
+                className={inputClass}
+              />
+            </div>
+
+            <div>
+              <label className="mb-2 block text-sm font-medium text-slate-700">
+                Sand
+              </label>
+
+              <input
+                type="number"
+                min="0"
+                step="any"
+                value={customSand}
+                onChange={(e) =>
+                  setCustomSand(
+                    e.target.value
+                  )
+                }
+                className={inputClass}
+              />
+            </div>
+
+            <div>
+              <label className="mb-2 block text-sm font-medium text-slate-700">
+                Aggregate
+              </label>
+
+              <input
+                type="number"
+                min="0"
+                step="any"
+                value={customAggregate}
+                onChange={(e) =>
+                  setCustomAggregate(
+                    e.target.value
+                  )
+                }
+                className={inputClass}
+              />
+            </div>
+
+          </div>
+        )}
+
+        <p className="mt-3 text-sm leading-6 text-slate-500">
+          Material quantities are estimates. Structural
+          concrete mix design should follow the project
+          specifications and applicable engineering standards.
+        </p>
+
+      </div>
+
+      {/* ================================================= */}
+      {/* Currency */}
+      {/* ================================================= */}
+
+      <div className="border-b border-slate-100 p-5 sm:p-7">
+
+        <label className={labelClass}>
+          Currency
+        </label>
+
+        <select
+          value={currency}
+          onChange={(e) =>
+            setCurrency(e.target.value)
+          }
+          className={inputClass}
+        >
+          <option value="USD">
+            🇺🇸 US Dollar ($)
+          </option>
+
+          <option value="INR">
+            🇮🇳 Indian Rupee (₹)
+          </option>
+
+          <option value="EUR">
+            🇪🇺 Euro (€)
+          </option>
+
+          <option value="GBP">
+            🇬🇧 British Pound (£)
+          </option>
+
+          <option value="AED">
+            🇦🇪 UAE Dirham (AED)
+          </option>
+
+          <option value="AUD">
+            🇦🇺 Australian Dollar (A$)
+          </option>
+
+          <option value="CAD">
+            🇨🇦 Canadian Dollar (C$)
+          </option>
+        </select>
+
+      </div>
+
+      {/* ================================================= */}
+      {/* Material Prices */}
+      {/* ================================================= */}
+
+      <div className="p-5 sm:p-7">
+
+        <h2 className="mb-6 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+          Material Prices
+        </h2>
+
+        {/* Cement */}
+
+        <div className="mb-5">
+
+          <label className={labelClass}>
+            Cement
+          </label>
+
+          <div className="flex overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 focus-within:border-blue-500 focus-within:bg-white focus-within:ring-2 focus-within:ring-blue-100">
+
+            <input
+              type="number"
+              min="0"
+              step="any"
+              value={cementPrice}
+              onChange={(e) =>
+                setCementPrice(
+                  e.target.value
+                )
+              }
+              className="h-14 min-w-0 flex-1 bg-transparent px-4 text-lg text-slate-900 outline-none"
+            />
+
+            <select
+              value={cementUnit}
+              onChange={(e) =>
+                setCementUnit(
+                  e.target.value
+                )
+              }
+              className={unitSelectClass}
+            >
+              <option value="Bag">
+                / Bag
+              </option>
+
+              <option value="kg">
+                / kg
+              </option>
+
+              <option value="tonne">
+                / tonne
+              </option>
+
+              <option value="US ton">
+                / US ton
+              </option>
+            </select>
+
+          </div>
+
+        </div>
+
+        {/* Sand */}
+
+        <div className="mb-5">
+
+          <label className={labelClass}>
+            Sand
+          </label>
+
+          <div className="flex overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 focus-within:border-blue-500 focus-within:bg-white focus-within:ring-2 focus-within:ring-blue-100">
+
+            <input
+              type="number"
+              min="0"
+              step="any"
+              value={sandPrice}
+              onChange={(e) =>
+                setSandPrice(
+                  e.target.value
+                )
+              }
+              className="h-14 min-w-0 flex-1 bg-transparent px-4 text-lg text-slate-900 outline-none"
+            />
+
+            <select
+              value={sandUnit}
+              onChange={(e) =>
+                setSandUnit(
+                  e.target.value
+                )
+              }
+              className={unitSelectClass}
+            >
+              <option value="m³">
+                / m³
+              </option>
+
+              <option value="yd³">
+                / yd³
+              </option>
+
+              <option value="tonne">
+                / tonne
+              </option>
+
+              <option value="US ton">
+                / US ton
+              </option>
+            </select>
+
+          </div>
+
+        </div>
+
+        {/* Aggregate */}
+
+        <div className="mb-5">
+
+          <label className={labelClass}>
+            Aggregate
+          </label>
+
+          <div className="flex overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 focus-within:border-blue-500 focus-within:bg-white focus-within:ring-2 focus-within:ring-blue-100">
+
+            <input
+              type="number"
+              min="0"
+              step="any"
+              value={aggregatePrice}
+              onChange={(e) =>
+                setAggregatePrice(
+                  e.target.value
+                )
+              }
+              className="h-14 min-w-0 flex-1 bg-transparent px-4 text-lg text-slate-900 outline-none"
+            />
+
+            <select
+              value={aggregateUnit}
+              onChange={(e) =>
+                setAggregateUnit(
+                  e.target.value
+                )
+              }
+              className={unitSelectClass}
+            >
+              <option value="m³">
+                / m³
+              </option>
+
+              <option value="yd³">
+                / yd³
+              </option>
+
+              <option value="tonne">
+                / tonne
+              </option>
+
+              <option value="US ton">
+                / US ton
+              </option>
+            </select>
+
+          </div>
+
+        </div>
+
+        {/* Error */}
+
+        {error && (
+          <div className="mb-4 rounded-2xl border border-red-100 bg-red-50 p-4 text-sm font-medium text-red-600">
+            {error}
+          </div>
+        )}
+
+        {/* Calculate */}
+
+        <button
+          type="button"
+          onClick={handleCalculate}
+          className="h-14 w-full rounded-2xl bg-blue-600 text-lg font-semibold text-white shadow-md transition hover:bg-blue-700 active:scale-[0.99]"
+        >
+          Calculate
+        </button>
+
+      </div>
+
+    </section>
+  );
+}
