@@ -36,7 +36,8 @@ type CalculatorFormProps = {
   setCementUnit: (value: string) => void;
   setSandUnit: (value: string) => void;
   setAggregateUnit: (value: string) => void;
-
+  setSandDensity: (value: string) => void;
+  setAggregateDensity: (value: string) => void;
   error: string;
 
   setLength: (value: string) => void;
