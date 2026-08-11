@@ -19,6 +19,7 @@ type CalculatorFormProps = {
   cementUnit: string;
   sandUnit: string;
   aggregateUnit: string;
+
   sandDensity: string;
   aggregateDensity: string;
 
@@ -36,8 +37,10 @@ type CalculatorFormProps = {
   setCementUnit: (value: string) => void;
   setSandUnit: (value: string) => void;
   setAggregateUnit: (value: string) => void;
+
   setSandDensity: (value: string) => void;
   setAggregateDensity: (value: string) => void;
+
   error: string;
 
   setLength: (value: string) => void;
@@ -93,6 +96,7 @@ export default function CalculatorForm({
   cementUnit,
   sandUnit,
   aggregateUnit,
+
   sandDensity,
   aggregateDensity,
 
@@ -110,8 +114,10 @@ export default function CalculatorForm({
   setCementUnit,
   setSandUnit,
   setAggregateUnit,
+
   setSandDensity,
   setAggregateDensity,
+
   error,
 
   setLength,
@@ -599,7 +605,9 @@ export default function CalculatorForm({
           Material Prices
         </h2>
 
+        {/* ================================================= */}
         {/* Cement */}
+        {/* ================================================= */}
 
         <div className="mb-5">
 
@@ -652,7 +660,9 @@ export default function CalculatorForm({
 
         </div>
 
+        {/* ================================================= */}
         {/* Sand */}
+        {/* ================================================= */}
 
         <div className="mb-5">
 
@@ -703,9 +713,51 @@ export default function CalculatorForm({
 
           </div>
 
+          {/* Sand Density */}
+
+          <div className="mt-4">
+
+            <label className={labelClass}>
+              Sand Density
+            </label>
+
+            <select
+              value={sandDensity}
+              onChange={(e) =>
+                setSandDensity(
+                  e.target.value
+                )
+              }
+              className={inputClass}
+            >
+              <option value="1600">
+                1600 kg/m³
+              </option>
+
+              <option value="1650">
+                1650 kg/m³
+              </option>
+
+              <option value="1700">
+                1700 kg/m³
+              </option>
+
+              <option value="1750">
+                1750 kg/m³
+              </option>
+
+              <option value="1800">
+                1800 kg/m³
+              </option>
+            </select>
+
+          </div>
+
         </div>
 
+        {/* ================================================= */}
         {/* Aggregate */}
+        {/* ================================================= */}
 
         <div className="mb-5">
 
@@ -756,9 +808,55 @@ export default function CalculatorForm({
 
           </div>
 
+          {/* Aggregate Density */}
+
+          <div className="mt-4">
+
+            <label className={labelClass}>
+              Aggregate Density
+            </label>
+
+            <select
+              value={aggregateDensity}
+              onChange={(e) =>
+                setAggregateDensity(
+                  e.target.value
+                )
+              }
+              className={inputClass}
+            >
+              <option value="1400">
+                1400 kg/m³
+              </option>
+
+              <option value="1450">
+                1450 kg/m³
+              </option>
+
+              <option value="1500">
+                1500 kg/m³
+              </option>
+
+              <option value="1550">
+                1550 kg/m³
+              </option>
+
+              <option value="1600">
+                1600 kg/m³
+              </option>
+
+              <option value="1650">
+                1650 kg/m³
+              </option>
+            </select>
+
+          </div>
+
         </div>
 
+        {/* ================================================= */}
         {/* Error */}
+        {/* ================================================= */}
 
         {error && (
           <div className="mb-4 rounded-2xl border border-red-100 bg-red-50 p-4 text-sm font-medium text-red-600">
@@ -766,7 +864,9 @@ export default function CalculatorForm({
           </div>
         )}
 
+        {/* ================================================= */}
         {/* Calculate */}
+        {/* ================================================= */}
 
         <button
           type="button"
