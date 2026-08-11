@@ -1,13 +1,20 @@
-import { formatCurrency } from "../../../utils/formatters";
-
 type Props = {
   volume: number;
   dryVolume: number;
+  totalVolume: number;
+  wasteVolume: number;
+
+  cementVolume: number;
+  cementWeight: number;
   bags: number;
+
   sand: number;
   aggregate: number;
+  water: number;
+
   totalCost: number;
   currency: string;
+
   onCopy: () => void;
   onShare: () => void;
   onDownload: () => void;
@@ -16,11 +23,20 @@ type Props = {
 export default function ResultCard({
   volume,
   dryVolume,
+  totalVolume,
+  wasteVolume,
+
+  cementVolume,
+  cementWeight,
   bags,
+
   sand,
   aggregate,
+  water,
+
   totalCost,
   currency,
+
   onCopy,
   onShare,
   onDownload,
@@ -80,7 +96,9 @@ export default function ResultCard({
       </div>
 
       {!hasResult ? (
+
         /* Empty State */
+
         <div className="rounded-2xl border border-slate-200 bg-slate-50 px-5 py-10 text-center">
 
           <h3 className="text-lg font-semibold text-slate-800">
@@ -93,11 +111,15 @@ export default function ResultCard({
           </p>
 
         </div>
+
       ) : (
+
         <div className="space-y-4">
 
           {/* Concrete Volume */}
+
           <div className="rounded-2xl bg-blue-50 p-5 sm:p-6">
+
             <p className="text-sm font-medium text-slate-500">
               Concrete Volume
             </p>
@@ -105,13 +127,17 @@ export default function ResultCard({
             <h3 className="mt-1 text-3xl font-black text-blue-600 sm:text-4xl">
               {volume.toFixed(2)} m³
             </h3>
+
           </div>
 
-          {/* Main Results */}
+          {/* Volume Details */}
+
           <div className="grid grid-cols-2 gap-4">
 
             {/* Dry Volume */}
+
             <div className="rounded-2xl bg-slate-50 p-4 sm:p-5">
+
               <p className="text-sm text-slate-500">
                 Dry Volume
               </p>
@@ -119,10 +145,41 @@ export default function ResultCard({
               <h3 className="mt-2 text-xl font-bold text-slate-900 sm:text-2xl">
                 {dryVolume.toFixed(2)} m³
               </h3>
+
             </div>
 
-            {/* Cement */}
+            {/* Waste */}
+
             <div className="rounded-2xl bg-slate-50 p-4 sm:p-5">
+
+              <p className="text-sm text-slate-500">
+                Waste
+              </p>
+
+              <h3 className="mt-2 text-xl font-bold text-slate-900 sm:text-2xl">
+                {wasteVolume.toFixed(2)} m³
+              </h3>
+
+            </div>
+
+            {/* Total Volume */}
+
+            <div className="rounded-2xl bg-blue-50 p-4 sm:p-5">
+
+              <p className="text-sm text-slate-500">
+                Total Volume
+              </p>
+
+              <h3 className="mt-2 text-xl font-bold text-blue-700 sm:text-2xl">
+                {totalVolume.toFixed(2)} m³
+              </h3>
+
+            </div>
+
+            {/* Cement Bags */}
+
+            <div className="rounded-2xl bg-slate-50 p-4 sm:p-5">
+
               <p className="text-sm text-slate-500">
                 Cement Bags
               </p>
@@ -130,10 +187,53 @@ export default function ResultCard({
               <h3 className="mt-2 text-xl font-bold text-slate-900 sm:text-2xl">
                 {bags} Bags
               </h3>
+
             </div>
 
+          </div>
+
+          {/* Cement Details */}
+
+          <div className="rounded-2xl bg-orange-50 p-5 sm:p-6">
+
+            <h3 className="mb-4 text-lg font-bold text-slate-900">
+              Cement
+            </h3>
+
+            <div className="grid grid-cols-2 gap-4">
+
+              <div>
+                <p className="text-sm text-slate-500">
+                  Cement Volume
+                </p>
+
+                <p className="mt-1 text-xl font-bold text-slate-900">
+                  {cementVolume.toFixed(2)} m³
+                </p>
+              </div>
+
+              <div>
+                <p className="text-sm text-slate-500">
+                  Cement Weight
+                </p>
+
+                <p className="mt-1 text-xl font-bold text-slate-900">
+                  {cementWeight.toFixed(1)} kg
+                </p>
+              </div>
+
+            </div>
+
+          </div>
+
+          {/* Other Materials */}
+
+          <div className="grid grid-cols-2 gap-4">
+
             {/* Sand */}
+
             <div className="rounded-2xl bg-slate-50 p-4 sm:p-5">
+
               <p className="text-sm text-slate-500">
                 Sand
               </p>
@@ -141,10 +241,13 @@ export default function ResultCard({
               <h3 className="mt-2 text-xl font-bold text-slate-900 sm:text-2xl">
                 {sand.toFixed(2)} m³
               </h3>
+
             </div>
 
             {/* Aggregate */}
+
             <div className="rounded-2xl bg-slate-50 p-4 sm:p-5">
+
               <p className="text-sm text-slate-500">
                 Aggregate
               </p>
@@ -152,23 +255,46 @@ export default function ResultCard({
               <h3 className="mt-2 text-xl font-bold text-slate-900 sm:text-2xl">
                 {aggregate.toFixed(2)} m³
               </h3>
+
             </div>
 
           </div>
 
+          {/* Water */}
+
+          <div className="rounded-2xl bg-cyan-50 p-5 sm:p-6">
+
+            <p className="text-sm font-medium text-slate-500">
+              Water
+            </p>
+
+            <h3 className="mt-1 text-2xl font-black text-cyan-700 sm:text-3xl">
+              {water.toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })} L
+            </h3>
+
+          </div>
+
           {/* Total Cost */}
+
           <div className="rounded-2xl bg-green-50 p-5 sm:p-6">
+
             <p className="text-sm font-medium text-slate-500">
               Total Material Cost
             </p>
 
             <h3 className="mt-1 text-2xl font-black text-green-700 sm:text-3xl">
+
               {currencySymbol}
               {totalCost.toLocaleString(undefined, {
                 minimumFractionDigits: 2,
                 maximumFractionDigits: 2,
               })}
+
             </h3>
+
           </div>
 
         </div>
