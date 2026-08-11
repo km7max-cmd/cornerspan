@@ -61,13 +61,21 @@ export default function ConcreteCalculator() {
   // --------------------------------------------------
 
   const [result, setResult] = useState({
-    volume: 0,
-    dryVolume: 0,
-    cementBags: 0,
-    sand: 0,
-    aggregate: 0,
-    totalCost: 0,
-  });
+  volume: 0,
+  dryVolume: 0,
+  totalVolume: 0,
+  wasteVolume: 0,
+
+  cementVolume: 0,
+  cementWeight: 0,
+  cementBags: 0,
+
+  sand: 0,
+  aggregate: 0,
+  water: 0,
+
+  totalCost: 0,
+});
 
   // --------------------------------------------------
   // History
@@ -137,13 +145,21 @@ export default function ConcreteCalculator() {
       setError("Please fill in all fields.");
 
       setResult({
-        volume: 0,
-        dryVolume: 0,
-        cementBags: 0,
-        sand: 0,
-        aggregate: 0,
-        totalCost: 0,
-      });
+  volume: 0,
+  dryVolume: 0,
+  totalVolume: 0,
+  wasteVolume: 0,
+
+  cementVolume: 0,
+  cementWeight: 0,
+  cementBags: 0,
+
+  sand: 0,
+  aggregate: 0,
+  water: 0,
+
+  totalCost: 0,
+});
 
       showNotification(
         "Please fill in all fields.",
@@ -158,13 +174,21 @@ export default function ConcreteCalculator() {
       setError("Values must be greater than zero.");
 
       setResult({
-        volume: 0,
-        dryVolume: 0,
-        cementBags: 0,
-        sand: 0,
-        aggregate: 0,
-        totalCost: 0,
-      });
+  volume: 0,
+  dryVolume: 0,
+  totalVolume: 0,
+  wasteVolume: 0,
+
+  cementVolume: 0,
+  cementWeight: 0,
+  cementBags: 0,
+
+  sand: 0,
+  aggregate: 0,
+  water: 0,
+
+  totalCost: 0,
+});
 
       showNotification(
         "Values must be greater than zero.",
@@ -179,13 +203,21 @@ export default function ConcreteCalculator() {
       setError("Quantity must be greater than 0.");
 
       setResult({
-        volume: 0,
-        dryVolume: 0,
-        cementBags: 0,
-        sand: 0,
-        aggregate: 0,
-        totalCost: 0,
-      });
+  volume: 0,
+  dryVolume: 0,
+  totalVolume: 0,
+  wasteVolume: 0,
+
+  cementVolume: 0,
+  cementWeight: 0,
+  cementBags: 0,
+
+  sand: 0,
+  aggregate: 0,
+  water: 0,
+
+  totalCost: 0,
+});
 
       showNotification(
         "Quantity must be greater than 0.",
@@ -214,13 +246,21 @@ export default function ConcreteCalculator() {
       setError("Material prices cannot be negative.");
 
       setResult({
-        volume: 0,
-        dryVolume: 0,
-        cementBags: 0,
-        sand: 0,
-        aggregate: 0,
-        totalCost: 0,
-      });
+  volume: 0,
+  dryVolume: 0,
+  totalVolume: 0,
+  wasteVolume: 0,
+
+  cementVolume: 0,
+  cementWeight: 0,
+  cementBags: 0,
+
+  sand: 0,
+  aggregate: 0,
+  water: 0,
+
+  totalCost: 0,
+});
 
       showNotification(
         "Material prices cannot be negative.",
