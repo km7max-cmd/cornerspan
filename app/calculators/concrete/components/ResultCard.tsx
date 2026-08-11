@@ -1,17 +1,9 @@
 type Props = {
   volume: number;
   dryVolume: number;
-  totalVolume: number;
-  wasteVolume: number;
-
-  cementVolume: number;
-  cementWeight: number;
   cementBags: number;
-
   sand: number;
   aggregate: number;
-  water: number;
-
   totalCost: number;
   currency: string;
 
@@ -23,20 +15,11 @@ type Props = {
 export default function ResultCard({
   volume,
   dryVolume,
-  totalVolume,
-  wasteVolume,
-
-  cementVolume,
-  cementWeight,
   cementBags,
-
   sand,
   aggregate,
-  water,
-
   totalCost,
   currency,
-
   onCopy,
   onShare,
   onDownload,
