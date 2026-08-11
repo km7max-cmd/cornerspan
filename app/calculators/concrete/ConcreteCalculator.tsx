@@ -528,9 +528,12 @@ Total Cost      : ${result.totalCost.toFixed(2)} ${currency}`;
               cementUnit={cementUnit}
               sandUnit={sandUnit}
               aggregateUnit={aggregateUnit}
+              
               sandDensity={sandDensity}
               aggregateDensity={aggregateDensity}
-
+              setSandDensity={setSandDensity}
+              setAggregateDensity={setAggregateDensity}
+              
               cementPrice={cementPrice}
               sandPrice={sandPrice}
               aggregatePrice={aggregatePrice}
