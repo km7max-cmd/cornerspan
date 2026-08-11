@@ -50,6 +50,8 @@ export default function ConcreteCalculator() {
   const [cementUnit, setCementUnit] = useState("Bag");
   const [sandUnit, setSandUnit] = useState("m³");
   const [aggregateUnit, setAggregateUnit] = useState("m³");
+  const [sandDensity, setSandDensity] = useState("1600");
+const [aggregateDensity, setAggregateDensity] = useState("1500");
   // --------------------------------------------------
   // Error
   // --------------------------------------------------
