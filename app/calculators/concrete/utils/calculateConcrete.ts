@@ -164,7 +164,6 @@ export function calculateConcrete(
   volume: Number(volume.toFixed(3)),
   dryVolume: Number(dryVolume.toFixed(3)),
 
-  // Compatibility with existing calculator
   wasteVolume: 0,
   totalVolume: Number(dryVolume.toFixed(3)),
 
