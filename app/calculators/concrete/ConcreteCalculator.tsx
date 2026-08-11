@@ -312,10 +312,7 @@ output.water = +(output.water * q).toFixed(1);
     // Therefore NO exchange-rate conversion here.
     // --------------------------------------------------
 
-    const totalCost =
-      output.cementBags * cement +
-      output.sand * sandRate +
-      output.aggregate * aggregateRate;
+    
 
     // --------------------------------------------------
     // Save result
