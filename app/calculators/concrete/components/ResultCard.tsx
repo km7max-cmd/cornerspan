@@ -160,26 +160,6 @@ export default function ResultCard({
 
             <div className="grid grid-cols-2 gap-4">
 
-              <div>
-                <p className="text-sm text-slate-500">
-                  Cement Volume
-                </p>
-
-                <p className="mt-1 text-xl font-bold text-slate-900">
-                  {cementVolume.toFixed(2)} m³
-                </p>
-              </div>
-
-              <div>
-                <p className="text-sm text-slate-500">
-                  Cement Weight
-                </p>
-
-                <p className="mt-1 text-xl font-bold text-slate-900">
-                  {cementWeight.toFixed(1)} kg
-                </p>
-              </div>
-
             </div>
 
           </div>
