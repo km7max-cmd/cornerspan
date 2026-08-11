@@ -556,7 +556,7 @@ Total Cost      : ${result.totalCost.toFixed(2)} ${currency}`;
             <ResultCard
               volume={result.volume}
               dryVolume={result.dryVolume}
-              bags={result.cementBags}
+              cementBags={result.cementBags}
               sand={result.sand}
               aggregate={result.aggregate}
               totalCost={result.totalCost}
