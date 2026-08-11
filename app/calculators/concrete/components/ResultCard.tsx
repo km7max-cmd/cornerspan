@@ -131,33 +131,8 @@ export default function ResultCard({
 
             </div>
 
-            {/* Waste */}
 
-            <div className="rounded-2xl bg-slate-50 p-4 sm:p-5">
-
-              <p className="text-sm text-slate-500">
-                Waste
-              </p>
-
-              <h3 className="mt-2 text-xl font-bold text-slate-900 sm:text-2xl">
-                {wasteVolume.toFixed(2)} m³
-              </h3>
-
-            </div>
-
-            {/* Total Volume */}
-
-            <div className="rounded-2xl bg-blue-50 p-4 sm:p-5">
-
-              <p className="text-sm text-slate-500">
-                Total Volume
-              </p>
-
-              <h3 className="mt-2 text-xl font-bold text-blue-700 sm:text-2xl">
-                {totalVolume.toFixed(2)} m³
-              </h3>
-
-            </div>
+            
 
             {/* Cement Bags */}
 
