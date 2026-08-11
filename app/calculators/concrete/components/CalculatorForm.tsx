@@ -110,7 +110,8 @@ export default function CalculatorForm({
   setCementUnit,
   setSandUnit,
   setAggregateUnit,
-
+  setSandDensity,
+  setAggregateDensity,
   error,
 
   setLength,
