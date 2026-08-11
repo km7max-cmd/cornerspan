@@ -35,142 +35,71 @@ export function calculateConcrete(
   widthUnit: Unit,
   depthUnit: Unit
 ) {
-  // --------------------------------------------------
   // Convert dimensions to meters
-  // --------------------------------------------------
-
   const l = convertToMeter(length, lengthUnit);
   const w = convertToMeter(width, widthUnit);
   const d = convertToMeter(depth, depthUnit);
 
-  // --------------------------------------------------
   // Wet concrete volume
-  // --------------------------------------------------
-
   const volume = l * w * d;
 
-  // --------------------------------------------------
-  // Dry volume
-  // Omni default: 1.54
-  // --------------------------------------------------
-
+  // Omni dry volume factor
   const dryVolume = volume * 1.54;
 
-  // --------------------------------------------------
-  // Waste
-  // Omni default: 10%
-  // --------------------------------------------------
+  // 10% waste
+  const wasteVolume = dryVolume * 0.10;
 
-  const waste = dryVolume * 0.10;
+  // Total dry volume including waste
+  const totalVolume = dryVolume + wasteVolume;
 
-  const totalVolume = dryVolume + waste;
+  // Concrete mix ratio = 1 : 1.5 : 3
+  const totalRatio = 1 + 1.5 + 3;
 
-  // --------------------------------------------------
-  // Concrete mix ratio
-  //
-  // Cement : Sand : Aggregate
-  // 1 : 1.5 : 3
-  //
-  // Total = 5.5
-  // --------------------------------------------------
-
-  const cementRatio = 1;
-  const sandRatio = 1.5;
-  const aggregateRatio = 3;
-
-  const totalRatio =
-    cementRatio +
-    sandRatio +
-    aggregateRatio;
-
-  // --------------------------------------------------
-  // Cement volume
-  // --------------------------------------------------
-
+  // Cement
   const cementVolume =
-    totalVolume * (cementRatio / totalRatio);
-
-  // --------------------------------------------------
-  // Cement density
-  // Omni default = 1440 kg/m³
-  // --------------------------------------------------
+    totalVolume * (1 / totalRatio);
 
   const cementDensity = 1440;
 
   const cementWeight =
     cementVolume * cementDensity;
 
-  // --------------------------------------------------
-  // Cement bag size
-  // Omni default = 50 kg
-  // --------------------------------------------------
-
-  const cementBagSize = 50;
-
   const cementBags = Math.ceil(
-    cementWeight / cementBagSize
+    cementWeight / 50
   );
 
-  // --------------------------------------------------
   // Sand
-  // --------------------------------------------------
-
   const sand =
-    totalVolume *
-    (sandRatio / totalRatio);
+    totalVolume * (1.5 / totalRatio);
 
-  // --------------------------------------------------
-  // Aggregate / Gravel
-  // --------------------------------------------------
-
+  // Aggregate
   const aggregate =
-    totalVolume *
-    (aggregateRatio / totalRatio);
+    totalVolume * (3 / totalRatio);
 
-  // --------------------------------------------------
   // Water
-  //
-  // Water-cement ratio = 0.40
-  // --------------------------------------------------
-
-  const waterCementRatio = 0.40;
-
-  const waterWeight =
-    cementWeight * waterCementRatio;
-
-  const waterLiters = waterWeight;
-
-  // --------------------------------------------------
-  // Return results
-  // --------------------------------------------------
+  // Approximate water-cement ratio
+  const water =
+    cementWeight * 0.40;
 
   return {
-    // Wet volume
     volume: +volume.toFixed(3),
 
-    // Dry volume before waste
     dryVolume: +dryVolume.toFixed(3),
 
-    // Total volume after 10% waste
+    wasteVolume: +wasteVolume.toFixed(3),
+
     totalVolume: +totalVolume.toFixed(3),
 
-    // Waste volume
-    wasteVolume: +waste.toFixed(3),
-
-    // Cement
     cementVolume: +cementVolume.toFixed(3),
 
     cementWeight: +cementWeight.toFixed(1),
 
     cementBags,
 
-    // Sand
     sand: +sand.toFixed(3),
 
-    // Aggregate
     aggregate: +aggregate.toFixed(3),
 
-    // Water
-    water: +waterLiters.toFixed(2),
+    water: +water.toFixed(2),
   };
 }
