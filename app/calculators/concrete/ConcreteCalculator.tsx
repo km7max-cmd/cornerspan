@@ -335,7 +335,7 @@ output.water = +(output.water * q).toFixed(1);
   aggregate: output.aggregate,
   water: output.water,
 
-  totalCost,
+  totalCost: 0,
 });
 
     // --------------------------------------------------
