@@ -19,6 +19,8 @@ type CalculatorFormProps = {
   cementUnit: string;
   sandUnit: string;
   aggregateUnit: string;
+  sandDensity: string;
+  aggregateDensity: string;
 
   currency: string;
   setCurrency: (value: string) => void;
