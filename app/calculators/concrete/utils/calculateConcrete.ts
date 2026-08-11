@@ -36,7 +36,7 @@ export function calculateConcrete(
   depthUnit: Unit
 ) {
   // --------------------------------------------------
-  // Convert each dimension separately to meters
+  // Convert dimensions to meters
   // --------------------------------------------------
 
   const l = convertToMeter(length, lengthUnit);
@@ -50,50 +50,127 @@ export function calculateConcrete(
   const volume = l * w * d;
 
   // --------------------------------------------------
-  // Dry volume factor
-  // Common construction estimation factor
+  // Dry volume
+  // Omni default: 1.54
   // --------------------------------------------------
 
   const dryVolume = volume * 1.54;
 
   // --------------------------------------------------
-  // 1 : 2 : 4 concrete mix
-  //
-  // Total ratio = 1 + 2 + 4 = 7
-  //
-  // Cement:
-  // dryVolume × 1/7
-  //
-  // 1 cement bag ≈ 0.0347 m³
+  // Waste
+  // Omni default: 10%
   // --------------------------------------------------
 
-  const cementVolume = dryVolume * (1 / 7);
+  const waste = dryVolume * 0.10;
+
+  const totalVolume = dryVolume + waste;
+
+  // --------------------------------------------------
+  // Concrete mix ratio
+  //
+  // Cement : Sand : Aggregate
+  // 1 : 1.5 : 3
+  //
+  // Total = 5.5
+  // --------------------------------------------------
+
+  const cementRatio = 1;
+  const sandRatio = 1.5;
+  const aggregateRatio = 3;
+
+  const totalRatio =
+    cementRatio +
+    sandRatio +
+    aggregateRatio;
+
+  // --------------------------------------------------
+  // Cement volume
+  // --------------------------------------------------
+
+  const cementVolume =
+    totalVolume * (cementRatio / totalRatio);
+
+  // --------------------------------------------------
+  // Cement density
+  // Omni default = 1440 kg/m³
+  // --------------------------------------------------
+
+  const cementDensity = 1440;
+
+  const cementWeight =
+    cementVolume * cementDensity;
+
+  // --------------------------------------------------
+  // Cement bag size
+  // Omni default = 50 kg
+  // --------------------------------------------------
+
+  const cementBagSize = 50;
 
   const cementBags = Math.ceil(
-    cementVolume / 0.0347
+    cementWeight / cementBagSize
   );
 
   // --------------------------------------------------
   // Sand
   // --------------------------------------------------
 
-  const sand = +(dryVolume * (2 / 7)).toFixed(3);
+  const sand =
+    totalVolume *
+    (sandRatio / totalRatio);
 
   // --------------------------------------------------
-  // Aggregate
+  // Aggregate / Gravel
   // --------------------------------------------------
 
-  const aggregate = +(dryVolume * (4 / 7)).toFixed(3);
+  const aggregate =
+    totalVolume *
+    (aggregateRatio / totalRatio);
+
+  // --------------------------------------------------
+  // Water
+  //
+  // Water-cement ratio = 0.40
+  // --------------------------------------------------
+
+  const waterCementRatio = 0.40;
+
+  const waterWeight =
+    cementWeight * waterCementRatio;
+
+  const waterLiters = waterWeight;
+
+  // --------------------------------------------------
+  // Return results
+  // --------------------------------------------------
 
   return {
+    // Wet volume
     volume: +volume.toFixed(3),
 
+    // Dry volume before waste
     dryVolume: +dryVolume.toFixed(3),
+
+    // Total volume after 10% waste
+    totalVolume: +totalVolume.toFixed(3),
+
+    // Waste volume
+    wasteVolume: +waste.toFixed(3),
+
+    // Cement
+    cementVolume: +cementVolume.toFixed(3),
+
+    cementWeight: +cementWeight.toFixed(1),
 
     cementBags,
 
-    sand,
+    // Sand
+    sand: +sand.toFixed(3),
 
-    aggregate,
+    // Aggregate
+    aggregate: +aggregate.toFixed(3),
+
+    // Water
+    water: +waterLiters.toFixed(2),
   };
 }
