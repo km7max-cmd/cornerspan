@@ -293,10 +293,17 @@ export default function ConcreteCalculator() {
 
     // Apply quantity
     output.volume *= q;
-    output.dryVolume *= q;
-    output.cementBags *= q;
-    output.sand = +(output.sand * q).toFixed(2);
-    output.aggregate = +(output.aggregate * q).toFixed(2);
+output.dryVolume *= q;
+output.totalVolume *= q;
+output.wasteVolume *= q;
+
+output.cementVolume *= q;
+output.cementWeight *= q;
+output.cementBags *= q;
+
+output.sand = +(output.sand * q).toFixed(3);
+output.aggregate = +(output.aggregate * q).toFixed(3);
+output.water = +(output.water * q).toFixed(1);
 
     // --------------------------------------------------
     // Total material cost
