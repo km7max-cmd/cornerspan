@@ -465,6 +465,10 @@ Total Cost      : ${result.totalCost.toFixed(2)} ${currency}`;
               depth={depth}
               quantity={quantity}
 
+              cementUnit={cementUnit}
+              sandUnit={sandUnit}
+              aggregateUnit={aggregateUnit}
+
               cementPrice={cementPrice}
               sandPrice={sandPrice}
               aggregatePrice={aggregatePrice}
@@ -480,6 +484,10 @@ Total Cost      : ${result.totalCost.toFixed(2)} ${currency}`;
               setWidthUnit={setWidthUnit}
               setDepthUnit={setDepthUnit}
 
+              setCementUnit={setCementUnit}
+              setSandUnit={setSandUnit}
+              setAggregateUnit={setAggregateUnit}
+              
               error={error}
 
               setLength={setLength}
