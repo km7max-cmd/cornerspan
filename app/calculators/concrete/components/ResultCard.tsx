@@ -6,7 +6,7 @@ type Props = {
 
   cementVolume: number;
   cementWeight: number;
-  bags: number;
+  cementBags: number;
 
   sand: number;
   aggregate: number;
@@ -28,7 +28,7 @@ export default function ResultCard({
 
   cementVolume,
   cementWeight,
-  bags,
+  cementBags,
 
   sand,
   aggregate,
@@ -185,7 +185,7 @@ export default function ResultCard({
               </p>
 
               <h3 className="mt-2 text-xl font-bold text-slate-900 sm:text-2xl">
-                {bags} Bags
+                {cementBags} Bags
               </h3>
 
             </div>
