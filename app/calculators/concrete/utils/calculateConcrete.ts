@@ -5,50 +5,59 @@ export type Unit =
   | "Millimeter"
   | "Inch";
 
+function toMeters(value: number, unit: Unit): number {
+  switch (unit) {
+    case "Meter":
+      return value;
+
+    case "Feet":
+      return value * 0.3048;
+
+    case "Centimeter":
+      return value / 100;
+
+    case "Millimeter":
+      return value / 1000;
+
+    case "Inch":
+      return value * 0.0254;
+
+    default:
+      return value;
+  }
+}
+
 export function calculateConcrete(
   length: number,
   width: number,
   depth: number,
-  unit: Unit
+  lengthUnit: Unit,
+  widthUnit: Unit,
+  depthUnit: Unit
 ) {
-  let l = length;
-  let w = width;
-  let d = depth;
+  // Convert each dimension separately to meters
+  const l = toMeters(length, lengthUnit);
+  const w = toMeters(width, widthUnit);
+  const d = toMeters(depth, depthUnit);
 
-  switch (unit) {
-    case "Feet":
-      l *= 0.3048;
-      w *= 0.3048;
-      d *= 0.3048;
-      break;
-
-    case "Centimeter":
-      l /= 100;
-      w /= 100;
-      d /= 100;
-      break;
-
-    case "Millimeter":
-      l /= 1000;
-      w /= 1000;
-      d /= 1000;
-      break;
-
-    case "Inch":
-      l *= 0.0254;
-      w *= 0.0254;
-      d *= 0.0254;
-      break;
-  }
-
+  // Wet concrete volume
   const volume = l * w * d;
+
+  // Dry volume
   const dryVolume = volume * 1.54;
 
+  // Material quantities
+  const cementBags = Math.ceil(volume * 29);
+
+  const sand = +(dryVolume * 0.42).toFixed(2);
+
+  const aggregate = +(dryVolume * 0.84).toFixed(2);
+
   return {
-    volume,
-    dryVolume,
-    cementBags: Math.ceil(volume * 29),
-    sand: +(dryVolume * 0.42).toFixed(2),
-    aggregate: +(dryVolume * 0.84).toFixed(2),
+    volume: +volume.toFixed(2),
+    dryVolume: +dryVolume.toFixed(2),
+    cementBags,
+    sand,
+    aggregate,
   };
 }
