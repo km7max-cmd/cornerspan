@@ -47,7 +47,9 @@ export default function ConcreteCalculator() {
   const [cementPrice, setCementPrice] = useState("450");
   const [sandPrice, setSandPrice] = useState("1800");
   const [aggregatePrice, setAggregatePrice] = useState("1400");
-
+  const [cementUnit, setCementUnit] = useState("Bag");
+  const [sandUnit, setSandUnit] = useState("m³");
+  const [aggregateUnit, setAggregateUnit] = useState("m³");
   // --------------------------------------------------
   // Error
   // --------------------------------------------------
