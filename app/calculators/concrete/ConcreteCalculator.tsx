@@ -33,16 +33,6 @@ type CurrencyCode =
   | "AUD"
   | "CAD";
 
-const CURRENCY_CODES: CurrencyCode[] = [
-  "USD",
-  "INR",
-  "EUR",
-  "GBP",
-  "AED",
-  "AUD",
-  "CAD",
-];
-
 export default function ConcreteCalculator() {
   // --------------------------------------------------
   // Dimensions
@@ -54,7 +44,7 @@ export default function ConcreteCalculator() {
   const [quantity, setQuantity] = useState("1");
 
   // --------------------------------------------------
-  // Units
+  // Dimension Units
   // --------------------------------------------------
 
   const [lengthUnit, setLengthUnit] =
@@ -68,6 +58,11 @@ export default function ConcreteCalculator() {
 
   // --------------------------------------------------
   // Currency
+  //
+  // Currency is only the currency in which the user
+  // enters/displays local material prices.
+  //
+  // NO automatic currency conversion.
   // --------------------------------------------------
 
   const [currency, setCurrency] =
@@ -75,18 +70,24 @@ export default function ConcreteCalculator() {
 
   // --------------------------------------------------
   // Material Prices
-  // These are DISPLAY prices in selected currency.
-  // Original/base prices are stored separately.
+  //
+  // IMPORTANT:
+  // No fake/default prices.
+  // User enters local market prices.
   // --------------------------------------------------
 
   const [cementPrice, setCementPrice] =
-    useState("450");
+    useState("");
 
   const [sandPrice, setSandPrice] =
-    useState("1800");
+    useState("");
 
   const [aggregatePrice, setAggregatePrice] =
-    useState("1400");
+    useState("");
+
+  // --------------------------------------------------
+  // Material Price Units
+  // --------------------------------------------------
 
   const [cementUnit, setCementUnit] =
     useState("Bag");
@@ -98,27 +99,7 @@ export default function ConcreteCalculator() {
     useState("m³");
 
   // --------------------------------------------------
-  // Base currency prices
-  //
-  // These prevent currency conversion drift.
-  // Default input prices are treated as USD initially
-  // because the initial currency is USD.
-  // --------------------------------------------------
-
-  const [baseCurrency, setBaseCurrency] =
-    useState<CurrencyCode>("USD");
-
-  const [baseCementPrice, setBaseCementPrice] =
-    useState("450");
-
-  const [baseSandPrice, setBaseSandPrice] =
-    useState("1800");
-
-  const [baseAggregatePrice, setBaseAggregatePrice] =
-    useState("1400");
-
-  // --------------------------------------------------
-  // Density
+  // Material Density
   // --------------------------------------------------
 
   const [sandDensity, setSandDensity] =
@@ -170,7 +151,9 @@ export default function ConcreteCalculator() {
 
   useEffect(() => {
     const savedHistory =
-      localStorage.getItem("concrete-history");
+      localStorage.getItem(
+        "concrete-history"
+      );
 
     if (savedHistory) {
       try {
@@ -194,7 +177,9 @@ export default function ConcreteCalculator() {
     useState("");
 
   const [toastType, setToastType] =
-    useState<"success" | "error">("success");
+    useState<"success" | "error">(
+      "success"
+    );
 
   useEffect(() => {
     if (!showToast) return;
@@ -216,179 +201,41 @@ export default function ConcreteCalculator() {
   };
 
   // --------------------------------------------------
-  // Get latest exchange rate
-  // --------------------------------------------------
-
-  const getExchangeRate = async (
-    from: CurrencyCode,
-    to: CurrencyCode
-  ): Promise<number> => {
-    if (from === to) {
-      return 1;
-    }
-
-    const response = await fetch(
-      `https://api.frankfurter.dev/v2/rate/${from}/${to}`,
-      {
-        cache: "no-store",
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error(
-        "Exchange rate unavailable"
-      );
-    }
-
-    const data = await response.json();
-
-    const rate = Number(data?.rate);
-
-    if (
-      !Number.isFinite(rate) ||
-      rate <= 0
-    ) {
-      throw new Error(
-        "Invalid exchange rate"
-      );
-    }
-
-    return rate;
-  };
-
-  // --------------------------------------------------
-  // Currency change
+  // Currency Change
   //
-  // IMPORTANT:
-  // Convert from BASE currency every time.
-  // Never convert the already-converted display
-  // price. This prevents rounding drift.
+  // We DO NOT convert existing prices.
+  //
+  // When currency changes, clear material prices
+  // so old local prices are never mistaken for
+  // prices in another currency.
   // --------------------------------------------------
 
-  const handleCurrencyChange = async (
+  const handleCurrencyChange = (
     newCurrency: string
   ) => {
-    if (
-      !CURRENCY_CODES.includes(
-        newCurrency as CurrencyCode
-      )
-    ) {
-      return;
-    }
-
-    const targetCurrency =
+    const nextCurrency =
       newCurrency as CurrencyCode;
 
-    if (
-      targetCurrency === currency
-    ) {
+    if (nextCurrency === currency) {
       return;
     }
 
-    try {
-      const rate =
-        await getExchangeRate(
-          baseCurrency,
-          targetCurrency
-        );
+    setCurrency(nextCurrency);
 
-      const convertedCement =
-        Number(baseCementPrice) * rate;
+    // Clear old prices.
+    setCementPrice("");
+    setSandPrice("");
+    setAggregatePrice("");
 
-      const convertedSand =
-        Number(baseSandPrice) * rate;
+    // Clear previous cost.
+    setResult((previous) => ({
+      ...previous,
+      totalCost: 0,
+    }));
 
-      const convertedAggregate =
-        Number(baseAggregatePrice) * rate;
-
-      setCementPrice(
-        convertedCement.toFixed(2)
-      );
-
-      setSandPrice(
-        convertedSand.toFixed(2)
-      );
-
-      setAggregatePrice(
-        convertedAggregate.toFixed(2)
-      );
-
-      setCurrency(targetCurrency);
-
-      showNotification(
-        `Prices updated to ${targetCurrency}`
-      );
-    } catch {
-      showNotification(
-        "Latest exchange rate unavailable. Currency was not changed.",
-        "error"
-      );
-    }
-  };
-
-  // --------------------------------------------------
-  // When user edits a material price manually,
-  // update the base price using the current rate.
-  //
-  // For now, manual price edits become the new
-  // reference price in the selected currency.
-  // --------------------------------------------------
-
-  const handleCementPriceChange = (
-    value: string
-  ) => {
-    setCementPrice(value);
-
-    const numericValue =
-      Number(value);
-
-    if (
-      !Number.isFinite(numericValue) ||
-      numericValue < 0
-    ) {
-      return;
-    }
-
-    setBaseCementPrice(value);
-    setBaseCurrency(currency);
-  };
-
-  const handleSandPriceChange = (
-    value: string
-  ) => {
-    setSandPrice(value);
-
-    const numericValue =
-      Number(value);
-
-    if (
-      !Number.isFinite(numericValue) ||
-      numericValue < 0
-    ) {
-      return;
-    }
-
-    setBaseSandPrice(value);
-    setBaseCurrency(currency);
-  };
-
-  const handleAggregatePriceChange = (
-    value: string
-  ) => {
-    setAggregatePrice(value);
-
-    const numericValue =
-      Number(value);
-
-    if (
-      !Number.isFinite(numericValue) ||
-      numericValue < 0
-    ) {
-      return;
-    }
-
-    setBaseAggregatePrice(value);
-    setBaseCurrency(currency);
+    showNotification(
+      `Currency changed to ${nextCurrency}. Enter local material prices.`
+    );
   };
 
   // --------------------------------------------------
@@ -404,7 +251,7 @@ export default function ConcreteCalculator() {
     const q = Number(quantity);
 
     // --------------------------------------------------
-    // Required fields
+    // Required dimensions
     // --------------------------------------------------
 
     if (
@@ -413,11 +260,11 @@ export default function ConcreteCalculator() {
       !depth
     ) {
       setError(
-        "Please fill in all fields."
+        "Please fill in all dimension fields."
       );
 
       showNotification(
-        "Please fill in all fields.",
+        "Please fill in all dimension fields.",
         "error"
       );
 
@@ -425,7 +272,7 @@ export default function ConcreteCalculator() {
     }
 
     // --------------------------------------------------
-    // Dimensions validation
+    // Dimension validation
     // --------------------------------------------------
 
     if (
@@ -469,19 +316,63 @@ export default function ConcreteCalculator() {
     }
 
     // --------------------------------------------------
-    // Material prices
+    // Material price validation
+    //
+    // All three prices can be left blank.
+    //
+    // If the user enters one price, all three
+    // material prices must be entered.
     // --------------------------------------------------
 
-    const cement = Number(
-      cementPrice
-    );
+    const hasCementPrice =
+      cementPrice.trim() !== "";
 
-    const sandRate = Number(
-      sandPrice
-    );
+    const hasSandPrice =
+      sandPrice.trim() !== "";
+
+    const hasAggregatePrice =
+      aggregatePrice.trim() !== "";
+
+    const hasAnyPrice =
+      hasCementPrice ||
+      hasSandPrice ||
+      hasAggregatePrice;
+
+    const hasAllPrices =
+      hasCementPrice &&
+      hasSandPrice &&
+      hasAggregatePrice;
+
+    if (
+      hasAnyPrice &&
+      !hasAllPrices
+    ) {
+      setError(
+        "Enter prices for cement, sand, and aggregate, or leave all prices blank."
+      );
+
+      showNotification(
+        "Enter all three material prices.",
+        "error"
+      );
+
+      return;
+    }
+
+    const cement =
+      hasCementPrice
+        ? Number(cementPrice)
+        : 0;
+
+    const sandRate =
+      hasSandPrice
+        ? Number(sandPrice)
+        : 0;
 
     const aggregateRate =
-      Number(aggregatePrice);
+      hasAggregatePrice
+        ? Number(aggregatePrice)
+        : 0;
 
     if (
       !Number.isFinite(cement) ||
@@ -494,11 +385,11 @@ export default function ConcreteCalculator() {
       aggregateRate < 0
     ) {
       setError(
-        "Material prices cannot be negative."
+        "Material prices must be valid numbers and cannot be negative."
       );
 
       showNotification(
-        "Material prices cannot be negative.",
+        "Invalid material prices.",
         "error"
       );
 
@@ -530,7 +421,37 @@ export default function ConcreteCalculator() {
       );
 
       showNotification(
-        "Material density must be greater than zero.",
+        "Invalid material density.",
+        "error"
+      );
+
+      return;
+    }
+
+    // --------------------------------------------------
+    // Mix ratio validation
+    // --------------------------------------------------
+
+    if (
+      !Number.isFinite(
+        mixRatio.cement
+      ) ||
+      !Number.isFinite(
+        mixRatio.sand
+      ) ||
+      !Number.isFinite(
+        mixRatio.aggregate
+      ) ||
+      mixRatio.cement <= 0 ||
+      mixRatio.sand <= 0 ||
+      mixRatio.aggregate <= 0
+    ) {
+      setError(
+        "Invalid concrete mix ratio."
+      );
+
+      showNotification(
+        "Invalid concrete mix ratio.",
         "error"
       );
 
@@ -584,27 +505,28 @@ export default function ConcreteCalculator() {
     output.cementBags *= q;
 
     output.sand =
-      +(output.sand * q).toFixed(3);
+      +(output.sand * q)
+        .toFixed(3);
 
     output.aggregate =
-      +(
-        output.aggregate * q
-      ).toFixed(3);
+      +(output.aggregate * q)
+        .toFixed(3);
 
     output.water =
-      +(output.water * q).toFixed(1);
+      +(output.water * q)
+        .toFixed(1);
 
     output.totalCost =
-      +(
-        output.totalCost * q
-      ).toFixed(2);
+      +(output.totalCost * q)
+        .toFixed(2);
 
     // --------------------------------------------------
     // Save result
     // --------------------------------------------------
 
     setResult({
-      volume: output.volume,
+      volume:
+        output.volume,
 
       dryVolume:
         output.dryVolume,
@@ -624,7 +546,8 @@ export default function ConcreteCalculator() {
       cementBags:
         output.cementBags,
 
-      sand: output.sand,
+      sand:
+        output.sand,
 
       aggregate:
         output.aggregate,
@@ -637,7 +560,7 @@ export default function ConcreteCalculator() {
     });
 
     // --------------------------------------------------
-    // History
+    // Save history
     // --------------------------------------------------
 
     const newHistory = [
@@ -645,12 +568,15 @@ export default function ConcreteCalculator() {
         length: l,
         width: w,
         depth: d,
-        volume: output.volume,
+        volume:
+          output.volume,
       },
       ...history,
     ].slice(0, 5);
 
-    setHistory(newHistory);
+    setHistory(
+      newHistory
+    );
 
     localStorage.setItem(
       "concrete-history",
@@ -669,7 +595,8 @@ export default function ConcreteCalculator() {
   // --------------------------------------------------
 
   const handleCopy = async () => {
-    const text = `Concrete Calculator Result
+    const text =
+      `Concrete Calculator Result
 
 Concrete Volume : ${result.volume.toFixed(2)} m³
 Dry Volume      : ${result.dryVolume.toFixed(2)} m³
@@ -699,7 +626,8 @@ Total Cost      : ${result.totalCost.toFixed(2)} ${currency}`;
   // --------------------------------------------------
 
   const handleShare = async () => {
-    const text = `Concrete Calculator Result
+    const text =
+      `Concrete Calculator Result
 
 Concrete Volume : ${result.volume.toFixed(2)} m³
 Dry Volume      : ${result.dryVolume.toFixed(2)} m³
@@ -921,7 +849,9 @@ Total Cost      : ${result.totalCost.toFixed(2)} ${currency}`;
                 setAggregateUnit
               }
 
-              error={error}
+              error={
+                error
+              }
 
               setLength={
                 setLength
@@ -940,15 +870,15 @@ Total Cost      : ${result.totalCost.toFixed(2)} ${currency}`;
               }
 
               setCementPrice={
-                handleCementPriceChange
+                setCementPrice
               }
 
               setSandPrice={
-                handleSandPriceChange
+                setSandPrice
               }
 
               setAggregatePrice={
-                handleAggregatePriceChange
+                setAggregatePrice
               }
 
               onCalculate={
@@ -1000,28 +930,42 @@ Total Cost      : ${result.totalCost.toFixed(2)} ${currency}`;
 
           </div>
 
+          {/* Related Calculators */}
+
           <div className="mt-6">
             <RelatedCalculators />
           </div>
+
+          {/* Formula */}
 
           <div className="mt-6">
             <Formula />
           </div>
 
+          {/* Example */}
+
           <div className="mt-6">
             <Example />
           </div>
+
+          {/* FAQ */}
 
           <div className="mt-6">
             <FAQ />
           </div>
 
+          {/* About */}
+
           <div className="mt-6">
             <AboutCalculator />
           </div>
 
+          {/* History */}
+
           <History
-            history={history}
+            history={
+              history
+            }
             onClear={
               handleClearHistory
             }
@@ -1032,11 +976,15 @@ Total Cost      : ${result.totalCost.toFixed(2)} ${currency}`;
       </main>
 
       <Toast
-        show={showToast}
+        show={
+          showToast
+        }
         message={
           toastMessage
         }
-        type={toastType}
+        type={
+          toastType
+        }
       />
     </>
   );
