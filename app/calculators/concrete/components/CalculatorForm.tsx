@@ -83,6 +83,16 @@ const units: {
   },
 ];
 
+const CURRENCY_SYMBOLS: Record<string, string> = {
+  USD: "$",
+  INR: "₹",
+  EUR: "€",
+  GBP: "£",
+  AED: "AED",
+  AUD: "A$",
+  CAD: "C$",
+};
+
 export default function CalculatorForm({
   length,
   width,
@@ -150,6 +160,17 @@ export default function CalculatorForm({
   const [customAggregate, setCustomAggregate] =
     useState("4");
 
+  // --------------------------------------------------
+  // Currency Symbol
+  // --------------------------------------------------
+
+  const currencySymbol =
+    CURRENCY_SYMBOLS[currency] || "$";
+
+  // --------------------------------------------------
+  // Common Styles
+  // --------------------------------------------------
+
   const inputClass =
     "h-14 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-lg text-slate-900 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100";
 
@@ -158,6 +179,9 @@ export default function CalculatorForm({
 
   const labelClass =
     "mb-2 block text-base font-medium text-slate-800";
+
+  const priceInputClass =
+    "h-14 min-w-0 flex-1 bg-transparent px-3 text-lg text-slate-900 outline-none";
 
   const handleCalculate = () => {
     let mixRatio: MixRatio;
@@ -617,6 +641,10 @@ export default function CalculatorForm({
 
           <div className="flex overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 focus-within:border-blue-500 focus-within:bg-white focus-within:ring-2 focus-within:ring-blue-100">
 
+            <div className="flex h-14 items-center px-4 text-lg font-semibold text-slate-600">
+              {currencySymbol}
+            </div>
+
             <input
               type="number"
               min="0"
@@ -627,7 +655,8 @@ export default function CalculatorForm({
                   e.target.value
                 )
               }
-              className="h-14 min-w-0 flex-1 bg-transparent px-4 text-lg text-slate-900 outline-none"
+              placeholder="0.00"
+              className={priceInputClass}
             />
 
             <select
@@ -672,6 +701,10 @@ export default function CalculatorForm({
 
           <div className="flex overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 focus-within:border-blue-500 focus-within:bg-white focus-within:ring-2 focus-within:ring-blue-100">
 
+            <div className="flex h-14 items-center px-4 text-lg font-semibold text-slate-600">
+              {currencySymbol}
+            </div>
+
             <input
               type="number"
               min="0"
@@ -682,7 +715,8 @@ export default function CalculatorForm({
                   e.target.value
                 )
               }
-              className="h-14 min-w-0 flex-1 bg-transparent px-4 text-lg text-slate-900 outline-none"
+              placeholder="0.00"
+              className={priceInputClass}
             />
 
             <select
@@ -767,6 +801,10 @@ export default function CalculatorForm({
 
           <div className="flex overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 focus-within:border-blue-500 focus-within:bg-white focus-within:ring-2 focus-within:ring-blue-100">
 
+            <div className="flex h-14 items-center px-4 text-lg font-semibold text-slate-600">
+              {currencySymbol}
+            </div>
+
             <input
               type="number"
               min="0"
@@ -777,7 +815,8 @@ export default function CalculatorForm({
                   e.target.value
                 )
               }
-              className="h-14 min-w-0 flex-1 bg-transparent px-4 text-lg text-slate-900 outline-none"
+              placeholder="0.00"
+              className={priceInputClass}
             />
 
             <select
@@ -848,6 +887,7 @@ export default function CalculatorForm({
               <option value="1650">
                 1650 kg/m³
               </option>
+
             </select>
 
           </div>
