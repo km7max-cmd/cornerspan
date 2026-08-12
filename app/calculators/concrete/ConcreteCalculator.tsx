@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import CalculatorHero from "../../components/CalculatorHero";
 import CalculatorForm from "./components/CalculatorForm";
@@ -11,18 +11,9 @@ import RelatedCalculators from "./components/RelatedCalculators";
 import Example from "./components/Example";
 import History from "./components/History";
 import AboutCalculator from "./components/AboutCalculator";
-import {
-  calculateConcrete,
-  Unit,
-} from "./utils/calculateConcrete";
+import { calculateConcrete, Unit } from "./utils/calculateConcrete";
 import { jsPDF } from "jspdf";
 import Toast from "../../components/Toast";
-
-type MixRatio = {
-  cement: number;
-  sand: number;
-  aggregate: number;
-};
 
 type CurrencyCode =
   | "USD"
@@ -33,19 +24,148 @@ type CurrencyCode =
   | "AUD"
   | "CAD";
 
+type MixRatio = {
+  cement: number;
+  sand: number;
+  aggregate: number;
+};
+
+type HistoryItem = {
+  length: number;
+  width: number;
+  depth: number;
+  volume: number;
+};
+
+type CalculationResult = {
+  volume: number;
+  dryVolume: number;
+  totalVolume: number;
+  wasteVolume: number;
+
+  cementVolume: number;
+  cementWeight: number;
+  cementBags: number;
+
+  sand: number;
+  aggregate: number;
+  water: number;
+
+  totalCost: number;
+};
+
+const ZERO_RESULT: CalculationResult = {
+  volume: 0,
+  dryVolume: 0,
+  totalVolume: 0,
+  wasteVolume: 0,
+
+  cementVolume: 0,
+  cementWeight: 0,
+  cementBags: 0,
+
+  sand: 0,
+  aggregate: 0,
+  water: 0,
+
+  totalCost: 0,
+};
+
+const CURRENCY_NAMES: Record<CurrencyCode, string> = {
+  USD: "US Dollar",
+  INR: "Indian Rupee",
+  EUR: "Euro",
+  GBP: "British Pound",
+  AED: "UAE Dirham",
+  AUD: "Australian Dollar",
+  CAD: "Canadian Dollar",
+};
+
+const CURRENCY_SYMBOLS: Record<CurrencyCode, string> = {
+  USD: "$",
+  INR: "₹",
+  EUR: "€",
+  GBP: "£",
+  AED: "AED ",
+  AUD: "A$",
+  CAD: "C$",
+};
+
+function toNumber(value: string): number {
+  const n = Number(value);
+  return Number.isFinite(n) ? n : 0;
+}
+
+function convertMaterialQuantity(
+  quantityM3: number,
+  unit: string,
+  densityKgPerM3: number
+): number {
+  if (!Number.isFinite(quantityM3) || quantityM3 <= 0) {
+    return 0;
+  }
+
+  if (!Number.isFinite(densityKgPerM3) || densityKgPerM3 <= 0) {
+    return 0;
+  }
+
+  switch (unit) {
+    case "m³":
+      return quantityM3;
+
+    case "yd³":
+      return quantityM3 * 1.30795062;
+
+    case "tonne":
+      return (quantityM3 * densityKgPerM3) / 1000;
+
+    case "US ton":
+      return (quantityM3 * densityKgPerM3) / 907.18474;
+
+    default:
+      return quantityM3;
+  }
+}
+
+function convertCementQuantity(
+  cementWeightKg: number,
+  unit: string
+): number {
+  if (!Number.isFinite(cementWeightKg) || cementWeightKg <= 0) {
+    return 0;
+  }
+
+  switch (unit) {
+    case "Bag":
+      return cementWeightKg / 50;
+
+    case "kg":
+      return cementWeightKg;
+
+    case "tonne":
+      return cementWeightKg / 1000;
+
+    case "US ton":
+      return cementWeightKg / 907.18474;
+
+    default:
+      return cementWeightKg / 50;
+  }
+}
+
 export default function ConcreteCalculator() {
-  // --------------------------------------------------
+  // ==================================================
   // Dimensions
-  // --------------------------------------------------
+  // ==================================================
 
   const [length, setLength] = useState("");
   const [width, setWidth] = useState("");
   const [depth, setDepth] = useState("");
   const [quantity, setQuantity] = useState("1");
 
-  // --------------------------------------------------
+  // ==================================================
   // Dimension Units
-  // --------------------------------------------------
+  // ==================================================
 
   const [lengthUnit, setLengthUnit] =
     useState<Unit>("Meter");
@@ -56,25 +176,43 @@ export default function ConcreteCalculator() {
   const [depthUnit, setDepthUnit] =
     useState<Unit>("Meter");
 
-  // --------------------------------------------------
+  // ==================================================
   // Currency
-  //
-  // Currency is only the currency in which the user
-  // enters/displays local material prices.
-  //
-  // NO automatic currency conversion.
-  // --------------------------------------------------
+  // ==================================================
 
   const [currency, setCurrency] =
-    useState<CurrencyCode>("USD");
+    useState<CurrencyCode>("INR");
 
-  // --------------------------------------------------
+  /*
+   * This stores the currency in which the user
+   * originally entered the material prices.
+   *
+   * Example:
+   *
+   * User enters:
+   * Cement = 450 INR
+   *
+   * Then changes currency:
+   * USD
+   *
+   * The 450 is converted to USD.
+   */
+  const priceCurrencyRef =
+    useRef<CurrencyCode>("INR");
+
+  const [currencyLoading, setCurrencyLoading] =
+    useState(false);
+
+  const [currencyError, setCurrencyError] =
+    useState("");
+
+  // ==================================================
   // Material Prices
   //
   // IMPORTANT:
-  // No fake/default prices.
+  // No fake/default material prices.
   // User enters local market prices.
-  // --------------------------------------------------
+  // ==================================================
 
   const [cementPrice, setCementPrice] =
     useState("");
@@ -85,9 +223,9 @@ export default function ConcreteCalculator() {
   const [aggregatePrice, setAggregatePrice] =
     useState("");
 
-  // --------------------------------------------------
-  // Material Price Units
-  // --------------------------------------------------
+  // ==================================================
+  // Material Units
+  // ==================================================
 
   const [cementUnit, setCementUnit] =
     useState("Bag");
@@ -98,9 +236,9 @@ export default function ConcreteCalculator() {
   const [aggregateUnit, setAggregateUnit] =
     useState("m³");
 
-  // --------------------------------------------------
-  // Material Density
-  // --------------------------------------------------
+  // ==================================================
+  // Material Densities
+  // ==================================================
 
   const [sandDensity, setSandDensity] =
     useState("1600");
@@ -108,67 +246,50 @@ export default function ConcreteCalculator() {
   const [aggregateDensity, setAggregateDensity] =
     useState("1500");
 
-  // --------------------------------------------------
+  // ==================================================
   // Error
-  // --------------------------------------------------
+  // ==================================================
 
   const [error, setError] =
     useState("");
 
-  // --------------------------------------------------
+  // ==================================================
   // Result
-  // --------------------------------------------------
+  // ==================================================
 
-  const [result, setResult] = useState({
-    volume: 0,
-    dryVolume: 0,
-    totalVolume: 0,
-    wasteVolume: 0,
+  const [result, setResult] =
+    useState<CalculationResult>(ZERO_RESULT);
 
-    cementVolume: 0,
-    cementWeight: 0,
-    cementBags: 0,
-
-    sand: 0,
-    aggregate: 0,
-    water: 0,
-
-    totalCost: 0,
-  });
-
-  // --------------------------------------------------
+  // ==================================================
   // History
-  // --------------------------------------------------
+  // ==================================================
 
-  const [history, setHistory] = useState<
-    {
-      length: number;
-      width: number;
-      depth: number;
-      volume: number;
-    }[]
-  >([]);
+  const [history, setHistory] =
+    useState<HistoryItem[]>([]);
 
   useEffect(() => {
     const savedHistory =
-      localStorage.getItem(
-        "concrete-history"
-      );
+      localStorage.getItem("concrete-history");
 
-    if (savedHistory) {
-      try {
-        setHistory(
-          JSON.parse(savedHistory)
-        );
-      } catch {
-        setHistory([]);
+    if (!savedHistory) {
+      return;
+    }
+
+    try {
+      const parsed =
+        JSON.parse(savedHistory);
+
+      if (Array.isArray(parsed)) {
+        setHistory(parsed);
       }
+    } catch {
+      setHistory([]);
     }
   }, []);
 
-  // --------------------------------------------------
+  // ==================================================
   // Toast
-  // --------------------------------------------------
+  // ==================================================
 
   const [showToast, setShowToast] =
     useState(false);
@@ -177,16 +298,16 @@ export default function ConcreteCalculator() {
     useState("");
 
   const [toastType, setToastType] =
-    useState<"success" | "error">(
-      "success"
-    );
+    useState<"success" | "error">("success");
 
   useEffect(() => {
-    if (!showToast) return;
+    if (!showToast) {
+      return;
+    }
 
     const timer = setTimeout(() => {
       setShowToast(false);
-    }, 2000);
+    }, 2500);
 
     return () => clearTimeout(timer);
   }, [showToast]);
@@ -200,47 +321,164 @@ export default function ConcreteCalculator() {
     setShowToast(true);
   };
 
-  // --------------------------------------------------
-  // Currency Change
+  // ==================================================
+  // Currency Conversion
   //
-  // We DO NOT convert existing prices.
-  //
-  // When currency changes, clear material prices
-  // so old local prices are never mistaken for
-  // prices in another currency.
-  // --------------------------------------------------
+  // Frankfurter API
+  // No API key required.
+  // ==================================================
 
-  const handleCurrencyChange = (
-    newCurrency: string
-  ) => {
-    const nextCurrency =
-      newCurrency as CurrencyCode;
+  useEffect(() => {
+    const oldCurrency =
+      priceCurrencyRef.current;
 
-    if (nextCurrency === currency) {
+    const newCurrency =
+      currency;
+
+    if (oldCurrency === newCurrency) {
       return;
     }
 
-    setCurrency(nextCurrency);
+    const hasPrices =
+      cementPrice.trim() !== "" ||
+      sandPrice.trim() !== "" ||
+      aggregatePrice.trim() !== "";
 
-    // Clear old prices.
-    setCementPrice("");
-    setSandPrice("");
-    setAggregatePrice("");
+    /*
+     * If there are no entered prices,
+     * simply change the currency.
+     */
+    if (!hasPrices) {
+      priceCurrencyRef.current =
+        newCurrency;
 
-    // Clear previous cost.
-    setResult((previous) => ({
-      ...previous,
-      totalCost: 0,
-    }));
+      setCurrencyError("");
 
-    showNotification(
-      `Currency changed to ${nextCurrency}. Enter local material prices.`
-    );
-  };
+      return;
+    }
 
-  // --------------------------------------------------
+    let cancelled = false;
+
+    const convertPrices = async () => {
+      setCurrencyLoading(true);
+      setCurrencyError("");
+
+      try {
+        const response = await fetch(
+          `https://api.frankfurter.dev/v2/rate/${oldCurrency}/${newCurrency}`
+        );
+
+        if (!response.ok) {
+          throw new Error(
+            "Currency rate unavailable."
+          );
+        }
+
+        const data: {
+          rate?: number;
+        } = await response.json();
+
+        if (
+          !data.rate ||
+          !Number.isFinite(data.rate)
+        ) {
+          throw new Error(
+            "Invalid currency rate."
+          );
+        }
+
+        if (cancelled) {
+          return;
+        }
+
+        const rate = data.rate;
+
+        const convert = (
+          value: string
+        ): string => {
+          if (value.trim() === "") {
+            return "";
+          }
+
+          const n = Number(value);
+
+          if (!Number.isFinite(n)) {
+            return value;
+          }
+
+          return (n * rate).toFixed(2);
+        };
+
+        setCementPrice(
+          convert(cementPrice)
+        );
+
+        setSandPrice(
+          convert(sandPrice)
+        );
+
+        setAggregatePrice(
+          convert(aggregatePrice)
+        );
+
+        priceCurrencyRef.current =
+          newCurrency;
+
+        /*
+         * Existing result is no longer valid
+         * because the displayed material prices
+         * have changed.
+         */
+        setResult((previous) => ({
+          ...previous,
+          totalCost: 0,
+        }));
+
+        showNotification(
+          `Prices converted from ${oldCurrency} to ${newCurrency}.`
+        );
+      } catch {
+        if (cancelled) {
+          return;
+        }
+
+        /*
+         * IMPORTANT:
+         * Keep old price currency reference.
+         *
+         * This prevents a wrong conversion if
+         * the API fails.
+         */
+        setCurrencyError(
+          `Unable to get the latest ${oldCurrency} → ${newCurrency} exchange rate.`
+        );
+
+        showNotification(
+          "Currency conversion failed. Please try again.",
+          "error"
+        );
+      } finally {
+        if (!cancelled) {
+          setCurrencyLoading(false);
+        }
+      }
+    };
+
+    convertPrices();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    currency,
+    cementPrice,
+    sandPrice,
+    aggregatePrice,
+  ]);
+
+  // ==================================================
   // Calculate
-  // --------------------------------------------------
+  // ==================================================
 
   const handleCalculate = (
     mixRatio: MixRatio
@@ -251,17 +489,19 @@ export default function ConcreteCalculator() {
     const q = Number(quantity);
 
     // --------------------------------------------------
-    // Required dimensions
+    // Dimension validation
     // --------------------------------------------------
 
     if (
-      !length ||
-      !width ||
-      !depth
+      !length.trim() ||
+      !width.trim() ||
+      !depth.trim()
     ) {
       setError(
         "Please fill in all dimension fields."
       );
+
+      setResult(ZERO_RESULT);
 
       showNotification(
         "Please fill in all dimension fields.",
@@ -270,10 +510,6 @@ export default function ConcreteCalculator() {
 
       return;
     }
-
-    // --------------------------------------------------
-    // Dimension validation
-    // --------------------------------------------------
 
     if (
       !Number.isFinite(l) ||
@@ -284,11 +520,13 @@ export default function ConcreteCalculator() {
       d <= 0
     ) {
       setError(
-        "Values must be greater than zero."
+        "Length, Width and Depth must be greater than zero."
       );
 
+      setResult(ZERO_RESULT);
+
       showNotification(
-        "Values must be greater than zero.",
+        "Dimension values must be greater than zero.",
         "error"
       );
 
@@ -304,11 +542,37 @@ export default function ConcreteCalculator() {
       q <= 0
     ) {
       setError(
-        "Quantity must be greater than 0."
+        "Quantity must be greater than zero."
       );
 
+      setResult(ZERO_RESULT);
+
       showNotification(
-        "Quantity must be greater than 0.",
+        "Quantity must be greater than zero.",
+        "error"
+      );
+
+      return;
+    }
+
+    // --------------------------------------------------
+    // Mix ratio validation
+    // --------------------------------------------------
+
+    if (
+      !mixRatio ||
+      mixRatio.cement <= 0 ||
+      mixRatio.sand <= 0 ||
+      mixRatio.aggregate <= 0
+    ) {
+      setError(
+        "Please enter a valid concrete mix ratio."
+      );
+
+      setResult(ZERO_RESULT);
+
+      showNotification(
+        "Invalid concrete mix ratio.",
         "error"
       );
 
@@ -318,78 +582,43 @@ export default function ConcreteCalculator() {
     // --------------------------------------------------
     // Material price validation
     //
-    // All three prices can be left blank.
+    // Prices are optional.
     //
-    // If the user enters one price, all three
-    // material prices must be entered.
+    // If blank:
+    // calculation still works,
+    // but total material cost cannot be calculated.
     // --------------------------------------------------
 
-    const hasCementPrice =
-      cementPrice.trim() !== "";
-
-    const hasSandPrice =
-      sandPrice.trim() !== "";
-
-    const hasAggregatePrice =
+    const hasAnyPrice =
+      cementPrice.trim() !== "" ||
+      sandPrice.trim() !== "" ||
       aggregatePrice.trim() !== "";
 
-    const hasAnyPrice =
-      hasCementPrice ||
-      hasSandPrice ||
-      hasAggregatePrice;
+    const cementRate =
+      toNumber(cementPrice);
 
-    const hasAllPrices =
-      hasCementPrice &&
-      hasSandPrice &&
-      hasAggregatePrice;
+    const sandRate =
+      toNumber(sandPrice);
+
+    const aggregateRate =
+      toNumber(aggregatePrice);
 
     if (
       hasAnyPrice &&
-      !hasAllPrices
+      (
+        cementRate < 0 ||
+        sandRate < 0 ||
+        aggregateRate < 0
+      )
     ) {
       setError(
-        "Enter prices for cement, sand, and aggregate, or leave all prices blank."
+        "Material prices cannot be negative."
       );
+
+      setResult(ZERO_RESULT);
 
       showNotification(
-        "Enter all three material prices.",
-        "error"
-      );
-
-      return;
-    }
-
-    const cement =
-      hasCementPrice
-        ? Number(cementPrice)
-        : 0;
-
-    const sandRate =
-      hasSandPrice
-        ? Number(sandPrice)
-        : 0;
-
-    const aggregateRate =
-      hasAggregatePrice
-        ? Number(aggregatePrice)
-        : 0;
-
-    if (
-      !Number.isFinite(cement) ||
-      !Number.isFinite(sandRate) ||
-      !Number.isFinite(
-        aggregateRate
-      ) ||
-      cement < 0 ||
-      sandRate < 0 ||
-      aggregateRate < 0
-    ) {
-      setError(
-        "Material prices must be valid numbers and cannot be negative."
-      );
-
-      showNotification(
-        "Invalid material prices.",
+        "Material prices cannot be negative.",
         "error"
       );
 
@@ -410,48 +639,36 @@ export default function ConcreteCalculator() {
       !Number.isFinite(
         sandDensityValue
       ) ||
-      !Number.isFinite(
-        aggregateDensityValue
-      ) ||
-      sandDensityValue <= 0 ||
-      aggregateDensityValue <= 0
+      sandDensityValue <= 0
     ) {
       setError(
-        "Material density must be greater than zero."
+        "Please select a valid sand density."
       );
 
+      setResult(ZERO_RESULT);
+
       showNotification(
-        "Invalid material density.",
+        "Invalid sand density.",
         "error"
       );
 
       return;
     }
 
-    // --------------------------------------------------
-    // Mix ratio validation
-    // --------------------------------------------------
-
     if (
       !Number.isFinite(
-        mixRatio.cement
+        aggregateDensityValue
       ) ||
-      !Number.isFinite(
-        mixRatio.sand
-      ) ||
-      !Number.isFinite(
-        mixRatio.aggregate
-      ) ||
-      mixRatio.cement <= 0 ||
-      mixRatio.sand <= 0 ||
-      mixRatio.aggregate <= 0
+      aggregateDensityValue <= 0
     ) {
       setError(
-        "Invalid concrete mix ratio."
+        "Please select a valid aggregate density."
       );
 
+      setResult(ZERO_RESULT);
+
       showNotification(
-        "Invalid concrete mix ratio.",
+        "Invalid aggregate density.",
         "error"
       );
 
@@ -460,9 +677,9 @@ export default function ConcreteCalculator() {
 
     setError("");
 
-    // --------------------------------------------------
-    // Calculate concrete
-    // --------------------------------------------------
+    // ==================================================
+    // Concrete Calculation
+    // ==================================================
 
     const output =
       calculateConcrete(
@@ -472,18 +689,7 @@ export default function ConcreteCalculator() {
         lengthUnit,
         widthUnit,
         depthUnit,
-        mixRatio,
-
-        sandDensityValue,
-        aggregateDensityValue,
-
-        cement,
-        sandRate,
-        aggregateRate,
-
-        cementUnit,
-        sandUnit,
-        aggregateUnit
+        mixRatio
       );
 
     // --------------------------------------------------
@@ -491,110 +697,206 @@ export default function ConcreteCalculator() {
     // --------------------------------------------------
 
     output.volume *= q;
-
     output.dryVolume *= q;
-
     output.totalVolume *= q;
-
     output.wasteVolume *= q;
 
     output.cementVolume *= q;
-
     output.cementWeight *= q;
-
     output.cementBags *= q;
 
-    output.sand =
-      +(output.sand * q)
-        .toFixed(3);
+    output.sand = Number(
+      (
+        output.sand * q
+      ).toFixed(3)
+    );
 
-    output.aggregate =
-      +(output.aggregate * q)
-        .toFixed(3);
+    output.aggregate = Number(
+      (
+        output.aggregate * q
+      ).toFixed(3)
+    );
 
-    output.water =
-      +(output.water * q)
-        .toFixed(1);
+    output.water = Number(
+      (
+        output.water * q
+      ).toFixed(1)
+    );
 
-    output.totalCost =
-      +(output.totalCost * q)
-        .toFixed(2);
+    // ==================================================
+    // Material Cost
+    // ==================================================
 
-    // --------------------------------------------------
-    // Save result
-    // --------------------------------------------------
+    let totalCost = 0;
+
+    /*
+     * Cement
+     *
+     * calculateConcrete gives cementWeight
+     * in kilograms.
+     *
+     * We convert it to the selected price unit.
+     */
+
+    if (
+      cementPrice.trim() !== "" &&
+      cementRate > 0
+    ) {
+      const cementQuantity =
+        convertCementQuantity(
+          output.cementWeight,
+          cementUnit
+        );
+
+      totalCost +=
+        cementQuantity * cementRate;
+    }
+
+    /*
+     * Sand
+     */
+
+    if (
+      sandPrice.trim() !== "" &&
+      sandRate > 0
+    ) {
+      const sandQuantity =
+        convertMaterialQuantity(
+          output.sand,
+          sandUnit,
+          sandDensityValue
+        );
+
+      totalCost +=
+        sandQuantity * sandRate;
+    }
+
+    /*
+     * Aggregate
+     */
+
+    if (
+      aggregatePrice.trim() !== "" &&
+      aggregateRate > 0
+    ) {
+      const aggregateQuantity =
+        convertMaterialQuantity(
+          output.aggregate,
+          aggregateUnit,
+          aggregateDensityValue
+        );
+
+      totalCost +=
+        aggregateQuantity *
+        aggregateRate;
+    }
+
+    totalCost = Number(
+      totalCost.toFixed(2)
+    );
+
+    // ==================================================
+    // Save Result
+    // ==================================================
 
     setResult({
-      volume:
-        output.volume,
+      volume: Number(
+        output.volume.toFixed(3)
+      ),
 
-      dryVolume:
-        output.dryVolume,
+      dryVolume: Number(
+        output.dryVolume.toFixed(3)
+      ),
 
-      totalVolume:
-        output.totalVolume,
+      totalVolume: Number(
+        output.totalVolume.toFixed(3)
+      ),
 
-      wasteVolume:
-        output.wasteVolume,
+      wasteVolume: Number(
+        output.wasteVolume.toFixed(3)
+      ),
 
-      cementVolume:
-        output.cementVolume,
+      cementVolume: Number(
+        output.cementVolume.toFixed(3)
+      ),
 
-      cementWeight:
-        output.cementWeight,
+      cementWeight: Number(
+        output.cementWeight.toFixed(1)
+      ),
 
-      cementBags:
-        output.cementBags,
+      cementBags: Math.ceil(
+        output.cementBags
+      ),
 
-      sand:
-        output.sand,
+      sand: Number(
+        output.sand.toFixed(3)
+      ),
 
-      aggregate:
-        output.aggregate,
+      aggregate: Number(
+        output.aggregate.toFixed(3)
+      ),
 
-      water:
-        output.water,
+      water: Number(
+        output.water.toFixed(1)
+      ),
 
-      totalCost:
-        output.totalCost,
+      totalCost,
     });
 
-    // --------------------------------------------------
-    // Save history
-    // --------------------------------------------------
+    // ==================================================
+    // History
+    // ==================================================
 
-    const newHistory = [
+    const newHistory: HistoryItem[] = [
       {
         length: l,
         width: w,
         depth: d,
-        volume:
-          output.volume,
+        volume: Number(
+          output.volume.toFixed(3)
+        ),
       },
       ...history,
     ].slice(0, 5);
 
-    setHistory(
-      newHistory
-    );
+    setHistory(newHistory);
 
     localStorage.setItem(
       "concrete-history",
-      JSON.stringify(
-        newHistory
-      )
+      JSON.stringify(newHistory)
     );
 
-    showNotification(
-      "Calculation completed successfully!"
-    );
+    // ==================================================
+    // Notification
+    // ==================================================
+
+    if (
+      cementPrice.trim() === "" &&
+      sandPrice.trim() === "" &&
+      aggregatePrice.trim() === ""
+    ) {
+      showNotification(
+        "Calculation completed. Enter local material prices to calculate cost."
+      );
+    } else {
+      showNotification(
+        "Calculation completed successfully!"
+      );
+    }
   };
 
-  // --------------------------------------------------
+  // ==================================================
   // Copy
-  // --------------------------------------------------
+  // ==================================================
 
   const handleCopy = async () => {
+    if (result.volume <= 0) {
+      return;
+    }
+
+    const symbol =
+      CURRENCY_SYMBOLS[currency];
+
     const text =
       `Concrete Calculator Result
 
@@ -603,7 +905,13 @@ Dry Volume      : ${result.dryVolume.toFixed(2)} m³
 Cement Bags     : ${result.cementBags} Bags
 Sand            : ${result.sand.toFixed(2)} m³
 Aggregate       : ${result.aggregate.toFixed(2)} m³
-Total Cost      : ${result.totalCost.toFixed(2)} ${currency}`;
+Water           : ${result.water.toFixed(0)} L
+Material Cost   : ${
+        result.totalCost > 0
+          ? `${symbol}${result.totalCost.toLocaleString()}`
+          : "Not available"
+      }
+Currency        : ${currency}`;
 
     try {
       await navigator.clipboard.writeText(
@@ -621,11 +929,18 @@ Total Cost      : ${result.totalCost.toFixed(2)} ${currency}`;
     }
   };
 
-  // --------------------------------------------------
+  // ==================================================
   // Share
-  // --------------------------------------------------
+  // ==================================================
 
   const handleShare = async () => {
+    if (result.volume <= 0) {
+      return;
+    }
+
+    const symbol =
+      CURRENCY_SYMBOLS[currency];
+
     const text =
       `Concrete Calculator Result
 
@@ -634,10 +949,16 @@ Dry Volume      : ${result.dryVolume.toFixed(2)} m³
 Cement Bags     : ${result.cementBags} Bags
 Sand            : ${result.sand.toFixed(2)} m³
 Aggregate       : ${result.aggregate.toFixed(2)} m³
-Total Cost      : ${result.totalCost.toFixed(2)} ${currency}`;
+Water           : ${result.water.toFixed(0)} L
+Material Cost   : ${
+        result.totalCost > 0
+          ? `${symbol}${result.totalCost.toLocaleString()}`
+          : "Not available"
+      }`;
 
     try {
       if (
+        typeof navigator !== "undefined" &&
         navigator.share
       ) {
         await navigator.share({
@@ -651,99 +972,119 @@ Total Cost      : ${result.totalCost.toFixed(2)} ${currency}`;
         );
       } else {
         showNotification(
-          "Sharing is not supported.",
+          "Sharing is not supported on this device.",
           "error"
         );
       }
     } catch {
-      // User cancelled share
+      // User cancelled share.
     }
   };
 
-  // --------------------------------------------------
+  // ==================================================
   // PDF
-  // --------------------------------------------------
+  // ==================================================
 
-  const handleDownloadPDF =
-    () => {
-      const doc =
-        new jsPDF();
+  const handleDownloadPDF = () => {
+    if (result.volume <= 0) {
+      return;
+    }
 
-      doc.setFontSize(20);
+    const doc = new jsPDF();
 
-      doc.text(
-        "Concrete Calculator Result",
-        20,
-        20
-      );
+    const symbol =
+      CURRENCY_SYMBOLS[currency];
 
-      doc.setFontSize(12);
+    doc.setFontSize(20);
 
-      doc.text(
-        `Concrete Volume : ${result.volume.toFixed(2)} m3`,
-        20,
-        40
-      );
+    doc.text(
+      "Concrete Calculator Result",
+      20,
+      20
+    );
 
-      doc.text(
-        `Dry Volume      : ${result.dryVolume.toFixed(2)} m3`,
-        20,
-        50
-      );
+    doc.setFontSize(12);
 
-      doc.text(
-        `Cement Bags     : ${result.cementBags} Bags`,
-        20,
-        60
-      );
+    doc.text(
+      `Currency : ${CURRENCY_NAMES[currency]} (${currency})`,
+      20,
+      35
+    );
 
-      doc.text(
-        `Sand            : ${result.sand.toFixed(2)} m3`,
-        20,
-        70
-      );
+    doc.text(
+      `Concrete Volume : ${result.volume.toFixed(2)} m3`,
+      20,
+      50
+    );
 
-      doc.text(
-        `Aggregate       : ${result.aggregate.toFixed(2)} m3`,
-        20,
-        80
-      );
+    doc.text(
+      `Dry Volume      : ${result.dryVolume.toFixed(2)} m3`,
+      20,
+      60
+    );
 
-      doc.text(
-        `Total Cost      : ${result.totalCost.toFixed(2)} ${currency}`,
-        20,
-        90
-      );
+    doc.text(
+      `Cement Bags     : ${result.cementBags} Bags`,
+      20,
+      70
+    );
 
-      doc.save(
-        "Concrete-Calculation.pdf"
-      );
+    doc.text(
+      `Sand            : ${result.sand.toFixed(2)} m3`,
+      20,
+      80
+    );
 
-      showNotification(
-        "PDF downloaded successfully!"
-      );
-    };
+    doc.text(
+      `Aggregate       : ${result.aggregate.toFixed(2)} m3`,
+      20,
+      90
+    );
 
-  // --------------------------------------------------
+    doc.text(
+      `Water           : ${result.water.toFixed(0)} L`,
+      20,
+      100
+    );
+
+    doc.text(
+      `Material Cost   : ${
+        result.totalCost > 0
+          ? `${symbol}${result.totalCost.toFixed(2)}`
+          : "Not available"
+      }`,
+      20,
+      110
+    );
+
+    doc.save(
+      "Concrete-Calculation.pdf"
+    );
+
+    showNotification(
+      "PDF downloaded successfully!"
+    );
+  };
+
+  // ==================================================
   // Clear History
-  // --------------------------------------------------
+  // ==================================================
 
-  const handleClearHistory =
-    () => {
-      setHistory([]);
+  const handleClearHistory = () => {
+    setHistory([]);
 
-      localStorage.removeItem(
-        "concrete-history"
-      );
+    localStorage.removeItem(
+      "concrete-history"
+    );
 
-      showNotification(
-        "History cleared successfully!"
-      );
-    };
+    showNotification(
+      "History cleared successfully!"
+    );
+  };
 
-  // --------------------------------------------------
+  // ==================================================
   // UI
-  // --------------------------------------------------
+  // ==================================================
 
   return (
     <>
@@ -754,10 +1095,36 @@ Total Cost      : ${result.totalCost.toFixed(2)} ${currency}`;
           <CalculatorHero
             title="Concrete"
             highlight="Calculator"
-            description="Calculate concrete volume, cement bags, sand, aggregate, and material cost accurately."
+            description="Calculate concrete volume, cement bags, sand, aggregate, water, and material cost."
           />
 
+          {/* Currency loading/error notice */}
+
+          {(currencyLoading ||
+            currencyError) && (
+            <div className="mt-4 rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm text-blue-700">
+
+              {currencyLoading && (
+                <span>
+                  Updating material prices using the latest exchange rate...
+                </span>
+              )}
+
+              {!currencyLoading &&
+                currencyError && (
+                  <span>
+                    {currencyError}
+                  </span>
+                )}
+
+            </div>
+          )}
+
           <div className="mt-6 grid gap-6 lg:grid-cols-2">
+
+            {/* ==================================================
+                Calculator Form
+            ================================================== */}
 
             <CalculatorForm
               length={length}
@@ -765,22 +1132,11 @@ Total Cost      : ${result.totalCost.toFixed(2)} ${currency}`;
               depth={depth}
               quantity={quantity}
 
-              cementUnit={
-                cementUnit
-              }
+              cementUnit={cementUnit}
+              sandUnit={sandUnit}
+              aggregateUnit={aggregateUnit}
 
-              sandUnit={
-                sandUnit
-              }
-
-              aggregateUnit={
-                aggregateUnit
-              }
-
-              sandDensity={
-                sandDensity
-              }
-
+              sandDensity={sandDensity}
               aggregateDensity={
                 aggregateDensity
               }
@@ -793,37 +1149,22 @@ Total Cost      : ${result.totalCost.toFixed(2)} ${currency}`;
                 setAggregateDensity
               }
 
-              cementPrice={
-                cementPrice
-              }
-
-              sandPrice={
-                sandPrice
-              }
-
+              cementPrice={cementPrice}
+              sandPrice={sandPrice}
               aggregatePrice={
                 aggregatePrice
               }
 
-              currency={
-                currency
+              currency={currency}
+              setCurrency={(value) =>
+                setCurrency(
+                  value as CurrencyCode
+                )
               }
 
-              setCurrency={
-                handleCurrencyChange
-              }
-
-              lengthUnit={
-                lengthUnit
-              }
-
-              widthUnit={
-                widthUnit
-              }
-
-              depthUnit={
-                depthUnit
-              }
+              lengthUnit={lengthUnit}
+              widthUnit={widthUnit}
+              depthUnit={depthUnit}
 
               setLengthUnit={
                 setLengthUnit
@@ -849,25 +1190,12 @@ Total Cost      : ${result.totalCost.toFixed(2)} ${currency}`;
                 setAggregateUnit
               }
 
-              error={
-                error
-              }
+              error={error}
 
-              setLength={
-                setLength
-              }
-
-              setWidth={
-                setWidth
-              }
-
-              setDepth={
-                setDepth
-              }
-
-              setQuantity={
-                setQuantity
-              }
+              setLength={setLength}
+              setWidth={setWidth}
+              setDepth={setDepth}
+              setQuantity={setQuantity}
 
               setCementPrice={
                 setCementPrice
@@ -886,48 +1214,28 @@ Total Cost      : ${result.totalCost.toFixed(2)} ${currency}`;
               }
             />
 
-            <ResultCard
-              volume={
-                result.volume
-              }
+            {/* ==================================================
+                Result Card
+            ================================================== */}
 
+            <ResultCard
+              volume={result.volume}
               dryVolume={
                 result.dryVolume
               }
-
               cementBags={
                 result.cementBags
               }
-
-              sand={
-                result.sand
-              }
-
+              sand={result.sand}
               aggregate={
                 result.aggregate
               }
-                water={result.water}
-  hasMaterialPrices={
-    cementPrice.trim() !== "" &&
-    sandPrice.trim() !== "" &&
-    aggregatePrice.trim() !== ""
-  }
               totalCost={
                 result.totalCost
               }
-
-              currency={
-                currency
-              }
-
-              onCopy={
-                handleCopy
-              }
-
-              onShare={
-                handleShare
-              }
-
+              currency={currency}
+              onCopy={handleCopy}
+              onShare={handleShare}
               onDownload={
                 handleDownloadPDF
               }
@@ -935,61 +1243,64 @@ Total Cost      : ${result.totalCost.toFixed(2)} ${currency}`;
 
           </div>
 
-          {/* Related Calculators */}
+          {/* ==================================================
+              Related Calculators
+          ================================================== */}
 
           <div className="mt-6">
             <RelatedCalculators />
           </div>
 
-          {/* Formula */}
+          {/* ==================================================
+              Formula
+          ================================================== */}
 
           <div className="mt-6">
             <Formula />
           </div>
 
-          {/* Example */}
+          {/* ==================================================
+              Example
+          ================================================== */}
 
           <div className="mt-6">
             <Example />
           </div>
 
-          {/* FAQ */}
+          {/* ==================================================
+              FAQ
+          ================================================== */}
 
           <div className="mt-6">
             <FAQ />
           </div>
 
-          {/* About */}
+          {/* ==================================================
+              About
+          ================================================== */}
 
           <div className="mt-6">
             <AboutCalculator />
           </div>
 
-          {/* History */}
+          {/* ==================================================
+              History
+          ================================================== */}
 
           <History
-            history={
-              history
-            }
+            history={history}
             onClear={
               handleClearHistory
             }
           />
 
         </div>
-
       </main>
 
       <Toast
-        show={
-          showToast
-        }
-        message={
-          toastMessage
-        }
-        type={
-          toastType
-        }
+        show={showToast}
+        message={toastMessage}
+        type={toastType}
       />
     </>
   );
