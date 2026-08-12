@@ -2,100 +2,129 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="mt-16 border-t border-slate-800 bg-slate-900 text-white">
+    <footer className="mt-12 bg-slate-950 text-slate-300">
 
-      <div className="mx-auto max-w-7xl px-6 py-12">
+      <div className="mx-auto max-w-7xl px-6 py-10">
 
-        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+        {/* Top */}
+        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
 
           {/* Brand */}
-          <div>
-
-            <h2 className="text-3xl font-black text-blue-400">
+          <div className="lg:col-span-2">
+            <Link
+              href="/"
+              className="text-2xl font-black tracking-tight text-blue-400"
+            >
               CornerSpan
-            </h2>
+            </Link>
 
-            <p className="mt-4 max-w-sm text-[15px] leading-7 text-slate-300">
+            <p className="mt-3 max-w-md text-sm leading-6 text-slate-400">
               Professional construction calculators for contractors,
               engineers, builders and DIY homeowners.
             </p>
-
           </div>
 
           {/* Calculators */}
           <div>
-
-            <h3 className="mb-4 text-lg font-bold">
+            <h3 className="mb-3 text-sm font-bold uppercase tracking-wider text-white">
               Calculators
             </h3>
 
-            <ul className="space-y-2 text-slate-300">
+            <div className="space-y-2 text-sm">
+              <Link
+                href="/calculators/concrete"
+                className="block transition hover:text-blue-400"
+              >
+                Concrete
+              </Link>
 
-              <li><Link href="/calculators/concrete" className="hover:text-white">Concrete</Link></li>
+              <Link
+                href="/calculators/brick"
+                className="block transition hover:text-blue-400"
+              >
+                Brick
+              </Link>
 
-              <li><Link href="/calculators/brick" className="hover:text-white">Brick</Link></li>
+              <Link
+                href="/calculators/steel"
+                className="block transition hover:text-blue-400"
+              >
+                Steel
+              </Link>
 
-              <li><Link href="/calculators/steel" className="hover:text-white">Steel</Link></li>
-
-              <li><Link href="/calculators/paint" className="hover:text-white">Paint</Link></li>
-
-            </ul>
-
+              <Link
+                href="/calculators/paint"
+                className="block transition hover:text-blue-400"
+              >
+                Paint
+              </Link>
+            </div>
           </div>
 
           {/* Company */}
           <div>
-
-            <h3 className="mb-4 text-lg font-bold">
+            <h3 className="mb-3 text-sm font-bold uppercase tracking-wider text-white">
               Company
             </h3>
 
-            <ul className="space-y-2 text-slate-300">
+            <div className="space-y-2 text-sm">
+              <Link
+                href="/about"
+                className="block transition hover:text-blue-400"
+              >
+                About
+              </Link>
 
-              <li><Link href="/about" className="hover:text-white">About</Link></li>
+              <Link
+                href="/contact"
+                className="block transition hover:text-blue-400"
+              >
+                Contact
+              </Link>
 
-              <li><Link href="/contact" className="hover:text-white">Contact</Link></li>
-
-              <li><Link href="/blog" className="hover:text-white">Blog</Link></li>
-
-            </ul>
-
-          </div>
-                    {/* Legal */}
-          <div>
-
-            <h3 className="mb-4 text-lg font-bold">
-              Legal
-            </h3>
-
-            <ul className="space-y-2 text-slate-300">
-
-              <li>
-                <Link href="/privacy-policy" className="hover:text-white">
-                  Privacy Policy
-                </Link>
-              </li>
-
-              <li>
-                <Link href="/terms" className="hover:text-white">
-                  Terms & Conditions
-                </Link>
-              </li>
-
-              <li>
-                <Link href="/disclaimer" className="hover:text-white">
-                  Disclaimer
-                </Link>
-              </li>
-
-            </ul>
-
+              <Link
+                href="/blog"
+                className="block transition hover:text-blue-400"
+              >
+                Blog
+              </Link>
+            </div>
           </div>
 
         </div>
 
-        <div className="mt-10 border-t border-slate-800 pt-6 text-center text-sm text-slate-400">
-          © {new Date().getFullYear()} CornerSpan. All rights reserved.
+        {/* Legal */}
+        <div className="mt-8 border-t border-slate-800 pt-6">
+
+          <div className="flex flex-wrap gap-x-6 gap-y-2 text-xs text-slate-400">
+
+            <Link
+              href="/privacy"
+              className="transition hover:text-blue-400"
+            >
+              Privacy Policy
+            </Link>
+
+            <Link
+              href="/terms"
+              className="transition hover:text-blue-400"
+            >
+              Terms & Conditions
+            </Link>
+
+            <Link
+              href="/disclaimer"
+              className="transition hover:text-blue-400"
+            >
+              Disclaimer
+            </Link>
+
+          </div>
+
+          <p className="mt-5 text-xs text-slate-500">
+            © {new Date().getFullYear()} CornerSpan. All rights reserved.
+          </p>
+
         </div>
 
       </div>
