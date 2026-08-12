@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import CalculatorHero from "../../components/CalculatorHero";
 import CalculatorForm from "./components/CalculatorForm";
@@ -54,6 +54,12 @@ type CalculationResult = {
   totalCost: number;
 };
 
+type ExchangeRateResponse = {
+  result?: string;
+  base_code?: string;
+  rates?: Record<string, number>;
+};
+
 const ZERO_RESULT: CalculationResult = {
   volume: 0,
   dryVolume: 0,
@@ -93,6 +99,7 @@ const CURRENCY_SYMBOLS: Record<CurrencyCode, string> = {
 
 function toNumber(value: string): number {
   const n = Number(value);
+
   return Number.isFinite(n) ? n : 0;
 }
 
@@ -195,14 +202,25 @@ export default function ConcreteCalculator() {
   // Currency
   //
   // DEFAULT = USD
-  //
-  // IMPORTANT:
-  // Currency changes ONLY the currency label/symbol.
-  // It does NOT convert entered material prices.
   // ==================================================
 
   const [currency, setCurrency] =
     useState<CurrencyCode>("USD");
+
+  /*
+   * This ref stores the currency in which
+   * the current material prices are actually stored.
+   *
+   * Initial material-price currency = USD.
+   */
+  const priceCurrencyRef =
+    useRef<CurrencyCode>("USD");
+
+  const [currencyLoading, setCurrencyLoading] =
+    useState(false);
+
+  const [currencyError, setCurrencyError] =
+    useState("");
 
   // ==================================================
   // Material Prices
@@ -322,25 +340,252 @@ export default function ConcreteCalculator() {
   };
 
   // ==================================================
-  // IMPORTANT CURRENCY RULE
+  // Currency Conversion
+  //
+  // IMPORTANT:
+  //
+  // Default base = USD.
+  //
+  // When user changes currency:
+  //
+  // USD -> INR
+  // USD -> EUR
+  // INR -> USD
+  // EUR -> AED
+  //
+  // current material prices are converted exactly once.
+  //
+  // If conversion fails:
+  // - prices are NOT changed
+  // - currency is reverted
+  //
+  // This prevents:
+  //
+  // ₹73,128
+  // $73,128
+  // €73,128
+  //
+  // from happening incorrectly.
   // ==================================================
-  //
-  // There is intentionally NO exchange-rate API here.
-  //
-  // Example:
-  //
-  // USD:
-  // Cement = $450
-  //
-  // Change currency to INR:
-  // Cement = ₹450
-  //
-  // The number 450 is NOT converted.
-  //
-  // The user is expected to enter prices
-  // according to the selected currency.
-  //
-  // ==================================================
+
+  useEffect(() => {
+    const oldCurrency =
+      priceCurrencyRef.current;
+
+    const newCurrency =
+      currency;
+
+    if (oldCurrency === newCurrency) {
+      return;
+    }
+
+    const currentCementPrice =
+      cementPrice;
+
+    const currentSandPrice =
+      sandPrice;
+
+    const currentAggregatePrice =
+      aggregatePrice;
+
+    const hasPrices =
+      currentCementPrice.trim() !== "" ||
+      currentSandPrice.trim() !== "" ||
+      currentAggregatePrice.trim() !== "";
+
+    /*
+     * If no prices exist yet,
+     * there is nothing to convert.
+     */
+    if (!hasPrices) {
+      priceCurrencyRef.current =
+        newCurrency;
+
+      setCurrencyError("");
+
+      return;
+    }
+
+    let cancelled = false;
+
+    const convertPrices = async () => {
+      setCurrencyLoading(true);
+      setCurrencyError("");
+
+      try {
+        /*
+         * ExchangeRate-API Open Access endpoint.
+         *
+         * It supports the currencies used here,
+         * including AED, AUD and CAD.
+         */
+        const response = await fetch(
+          `https://open.er-api.com/v6/latest/${oldCurrency}`,
+          {
+            cache: "no-store",
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error(
+            "Currency rate unavailable."
+          );
+        }
+
+        const data: ExchangeRateResponse =
+          await response.json();
+
+        if (
+          data.result !== "success" ||
+          !data.rates
+        ) {
+          throw new Error(
+            "Invalid currency response."
+          );
+        }
+
+        const rate =
+          data.rates[newCurrency];
+
+        if (
+          typeof rate !== "number" ||
+          !Number.isFinite(rate) ||
+          rate <= 0
+        ) {
+          throw new Error(
+            `Exchange rate for ${newCurrency} is unavailable.`
+          );
+        }
+
+        if (cancelled) {
+          return;
+        }
+
+        // ----------------------------------------------
+        // Convert price
+        // ----------------------------------------------
+
+        const convertPrice = (
+          value: string
+        ): string => {
+          if (value.trim() === "") {
+            return "";
+          }
+
+          const number =
+            Number(value);
+
+          if (
+            !Number.isFinite(number)
+          ) {
+            return value;
+          }
+
+          return (
+            number * rate
+          ).toFixed(2);
+        };
+
+        const newCementPrice =
+          convertPrice(
+            currentCementPrice
+          );
+
+        const newSandPrice =
+          convertPrice(
+            currentSandPrice
+          );
+
+        const newAggregatePrice =
+          convertPrice(
+            currentAggregatePrice
+          );
+
+        // ----------------------------------------------
+        // Update prices
+        // ----------------------------------------------
+
+        setCementPrice(
+          newCementPrice
+        );
+
+        setSandPrice(
+          newSandPrice
+        );
+
+        setAggregatePrice(
+          newAggregatePrice
+        );
+
+        /*
+         * IMPORTANT:
+         *
+         * Update the price currency only AFTER
+         * successful conversion.
+         */
+        priceCurrencyRef.current =
+          newCurrency;
+
+        /*
+         * Existing result cost is no longer valid
+         * because prices changed.
+         */
+        setResult((previous) => ({
+          ...previous,
+          totalCost: 0,
+        }));
+
+        showNotification(
+          `Prices converted from ${oldCurrency} to ${newCurrency}.`
+        );
+      } catch {
+        if (cancelled) {
+          return;
+        }
+
+        /*
+         * Keep old price currency.
+         */
+        priceCurrencyRef.current =
+          oldCurrency;
+
+        /*
+         * Revert currency selector.
+         */
+        setCurrency(oldCurrency);
+
+        setCurrencyError(
+          `Unable to convert ${oldCurrency} to ${newCurrency}.`
+        );
+
+        showNotification(
+          "Currency conversion failed. Previous currency restored.",
+          "error"
+        );
+      } finally {
+        if (!cancelled) {
+          setCurrencyLoading(false);
+        }
+      }
+    };
+
+    convertPrices();
+
+    return () => {
+      cancelled = true;
+    };
+
+    // IMPORTANT:
+    // This effect intentionally depends only on currency.
+    //
+    // Do NOT add:
+    // cementPrice
+    // sandPrice
+    // aggregatePrice
+    //
+    // Otherwise prices would repeatedly convert.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currency]);
 
   // ==================================================
   // Calculate
@@ -354,9 +599,9 @@ export default function ConcreteCalculator() {
     const d = Number(depth);
     const q = Number(quantity);
 
-    // --------------------------------------------------
+    // ==================================================
     // Dimension validation
-    // --------------------------------------------------
+    // ==================================================
 
     if (
       !length.trim() ||
@@ -399,9 +644,9 @@ export default function ConcreteCalculator() {
       return;
     }
 
-    // --------------------------------------------------
+    // ==================================================
     // Quantity validation
-    // --------------------------------------------------
+    // ==================================================
 
     if (
       !Number.isFinite(q) ||
@@ -421,9 +666,9 @@ export default function ConcreteCalculator() {
       return;
     }
 
-    // --------------------------------------------------
+    // ==================================================
     // Mix ratio validation
-    // --------------------------------------------------
+    // ==================================================
 
     if (
       !mixRatio ||
@@ -445,9 +690,9 @@ export default function ConcreteCalculator() {
       return;
     }
 
-    // --------------------------------------------------
+    // ==================================================
     // Material price validation
-    // --------------------------------------------------
+    // ==================================================
 
     const hasAnyPrice =
       cementPrice.trim() !== "" ||
@@ -485,9 +730,9 @@ export default function ConcreteCalculator() {
       return;
     }
 
-    // --------------------------------------------------
+    // ==================================================
     // Density validation
-    // --------------------------------------------------
+    // ==================================================
 
     const sandDensityValue =
       Number(sandDensity);
@@ -552,9 +797,9 @@ export default function ConcreteCalculator() {
         mixRatio
       );
 
-    // --------------------------------------------------
+    // ==================================================
     // Apply quantity
-    // --------------------------------------------------
+    // ==================================================
 
     output.volume *= q;
     output.dryVolume *= q;
@@ -585,18 +830,13 @@ export default function ConcreteCalculator() {
 
     // ==================================================
     // Material Cost
-    //
-    // IMPORTANT:
-    // Prices are used AS ENTERED.
-    //
-    // NO currency conversion happens here.
     // ==================================================
 
     let totalCost = 0;
 
-    // --------------------------------------------------
+    // ==================================================
     // Cement
-    // --------------------------------------------------
+    // ==================================================
 
     if (
       cementPrice.trim() !== "" &&
@@ -613,9 +853,9 @@ export default function ConcreteCalculator() {
         cementRate;
     }
 
-    // --------------------------------------------------
+    // ==================================================
     // Sand
-    // --------------------------------------------------
+    // ==================================================
 
     if (
       sandPrice.trim() !== "" &&
@@ -633,9 +873,9 @@ export default function ConcreteCalculator() {
         sandRate;
     }
 
-    // --------------------------------------------------
+    // ==================================================
     // Aggregate
-    // --------------------------------------------------
+    // ==================================================
 
     if (
       aggregatePrice.trim() !== "" &&
@@ -816,7 +1056,8 @@ Material Cost   : ${
         result.totalCost > 0
           ? `${symbol}${result.totalCost.toLocaleString()}`
           : "Not available"
-      }`;
+      }
+Currency        : ${currency}`;
 
     try {
       if (
@@ -960,9 +1201,35 @@ Material Cost   : ${
             description="Calculate concrete volume, cement bags, sand, aggregate, water, and material cost."
           />
 
+          {/* ================================================= */}
+          {/* Currency Status */}
+          {/* ================================================= */}
+
+          {(currencyLoading ||
+            currencyError) && (
+            <div className="mt-4 rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm text-blue-700">
+
+              {currencyLoading && (
+                <span>
+                  Updating material prices using the latest exchange rate...
+                </span>
+              )}
+
+              {!currencyLoading &&
+                currencyError && (
+                  <span>
+                    {currencyError}
+                  </span>
+                )}
+
+            </div>
+          )}
+
           <div className="mt-6 grid gap-6 lg:grid-cols-2">
 
+            {/* ================================================= */}
             {/* Calculator Form */}
+            {/* ================================================= */}
 
             <CalculatorForm
               length={length}
@@ -970,8 +1237,14 @@ Material Cost   : ${
               depth={depth}
               quantity={quantity}
 
-              cementUnit={cementUnit}
-              sandUnit={sandUnit}
+              cementUnit={
+                cementUnit
+              }
+
+              sandUnit={
+                sandUnit
+              }
+
               aggregateUnit={
                 aggregateUnit
               }
@@ -1004,7 +1277,9 @@ Material Cost   : ${
                 aggregatePrice
               }
 
-              currency={currency}
+              currency={
+                currency
+              }
 
               setCurrency={(value) =>
                 setCurrency(
@@ -1048,7 +1323,9 @@ Material Cost   : ${
                 setAggregateUnit
               }
 
-              error={error}
+              error={
+                error
+              }
 
               setLength={
                 setLength
@@ -1083,7 +1360,9 @@ Material Cost   : ${
               }
             />
 
+            {/* ================================================= */}
             {/* Result Card */}
+            {/* ================================================= */}
 
             <ResultCard
               volume={
@@ -1139,40 +1418,54 @@ Material Cost   : ${
 
           </div>
 
+          {/* ================================================= */}
           {/* Related Calculators */}
+          {/* ================================================= */}
 
           <div className="mt-6">
             <RelatedCalculators />
           </div>
 
+          {/* ================================================= */}
           {/* Formula */}
+          {/* ================================================= */}
 
           <div className="mt-6">
             <Formula />
           </div>
 
+          {/* ================================================= */}
           {/* Example */}
+          {/* ================================================= */}
 
           <div className="mt-6">
             <Example />
           </div>
 
+          {/* ================================================= */}
           {/* FAQ */}
+          {/* ================================================= */}
 
           <div className="mt-6">
             <FAQ />
           </div>
 
+          {/* ================================================= */}
           {/* About */}
+          {/* ================================================= */}
 
           <div className="mt-6">
             <AboutCalculator />
           </div>
 
+          {/* ================================================= */}
           {/* History */}
+          {/* ================================================= */}
 
           <History
-            history={history}
+            history={
+              history
+            }
             onClear={
               handleClearHistory
             }
@@ -1182,11 +1475,15 @@ Material Cost   : ${
       </main>
 
       <Toast
-        show={showToast}
+        show={
+          showToast
+        }
         message={
           toastMessage
         }
-        type={toastType}
+        type={
+          toastType
+        }
       />
     </>
   );
