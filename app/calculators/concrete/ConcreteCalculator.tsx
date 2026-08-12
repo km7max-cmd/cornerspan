@@ -1226,6 +1226,7 @@ Material Cost   : ${
               cementBags={
                 result.cementBags
               }
+              water={result.water}
               sand={result.sand}
               aggregate={
                 result.aggregate
