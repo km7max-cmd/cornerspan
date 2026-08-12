@@ -1235,6 +1235,11 @@ Material Cost   : ${
                 result.totalCost
               }
               currency={currency}
+                hasMaterialPrice={
+    cementPrice.trim() !== "" &&
+    sandPrice.trim() !== "" &&
+    aggregatePrice.trim() !== ""
+  }
               onCopy={handleCopy}
               onShare={handleShare}
               onDownload={
