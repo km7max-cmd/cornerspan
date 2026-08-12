@@ -1,9 +1,10 @@
 import "./globals.css";
 import type { Metadata, Viewport } from "next";
 
-export const metadata: Metadata = {
-  metadataBase: new URL("https://cornerspan.com"),
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
+export const metadata: Metadata = {
   title: {
     default: "CornerSpan | Professional Construction Calculators",
     template: "%s | CornerSpan",
@@ -20,7 +21,7 @@ export const metadata: Metadata = {
     "steel calculator",
     "roofing calculator",
     "tile calculator",
-    "USA construction calculator",
+    "construction estimating calculator",
   ],
 
   authors: [{ name: "CornerSpan" }],
@@ -41,7 +42,8 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "CornerSpan",
-    description: "Professional Construction Calculators",
+    description:
+      "Professional Construction Calculators",
   },
 
   robots: {
@@ -64,7 +66,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="bg-slate-50 text-slate-900 antialiased">
-        {children}
+
+        <Header />
+
+        <main>
+          {children}
+        </main>
+
+        <Footer />
+
       </body>
     </html>
   );
