@@ -183,20 +183,6 @@ export default function ConcreteCalculator() {
   const [currency, setCurrency] =
     useState<CurrencyCode>("INR");
 
-  /*
-   * This stores the currency in which the user
-   * originally entered the material prices.
-   *
-   * Example:
-   *
-   * User enters:
-   * Cement = 450 INR
-   *
-   * Then changes currency:
-   * USD
-   *
-   * The 450 is converted to USD.
-   */
   const priceCurrencyRef =
     useRef<CurrencyCode>("INR");
 
@@ -208,10 +194,6 @@ export default function ConcreteCalculator() {
 
   // ==================================================
   // Material Prices
-  //
-  // IMPORTANT:
-  // No fake/default material prices.
-  // User enters local market prices.
   // ==================================================
 
   const [cementPrice, setCementPrice] =
@@ -323,9 +305,9 @@ export default function ConcreteCalculator() {
 
   // ==================================================
   // Currency Conversion
-  //
-  // Frankfurter API
-  // No API key required.
+  // IMPORTANT:
+  // Run only when currency changes.
+  // Do NOT reset totalCost asynchronously.
   // ==================================================
 
   useEffect(() => {
@@ -344,10 +326,6 @@ export default function ConcreteCalculator() {
       sandPrice.trim() !== "" ||
       aggregatePrice.trim() !== "";
 
-    /*
-     * If there are no entered prices,
-     * simply change the currency.
-     */
     if (!hasPrices) {
       priceCurrencyRef.current =
         newCurrency;
@@ -424,16 +402,6 @@ export default function ConcreteCalculator() {
         priceCurrencyRef.current =
           newCurrency;
 
-        /*
-         * Existing result is no longer valid
-         * because the displayed material prices
-         * have changed.
-         */
-        setResult((previous) => ({
-          ...previous,
-          totalCost: 0,
-        }));
-
         showNotification(
           `Prices converted from ${oldCurrency} to ${newCurrency}.`
         );
@@ -442,13 +410,6 @@ export default function ConcreteCalculator() {
           return;
         }
 
-        /*
-         * IMPORTANT:
-         * Keep old price currency reference.
-         *
-         * This prevents a wrong conversion if
-         * the API fails.
-         */
         setCurrencyError(
           `Unable to get the latest ${oldCurrency} → ${newCurrency} exchange rate.`
         );
@@ -469,12 +430,7 @@ export default function ConcreteCalculator() {
     return () => {
       cancelled = true;
     };
-  }, [
-    currency,
-    cementPrice,
-    sandPrice,
-    aggregatePrice,
-  ]);
+  }, [currency]);
 
   // ==================================================
   // Calculate
@@ -580,13 +536,7 @@ export default function ConcreteCalculator() {
     }
 
     // --------------------------------------------------
-    // Material price validation
-    //
-    // Prices are optional.
-    //
-    // If blank:
-    // calculation still works,
-    // but total material cost cannot be calculated.
+    // Material prices
     // --------------------------------------------------
 
     const hasAnyPrice =
@@ -729,14 +679,9 @@ export default function ConcreteCalculator() {
 
     let totalCost = 0;
 
-    /*
-     * Cement
-     *
-     * calculateConcrete gives cementWeight
-     * in kilograms.
-     *
-     * We convert it to the selected price unit.
-     */
+    // --------------------------------------------------
+    // Cement Cost
+    // --------------------------------------------------
 
     if (
       cementPrice.trim() !== "" &&
@@ -749,12 +694,13 @@ export default function ConcreteCalculator() {
         );
 
       totalCost +=
-        cementQuantity * cementRate;
+        cementQuantity *
+        cementRate;
     }
 
-    /*
-     * Sand
-     */
+    // --------------------------------------------------
+    // Sand Cost
+    // --------------------------------------------------
 
     if (
       sandPrice.trim() !== "" &&
@@ -768,12 +714,13 @@ export default function ConcreteCalculator() {
         );
 
       totalCost +=
-        sandQuantity * sandRate;
+        sandQuantity *
+        sandRate;
     }
 
-    /*
-     * Aggregate
-     */
+    // --------------------------------------------------
+    // Aggregate Cost
+    // --------------------------------------------------
 
     if (
       aggregatePrice.trim() !== "" &&
@@ -1098,8 +1045,6 @@ Material Cost   : ${
             description="Calculate concrete volume, cement bags, sand, aggregate, water, and material cost."
           />
 
-          {/* Currency loading/error notice */}
-
           {(currencyLoading ||
             currencyError) && (
             <div className="mt-4 rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm text-blue-700">
@@ -1121,10 +1066,6 @@ Material Cost   : ${
           )}
 
           <div className="mt-6 grid gap-6 lg:grid-cols-2">
-
-            {/* ==================================================
-                Calculator Form
-            ================================================== */}
 
             <CalculatorForm
               length={length}
@@ -1214,10 +1155,6 @@ Material Cost   : ${
               }
             />
 
-            {/* ==================================================
-                Result Card
-            ================================================== */}
-
             <ResultCard
               volume={result.volume}
               dryVolume={
@@ -1235,11 +1172,6 @@ Material Cost   : ${
                 result.totalCost
               }
               currency={currency}
-              hasMaterialPrices={
-  cementPrice.trim() !== "" &&
-  sandPrice.trim() !== "" &&
-  aggregatePrice.trim() !== ""
-}
               onCopy={handleCopy}
               onShare={handleShare}
               onDownload={
@@ -1247,52 +1179,27 @@ Material Cost   : ${
               }
             />
 
-            
           </div>
-
-          {/* ==================================================
-              Related Calculators
-          ================================================== */}
 
           <div className="mt-6">
             <RelatedCalculators />
           </div>
 
-          {/* ==================================================
-              Formula
-          ================================================== */}
-
           <div className="mt-6">
             <Formula />
           </div>
-
-          {/* ==================================================
-              Example
-          ================================================== */}
 
           <div className="mt-6">
             <Example />
           </div>
 
-          {/* ==================================================
-              FAQ
-          ================================================== */}
-
           <div className="mt-6">
             <FAQ />
           </div>
 
-          {/* ==================================================
-              About
-          ================================================== */}
-
           <div className="mt-6">
             <AboutCalculator />
           </div>
-
-          {/* ==================================================
-              History
-          ================================================== */}
 
           <History
             history={history}
