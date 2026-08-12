@@ -105,7 +105,10 @@ function convertMaterialQuantity(
     return 0;
   }
 
-  if (!Number.isFinite(densityKgPerM3) || densityKgPerM3 <= 0) {
+  if (
+    !Number.isFinite(densityKgPerM3) ||
+    densityKgPerM3 <= 0
+  ) {
     return 0;
   }
 
@@ -117,10 +120,16 @@ function convertMaterialQuantity(
       return quantityM3 * 1.30795062;
 
     case "tonne":
-      return (quantityM3 * densityKgPerM3) / 1000;
+      return (
+        (quantityM3 * densityKgPerM3) /
+        1000
+      );
 
     case "US ton":
-      return (quantityM3 * densityKgPerM3) / 907.18474;
+      return (
+        (quantityM3 * densityKgPerM3) /
+        907.18474
+      );
 
     default:
       return quantityM3;
@@ -131,7 +140,10 @@ function convertCementQuantity(
   cementWeightKg: number,
   unit: string
 ): number {
-  if (!Number.isFinite(cementWeightKg) || cementWeightKg <= 0) {
+  if (
+    !Number.isFinite(cementWeightKg) ||
+    cementWeightKg <= 0
+  ) {
     return 0;
   }
 
@@ -178,13 +190,23 @@ export default function ConcreteCalculator() {
 
   // ==================================================
   // Currency
+  //
+  // DEFAULT = USD
   // ==================================================
 
   const [currency, setCurrency] =
-    useState<CurrencyCode>("INR");
+    useState<CurrencyCode>("USD");
 
+  /*
+   * IMPORTANT
+   *
+   * This ref tells us the currency in which the
+   * currently displayed material prices are stored.
+   *
+   * Default is USD.
+   */
   const priceCurrencyRef =
-    useRef<CurrencyCode>("INR");
+    useRef<CurrencyCode>("USD");
 
   const [currencyLoading, setCurrencyLoading] =
     useState(false);
@@ -240,7 +262,9 @@ export default function ConcreteCalculator() {
   // ==================================================
 
   const [result, setResult] =
-    useState<CalculationResult>(ZERO_RESULT);
+    useState<CalculationResult>(
+      ZERO_RESULT
+    );
 
   // ==================================================
   // History
@@ -251,14 +275,17 @@ export default function ConcreteCalculator() {
 
   useEffect(() => {
     const savedHistory =
-      localStorage.getItem("concrete-history");
+      localStorage.getItem(
+        "concrete-history"
+      );
 
     if (!savedHistory) {
       return;
     }
 
     try {
-      const parsed = JSON.parse(savedHistory);
+      const parsed =
+        JSON.parse(savedHistory);
 
       if (Array.isArray(parsed)) {
         setHistory(parsed);
@@ -279,7 +306,9 @@ export default function ConcreteCalculator() {
     useState("");
 
   const [toastType, setToastType] =
-    useState<"success" | "error">("success");
+    useState<"success" | "error">(
+      "success"
+    );
 
   useEffect(() => {
     if (!showToast) {
@@ -304,6 +333,15 @@ export default function ConcreteCalculator() {
 
   // ==================================================
   // Currency Conversion
+  //
+  // IMPORTANT FIX:
+  //
+  // This effect depends ONLY on currency.
+  //
+  // It does NOT depend on material prices.
+  //
+  // Therefore updating the prices after conversion
+  // will NOT trigger another conversion.
   // ==================================================
 
   useEffect(() => {
@@ -317,11 +355,25 @@ export default function ConcreteCalculator() {
       return;
     }
 
-    const hasPrices =
-      cementPrice.trim() !== "" ||
-      sandPrice.trim() !== "" ||
-      aggregatePrice.trim() !== "";
+    const currentCementPrice =
+      cementPrice;
 
+    const currentSandPrice =
+      sandPrice;
+
+    const currentAggregatePrice =
+      aggregatePrice;
+
+    const hasPrices =
+      currentCementPrice.trim() !== "" ||
+      currentSandPrice.trim() !== "" ||
+      currentAggregatePrice.trim() !== "";
+
+    /*
+     * No prices entered.
+     *
+     * Just update the currency reference.
+     */
     if (!hasPrices) {
       priceCurrencyRef.current =
         newCurrency;
@@ -353,8 +405,9 @@ export default function ConcreteCalculator() {
         } = await response.json();
 
         if (
-          !data.rate ||
-          !Number.isFinite(data.rate)
+          typeof data.rate !== "number" ||
+          !Number.isFinite(data.rate) ||
+          data.rate <= 0
         ) {
           throw new Error(
             "Invalid currency rate."
@@ -383,21 +436,34 @@ export default function ConcreteCalculator() {
           return (n * rate).toFixed(2);
         };
 
+        /*
+         * Convert each price exactly once.
+         */
         setCementPrice(
-          convert(cementPrice)
+          convert(currentCementPrice)
         );
 
         setSandPrice(
-          convert(sandPrice)
+          convert(currentSandPrice)
         );
 
         setAggregatePrice(
-          convert(aggregatePrice)
+          convert(currentAggregatePrice)
         );
 
+        /*
+         * IMPORTANT:
+         *
+         * Update the ref AFTER successful
+         * conversion.
+         */
         priceCurrencyRef.current =
           newCurrency;
 
+        /*
+         * Existing result cost is no longer valid
+         * because prices changed.
+         */
         setResult((previous) => ({
           ...previous,
           totalCost: 0,
@@ -411,6 +477,10 @@ export default function ConcreteCalculator() {
           return;
         }
 
+        /*
+         * Do NOT update priceCurrencyRef
+         * if conversion failed.
+         */
         setCurrencyError(
           `Unable to get the latest ${oldCurrency} → ${newCurrency} exchange rate.`
         );
@@ -431,12 +501,15 @@ export default function ConcreteCalculator() {
     return () => {
       cancelled = true;
     };
-  }, [
-    currency,
-    cementPrice,
-    sandPrice,
-    aggregatePrice,
-  ]);
+
+    /*
+     * INTENTIONALLY ONLY currency.
+     *
+     * Do not add cementPrice, sandPrice,
+     * aggregatePrice here.
+     */
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currency]);
 
   // ==================================================
   // Calculate
@@ -1085,9 +1158,14 @@ Material Cost   : ${
 
               cementUnit={cementUnit}
               sandUnit={sandUnit}
-              aggregateUnit={aggregateUnit}
+              aggregateUnit={
+                aggregateUnit
+              }
 
-              sandDensity={sandDensity}
+              sandDensity={
+                sandDensity
+              }
+
               aggregateDensity={
                 aggregateDensity
               }
@@ -1100,22 +1178,37 @@ Material Cost   : ${
                 setAggregateDensity
               }
 
-              cementPrice={cementPrice}
-              sandPrice={sandPrice}
+              cementPrice={
+                cementPrice
+              }
+
+              sandPrice={
+                sandPrice
+              }
+
               aggregatePrice={
                 aggregatePrice
               }
 
               currency={currency}
+
               setCurrency={(value) =>
                 setCurrency(
                   value as CurrencyCode
                 )
               }
 
-              lengthUnit={lengthUnit}
-              widthUnit={widthUnit}
-              depthUnit={depthUnit}
+              lengthUnit={
+                lengthUnit
+              }
+
+              widthUnit={
+                widthUnit
+              }
+
+              depthUnit={
+                depthUnit
+              }
 
               setLengthUnit={
                 setLengthUnit
@@ -1143,10 +1236,21 @@ Material Cost   : ${
 
               error={error}
 
-              setLength={setLength}
-              setWidth={setWidth}
-              setDepth={setDepth}
-              setQuantity={setQuantity}
+              setLength={
+                setLength
+              }
+
+              setWidth={
+                setWidth
+              }
+
+              setDepth={
+                setDepth
+              }
+
+              setQuantity={
+                setQuantity
+              }
 
               setCementPrice={
                 setCementPrice
@@ -1168,29 +1272,52 @@ Material Cost   : ${
             {/* Result Card */}
 
             <ResultCard
-              volume={result.volume}
+              volume={
+                result.volume
+              }
+
               dryVolume={
                 result.dryVolume
               }
+
               cementBags={
                 result.cementBags
               }
-              water={result.water}
-              sand={result.sand}
+
+              water={
+                result.water
+              }
+
+              sand={
+                result.sand
+              }
+
               aggregate={
                 result.aggregate
               }
+
               totalCost={
                 result.totalCost
               }
-              currency={currency}
+
+              currency={
+                currency
+              }
+
               hasMaterialPrices={
-  cementPrice.trim() !== "" &&
-  sandPrice.trim() !== "" &&
-  aggregatePrice.trim() !== ""
-}
-              onCopy={handleCopy}
-              onShare={handleShare}
+                cementPrice.trim() !== "" &&
+                sandPrice.trim() !== "" &&
+                aggregatePrice.trim() !== ""
+              }
+
+              onCopy={
+                handleCopy
+              }
+
+              onShare={
+                handleShare
+              }
+
               onDownload={
                 handleDownloadPDF
               }
@@ -1242,7 +1369,9 @@ Material Cost   : ${
 
       <Toast
         show={showToast}
-        message={toastMessage}
+        message={
+          toastMessage
+        }
         type={toastType}
       />
     </>
