@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 import CalculatorHero from "../../components/CalculatorHero";
 import CalculatorForm from "./components/CalculatorForm";
@@ -101,7 +101,10 @@ function convertMaterialQuantity(
   unit: string,
   densityKgPerM3: number
 ): number {
-  if (!Number.isFinite(quantityM3) || quantityM3 <= 0) {
+  if (
+    !Number.isFinite(quantityM3) ||
+    quantityM3 <= 0
+  ) {
     return 0;
   }
 
@@ -192,27 +195,14 @@ export default function ConcreteCalculator() {
   // Currency
   //
   // DEFAULT = USD
+  //
+  // IMPORTANT:
+  // Currency changes ONLY the currency label/symbol.
+  // It does NOT convert entered material prices.
   // ==================================================
 
   const [currency, setCurrency] =
     useState<CurrencyCode>("USD");
-
-  /*
-   * IMPORTANT
-   *
-   * This ref tells us the currency in which the
-   * currently displayed material prices are stored.
-   *
-   * Default is USD.
-   */
-  const priceCurrencyRef =
-    useRef<CurrencyCode>("USD");
-
-  const [currencyLoading, setCurrencyLoading] =
-    useState(false);
-
-  const [currencyError, setCurrencyError] =
-    useState("");
 
   // ==================================================
   // Material Prices
@@ -332,184 +322,25 @@ export default function ConcreteCalculator() {
   };
 
   // ==================================================
-  // Currency Conversion
-  //
-  // IMPORTANT FIX:
-  //
-  // This effect depends ONLY on currency.
-  //
-  // It does NOT depend on material prices.
-  //
-  // Therefore updating the prices after conversion
-  // will NOT trigger another conversion.
+  // IMPORTANT CURRENCY RULE
   // ==================================================
-
-  useEffect(() => {
-    const oldCurrency =
-      priceCurrencyRef.current;
-
-    const newCurrency =
-      currency;
-
-    if (oldCurrency === newCurrency) {
-      return;
-    }
-
-    const currentCementPrice =
-      cementPrice;
-
-    const currentSandPrice =
-      sandPrice;
-
-    const currentAggregatePrice =
-      aggregatePrice;
-
-    const hasPrices =
-      currentCementPrice.trim() !== "" ||
-      currentSandPrice.trim() !== "" ||
-      currentAggregatePrice.trim() !== "";
-
-    /*
-     * No prices entered.
-     *
-     * Just update the currency reference.
-     */
-    if (!hasPrices) {
-      priceCurrencyRef.current =
-        newCurrency;
-
-      setCurrencyError("");
-
-      return;
-    }
-
-    let cancelled = false;
-
-    const convertPrices = async () => {
-      setCurrencyLoading(true);
-      setCurrencyError("");
-
-      try {
-        const response = await fetch(
-          `https://api.frankfurter.dev/v2/rate/${oldCurrency}/${newCurrency}`
-        );
-
-        if (!response.ok) {
-          throw new Error(
-            "Currency rate unavailable."
-          );
-        }
-
-        const data: {
-          rate?: number;
-        } = await response.json();
-
-        if (
-          typeof data.rate !== "number" ||
-          !Number.isFinite(data.rate) ||
-          data.rate <= 0
-        ) {
-          throw new Error(
-            "Invalid currency rate."
-          );
-        }
-
-        if (cancelled) {
-          return;
-        }
-
-        const rate = data.rate;
-
-        const convert = (
-          value: string
-        ): string => {
-          if (value.trim() === "") {
-            return "";
-          }
-
-          const n = Number(value);
-
-          if (!Number.isFinite(n)) {
-            return value;
-          }
-
-          return (n * rate).toFixed(2);
-        };
-
-        /*
-         * Convert each price exactly once.
-         */
-        setCementPrice(
-          convert(currentCementPrice)
-        );
-
-        setSandPrice(
-          convert(currentSandPrice)
-        );
-
-        setAggregatePrice(
-          convert(currentAggregatePrice)
-        );
-
-        /*
-         * IMPORTANT:
-         *
-         * Update the ref AFTER successful
-         * conversion.
-         */
-        priceCurrencyRef.current =
-          newCurrency;
-
-        /*
-         * Existing result cost is no longer valid
-         * because prices changed.
-         */
-        setResult((previous) => ({
-          ...previous,
-          totalCost: 0,
-        }));
-
-        showNotification(
-          `Prices converted from ${oldCurrency} to ${newCurrency}.`
-        );
-      } catch {
-        if (cancelled) {
-          return;
-        }
-
-        /*
-         * Do NOT update priceCurrencyRef
-         * if conversion failed.
-         */
-        setCurrencyError(
-          `Unable to get the latest ${oldCurrency} → ${newCurrency} exchange rate.`
-        );
-
-        showNotification(
-          "Currency conversion failed. Please try again.",
-          "error"
-        );
-      } finally {
-        if (!cancelled) {
-          setCurrencyLoading(false);
-        }
-      }
-    };
-
-    convertPrices();
-
-    return () => {
-      cancelled = true;
-    };
-
-    /*
-     * INTENTIONALLY ONLY currency.
-     *
-     * Do not add cementPrice, sandPrice,
-     * aggregatePrice here.
-     */
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currency]);
+  //
+  // There is intentionally NO exchange-rate API here.
+  //
+  // Example:
+  //
+  // USD:
+  // Cement = $450
+  //
+  // Change currency to INR:
+  // Cement = ₹450
+  //
+  // The number 450 is NOT converted.
+  //
+  // The user is expected to enter prices
+  // according to the selected currency.
+  //
+  // ==================================================
 
   // ==================================================
   // Calculate
@@ -754,6 +585,11 @@ export default function ConcreteCalculator() {
 
     // ==================================================
     // Material Cost
+    //
+    // IMPORTANT:
+    // Prices are used AS ENTERED.
+    //
+    // NO currency conversion happens here.
     // ==================================================
 
     let totalCost = 0;
@@ -1123,28 +959,6 @@ Material Cost   : ${
             highlight="Calculator"
             description="Calculate concrete volume, cement bags, sand, aggregate, water, and material cost."
           />
-
-          {/* Currency loading/error notice */}
-
-          {(currencyLoading ||
-            currencyError) && (
-            <div className="mt-4 rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm text-blue-700">
-
-              {currencyLoading && (
-                <span>
-                  Updating material prices using the latest exchange rate...
-                </span>
-              )}
-
-              {!currencyLoading &&
-                currencyError && (
-                  <span>
-                    {currencyError}
-                  </span>
-                )}
-
-            </div>
-          )}
 
           <div className="mt-6 grid gap-6 lg:grid-cols-2">
 
