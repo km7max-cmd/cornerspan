@@ -11,6 +11,14 @@ export type MixRatio = {
   aggregate: number;
 };
 
+export type MaterialUnit =
+  | "Bag"
+  | "kg"
+  | "m³"
+  | "yd³"
+  | "tonne"
+  | "US ton";
+
 function convertToMeter(
   value: number,
   unit: Unit
@@ -36,30 +44,88 @@ function convertToMeter(
   }
 }
 
-// --------------------------------------------------
-// Convert material quantity into price unit
-// --------------------------------------------------
+/*
+  Convert material price to price per m³.
 
-function getMaterialQuantity(
-  volume: number,
-  density: number,
-  unit: string
+  Example:
+  Sand:
+  ₹1500 / m³
+  Density = 1600 kg/m³
+
+  ₹1500 / tonne
+  becomes:
+  ₹1500 × 1.6 = ₹2400 / m³
+*/
+
+function pricePerCubicMeter(
+  price: number,
+  unit: MaterialUnit,
+  density: number
 ): number {
+  if (!Number.isFinite(price) || price < 0) {
+    return 0;
+  }
+
+  if (!Number.isFinite(density) || density <= 0) {
+    return 0;
+  }
+
   switch (unit) {
     case "m³":
-      return volume;
+      return price;
 
     case "yd³":
-      return volume * 1.307950619;
+      // 1 yd³ = 0.764554857 m³
+      return price / 0.764554857;
 
     case "tonne":
-      return (volume * density) / 1000;
+      // 1 m³ = density / 1000 tonnes
+      return price * (density / 1000);
 
     case "US ton":
-      return (volume * density) / 907.18474;
+      // 1 US ton = 907.18474 kg
+      return price * (density / 907.18474);
+
+    case "kg":
+      return price * density;
 
     default:
-      return volume;
+      return 0;
+  }
+}
+
+/*
+  Convert cement price into cost.
+
+  Cement is calculated separately because
+  cement is normally purchased by bag/kg/tonne.
+*/
+
+function calculateCementCost(
+  cementWeight: number,
+  cementBags: number,
+  price: number,
+  unit: MaterialUnit
+): number {
+  if (!Number.isFinite(price) || price < 0) {
+    return 0;
+  }
+
+  switch (unit) {
+    case "Bag":
+      return cementBags * price;
+
+    case "kg":
+      return cementWeight * price;
+
+    case "tonne":
+      return (cementWeight / 1000) * price;
+
+    case "US ton":
+      return (cementWeight / 907.18474) * price;
+
+    default:
+      return 0;
   }
 }
 
@@ -67,22 +133,23 @@ export function calculateConcrete(
   length: number,
   width: number,
   depth: number,
+
   lengthUnit: Unit,
   widthUnit: Unit,
   depthUnit: Unit,
-  mixRatio: MixRatio,
 
-  // Optional values so old calls do not break
-  sandDensity: number = 1600,
-  aggregateDensity: number = 1500,
+  mixRatio: MixRatio,
 
   cementPrice: number = 0,
   sandPrice: number = 0,
   aggregatePrice: number = 0,
 
-  cementUnit: string = "Bag",
-  sandUnit: string = "m³",
-  aggregateUnit: string = "m³"
+  cementUnit: MaterialUnit = "Bag",
+  sandUnit: MaterialUnit = "m³",
+  aggregateUnit: MaterialUnit = "m³",
+
+  sandDensity: number = 1600,
+  aggregateDensity: number = 1500
 ) {
   // --------------------------------------------------
   // Convert dimensions to meters
@@ -111,6 +178,7 @@ export function calculateConcrete(
 
   // --------------------------------------------------
   // Dry volume
+  // Standard estimation factor
   // --------------------------------------------------
 
   const dryVolume = volume * 1.54;
@@ -154,9 +222,8 @@ export function calculateConcrete(
 
   // --------------------------------------------------
   // Cement
-  //
-  // Cement density = 1440 kg/m³
-  // Bag size = 50 kg
+  // Density = 1440 kg/m³
+  // Standard bag = 50 kg
   // --------------------------------------------------
 
   const cementWeight =
@@ -168,81 +235,13 @@ export function calculateConcrete(
     );
 
   // --------------------------------------------------
-  // Water estimation
+  // Water
+  // W/C ratio = 0.50
+  // Estimation only
   // --------------------------------------------------
 
   const water =
     cementWeight * 0.50;
-
-  // --------------------------------------------------
-  // Material cost quantities
-  // --------------------------------------------------
-
-  let cementCostQuantity = 0;
-
-  switch (cementUnit) {
-    case "Bag":
-      cementCostQuantity = cementBags;
-      break;
-
-    case "kg":
-      cementCostQuantity =
-        cementWeight;
-      break;
-
-    case "tonne":
-      cementCostQuantity =
-        cementWeight / 1000;
-      break;
-
-    case "US ton":
-      cementCostQuantity =
-        cementWeight / 907.18474;
-      break;
-
-    default:
-      cementCostQuantity =
-        cementBags;
-  }
-
-  const sandCostQuantity =
-    getMaterialQuantity(
-      sand,
-      sandDensity,
-      sandUnit
-    );
-
-  const aggregateCostQuantity =
-    getMaterialQuantity(
-      aggregate,
-      aggregateDensity,
-      aggregateUnit
-    );
-
-  // --------------------------------------------------
-  // Individual material costs
-  // --------------------------------------------------
-
-  const cementCost =
-    cementCostQuantity *
-    cementPrice;
-
-  const sandCost =
-    sandCostQuantity *
-    sandPrice;
-
-  const aggregateCost =
-    aggregateCostQuantity *
-    aggregatePrice;
-
-  // --------------------------------------------------
-  // Total material cost
-  // --------------------------------------------------
-
-  const totalCost =
-    cementCost +
-    sandCost +
-    aggregateCost;
 
   // --------------------------------------------------
   // Waste
@@ -253,7 +252,44 @@ export function calculateConcrete(
   const totalVolume = volume;
 
   // --------------------------------------------------
-  // Return result
+  // Material Cost
+  // --------------------------------------------------
+
+  const cementCost =
+    calculateCementCost(
+      cementWeight,
+      cementBags,
+      cementPrice,
+      cementUnit
+    );
+
+  const sandPricePerM3 =
+    pricePerCubicMeter(
+      sandPrice,
+      sandUnit,
+      sandDensity
+    );
+
+  const aggregatePricePerM3 =
+    pricePerCubicMeter(
+      aggregatePrice,
+      aggregateUnit,
+      aggregateDensity
+    );
+
+  const sandCost =
+    sand * sandPricePerM3;
+
+  const aggregateCost =
+    aggregate * aggregatePricePerM3;
+
+  const totalCost =
+    cementCost +
+    sandCost +
+    aggregateCost;
+
+  // --------------------------------------------------
+  // Return
   // --------------------------------------------------
 
   return {
@@ -294,10 +330,6 @@ export function calculateConcrete(
     water: Number(
       water.toFixed(1)
     ),
-
-    sandDensity,
-
-    aggregateDensity,
 
     cementCost: Number(
       cementCost.toFixed(2)
