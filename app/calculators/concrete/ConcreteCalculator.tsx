@@ -1,6 +1,5 @@
 "use client";
 
-
 import { useEffect, useRef, useState } from "react";
 
 import CalculatorHero from "../../components/CalculatorHero";
@@ -259,8 +258,7 @@ export default function ConcreteCalculator() {
     }
 
     try {
-      const parsed =
-        JSON.parse(savedHistory);
+      const parsed = JSON.parse(savedHistory);
 
       if (Array.isArray(parsed)) {
         setHistory(parsed);
@@ -306,9 +304,6 @@ export default function ConcreteCalculator() {
 
   // ==================================================
   // Currency Conversion
-  // IMPORTANT:
-  // Run only when currency changes.
-  // Do NOT reset totalCost asynchronously.
   // ==================================================
 
   useEffect(() => {
@@ -403,6 +398,11 @@ export default function ConcreteCalculator() {
         priceCurrencyRef.current =
           newCurrency;
 
+        setResult((previous) => ({
+          ...previous,
+          totalCost: 0,
+        }));
+
         showNotification(
           `Prices converted from ${oldCurrency} to ${newCurrency}.`
         );
@@ -431,7 +431,12 @@ export default function ConcreteCalculator() {
     return () => {
       cancelled = true;
     };
-  }, [currency]);
+  }, [
+    currency,
+    cementPrice,
+    sandPrice,
+    aggregatePrice,
+  ]);
 
   // ==================================================
   // Calculate
@@ -537,7 +542,7 @@ export default function ConcreteCalculator() {
     }
 
     // --------------------------------------------------
-    // Material prices
+    // Material price validation
     // --------------------------------------------------
 
     const hasAnyPrice =
@@ -681,7 +686,7 @@ export default function ConcreteCalculator() {
     let totalCost = 0;
 
     // --------------------------------------------------
-    // Cement Cost
+    // Cement
     // --------------------------------------------------
 
     if (
@@ -700,7 +705,7 @@ export default function ConcreteCalculator() {
     }
 
     // --------------------------------------------------
-    // Sand Cost
+    // Sand
     // --------------------------------------------------
 
     if (
@@ -720,7 +725,7 @@ export default function ConcreteCalculator() {
     }
 
     // --------------------------------------------------
-    // Aggregate Cost
+    // Aggregate
     // --------------------------------------------------
 
     if (
@@ -1046,6 +1051,8 @@ Material Cost   : ${
             description="Calculate concrete volume, cement bags, sand, aggregate, water, and material cost."
           />
 
+          {/* Currency loading/error notice */}
+
           {(currencyLoading ||
             currencyError) && (
             <div className="mt-4 rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm text-blue-700">
@@ -1067,6 +1074,8 @@ Material Cost   : ${
           )}
 
           <div className="mt-6 grid gap-6 lg:grid-cols-2">
+
+            {/* Calculator Form */}
 
             <CalculatorForm
               length={length}
@@ -1156,6 +1165,8 @@ Material Cost   : ${
               }
             />
 
+            {/* Result Card */}
+
             <ResultCard
               volume={result.volume}
               dryVolume={
@@ -1182,25 +1193,37 @@ Material Cost   : ${
 
           </div>
 
+          {/* Related Calculators */}
+
           <div className="mt-6">
             <RelatedCalculators />
           </div>
+
+          {/* Formula */}
 
           <div className="mt-6">
             <Formula />
           </div>
 
+          {/* Example */}
+
           <div className="mt-6">
             <Example />
           </div>
+
+          {/* FAQ */}
 
           <div className="mt-6">
             <FAQ />
           </div>
 
+          {/* About */}
+
           <div className="mt-6">
             <AboutCalculator />
           </div>
+
+          {/* History */}
 
           <History
             history={history}
