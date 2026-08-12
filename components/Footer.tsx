@@ -80,48 +80,48 @@ export default function Footer() {
 
       <div className="mx-auto max-w-7xl px-5 sm:px-6">
 
-        {/* =========================
-            ROW 1
-        ========================== */}
-        <div className="flex flex-col gap-8 py-10 md:flex-row md:items-center md:justify-between">
+        {/* ================================================= */}
+        {/* ROW 1 — BRAND / DESCRIPTION / SOCIAL */}
+        {/* ================================================= */}
 
-          {/* Brand */}
-          <div className="flex items-start gap-4">
+        <div className="flex flex-col items-center py-10 text-center">
 
-            {/* Logo */}
-            <Link
-              href="/"
-              className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-700 text-2xl font-black text-white shadow-lg"
-            >
-              C
-            </Link>
+          {/* Logo */}
 
-            {/* Name + Description */}
-            <div>
+          <Link
+            href="/"
+            aria-label="CornerSpan Home"
+            className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-700 text-2xl font-black text-white shadow-lg shadow-blue-600/20 transition-transform duration-200 hover:-translate-y-1"
+          >
+            C
+          </Link>
 
-              <Link
-                href="/"
-                className="block text-2xl font-black tracking-tight text-slate-950"
-              >
-                Corner<span className="text-blue-600">Span</span>
-              </Link>
+          {/* Website Name */}
 
-              <p className="mt-0.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-400">
-                Construction Calculators
-              </p>
+          <Link
+            href="/"
+            className="mt-4 text-2xl font-black tracking-tight text-slate-950"
+          >
+            Corner<span className="text-blue-600">Span</span>
+          </Link>
 
-              <p className="mt-2 max-w-lg text-sm leading-6 text-slate-500">
-                Professional construction calculators for contractors,
-                engineers, builders and homeowners.
-              </p>
+          {/* Tagline */}
 
-            </div>
+          <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.22em] text-slate-400">
+            Construction Calculators
+          </p>
 
-          </div>
+          {/* Description */}
+          {/* Starts directly below the logo/brand block */}
 
+          <p className="mt-4 max-w-xl text-sm leading-6 text-slate-500">
+            Professional construction calculators for contractors,
+            engineers, builders and homeowners.
+          </p>
 
-          {/* Social Icons */}
-          <div className="flex items-center gap-2">
+          {/* Social Icons — NO BACKGROUND */}
+
+          <div className="mt-6 flex items-center justify-center gap-5">
 
             {socials.map((social) => (
               <a
@@ -129,15 +129,11 @@ export default function Footer() {
                 href="#"
                 aria-label={social.name}
                 className="
-                  flex h-11 w-11 items-center justify-center
-                  rounded-xl
-                  bg-black
-                  text-white
-                  transition-all duration-200
+                  text-slate-400
+                  transition-all
+                  duration-200
                   hover:-translate-y-1
-                  hover:bg-blue-600
-                  hover:shadow-lg
-                  hover:shadow-blue-600/25
+                  hover:text-blue-600
                 "
               >
                 {social.icon}
@@ -149,14 +145,15 @@ export default function Footer() {
         </div>
 
 
-        {/* =========================
-            ROW 2
-        ========================== */}
-        <div className="border-y border-slate-100 py-6">
+        {/* ================================================= */}
+        {/* ROW 2 — NORMAL LINKS */}
+        {/* ================================================= */}
+
+        <div className="border-y border-slate-100 py-5">
 
           <nav
             aria-label="Footer navigation"
-            className="flex flex-wrap items-center justify-center gap-x-7 gap-y-3 md:justify-start"
+            className="flex flex-wrap items-center justify-center gap-x-7 gap-y-3"
           >
 
             {links.map((link) => (
@@ -180,12 +177,13 @@ export default function Footer() {
         </div>
 
 
-        {/* =========================
-            ROW 3
-        ========================== */}
+        {/* ================================================= */}
+        {/* ROW 3 — COPYRIGHT */}
+        {/* ================================================= */}
+
         <div className="py-5 text-center">
 
-          <p className="text-xs font-medium text-slate-400">
+          <p className="text-xs font-medium text-slate-400 sm:text-sm">
             © {new Date().getFullYear()} CornerSpan. All rights reserved.
           </p>
 
