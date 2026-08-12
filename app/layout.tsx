@@ -1,6 +1,6 @@
 import "./globals.css";
 import type { Metadata, Viewport } from "next";
-
+import CalculatorScroll from "../components/CalculatorScroll";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 
@@ -69,9 +69,11 @@ export default function RootLayout({
 
         <Header />
 
-        <main>
-          {children}
-        </main>
+<CalculatorScroll />
+
+<main>
+  {children}
+</main>
 
         <Footer />
 
