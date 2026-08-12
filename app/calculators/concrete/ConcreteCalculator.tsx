@@ -906,7 +906,12 @@ Total Cost      : ${result.totalCost.toFixed(2)} ${currency}`;
               aggregate={
                 result.aggregate
               }
-
+                water={result.water}
+  hasMaterialPrices={
+    cementPrice.trim() !== "" &&
+    sandPrice.trim() !== "" &&
+    aggregatePrice.trim() !== ""
+  }
               totalCost={
                 result.totalCost
               }
