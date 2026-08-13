@@ -79,7 +79,7 @@ export default function Header() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="relative z-50 w-full bg-blue-50">
+    <header className="sticky top-0 z-50 w-full bg-blue-50">
 
       {/* Main Header */}
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-5 sm:px-6 lg:h-24">
