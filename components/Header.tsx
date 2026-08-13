@@ -140,66 +140,66 @@ export default function Header() {
       </div>
 
       {/* Calculator Pills */}
-      <div className="w-full bg-blue-50 pb-4">
+      {/* Calculator Pills */}
+<div className="w-full pb-3">
+  <div className="mx-auto max-w-7xl px-5 sm:px-6">
 
-        <div className="mx-auto max-w-7xl px-5 sm:px-6">
+    <div
+      className="
+        flex
+        items-center
+        gap-2
+        overflow-x-auto
+        pb-1
+        scrollbar-hide
+        [-ms-overflow-style:none]
+        [scrollbar-width:none]
+        [&::-webkit-scrollbar]:hidden
+      "
+    >
 
-          <div
-            className="
-              flex
-              gap-3
-              overflow-x-auto
-              pb-1
-              scrollbar-hide
-              [-ms-overflow-style:none]
-              [scrollbar-width:none]
-              [&::-webkit-scrollbar]:hidden
-            "
-          >
+      {calculators.map((calculator) => (
+        <Link
+          key={calculator.name}
+          href={calculator.href}
+          className="
+            flex
+            h-10
+            shrink-0
+            items-center
+            gap-2
+            rounded-full
+            border
+            border-slate-200/80
+            bg-white
+            px-4
+            text-xs
+            font-semibold
+            text-slate-700
+            shadow-sm
+            transition-all
+            duration-200
+            hover:border-blue-200
+            hover:text-blue-600
+            hover:shadow-md
+            active:scale-95
+            sm:h-11
+            sm:px-5
+            sm:text-sm
+          "
+        >
+          <span className="text-blue-600">
+            {calculator.icon}
+          </span>
 
-            {calculators.map((calculator) => (
-              <Link
-                key={calculator.name}
-                href={calculator.href}
-                className="
-                  flex
-                  h-12
-                  shrink-0
-                  items-center
-                  gap-2.5
-                  rounded-full
-                  border
-                  border-white/80
-                  bg-white/80
-                  px-6
-                  text-sm
-                  font-semibold
-                  text-slate-700
-                  shadow-sm
-                  backdrop-blur-md
-                  transition-all
-                  duration-200
-                  hover:-translate-y-0.5
-                  hover:border-blue-200
-                  hover:bg-white
-                  hover:text-blue-600
-                  hover:shadow-md
-                  active:scale-95
-                "
-              >
-                <span className="text-blue-600">
-                  {calculator.icon}
-                </span>
+          {calculator.name}
+        </Link>
+      ))}
 
-                {calculator.name}
-              </Link>
-            ))}
+    </div>
 
-          </div>
-
-        </div>
-
-      </div>
+  </div>
+</div>
 
       {/* Mobile Menu Panel */}
       {open && (
