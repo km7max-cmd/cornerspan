@@ -314,20 +314,27 @@ export default function Header() {
                 key={calculator.name}
                 href={calculator.href}
                 className="
-                  flex
-                  h-10
-                  shrink-0
-                  items-center
-                  gap-2
-                  rounded-full
-                  border
-                  border-slate-200/80
-                  bg-white
-                  px-4
-                  text-xs
-                  font-semibold
-                  text-slate-700
-                  shadow-sm
+  flex
+  h-10
+  shrink-0
+  items-center
+  gap-2
+  rounded-full
+  border
+  border-transparent
+  bg-transparent
+  px-3
+  text-xs
+  font-semibold
+  text-slate-700
+  transition-all
+  duration-200
+  hover:text-blue-600
+  active:scale-95
+  sm:h-11
+  sm:px-4
+  sm:text-sm
+"
                   transition-all
                   duration-200
                   hover:-translate-y-0.5
