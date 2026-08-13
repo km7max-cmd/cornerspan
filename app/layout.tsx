@@ -1,6 +1,6 @@
 import "./globals.css";
 import type { Metadata, Viewport } from "next";
-import CalculatorScroll from "../components/CalculatorScroll";
+
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 
@@ -25,9 +25,7 @@ export const metadata: Metadata = {
   ],
 
   authors: [{ name: "CornerSpan" }],
-
   creator: "CornerSpan",
-
   publisher: "CornerSpan",
 
   openGraph: {
@@ -42,8 +40,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "CornerSpan",
-    description:
-      "Professional Construction Calculators",
+    description: "Professional Construction Calculators",
   },
 
   robots: {
@@ -69,11 +66,9 @@ export default function RootLayout({
 
         <Header />
 
-<CalculatorScroll />
-
-<main>
-  {children}
-</main>
+        <main>
+          {children}
+        </main>
 
         <Footer />
 
