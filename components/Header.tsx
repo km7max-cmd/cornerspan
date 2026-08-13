@@ -214,7 +214,7 @@ export default function Header() {
         top-0
         z-50
         w-full
-        bg-blue-50
+        bg-transparent
         transition-transform
         duration-300
         ease-out
