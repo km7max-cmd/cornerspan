@@ -402,7 +402,7 @@ export default function Header() {
       {/* Calculator Pills */}
       {/* ========================================= */}
 
-      <div className="w-full bg-blue-50 pb-3">
+      <div className="w-full bg-transparent pb-3">
 
         <div
           className="
