@@ -8,11 +8,7 @@ const calculators = [
     name: "Concrete",
     href: "/calculators/concrete",
     icon: (
-      <svg
-        viewBox="0 0 24 24"
-        className="h-4 w-4"
-        fill="currentColor"
-      >
+      <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
         <path d="M3 7h18v4H3zM3 13h18v4H3z" />
       </svg>
     ),
@@ -78,13 +74,7 @@ const calculators = [
         stroke="currentColor"
         strokeWidth="2"
       >
-        <rect
-          x="4"
-          y="4"
-          width="16"
-          height="16"
-          rx="1"
-        />
+        <rect x="4" y="4" width="16" height="16" rx="1" />
         <path d="M4 12h16M12 4v16" />
       </svg>
     ),
@@ -108,100 +98,50 @@ const calculators = [
 ];
 
 const navItems = [
-  {
-    name: "Home",
-    href: "/",
-  },
-  {
-    name: "Calculators",
-    href: "/#calculators",
-  },
-  {
-    name: "Categories",
-    href: "/categories",
-  },
-  {
-    name: "Blog",
-    href: "/blog",
-  },
-  {
-    name: "About",
-    href: "/about",
-  },
+  { name: "Home", href: "/" },
+  { name: "Calculators", href: "/#calculators" },
+  { name: "Categories", href: "/categories" },
+  { name: "Blog", href: "/blog" },
+  { name: "About", href: "/about" },
 ];
 
 export default function Header() {
   const [open, setOpen] = useState(false);
+  const [visible, setVisible] = useState(true);
 
-  const [visible, setVisible] =
-    useState(true);
-
-  const lastScrollY =
-    useRef(0);
+  const lastScrollY = useRef(0);
 
   useEffect(() => {
     const handleScroll = () => {
-      const currentScrollY =
-        window.scrollY;
+      const currentScrollY = window.scrollY;
 
-      /*
-       * Always show header at the
-       * very top of the page.
-       */
+      // Always show at the top
       if (currentScrollY <= 10) {
         setVisible(true);
-
-        lastScrollY.current =
-          currentScrollY;
-
+        lastScrollY.current = currentScrollY;
         return;
       }
 
-      /*
-       * Scrolling DOWN
-       * Hide header.
-       */
-      if (
-        currentScrollY >
-        lastScrollY.current
-      ) {
+      // Scrolling down → hide
+      if (currentScrollY > lastScrollY.current) {
         setVisible(false);
-
-        /*
-         * Close mobile menu when
-         * scrolling down.
-         */
         setOpen(false);
       }
 
-      /*
-       * Scrolling UP
-       * Show header.
-       */
-      else if (
-        currentScrollY <
-        lastScrollY.current
-      ) {
+      // Scrolling up → show
+      else if (currentScrollY < lastScrollY.current) {
         setVisible(true);
       }
 
-      lastScrollY.current =
-        currentScrollY;
+      lastScrollY.current = currentScrollY;
     };
 
-    window.addEventListener(
-      "scroll",
-      handleScroll,
-      {
-        passive: true,
-      }
-    );
+    window.addEventListener("scroll", handleScroll, {
+      passive: true,
+    });
 
     return () => {
-      window.removeEventListener(
-        "scroll",
-        handleScroll
-      );
+      window.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
@@ -218,17 +158,12 @@ export default function Header() {
         transition-transform
         duration-300
         ease-out
-        ${
-          visible
-            ? "translate-y-0"
-            : "-translate-y-full"
-        }
+        ${visible ? "translate-y-0" : "-translate-y-full"}
       `}
     >
-
-      {/* ========================================= */}
-      {/* Main Header */}
-      {/* ========================================= */}
+      {/* =========================================
+          MAIN HEADER
+      ========================================= */}
 
       <div
         className="
@@ -243,14 +178,12 @@ export default function Header() {
           lg:h-24
         "
       >
-
-        {/* Logo */}
+        {/* LOGO */}
 
         <Link
           href="/"
           className="flex items-center gap-3"
         >
-
           <div
             className="
               flex
@@ -274,7 +207,6 @@ export default function Header() {
           </div>
 
           <div>
-
             <div
               className="
                 text-[23px]
@@ -302,41 +234,27 @@ export default function Header() {
             >
               Construction Calculators
             </div>
-
           </div>
-
         </Link>
 
-        {/* ========================================= */}
-        {/* Desktop Navigation */}
-        {/* ========================================= */}
+        {/* DESKTOP NAVIGATION */}
 
-        <nav
-          className="
-            hidden
-            items-center
-            gap-7
-            lg:flex
-          "
-        >
-
-          {navItems.map(
-            (item) => (
-              <Link
-                key={item.name}
-                href={item.href}
-                className="
-                  text-sm
-                  font-semibold
-                  text-slate-700
-                  transition
-                  hover:text-blue-600
-                "
-              >
-                {item.name}
-              </Link>
-            )
-          )}
+        <nav className="hidden items-center gap-7 lg:flex">
+          {navItems.map((item) => (
+            <Link
+              key={item.name}
+              href={item.href}
+              className="
+                text-sm
+                font-semibold
+                text-slate-700
+                transition
+                hover:text-blue-600
+              "
+            >
+              {item.name}
+            </Link>
+          ))}
 
           <Link
             href="/#calculators"
@@ -356,23 +274,14 @@ export default function Header() {
           >
             Explore
           </Link>
-
         </nav>
 
-        {/* ========================================= */}
-        {/* Mobile Menu Button */}
-        {/* ========================================= */}
+        {/* MOBILE MENU BUTTON */}
 
         <button
           type="button"
-          aria-label={
-            open
-              ? "Close menu"
-              : "Open menu"
-          }
-          onClick={() =>
-            setOpen(!open)
-          }
+          aria-label={open ? "Close menu" : "Open menu"}
+          onClick={() => setOpen(!open)}
           className="
             flex
             h-11
@@ -384,35 +293,18 @@ export default function Header() {
             lg:hidden
           "
         >
-
-          <span
-            className="
-              text-3xl
-              leading-none
-            "
-          >
+          <span className="text-3xl leading-none">
             {open ? "×" : "☰"}
           </span>
-
         </button>
-
       </div>
 
-      {/* ========================================= */}
-      {/* Calculator Pills */}
-      {/* ========================================= */}
+      {/* =========================================
+          CALCULATOR PILLS
+      ========================================= */}
 
       <div className="w-full bg-transparent pb-3">
-
-        <div
-          className="
-            mx-auto
-            max-w-7xl
-            px-5
-            sm:px-6
-          "
-        >
-
+        <div className="mx-auto max-w-7xl px-5 sm:px-6">
           <div
             className="
               flex
@@ -426,58 +318,51 @@ export default function Header() {
               [&::-webkit-scrollbar]:hidden
             "
           >
+            {calculators.map((calculator) => (
+              <Link
+                key={calculator.name}
+                href={calculator.href}
+                className="
+                  flex
+                  h-10
+                  shrink-0
+                  items-center
+                  gap-2
+                  rounded-full
+                  border
+                  border-slate-200/80
+                  bg-white
+                  px-4
+                  text-xs
+                  font-semibold
+                  text-slate-700
+                  shadow-sm
+                  transition-all
+                  duration-200
+                  hover:-translate-y-0.5
+                  hover:border-blue-200
+                  hover:text-blue-600
+                  hover:shadow-md
+                  active:scale-95
+                  sm:h-11
+                  sm:px-5
+                  sm:text-sm
+                "
+              >
+                <span className="text-blue-600">
+                  {calculator.icon}
+                </span>
 
-            {calculators.map(
-              (calculator) => (
-                <Link
-                  key={calculator.name}
-                  href={calculator.href}
-                  className="
-                    flex
-                    h-10
-                    shrink-0
-                    items-center
-                    gap-2
-                    rounded-full
-                    border
-                    border-slate-200/80
-                    bg-white
-                    px-4
-                    text-xs
-                    font-semibold
-                    text-slate-700
-                    shadow-sm
-                    transition-all
-                    duration-200
-                    hover:border-blue-200
-                    hover:text-blue-600
-                    hover:shadow-md
-                    active:scale-95
-                    sm:h-11
-                    sm:px-5
-                    sm:text-sm
-                  "
-                >
-
-                  <span className="text-blue-600">
-                    {calculator.icon}
-                  </span>
-
-                  {calculator.name}
-
-                </Link>
-              )
-            )}
-
+                {calculator.name}
+              </Link>
+            ))}
           </div>
-
         </div>
-
       </div>
 
-      {/* ========================================= */}
-      {/* Mobile Menu */}
-      {/* ========================================= */}
+      {/* =========================================
+          MOBILE MENU PANEL
+      ========================================= */}
 
       {open && (
         <div
@@ -487,14 +372,13 @@ export default function Header() {
             right-0
             top-full
             border-t
-            border-white/60
+            border-slate-200/60
             bg-white/95
             shadow-xl
             backdrop-blur-xl
             lg:hidden
           "
         >
-
           <nav
             className="
               mx-auto
@@ -505,36 +389,30 @@ export default function Header() {
               py-4
             "
           >
-
-            {navItems.map(
-              (item) => (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  onClick={() =>
-                    setOpen(false)
-                  }
-                  className="
-                    rounded-xl
-                    px-4
-                    py-3.5
-                    text-base
-                    font-semibold
-                    text-slate-700
-                    hover:bg-blue-50
-                    hover:text-blue-600
-                  "
-                >
-                  {item.name}
-                </Link>
-              )
-            )}
+            {navItems.map((item) => (
+              <Link
+                key={item.name}
+                href={item.href}
+                onClick={() => setOpen(false)}
+                className="
+                  rounded-xl
+                  px-4
+                  py-3.5
+                  text-base
+                  font-semibold
+                  text-slate-700
+                  transition
+                  hover:bg-blue-50
+                  hover:text-blue-600
+                "
+              >
+                {item.name}
+              </Link>
+            ))}
 
             <Link
               href="/#calculators"
-              onClick={() =>
-                setOpen(false)
-              }
+              onClick={() => setOpen(false)}
               className="
                 mt-3
                 rounded-xl
@@ -544,16 +422,15 @@ export default function Header() {
                 text-center
                 font-bold
                 text-white
+                shadow-md
+                shadow-blue-200
               "
             >
               Explore Calculators
             </Link>
-
           </nav>
-
         </div>
       )}
-
     </header>
   );
 }
