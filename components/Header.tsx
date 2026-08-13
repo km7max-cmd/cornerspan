@@ -8,11 +8,16 @@ const calculators = [
     name: "Concrete",
     href: "/calculators/concrete",
     icon: (
-      <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
+      <svg
+        viewBox="0 0 24 24"
+        className="h-4 w-4"
+        fill="currentColor"
+      >
         <path d="M3 7h18v4H3zM3 13h18v4H3z" />
       </svg>
     ),
   },
+
   {
     name: "Brick",
     href: "/calculators/brick",
@@ -29,6 +34,7 @@ const calculators = [
       </svg>
     ),
   },
+
   {
     name: "Steel",
     href: "/calculators/steel",
@@ -46,6 +52,7 @@ const calculators = [
       </svg>
     ),
   },
+
   {
     name: "Paint",
     href: "/calculators/paint",
@@ -63,6 +70,7 @@ const calculators = [
       </svg>
     ),
   },
+
   {
     name: "Tile",
     href: "/calculators/tile",
@@ -74,11 +82,18 @@ const calculators = [
         stroke="currentColor"
         strokeWidth="2"
       >
-        <rect x="4" y="4" width="16" height="16" rx="1" />
+        <rect
+          x="4"
+          y="4"
+          width="16"
+          height="16"
+          rx="1"
+        />
         <path d="M4 12h16M12 4v16" />
       </svg>
     ),
   },
+
   {
     name: "Roofing",
     href: "/calculators/roofing",
@@ -98,11 +113,26 @@ const calculators = [
 ];
 
 const navItems = [
-  { name: "Home", href: "/" },
-  { name: "Calculators", href: "/#calculators" },
-  { name: "Categories", href: "/categories" },
-  { name: "Blog", href: "/blog" },
-  { name: "About", href: "/about" },
+  {
+    name: "Home",
+    href: "/",
+  },
+  {
+    name: "Calculators",
+    href: "/#calculators",
+  },
+  {
+    name: "Categories",
+    href: "/categories",
+  },
+  {
+    name: "Blog",
+    href: "/blog",
+  },
+  {
+    name: "About",
+    href: "/about",
+  },
 ];
 
 export default function Header() {
@@ -115,20 +145,20 @@ export default function Header() {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
 
-      // Top of page
+      // At the very top
       if (currentScrollY <= 10) {
         setVisible(true);
         lastScrollY.current = currentScrollY;
         return;
       }
 
-      // Scrolling down → hide
+      // Scroll down → hide header
       if (currentScrollY > lastScrollY.current) {
         setVisible(false);
         setOpen(false);
       }
 
-      // Scrolling up → show
+      // Scroll up → show header
       if (currentScrollY < lastScrollY.current) {
         setVisible(true);
       }
@@ -154,14 +184,17 @@ export default function Header() {
         top-0
         z-50
         w-full
-        bg-blue-50
+        bg-transparent
         transition-transform
         duration-300
         ease-out
         ${visible ? "translate-y-0" : "-translate-y-full"}
       `}
     >
-      {/* Main Header */}
+      {/* ================================
+          MAIN HEADER
+      ================================= */}
+
       <div
         className="
           mx-auto
@@ -175,7 +208,8 @@ export default function Header() {
           lg:h-24
         "
       >
-        {/* Logo */}
+        {/* LOGO */}
+
         <Link
           href="/"
           className="flex items-center gap-3"
@@ -233,7 +267,8 @@ export default function Header() {
           </div>
         </Link>
 
-        {/* Desktop Navigation */}
+        {/* DESKTOP NAVIGATION */}
+
         <nav className="hidden items-center gap-7 lg:flex">
           {navItems.map((item) => (
             <Link
@@ -271,10 +306,13 @@ export default function Header() {
           </Link>
         </nav>
 
-        {/* Mobile Menu Button */}
+        {/* MOBILE MENU */}
+
         <button
           type="button"
-          aria-label={open ? "Close menu" : "Open menu"}
+          aria-label={
+            open ? "Close menu" : "Open menu"
+          }
           onClick={() => setOpen(!open)}
           className="
             flex
@@ -293,14 +331,18 @@ export default function Header() {
         </button>
       </div>
 
-      {/* Calculator Pills */}
-      <div className="w-full bg-blue-50 pb-3">
+      {/* ================================
+          CALCULATOR NAVIGATION
+          NO BACKGROUND / NO PILLS
+      ================================= */}
+
+      <div className="w-full bg-transparent pb-3">
         <div className="mx-auto max-w-7xl px-5 sm:px-6">
           <div
             className="
               flex
               items-center
-              gap-2
+              gap-5
               overflow-x-auto
               pb-1
               scrollbar-hide
@@ -314,36 +356,23 @@ export default function Header() {
                 key={calculator.name}
                 href={calculator.href}
                 className="
-  flex
-  h-10
-  shrink-0
-  items-center
-  gap-2
-  rounded-full
-  border
-  border-transparent
-  bg-transparent
-  px-3
-  text-xs
-  font-semibold
-  text-slate-700
-  transition-all
-  duration-200
-  hover:text-blue-600
-  active:scale-95
-  sm:h-11
-  sm:px-4
-  sm:text-sm
-"
-                  transition-all
+                  flex
+                  h-9
+                  shrink-0
+                  items-center
+                  gap-2
+                  border-0
+                  bg-transparent
+                  px-1
+                  text-xs
+                  font-semibold
+                  text-slate-700
+                  transition-colors
                   duration-200
-                  hover:-translate-y-0.5
-                  hover:border-blue-200
                   hover:text-blue-600
-                  hover:shadow-md
-                  active:scale-95
-                  sm:h-11
-                  sm:px-5
+                  active:text-blue-700
+                  sm:h-10
+                  sm:px-1
                   sm:text-sm
                 "
               >
@@ -351,14 +380,19 @@ export default function Header() {
                   {calculator.icon}
                 </span>
 
-                {calculator.name}
+                <span>
+                  {calculator.name}
+                </span>
               </Link>
             ))}
           </div>
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* ================================
+          MOBILE MENU PANEL
+      ================================= */}
+
       {open && (
         <div
           className="
@@ -367,9 +401,10 @@ export default function Header() {
             right-0
             top-full
             border-t
-            border-slate-200
-            bg-blue-50
+            border-slate-200/60
+            bg-white/95
             shadow-xl
+            backdrop-blur-xl
             lg:hidden
           "
         >
@@ -396,7 +431,7 @@ export default function Header() {
                   font-semibold
                   text-slate-700
                   transition
-                  hover:bg-white
+                  hover:bg-blue-50
                   hover:text-blue-600
                 "
               >
