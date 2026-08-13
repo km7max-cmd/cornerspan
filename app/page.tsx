@@ -41,6 +41,7 @@ export default function Home() {
           <CategoryCard title="Roofing Calculator" />
 
         </div>
+
       </section>
 
       <Features />
