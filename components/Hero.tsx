@@ -168,7 +168,8 @@ export default function Hero() {
             <div className="relative">
 
               <input
-                type="text"
+  id="calculator-search"
+  type="text"
                 placeholder="Search calculators..."
                 className="
                   h-12
