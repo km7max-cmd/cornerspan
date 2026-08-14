@@ -32,7 +32,7 @@ export default function Hero() {
       {/* Content */}
       <div className="relative mx-auto max-w-7xl px-6">
 
-        <div className="mx-auto flex max-w-5xl flex-col items-center pt-6 pb-10 text-center md:pt-10 md:pb-14">
+        <div className="mx-auto flex max-w-5xl flex-col items-center pt-10 pb-10 text-center md:pt-14 md:pb-14">
 
           {/* Badge */}
           <div
