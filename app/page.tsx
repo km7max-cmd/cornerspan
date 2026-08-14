@@ -1,6 +1,4 @@
 import Hero from "../components/Hero";
-import Features from "../components/Features";
-import CTA from "../components/CTA";
 import Link from "next/link";
 
 const categories = [
@@ -46,9 +44,15 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-blue-50 pt-[130px]">
 
+      {/* ================================
+          HERO
+      ================================= */}
+
       <Hero />
 
-      {/* Popular Categories */}
+      {/* ================================
+          POPULAR CATEGORIES
+      ================================= */}
 
       <section
         id="calculators"
@@ -56,7 +60,7 @@ export default function Home() {
       >
         <div className="mx-auto max-w-7xl">
 
-          {/* Heading */}
+          {/* Section Header */}
 
           <div className="mx-auto mb-10 max-w-2xl text-center">
 
@@ -137,6 +141,7 @@ export default function Home() {
                   md:p-6
                 "
               >
+
                 {/* Icon */}
 
                 <div
@@ -158,7 +163,7 @@ export default function Home() {
                   {category.icon}
                 </div>
 
-                {/* Title */}
+                {/* Category Name */}
 
                 <h3
                   className="
@@ -188,7 +193,7 @@ export default function Home() {
                   {category.description}
                 </p>
 
-                {/* Bottom */}
+                {/* Explore */}
 
                 <div
                   className="
@@ -234,14 +239,6 @@ export default function Home() {
 
         </div>
       </section>
-
-      {/* Features */}
-
-      <Features />
-
-      {/* CTA */}
-
-      <CTA />
 
     </main>
   );
