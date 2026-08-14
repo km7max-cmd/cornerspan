@@ -7,63 +7,38 @@ const calculators = [
   {
     name: "Concrete",
     href: "/calculators/concrete",
-    icon: (
-      <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
-        <path d="M3 7h18v4H3zM3 13h18v4H3z" />
-      </svg>
-    ),
+    keywords: "concrete cement slab foundation",
+    icon: "🏗️",
   },
   {
     name: "Brick",
     href: "/calculators/brick",
-    icon: (
-      <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2">
-        <path d="M4 5h16v14H4z" />
-        <path d="M4 10h16M4 15h16M10 5v5M16 10v5M10 15v4" />
-      </svg>
-    ),
+    keywords: "brick wall masonry",
+    icon: "🧱",
   },
   {
     name: "Steel",
     href: "/calculators/steel",
-    icon: (
-      <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2">
-        <path d="M6 18L18 6" />
-        <path d="M8 20l12-12" />
-        <path d="M4 16l4 4" />
-      </svg>
-    ),
+    keywords: "steel rebar rod reinforcement",
+    icon: "🔩",
   },
   {
     name: "Paint",
     href: "/calculators/paint",
-    icon: (
-      <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2">
-        <path d="M6 3h12v5H6z" />
-        <path d="M8 8v13h8V8" />
-        <path d="M10 12h4" />
-      </svg>
-    ),
+    keywords: "paint wall room coverage",
+    icon: "🎨",
   },
   {
     name: "Tile",
     href: "/calculators/tile",
-    icon: (
-      <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2">
-        <rect x="4" y="4" width="16" height="16" rx="1" />
-        <path d="M4 12h16M12 4v16" />
-      </svg>
-    ),
+    keywords: "tile floor wall area",
+    icon: "◼️",
   },
   {
     name: "Roofing",
     href: "/calculators/roofing",
-    icon: (
-      <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2">
-        <path d="M3 18l9-10 9 10" />
-        <path d="M6 18h12" />
-      </svg>
-    ),
+    keywords: "roof roof area shingles",
+    icon: "🏠",
   },
 ];
 
@@ -78,11 +53,16 @@ const navItems = [
 export default function Header() {
   const [open, setOpen] = useState(false);
   const [visible, setVisible] = useState(true);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [search, setSearch] = useState("");
   const [headerHeight, setHeaderHeight] = useState(0);
 
   const headerRef = useRef<HTMLElement | null>(null);
+  const searchInputRef = useRef<HTMLInputElement | null>(null);
   const lastScrollY = useRef(0);
   const ticking = useRef(false);
+
+  /* Header height */
 
   useEffect(() => {
     const updateHeight = () => {
@@ -107,6 +87,8 @@ export default function Header() {
     };
   }, []);
 
+  /* Scroll behavior */
+
   useEffect(() => {
     lastScrollY.current = window.scrollY;
 
@@ -125,6 +107,7 @@ export default function Header() {
         } else if (difference > 6) {
           setVisible(false);
           setOpen(false);
+          setSearchOpen(false);
         } else if (difference < -6) {
           setVisible(true);
         }
@@ -143,28 +126,50 @@ export default function Header() {
     };
   }, []);
 
-  const handleSearch = () => {
-    const search = document.getElementById("calculator-search");
+  /* Search focus */
 
-    if (search) {
-      search.scrollIntoView({
-        behavior: "smooth",
-        block: "center",
-      });
-
+  useEffect(() => {
+    if (searchOpen) {
       setTimeout(() => {
-        (search as HTMLInputElement).focus();
-      }, 400);
+        searchInputRef.current?.focus();
+      }, 100);
+    }
+  }, [searchOpen]);
+
+  /* Search results */
+
+  const filteredCalculators = calculators.filter((item) => {
+    const query = search.toLowerCase().trim();
+
+    if (!query) return true;
+
+    return (
+      item.name.toLowerCase().includes(query) ||
+      item.keywords.toLowerCase().includes(query)
+    );
+  });
+
+  const handleSearchToggle = () => {
+    setSearchOpen((value) => !value);
+    setOpen(false);
+
+    if (searchOpen) {
+      setSearch("");
     }
   };
 
   return (
     <>
       {/* Space reserved for fixed header */}
+
       <div
         aria-hidden="true"
-        style={{ height: headerHeight }}
+        style={{
+          height: headerHeight || 0,
+        }}
       />
+
+      {/* HEADER */}
 
       <header
         ref={headerRef}
@@ -183,7 +188,7 @@ export default function Header() {
           ${visible ? "translate-y-0" : "-translate-y-full"}
         `}
       >
-        {/* Main Header */}
+        {/* Main header */}
 
         <div
           className="
@@ -268,8 +273,7 @@ export default function Header() {
                   text-sm
                   font-semibold
                   text-slate-700
-                  transition-colors
-                  duration-200
+                  transition
                   hover:text-blue-600
                 "
               >
@@ -277,11 +281,11 @@ export default function Header() {
               </Link>
             ))}
 
-            {/* Search Icon */}
+            {/* Search */}
 
             <button
               type="button"
-              onClick={handleSearch}
+              onClick={handleSearchToggle}
               aria-label="Search calculators"
               className="
                 flex
@@ -296,16 +300,20 @@ export default function Header() {
                 hover:text-blue-600
               "
             >
-              <svg
-                viewBox="0 0 24 24"
-                className="h-5 w-5"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <circle cx="11" cy="11" r="6.5" />
-                <path d="M16 16l5 5" />
-              </svg>
+              {searchOpen ? (
+                <span className="text-xl">×</span>
+              ) : (
+                <svg
+                  viewBox="0 0 24 24"
+                  className="h-5 w-5"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <circle cx="11" cy="11" r="6.5" />
+                  <path d="M16 16l5 5" />
+                </svg>
+              )}
             </button>
 
             <Link
@@ -328,14 +336,12 @@ export default function Header() {
             </Link>
           </nav>
 
-          {/* Mobile Controls */}
+          {/* Mobile controls */}
 
           <div className="flex items-center gap-1 lg:hidden">
-            {/* Search */}
-
             <button
               type="button"
-              onClick={handleSearch}
+              onClick={handleSearchToggle}
               aria-label="Search calculators"
               className="
                 flex
@@ -349,26 +355,28 @@ export default function Header() {
                 hover:bg-white/60
               "
             >
-              <svg
-                viewBox="0 0 24 24"
-                className="h-5 w-5"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <circle cx="11" cy="11" r="6.5" />
-                <path d="M16 16l5 5" />
-              </svg>
+              {searchOpen ? (
+                <span className="text-2xl">×</span>
+              ) : (
+                <svg
+                  viewBox="0 0 24 24"
+                  className="h-5 w-5"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <circle cx="11" cy="11" r="6.5" />
+                  <path d="M16 16l5 5" />
+                </svg>
+              )}
             </button>
-
-            {/* Menu */}
 
             <button
               type="button"
+              onClick={() => setOpen(!open)}
               aria-label={
                 open ? "Close menu" : "Open menu"
               }
-              onClick={() => setOpen(!open)}
               className="
                 flex
                 h-11
@@ -386,7 +394,7 @@ export default function Header() {
           </div>
         </div>
 
-        {/* Calculator Links */}
+        {/* Calculator links */}
 
         <div className="w-full bg-transparent pb-3">
           <div className="mx-auto max-w-7xl px-5 sm:px-6">
@@ -428,14 +436,146 @@ export default function Header() {
                     {calculator.icon}
                   </span>
 
-                  <span>{calculator.name}</span>
+                  {calculator.name}
                 </Link>
               ))}
             </div>
           </div>
         </div>
 
-        {/* Mobile Menu */}
+        {/* ================================
+            GLOBAL SEARCH PANEL
+        ================================= */}
+
+        {searchOpen && (
+          <div
+            className="
+              border-t
+              border-slate-200/70
+              bg-white
+              shadow-xl
+            "
+          >
+            <div
+              className="
+                mx-auto
+                max-w-3xl
+                px-5
+                py-4
+                sm:px-6
+              "
+            >
+              {/* Search input */}
+
+              <div className="relative">
+                <svg
+                  viewBox="0 0 24 24"
+                  className="
+                    absolute
+                    left-4
+                    top-1/2
+                    h-5
+                    w-5
+                    -translate-y-1/2
+                    text-slate-400
+                  "
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <circle cx="11" cy="11" r="6.5" />
+                  <path d="M16 16l5 5" />
+                </svg>
+
+                <input
+                  ref={searchInputRef}
+                  type="search"
+                  value={search}
+                  onChange={(e) =>
+                    setSearch(e.target.value)
+                  }
+                  placeholder="Search calculators..."
+                  className="
+                    h-12
+                    w-full
+                    rounded-2xl
+                    border
+                    border-slate-200
+                    bg-slate-50
+                    pl-12
+                    pr-4
+                    text-sm
+                    font-medium
+                    text-slate-900
+                    outline-none
+                    transition
+                    focus:border-blue-500
+                    focus:bg-white
+                    focus:ring-4
+                    focus:ring-blue-100
+                  "
+                />
+              </div>
+
+              {/* Results */}
+
+              <div className="mt-3">
+                {filteredCalculators.length > 0 ? (
+                  <div className="grid gap-1 sm:grid-cols-2">
+                    {filteredCalculators.map(
+                      (calculator) => (
+                        <Link
+                          key={calculator.name}
+                          href={calculator.href}
+                          onClick={() => {
+                            setSearchOpen(false);
+                            setSearch("");
+                          }}
+                          className="
+                            flex
+                            items-center
+                            gap-3
+                            rounded-xl
+                            px-3
+                            py-3
+                            transition
+                            hover:bg-blue-50
+                          "
+                        >
+                          <span className="text-xl">
+                            {calculator.icon}
+                          </span>
+
+                          <div>
+                            <p className="text-sm font-bold text-slate-900">
+                              {calculator.name} Calculator
+                            </p>
+
+                            <p className="text-xs text-slate-500">
+                              Open calculator
+                            </p>
+                          </div>
+                        </Link>
+                      )
+                    )}
+                  </div>
+                ) : (
+                  <div className="px-3 py-4 text-center">
+                    <p className="text-sm font-semibold text-slate-700">
+                      No calculator found
+                    </p>
+
+                    <p className="mt-1 text-xs text-slate-500">
+                      Try Concrete, Brick, Steel or Paint.
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Mobile menu */}
 
         {open && (
           <div
