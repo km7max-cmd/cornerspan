@@ -162,73 +162,7 @@ export default function Hero() {
 
           </div>
 
-          {/* Search */}
-          <div className="mt-6 w-full max-w-md">
-
-            <div className="relative">
-
-              <input
-  id="calculator-search"
-  type="text"
-                placeholder="Search calculators..."
-                className="
-                  h-12
-                  w-full
-                  rounded-full
-                  border
-                  border-slate-200
-                  bg-white/90
-                  pl-11
-                  pr-14
-                  text-sm
-                  shadow-md
-                  outline-none
-                  backdrop-blur
-                  placeholder:text-slate-400
-                  focus:border-blue-500
-                "
-              />
-
-              <span
-                className="
-                  absolute
-                  left-4
-                  top-1/2
-                  -translate-y-1/2
-                  text-sm
-                  text-slate-400
-                "
-              >
-                🔍
-              </span>
-
-              <button
-                type="button"
-                className="
-                  absolute
-                  right-1.5
-                  top-1/2
-                  flex
-                  h-9
-                  w-9
-                  -translate-y-1/2
-                  items-center
-                  justify-center
-                  rounded-full
-                  bg-blue-600
-                  text-sm
-                  text-white
-                  shadow-sm
-                  transition
-                  hover:bg-blue-700
-                "
-              >
-                →
-              </button>
-
-            </div>
-
-          </div>
+          
 
           {/* Statistics */}
           <div
