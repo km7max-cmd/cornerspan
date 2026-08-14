@@ -8,37 +8,98 @@ const calculators = [
     name: "Concrete",
     href: "/calculators/concrete",
     keywords: "concrete cement slab foundation",
-    icon: "🏗️",
+    icon: (
+      <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
+        <path d="M3 7h18v4H3zM3 13h18v4H3z" />
+      </svg>
+    ),
   },
   {
     name: "Brick",
     href: "/calculators/brick",
     keywords: "brick wall masonry",
-    icon: "🧱",
+    icon: (
+      <svg
+        viewBox="0 0 24 24"
+        className="h-4 w-4"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+      >
+        <path d="M4 5h16v14H4z" />
+        <path d="M4 10h16M4 15h16M10 5v5M16 10v5M10 15v4" />
+      </svg>
+    ),
   },
   {
     name: "Steel",
     href: "/calculators/steel",
     keywords: "steel rebar rod reinforcement",
-    icon: "🔩",
+    icon: (
+      <svg
+        viewBox="0 0 24 24"
+        className="h-4 w-4"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+      >
+        <path d="M6 18L18 6" />
+        <path d="M8 20l12-12" />
+        <path d="M4 16l4 4" />
+      </svg>
+    ),
   },
   {
     name: "Paint",
     href: "/calculators/paint",
     keywords: "paint wall room coverage",
-    icon: "🎨",
+    icon: (
+      <svg
+        viewBox="0 0 24 24"
+        className="h-4 w-4"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+      >
+        <path d="M6 3h12v5H6z" />
+        <path d="M8 8v13h8V8" />
+        <path d="M10 12h4" />
+      </svg>
+    ),
   },
   {
     name: "Tile",
     href: "/calculators/tile",
     keywords: "tile floor wall area",
-    icon: "◼️",
+    icon: (
+      <svg
+        viewBox="0 0 24 24"
+        className="h-4 w-4"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+      >
+        <rect x="4" y="4" width="16" height="16" rx="1" />
+        <path d="M4 12h16M12 4v16" />
+      </svg>
+    ),
   },
   {
     name: "Roofing",
     href: "/calculators/roofing",
-    keywords: "roof roof area shingles",
-    icon: "🏠",
+    keywords: "roof roof area roofing shingles",
+    icon: (
+      <svg
+        viewBox="0 0 24 24"
+        className="h-4 w-4"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+      >
+        <path d="M3 18l9-10 9 10" />
+        <path d="M6 18h12" />
+      </svg>
+    ),
   },
 ];
 
@@ -62,7 +123,9 @@ export default function Header() {
   const lastScrollY = useRef(0);
   const ticking = useRef(false);
 
-  /* Header height */
+  /* -----------------------------------------
+     HEADER HEIGHT
+  ----------------------------------------- */
 
   useEffect(() => {
     const updateHeight = () => {
@@ -87,7 +150,17 @@ export default function Header() {
     };
   }, []);
 
-  /* Scroll behavior */
+  /* -----------------------------------------
+     SCROLL BEHAVIOR
+     
+     Search OPEN:
+     Header always stays visible.
+
+     Search CLOSED:
+     Scroll down  -> hide
+     Scroll up    -> show
+     Top          -> show
+  ----------------------------------------- */
 
   useEffect(() => {
     lastScrollY.current = window.scrollY;
@@ -98,21 +171,38 @@ export default function Header() {
       ticking.current = true;
 
       requestAnimationFrame(() => {
-        const current = window.scrollY;
-        const previous = lastScrollY.current;
-        const difference = current - previous;
+        const currentScrollY = window.scrollY;
+        const previousScrollY = lastScrollY.current;
 
-        if (current <= 10) {
+        /* Search open -> NEVER hide header */
+
+        if (searchOpen) {
           setVisible(true);
-        } else if (difference > 6) {
-          setVisible(false);
-          setOpen(false);
-          setSearchOpen(false);
-        } else if (difference < -6) {
+          lastScrollY.current = currentScrollY;
+          ticking.current = false;
+          return;
+        }
+
+        /* At top -> always show */
+
+        if (currentScrollY <= 10) {
           setVisible(true);
         }
 
-        lastScrollY.current = current;
+        /* Scrolling DOWN -> hide */
+
+        else if (currentScrollY > previousScrollY + 6) {
+          setVisible(false);
+          setOpen(false);
+        }
+
+        /* Scrolling UP -> show */
+
+        else if (currentScrollY < previousScrollY - 6) {
+          setVisible(true);
+        }
+
+        lastScrollY.current = currentScrollY;
         ticking.current = false;
       });
     };
@@ -124,24 +214,32 @@ export default function Header() {
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, []);
+  }, [searchOpen]);
 
-  /* Search focus */
+  /* -----------------------------------------
+     SEARCH FOCUS
+  ----------------------------------------- */
 
   useEffect(() => {
     if (searchOpen) {
+      setVisible(true);
+
       setTimeout(() => {
         searchInputRef.current?.focus();
       }, 100);
     }
   }, [searchOpen]);
 
-  /* Search results */
+  /* -----------------------------------------
+     SEARCH RESULTS
+  ----------------------------------------- */
 
   const filteredCalculators = calculators.filter((item) => {
     const query = search.toLowerCase().trim();
 
-    if (!query) return true;
+    if (!query) {
+      return true;
+    }
 
     return (
       item.name.toLowerCase().includes(query) ||
@@ -149,27 +247,50 @@ export default function Header() {
     );
   });
 
-  const handleSearchToggle = () => {
-    setSearchOpen((value) => !value);
-    setOpen(false);
+  /* -----------------------------------------
+     SEARCH TOGGLE
+  ----------------------------------------- */
 
-    if (searchOpen) {
-      setSearch("");
-    }
+  const handleSearchToggle = () => {
+    setSearchOpen((current) => {
+      const next = !current;
+
+      if (next) {
+        setVisible(true);
+        setOpen(false);
+      } else {
+        setSearch("");
+      }
+
+      return next;
+    });
+  };
+
+  /* -----------------------------------------
+     CLOSE SEARCH
+  ----------------------------------------- */
+
+  const closeSearch = () => {
+    setSearchOpen(false);
+    setSearch("");
   };
 
   return (
     <>
-      {/* Space reserved for fixed header */}
+      {/* -------------------------------------
+          SPACE FOR FIXED HEADER
+      -------------------------------------- */}
 
       <div
         aria-hidden="true"
         style={{
-          height: headerHeight || 0,
+          height: headerHeight,
         }}
       />
 
-      {/* HEADER */}
+      {/* -------------------------------------
+          FIXED HEADER
+      -------------------------------------- */}
 
       <header
         ref={headerRef}
@@ -188,7 +309,9 @@ export default function Header() {
           ${visible ? "translate-y-0" : "-translate-y-full"}
         `}
       >
-        {/* Main header */}
+        {/* -----------------------------------
+            MAIN HEADER
+        ------------------------------------ */}
 
         <div
           className="
@@ -203,7 +326,7 @@ export default function Header() {
             lg:h-24
           "
         >
-          {/* Logo */}
+          {/* LOGO */}
 
           <Link
             href="/"
@@ -262,7 +385,9 @@ export default function Header() {
             </div>
           </Link>
 
-          {/* Desktop Navigation */}
+          {/* ---------------------------------
+              DESKTOP NAV
+          ---------------------------------- */}
 
           <nav className="hidden items-center gap-7 lg:flex">
             {navItems.map((item) => (
@@ -281,12 +406,16 @@ export default function Header() {
               </Link>
             ))}
 
-            {/* Search */}
+            {/* SEARCH ICON */}
 
             <button
               type="button"
               onClick={handleSearchToggle}
-              aria-label="Search calculators"
+              aria-label={
+                searchOpen
+                  ? "Close search"
+                  : "Search calculators"
+              }
               className="
                 flex
                 h-9
@@ -301,7 +430,9 @@ export default function Header() {
               "
             >
               {searchOpen ? (
-                <span className="text-xl">×</span>
+                <span className="text-2xl leading-none">
+                  ×
+                </span>
               ) : (
                 <svg
                   viewBox="0 0 24 24"
@@ -315,6 +446,8 @@ export default function Header() {
                 </svg>
               )}
             </button>
+
+            {/* EXPLORE */}
 
             <Link
               href="/#calculators"
@@ -336,13 +469,21 @@ export default function Header() {
             </Link>
           </nav>
 
-          {/* Mobile controls */}
+          {/* ---------------------------------
+              MOBILE CONTROLS
+          ---------------------------------- */}
 
           <div className="flex items-center gap-1 lg:hidden">
+            {/* SEARCH */}
+
             <button
               type="button"
               onClick={handleSearchToggle}
-              aria-label="Search calculators"
+              aria-label={
+                searchOpen
+                  ? "Close search"
+                  : "Search calculators"
+              }
               className="
                 flex
                 h-11
@@ -356,7 +497,9 @@ export default function Header() {
               "
             >
               {searchOpen ? (
-                <span className="text-2xl">×</span>
+                <span className="text-2xl leading-none">
+                  ×
+                </span>
               ) : (
                 <svg
                   viewBox="0 0 24 24"
@@ -371,9 +514,15 @@ export default function Header() {
               )}
             </button>
 
+            {/* MENU */}
+
             <button
               type="button"
-              onClick={() => setOpen(!open)}
+              onClick={() => {
+                setOpen(!open);
+                setSearchOpen(false);
+                setSearch("");
+              }}
               aria-label={
                 open ? "Close menu" : "Open menu"
               }
@@ -394,7 +543,9 @@ export default function Header() {
           </div>
         </div>
 
-        {/* Calculator links */}
+        {/* -----------------------------------
+            CALCULATOR LINKS
+        ------------------------------------ */}
 
         <div className="w-full bg-transparent pb-3">
           <div className="mx-auto max-w-7xl px-5 sm:px-6">
@@ -436,16 +587,16 @@ export default function Header() {
                     {calculator.icon}
                   </span>
 
-                  {calculator.name}
+                  <span>{calculator.name}</span>
                 </Link>
               ))}
             </div>
           </div>
         </div>
 
-        {/* ================================
+        {/* -----------------------------------
             GLOBAL SEARCH PANEL
-        ================================= */}
+        ------------------------------------ */}
 
         {searchOpen && (
           <div
@@ -465,7 +616,7 @@ export default function Header() {
                 sm:px-6
               "
             >
-              {/* Search input */}
+              {/* SEARCH INPUT */}
 
               <div className="relative">
                 <svg
@@ -517,7 +668,7 @@ export default function Header() {
                 />
               </div>
 
-              {/* Results */}
+              {/* SEARCH RESULTS */}
 
               <div className="mt-3">
                 {filteredCalculators.length > 0 ? (
@@ -527,10 +678,7 @@ export default function Header() {
                         <Link
                           key={calculator.name}
                           href={calculator.href}
-                          onClick={() => {
-                            setSearchOpen(false);
-                            setSearch("");
-                          }}
+                          onClick={closeSearch}
                           className="
                             flex
                             items-center
@@ -542,16 +690,28 @@ export default function Header() {
                             hover:bg-blue-50
                           "
                         >
-                          <span className="text-xl">
+                          <span className="text-blue-600">
                             {calculator.icon}
                           </span>
 
                           <div>
-                            <p className="text-sm font-bold text-slate-900">
+                            <p
+                              className="
+                                text-sm
+                                font-bold
+                                text-slate-900
+                              "
+                            >
                               {calculator.name} Calculator
                             </p>
 
-                            <p className="text-xs text-slate-500">
+                            <p
+                              className="
+                                mt-0.5
+                                text-xs
+                                text-slate-500
+                              "
+                            >
                               Open calculator
                             </p>
                           </div>
@@ -561,11 +721,23 @@ export default function Header() {
                   </div>
                 ) : (
                   <div className="px-3 py-4 text-center">
-                    <p className="text-sm font-semibold text-slate-700">
+                    <p
+                      className="
+                        text-sm
+                        font-semibold
+                        text-slate-700
+                      "
+                    >
                       No calculator found
                     </p>
 
-                    <p className="mt-1 text-xs text-slate-500">
+                    <p
+                      className="
+                        mt-1
+                        text-xs
+                        text-slate-500
+                      "
+                    >
                       Try Concrete, Brick, Steel or Paint.
                     </p>
                   </div>
@@ -575,7 +747,9 @@ export default function Header() {
           </div>
         )}
 
-        {/* Mobile menu */}
+        {/* -----------------------------------
+            MOBILE MENU
+        ------------------------------------ */}
 
         {open && (
           <div
