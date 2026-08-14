@@ -123,7 +123,7 @@ export default function Hero() {
                 hover:bg-blue-700
               "
             >
-              Explore
+              All Calculators
             </a>
 
             <a
