@@ -22,7 +22,7 @@ export default function Stats() {
     <section className="mx-auto max-w-6xl px-6 py-10 md:py-14">
       <div className="rounded-2xl border border-slate-200/80 bg-white/80 px-4 py-7 backdrop-blur-sm md:px-8 md:py-8">
 
-        <div className="grid grid-cols-2 md:grid-cols-4">
+        <div className="grid grid-cols-3 md:grid-cols-4">
 
           {stats.map((item, index) => (
             <div
