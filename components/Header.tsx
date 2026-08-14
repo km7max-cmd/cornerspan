@@ -502,16 +502,19 @@ export default function Header() {
           {/* Search content starts below Header */}
 
           <div
-            className="
-              absolute
-              left-0
-              right-0
-              top-[156px]
-              bottom-0
-              overflow-y-auto
-              bg-white
-            "
-          >
+  className="
+    absolute
+    left-0
+    right-0
+    top-[156px]
+    bottom-0
+    overflow-y-auto
+    bg-white
+    [scrollbar-width:none]
+    [-ms-overflow-style:none]
+    [&::-webkit-scrollbar]:hidden
+  "
+>
             {/* STICKY SEARCH BAR */}
 
             <div
