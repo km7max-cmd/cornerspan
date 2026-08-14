@@ -5,7 +5,7 @@ import CTA from "../components/CTA";
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-slate-100 pt-[210px]">
+    <main className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-slate-100 pt-[150px]">
       <Hero />
 
       {/* Popular Calculators */}
