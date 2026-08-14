@@ -13,21 +13,7 @@ export default function Hero() {
         "
       />
 
-      {/* Soft Glow */}
-      <div
-        className="
-          pointer-events-none
-          absolute
-          left-1/2
-          top-0
-          h-[420px]
-          w-[420px]
-          -translate-x-1/2
-          rounded-full
-          bg-blue-400/20
-          blur-3xl
-        "
-      />
+      
 
       {/* Content */}
       <div className="relative mx-auto max-w-7xl px-6">
