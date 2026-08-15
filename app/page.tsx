@@ -124,48 +124,110 @@ const guides = [
   },
 ];
 
-const faqs = [
-  {
-    question: "Are CornerSpan construction calculators free?",
-    answer:
-      "Yes. CornerSpan provides free construction calculators that you can use without creating an account.",
-  },
-  {
-    question: "Can I use CornerSpan calculators on my phone?",
-    answer:
-      "Yes. CornerSpan is designed for mobile phones, tablets and desktop computers, so you can calculate from the job site or at home.",
-  },
-  {
-    question: "How accurate are construction calculator results?",
-    answer:
-      "CornerSpan uses standard construction formulas and commonly used estimation methods. Results are intended for estimation and should be verified by a qualified professional for critical construction work.",
-  },
-  {
-    question: "What construction calculators are available?",
-    answer:
-      "CornerSpan currently provides calculators for concrete, bricks, steel, paint, tiles and roofing, with more construction tools planned.",
-  },
-  {
-    question: "How do I calculate concrete volume?",
-    answer:
-      "For a basic rectangular structure, multiply length × width × depth. Make sure all measurements use the same unit before calculating.",
-  },
-  {
-    question: "How do I calculate steel weight?",
-    answer:
-      "For standard reinforcement bars, a commonly used estimation formula is Weight (kg) = D² × L ÷ 162, where D is diameter in millimetres and L is length in metres.",
-  },
-  {
-    question: "Do I need to create an account?",
-    answer:
-      "No. CornerSpan calculators are designed to be accessible without requiring registration or login.",
-  },
-  {
-    question: "Can CornerSpan replace an engineer's calculation?",
-    answer:
-      "No. CornerSpan is intended for estimation and planning. Structural design, safety-critical quantities and final construction decisions should always be checked by a qualified engineer or construction professional.",
-  },
-];
+{/* =====================================================
+    FAQ
+====================================================== */}
+
+<section className="bg-slate-50 px-6 py-16 md:py-20">
+  <div className="mx-auto max-w-4xl">
+
+    {/* Heading */}
+    <div className="mx-auto mb-10 max-w-2xl text-center">
+
+      <span className="text-sm font-bold uppercase tracking-[0.15em] text-blue-600">
+        FAQ
+      </span>
+
+      <h2 className="mt-3 text-3xl font-black tracking-tight text-slate-900 md:text-5xl">
+        Frequently Asked Questions
+      </h2>
+
+      <p className="mt-4 text-sm leading-6 text-slate-500 md:text-base">
+        Answers to common questions about CornerSpan calculators.
+      </p>
+
+    </div>
+
+    {/* FAQ List */}
+    <div className="space-y-3">
+
+      {faqs.map((faq) => (
+        <details
+          key={faq.question}
+          className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-all duration-300 open:border-blue-200 open:shadow-md"
+        >
+
+          <summary
+            className="
+              flex
+              cursor-pointer
+              list-none
+              items-center
+              justify-between
+              gap-4
+              px-5
+              py-5
+              text-sm
+              font-bold
+              text-slate-900
+              md:px-6
+              md:py-6
+              md:text-base
+            "
+          >
+
+            <span>
+              {faq.question}
+            </span>
+
+            {/* Plus / Minus */}
+            <span
+              className="
+                flex
+                h-8
+                w-8
+                shrink-0
+                items-center
+                justify-center
+                rounded-full
+                bg-slate-100
+                text-lg
+                font-medium
+                text-slate-500
+                transition-all
+                duration-300
+                group-open:rotate-180
+                group-open:bg-blue-600
+                group-open:text-white
+              "
+            >
+              <span className="group-open:hidden">
+                +
+              </span>
+
+              <span className="hidden group-open:inline">
+                −
+              </span>
+            </span>
+
+          </summary>
+
+          {/* Answer */}
+          <div className="border-t border-slate-100 px-5 pb-5 pt-4 md:px-6 md:pb-6">
+
+            <p className="text-sm leading-7 text-slate-600 md:text-base">
+              {faq.answer}
+            </p>
+
+          </div>
+
+        </details>
+      ))}
+
+    </div>
+
+  </div>
+</section>
 
 export default function Home() {
   return (
