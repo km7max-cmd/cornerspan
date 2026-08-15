@@ -126,24 +126,44 @@ const guides = [
 
 const faqs = [
   {
-    question: "Are CornerSpan calculators free to use?",
+    question: "Are CornerSpan construction calculators free?",
     answer:
-      "Yes. CornerSpan construction calculators are designed to be free and easy to use without requiring an account.",
+      "Yes. CornerSpan provides free construction calculators that you can use without creating an account.",
   },
   {
-    question: "Can I use CornerSpan on my mobile phone?",
+    question: "Can I use CornerSpan calculators on my phone?",
     answer:
-      "Yes. The website is designed to work across mobile phones, tablets and desktop devices.",
+      "Yes. CornerSpan is designed for mobile phones, tablets and desktop computers, so you can calculate from the job site or at home.",
   },
   {
-    question: "Are the calculations accurate?",
+    question: "How accurate are construction calculator results?",
     answer:
-      "CornerSpan uses standard construction formulas and practical estimation methods. Always verify critical project quantities with your engineer or site professional.",
+      "CornerSpan uses standard construction formulas and commonly used estimation methods. Results are intended for estimation and should be verified by a qualified professional for critical construction work.",
   },
   {
-    question: "Which construction calculators are available?",
+    question: "What construction calculators are available?",
     answer:
-      "CornerSpan includes calculators for concrete, brick, steel, paint, tile, roofing and additional construction categories.",
+      "CornerSpan currently provides calculators for concrete, bricks, steel, paint, tiles and roofing, with more construction tools planned.",
+  },
+  {
+    question: "How do I calculate concrete volume?",
+    answer:
+      "For a basic rectangular structure, multiply length × width × depth. Make sure all measurements use the same unit before calculating.",
+  },
+  {
+    question: "How do I calculate steel weight?",
+    answer:
+      "For standard reinforcement bars, a commonly used estimation formula is Weight (kg) = D² × L ÷ 162, where D is diameter in millimetres and L is length in metres.",
+  },
+  {
+    question: "Do I need to create an account?",
+    answer:
+      "No. CornerSpan calculators are designed to be accessible without requiring registration or login.",
+  },
+  {
+    question: "Can CornerSpan replace an engineer's calculation?",
+    answer:
+      "No. CornerSpan is intended for estimation and planning. Structural design, safety-critical quantities and final construction decisions should always be checked by a qualified engineer or construction professional.",
   },
 ];
 
