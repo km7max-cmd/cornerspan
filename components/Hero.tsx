@@ -1,257 +1,89 @@
+import Link from "next/link";
+
 export default function Hero() {
-  const stats = [
-    {
-      value: "100+",
-      label: "Calculators",
-    },
-    {
-      value: "99.9%",
-      label: "Accuracy",
-    },
-    {
-      value: "24/7",
-      label: (
-        <>
-          <span className="font-semibold text-blue-600">Free</span>{" "}
-          Access
-        </>
-      ),
-    },
-  ];
-
-  
   return (
-    <section className="relative overflow-hidden bg-blue-50">
+    <section className="relative overflow-hidden bg-gradient-to-b from-blue-50 via-white to-slate-50">
 
-      {/* Background Grid */}
-      <div
-        className="
-          pointer-events-none
-          absolute
-          inset-0
-          bg-[linear-gradient(to_right,#e2e8f012_1px,transparent_1px),linear-gradient(to_bottom,#e2e8f012_1px,transparent_1px)]
-          bg-[size:60px_60px]
-        "
-      />
+      {/* Soft background pattern */}
+      <div className="pointer-events-none absolute inset-0 opacity-40">
+        <div className="absolute left-[-120px] top-20 h-72 w-72 rounded-full bg-blue-200 blur-3xl" />
+        <div className="absolute right-[-120px] top-32 h-72 w-72 rounded-full bg-cyan-100 blur-3xl" />
+      </div>
 
-      <div className="relative mx-auto max-w-7xl px-6">
+      <div className="relative mx-auto max-w-7xl px-5 pb-14 pt-[145px] md:px-6 md:pb-20 md:pt-[170px]">
 
-        <div
-          className="
-            mx-auto
-            flex
-            max-w-5xl
-            flex-col
-            items-center
-            pt-10
-            pb-10
-            text-center
-            md:pt-14
-            md:pb-14
-          "
-        >
+        {/* Trusted Badge */}
+        <div className="mx-auto flex w-fit items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 shadow-sm">
 
-          {/* Badge */}
-          <div
-            className="
-              inline-flex
-              items-center
-              gap-2
-              rounded-full
-              border
-              border-blue-100
-              bg-white/80
-              px-4
-              py-1.5
-              shadow-md
-              backdrop-blur
-            "
-          >
-            <span className="h-2 w-2 rounded-full bg-emerald-500" />
+          <span className="h-2.5 w-2.5 rounded-full bg-emerald-500" />
 
-            <span
-              className="
-                text-[9px]
-                font-semibold
-                uppercase
-                tracking-[0.12em]
-                text-blue-700
-                sm:text-[10px]
-              "
-            >
-              Trusted by Contractors & Builders
-            </span>
-          </div>
+          <span className="text-[11px] font-bold uppercase tracking-[0.18em] text-blue-700 md:text-xs">
+            Trusted Construction Tools
+          </span>
 
-          {/* Heading */}
-          <h1
-            className="
-              mt-5
-              max-w-xl
-              text-[34px]
-              font-black
-              leading-[1.02]
-              tracking-tight
-              text-slate-900
-              sm:text-5xl
-              lg:max-w-4xl
-              lg:text-7xl
-            "
-          >
+        </div>
+
+        {/* Heading */}
+        <div className="mx-auto mt-7 max-w-4xl text-center">
+
+          <h1 className="text-4xl font-black leading-[1.08] tracking-tight text-slate-950 sm:text-5xl md:text-6xl lg:text-7xl">
+
             Smart{" "}
 
-            <span
-              className="
-                bg-gradient-to-r
-                from-blue-600
-                via-sky-500
-                to-cyan-500
-                bg-clip-text
-                text-transparent
-              "
-            >
+            <span className="bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent">
               Construction
             </span>
 
             <br />
 
             Calculators
+
           </h1>
 
-          {/* Description */}
-          <p
-            className="
-              mt-5
-              max-w-md
-              text-base
-              leading-7
-              text-slate-600
-              sm:max-w-xl
-              sm:text-lg
-            "
-          >
+          <p className="mx-auto mt-6 max-w-2xl text-base leading-7 text-slate-600 md:text-lg md:leading-8">
+
             Fast, accurate construction calculators for concrete,
             brick, steel, paint, roofing and more.
+
           </p>
 
-          {/* Buttons */}
-          <div className="mt-7 flex w-full max-w-md gap-3">
+        </div>
 
-            <a
-              href="#calculators"
-              className="
-                flex-1
-                rounded-2xl
-                bg-blue-600
-                px-5
-                py-4
-                font-semibold
-                text-white
-                shadow-xl
-                shadow-blue-200
-                transition-all
-                duration-300
-                hover:bg-blue-700
-              "
-            >
-              All Calculators
-            </a>
+        {/* CTA Buttons */}
+        <div className="mx-auto mt-8 grid max-w-xl grid-cols-2 gap-3 md:mt-10 md:gap-4">
 
-            <a
-              href="/categories"
-              className="
-                flex-1
-                rounded-2xl
-                border
-                border-slate-300
-                bg-white/90
-                px-5
-                py-4
-                font-semibold
-                text-slate-700
-                backdrop-blur
-                transition
-                hover:bg-white
-              "
-            >
-              Categories
-            </a>
+          <Link
+            href="/#calculators"
+            className="flex h-14 items-center justify-center rounded-2xl bg-blue-600 px-5 text-base font-bold text-white shadow-lg shadow-blue-600/20 transition-all duration-300 hover:-translate-y-0.5 hover:bg-blue-700 hover:shadow-xl"
+          >
+            All Calculators
+          </Link>
 
+          <Link
+            href="/#categories"
+            className="flex h-14 items-center justify-center rounded-2xl border border-slate-200 bg-white px-5 text-base font-bold text-slate-700 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-blue-200 hover:text-blue-600 hover:shadow-md"
+          >
+            Categories
+          </Link>
+
+        </div>
+
+        {/* Quick Trust Points */}
+        <div className="mx-auto mt-10 flex max-w-2xl flex-wrap items-center justify-center gap-x-6 gap-y-3 text-xs font-medium text-slate-500 md:text-sm">
+
+          <div className="flex items-center gap-2">
+            <span className="text-emerald-500">✓</span>
+            Accurate calculations
           </div>
 
-          {/* Stats */}
-          <div
-            className="
-              mt-10
-              w-full
-              max-w-4xl
-              rounded-2xl
-              border
-              border-slate-200/80
-              bg-white/80
-              px-3
-              py-6
-              backdrop-blur-sm
-              md:px-8
-              md:py-7
-            "
-          >
+          <div className="flex items-center gap-2">
+            <span className="text-emerald-500">✓</span>
+            Free to use
+          </div>
 
-            <div className="grid grid-cols-3">
-
-              {stats.map((item, index) => (
-                <div
-                  key={item.value}
-                  className={`
-                    flex
-                    min-h-[64px]
-                    flex-col
-                    items-center
-                    justify-center
-                    px-2
-                    text-center
-
-                    ${
-                      index !== 0
-                        ? "border-l border-slate-200"
-                        : ""
-                    }
-                  `}
-                >
-
-                  {/* Number */}
-                  <div
-                    className="
-                      text-2xl
-                      font-bold
-                      tracking-tight
-                      text-slate-900
-                      sm:text-3xl
-                    "
-                  >
-                    {item.value}
-                  </div>
-
-                  {/* Label */}
-                  <div
-                    className="
-                      mt-1
-                      text-[10px]
-                      font-medium
-                      leading-4
-                      text-slate-500
-                      sm:text-xs
-                      md:text-sm
-                    "
-                  >
-                    {item.label}
-                  </div>
-
-                </div>
-              ))}
-
-            </div>
-
+          <div className="flex items-center gap-2">
+            <span className="text-emerald-500">✓</span>
+            Works on mobile
           </div>
 
         </div>
