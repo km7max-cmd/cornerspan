@@ -57,7 +57,7 @@ const stats = [
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-slate-100">
+    <main className="min-h-screen bg-slate-50 pt-[80px]">
 
       {/* =========================================
           HERO
