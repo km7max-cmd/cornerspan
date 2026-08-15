@@ -1,249 +1,77 @@
 import Link from "next/link";
 
-const categories = [
-  {
-    name: "Concrete",
-    description: "Concrete volume & material estimation",
-    icon: "🏗️",
-    href: "/calculators/concrete",
-  },
-  {
-    name: "Brick",
-    description: "Bricks required for walls",
-    icon: "🧱",
-    href: "/calculators/brick",
-  },
-  {
-    name: "Steel",
-    description: "Steel & reinforcement calculations",
-    icon: "🔩",
-    href: "/calculators/steel",
-  },
-  {
-    name: "Paint",
-    description: "Paint quantity & coverage",
-    icon: "🎨",
-    href: "/calculators/paint",
-  },
-  {
-    name: "Tile",
-    description: "Tile quantity & area estimation",
-    icon: "⬛",
-    href: "/calculators/tile",
-  },
-  {
-    name: "Roofing",
-    description: "Roof area & material estimation",
-    icon: "🏠",
-    href: "/calculators/roofing",
-  },
-];
-
-export default function Home() {
+export default function Hero() {
   return (
-    <main className="min-h-screen bg-blue-50 pt-[130px]">
+    <section className="bg-gradient-to-b from-blue-50 via-white to-white">
+      <div className="mx-auto max-w-7xl px-6 pt-10 pb-12 md:pt-14 md:pb-16">
 
-      {/* Hero */}
+        {/* Breadcrumb */}
+        <div className="mb-8 text-sm text-slate-500">
+          <Link
+            href="/"
+            className="font-medium text-blue-600 hover:text-blue-700"
+          >
+            Home
+          </Link>
 
-      <Hero />
+          <span className="mx-2">/</span>
 
-      {/* =========================================
-          POPULAR CATEGORIES
-      ========================================== */}
+          <span>Concrete Calculator</span>
+        </div>
 
-      <section
-        id="calculators"
-        className="bg-white px-6 py-16 md:py-20"
-      >
-        <div className="mx-auto max-w-7xl">
+        {/* Hero Content */}
+        <div className="max-w-4xl">
 
-          {/* Section Heading */}
-
-          <div className="mx-auto mb-10 max-w-2xl text-center">
-
-            <span
-              className="
-                inline-flex
-                rounded-full
-                bg-blue-50
-                px-4
-                py-1.5
-                text-xs
-                font-bold
-                uppercase
-                tracking-wider
-                text-blue-600
-              "
-            >
-              Popular Categories
-            </span>
-
-            <h2
-              className="
-                mt-4
-                text-3xl
-                font-black
-                tracking-tight
-                text-slate-900
-                md:text-5xl
-              "
-            >
-              Find the Right Calculator
-            </h2>
-
-            <p
-              className="
-                mx-auto
-                mt-4
-                max-w-xl
-                text-sm
-                leading-6
-                text-slate-500
-                md:text-base
-              "
-            >
-              Choose a category to quickly find the construction
-              calculator you need.
-            </p>
-
+          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-blue-100 bg-blue-50 px-4 py-2 text-sm font-semibold text-blue-700">
+            <span className="text-lg">🏗️</span>
+            Construction Calculator
           </div>
 
-          {/* Category Grid */}
+          <h1 className="text-4xl font-black tracking-tight text-slate-900 md:text-6xl">
+            Concrete Calculator
+          </h1>
 
-          <div
-            className="
-              grid
-              grid-cols-2
-              gap-4
-              md:grid-cols-3
-              lg:gap-5
-            "
-          >
-            {categories.map((category) => (
-              <Link
-                key={category.name}
-                href={category.href}
-                className="
-                  group
-                  rounded-2xl
-                  border
-                  border-slate-200
-                  bg-white
-                  p-5
-                  transition-all
-                  duration-300
-                  hover:-translate-y-1
-                  hover:border-blue-200
-                  hover:shadow-lg
-                  md:p-6
-                "
-              >
+          <p className="mt-5 max-w-3xl text-base leading-7 text-slate-600 md:text-xl md:leading-8">
+            Calculate concrete volume, cement, sand and aggregate
+            requirements quickly and accurately for your construction
+            project.
+          </p>
 
-                {/* Icon */}
+          {/* Quick Info */}
+          <div className="mt-8 flex flex-wrap gap-3">
 
-                <div
-                  className="
-                    flex
-                    h-12
-                    w-12
-                    items-center
-                    justify-center
-                    rounded-xl
-                    bg-slate-50
-                    text-2xl
-                    transition
-                    duration-300
-                    group-hover:bg-blue-50
-                    group-hover:scale-105
-                  "
-                >
-                  {category.icon}
-                </div>
+            <div className="rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
+              <div className="text-xs font-medium text-slate-500">
+                Calculator
+              </div>
+              <div className="mt-1 font-bold text-slate-900">
+                Concrete
+              </div>
+            </div>
 
-                {/* Content */}
+            <div className="rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
+              <div className="text-xs font-medium text-slate-500">
+                Accuracy
+              </div>
+              <div className="mt-1 font-bold text-blue-600">
+                Professional
+              </div>
+            </div>
 
-                <h3
-                  className="
-                    mt-5
-                    text-base
-                    font-bold
-                    text-slate-900
-                    transition
-                    group-hover:text-blue-600
-                    md:text-lg
-                  "
-                >
-                  {category.name}
-                </h3>
+            <div className="rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
+              <div className="text-xs font-medium text-slate-500">
+                Access
+              </div>
+              <div className="mt-1 font-bold text-slate-900">
+                Free
+              </div>
+            </div>
 
-                <p
-                  className="
-                    mt-1.5
-                    line-clamp-2
-                    text-xs
-                    leading-5
-                    text-slate-500
-                    md:text-sm
-                  "
-                >
-                  {category.description}
-                </p>
-
-                {/* Bottom */}
-
-                <div
-                  className="
-                    mt-5
-                    flex
-                    items-center
-                    justify-between
-                  "
-                >
-                  <span
-                    className="
-                      text-xs
-                      font-semibold
-                      text-blue-600
-                    "
-                  >
-                    Explore
-                  </span>
-
-                  <span
-                    className="
-                      flex
-                      h-8
-                      w-8
-                      items-center
-                      justify-center
-                      rounded-full
-                      bg-slate-50
-                      text-sm
-                      text-slate-500
-                      transition
-                      group-hover:bg-blue-600
-                      group-hover:text-white
-                    "
-                  >
-                    →
-                  </span>
-                </div>
-
-              </Link>
-            ))}
           </div>
 
         </div>
-      </section>
 
-      {/* Features */}
-
-      <Features />
-
-      {/* CTA */}
-
-      <CTA />
-
-    </main>
+      </div>
+    </section>
   );
 }
