@@ -39,66 +39,31 @@ const categories = [
   },
 ];
 
-const stats = [
+const faqs = [
   {
-    value: "100+",
-    label: "Calculators",
+    question: "Are CornerSpan calculators free to use?",
+    answer:
+      "Yes. CornerSpan provides construction calculation tools that can be used directly in your browser without installing an app.",
   },
   {
-    value: "99.9%",
-    label: "Accuracy",
+    question: "Can I use CornerSpan on my mobile phone?",
+    answer:
+      "Yes. The website is designed to work on smartphones, tablets, laptops and desktop computers.",
   },
   {
-    value: "24/7",
-    label: "Free Access",
-  },
-];
-
-const features = [
-  {
-    icon: "✓",
-    title: "Accurate Calculations",
-    description:
-      "Reliable formulas designed to help you estimate construction materials quickly.",
+    question: "What construction calculations can I do?",
+    answer:
+      "You can calculate concrete, bricks, steel, paint, tiles, roofing materials and other construction quantities.",
   },
   {
-    icon: "⚡",
-    title: "Fast & Simple",
-    description:
-      "Enter your measurements and get useful results without complicated steps.",
+    question: "Are the calculator results accurate?",
+    answer:
+      "CornerSpan uses standard calculation formulas and practical estimation methods. Always verify final quantities against your project specifications.",
   },
   {
-    icon: "📱",
-    title: "Works on Mobile",
-    description:
-      "Use CornerSpan easily on your phone, tablet or desktop.",
-  },
-  {
-    icon: "🆓",
-    title: "Free to Use",
-    description:
-      "Access practical construction calculators without unnecessary barriers.",
-  },
-];
-
-const steps = [
-  {
-    number: "01",
-    title: "Choose a Calculator",
-    description:
-      "Select the calculator that matches your construction requirement.",
-  },
-  {
-    number: "02",
-    title: "Enter Measurements",
-    description:
-      "Enter your dimensions, quantities or project details.",
-  },
-  {
-    number: "03",
-    title: "Get Your Result",
-    description:
-      "Instantly view the calculated quantity or material estimate.",
+    question: "Do I need to create an account?",
+    answer:
+      "No account is required to start using the available calculators.",
   },
 ];
 
@@ -106,109 +71,111 @@ const guides = [
   {
     title: "Concrete Volume Guide",
     description:
-      "Learn how to calculate concrete volume for slabs, beams and other work.",
+      "Learn how to calculate concrete volume using length, width and depth.",
     href: "/guides/concrete-volume",
+    icon: "🏗️",
   },
   {
-    title: "Construction Measurement Guide",
+    title: "Brick Quantity Guide",
     description:
-      "Understand the basic measurements commonly used in construction calculations.",
-    href: "/guides/concrete-volume",
+      "Understand how to estimate the number of bricks required for a wall.",
+    href: "/calculators/brick",
+    icon: "🧱",
   },
   {
-    title: "Material Estimation Guide",
+    title: "Steel Estimation Guide",
     description:
-      "Learn the basics of estimating construction materials from project dimensions.",
-    href: "/guides/concrete-volume",
-  },
-];
-
-const faqs = [
-  {
-    question: "What is CornerSpan?",
-    answer:
-      "CornerSpan is a collection of practical construction calculators designed to help with material estimation and common construction calculations.",
-  },
-  {
-    question: "Are the calculators free to use?",
-    answer:
-      "Yes. The calculators are designed to be freely accessible for everyday construction estimation needs.",
-  },
-  {
-    question: "Can I use CornerSpan on my phone?",
-    answer:
-      "Yes. CornerSpan is designed with a mobile-friendly interface so you can use the calculators from your phone.",
-  },
-  {
-    question: "Which construction calculations are available?",
-    answer:
-      "CornerSpan includes calculators for concrete, brick, steel, paint, tile, roofing and additional construction-related calculations.",
+      "Learn the basics of reinforcement steel quantity estimation.",
+    href: "/calculators/steel",
+    icon: "🔩",
   },
 ];
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-slate-50">
+    <main className="min-h-screen bg-slate-50 pt-[80px]">
 
       {/* =====================================================
           HERO
       ====================================================== */}
 
-      <section className="bg-gradient-to-b from-blue-50 via-white to-slate-50 px-6 pb-16 pt-12 md:pb-20 md:pt-16">
-        <div className="mx-auto max-w-6xl text-center">
+      <section className="relative overflow-hidden bg-gradient-to-b from-blue-50 via-white to-slate-50">
 
-          <div className="mx-auto inline-flex items-center gap-3 rounded-full border border-blue-100 bg-white px-5 py-2.5 shadow-sm">
-            <span className="h-2.5 w-2.5 rounded-full bg-emerald-500" />
-            <span className="text-xs font-bold uppercase tracking-[0.18em] text-blue-700 md:text-sm">
+        <div className="mx-auto max-w-7xl px-6 pb-20 pt-12 md:pb-24 md:pt-16">
+
+          <div className="mx-auto max-w-4xl text-center">
+
+            {/* Badge */}
+
+            <div className="mb-8 inline-flex items-center gap-3 rounded-full border border-slate-200 bg-white px-5 py-3 text-xs font-bold uppercase tracking-[0.18em] text-blue-700 shadow-sm">
+              <span className="h-2.5 w-2.5 rounded-full bg-emerald-500" />
               Trusted Construction Tools
-            </span>
-          </div>
+            </div>
 
-          <h1 className="mx-auto mt-8 max-w-4xl text-4xl font-black leading-tight tracking-tight text-slate-950 md:text-6xl">
-            Smart{" "}
-            <span className="bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent">
-              Construction
-            </span>
-            <br />
-            Calculators
-          </h1>
+            {/* Heading */}
 
-          <p className="mx-auto mt-6 max-w-2xl text-base leading-7 text-slate-600 md:text-xl md:leading-8">
-            Fast, accurate construction calculators for concrete, brick,
-            steel, paint, roofing and more.
-          </p>
+            <h1 className="text-5xl font-black leading-[1.05] tracking-tight text-slate-950 md:text-7xl">
 
-          <div className="mx-auto mt-8 grid max-w-2xl grid-cols-2 gap-4">
-            <Link
-              href="#calculators"
-              className="flex min-h-14 items-center justify-center rounded-2xl bg-blue-600 px-5 text-base font-bold text-white shadow-lg shadow-blue-200 transition hover:bg-blue-700"
-            >
-              All Calculators
-            </Link>
+              Smart{" "}
 
-            <Link
-              href="#categories"
-              className="flex min-h-14 items-center justify-center rounded-2xl border border-slate-200 bg-white px-5 text-base font-bold text-slate-700 shadow-sm transition hover:border-blue-200 hover:text-blue-600"
-            >
-              Categories
-            </Link>
-          </div>
+              <span className="bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent">
+                Construction
+              </span>
 
-          <div className="mx-auto mt-8 flex max-w-2xl flex-wrap justify-center gap-x-8 gap-y-3 text-sm text-slate-500">
-            <span>
-              <b className="mr-1 text-emerald-500">✓</b>
-              Accurate calculations
-            </span>
+              <br />
 
-            <span>
-              <b className="mr-1 text-emerald-500">✓</b>
-              Free to use
-            </span>
+              Calculators
 
-            <span>
-              <b className="mr-1 text-emerald-500">✓</b>
-              Works on mobile
-            </span>
+            </h1>
+
+            {/* Description */}
+
+            <p className="mx-auto mt-7 max-w-2xl text-lg leading-8 text-slate-600 md:text-xl">
+              Fast, accurate construction calculators for concrete,
+              brick, steel, paint, roofing and more.
+            </p>
+
+            {/* Buttons */}
+
+            <div className="mx-auto mt-9 grid max-w-2xl grid-cols-1 gap-4 sm:grid-cols-2">
+
+              <Link
+                href="#calculators"
+                className="rounded-2xl bg-blue-600 px-7 py-5 text-center text-base font-bold text-white shadow-lg shadow-blue-200 transition hover:-translate-y-0.5 hover:bg-blue-700"
+              >
+                All Calculators
+              </Link>
+
+              <Link
+                href="#calculators"
+                className="rounded-2xl border border-slate-200 bg-white px-7 py-5 text-center text-base font-bold text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:border-blue-200 hover:text-blue-600"
+              >
+                Categories
+              </Link>
+
+            </div>
+
+            {/* Benefits */}
+
+            <div className="mt-10 flex flex-wrap justify-center gap-x-8 gap-y-4 text-sm font-medium text-slate-500">
+
+              <span>
+                <span className="mr-2 text-xl text-emerald-500">✓</span>
+                Accurate calculations
+              </span>
+
+              <span>
+                <span className="mr-2 text-xl text-emerald-500">✓</span>
+                Free to use
+              </span>
+
+              <span>
+                <span className="mr-2 text-xl text-emerald-500">✓</span>
+                Works on mobile
+              </span>
+
+            </div>
+
           </div>
 
         </div>
@@ -219,25 +186,39 @@ export default function Home() {
           STATS
       ====================================================== */}
 
-      <section className="px-6 pb-14">
-        <div className="mx-auto grid max-w-5xl grid-cols-3 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+      <section className="-mt-7 px-6 pb-16">
 
-          {stats.map((stat) => (
-            <div
-              key={stat.label}
-              className="border-r border-slate-100 px-3 py-6 text-center last:border-r-0 md:py-8"
-            >
-              <div className="text-2xl font-black text-blue-600 md:text-4xl">
-                {stat.value}
-              </div>
+        <div className="mx-auto grid max-w-5xl grid-cols-3 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-lg">
 
-              <div className="mt-2 text-xs font-medium text-slate-500 md:text-sm">
-                {stat.label}
-              </div>
+          <div className="border-r border-slate-100 px-3 py-7 text-center md:py-9">
+            <div className="text-3xl font-black text-blue-600 md:text-4xl">
+              100+
             </div>
-          ))}
+            <p className="mt-2 text-xs font-medium text-slate-500 md:text-sm">
+              Calculators
+            </p>
+          </div>
+
+          <div className="border-r border-slate-100 px-3 py-7 text-center md:py-9">
+            <div className="text-3xl font-black text-blue-600 md:text-4xl">
+              99.9%
+            </div>
+            <p className="mt-2 text-xs font-medium text-slate-500 md:text-sm">
+              Accuracy
+            </p>
+          </div>
+
+          <div className="px-3 py-7 text-center md:py-9">
+            <div className="text-3xl font-black text-blue-600 md:text-4xl">
+              24/7
+            </div>
+            <p className="mt-2 text-xs font-medium text-slate-500 md:text-sm">
+              Free Access
+            </p>
+          </div>
 
         </div>
+
       </section>
 
 
@@ -246,31 +227,32 @@ export default function Home() {
       ====================================================== */}
 
       <section
-        id="categories"
-        className="bg-white px-6 py-16 md:py-20"
+        id="calculators"
+        className="bg-white px-6 py-20 md:py-24"
       >
+
         <div className="mx-auto max-w-7xl">
 
-          <div className="mx-auto mb-10 max-w-2xl text-center">
+          <div className="mx-auto mb-12 max-w-3xl text-center">
 
             <span className="inline-flex rounded-full border border-blue-100 bg-blue-50 px-5 py-2 text-xs font-bold uppercase tracking-wider text-blue-600">
               Popular Categories
             </span>
 
-            <h2 className="mt-5 text-3xl font-black tracking-tight text-slate-950 md:text-5xl">
+            <h2 className="mt-5 text-4xl font-black tracking-tight text-slate-900 md:text-5xl">
               Construction Calculators
             </h2>
 
-            <p className="mx-auto mt-4 max-w-xl text-sm leading-6 text-slate-500 md:text-base">
-              Quickly find the right calculator for your construction project.
+            <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-slate-500 md:text-lg">
+              Quickly find the right calculator for your construction
+              project.
             </p>
 
           </div>
 
-          <div
-            id="calculators"
-            className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:gap-5"
-          >
+
+          <div className="grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-5">
+
             {categories.map((category) => (
               <Link
                 key={category.name}
@@ -284,29 +266,31 @@ export default function Home() {
                     {category.icon}
                   </div>
 
-                  <span className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-50 text-slate-400 transition group-hover:bg-blue-600 group-hover:text-white">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-50 text-sm text-slate-400 transition group-hover:bg-blue-600 group-hover:text-white">
                     →
-                  </span>
+                  </div>
 
                 </div>
 
-                <h3 className="mt-7 text-lg font-bold text-slate-950 transition group-hover:text-blue-600 md:text-xl">
+                <h3 className="mt-7 text-xl font-bold text-slate-900 group-hover:text-blue-600">
                   {category.name}
                 </h3>
 
-                <p className="mt-2 min-h-12 text-sm leading-6 text-slate-500">
+                <p className="mt-2 min-h-[48px] text-sm leading-6 text-slate-500">
                   {category.description}
                 </p>
 
-                <div className="mt-5 text-sm font-semibold text-blue-600">
+                <div className="mt-6 text-sm font-semibold text-blue-600">
                   View Calculator →
                 </div>
 
               </Link>
             ))}
+
           </div>
 
         </div>
+
       </section>
 
 
@@ -314,47 +298,76 @@ export default function Home() {
           WHY CORNERSPAN
       ====================================================== */}
 
-      <section className="bg-slate-50 px-6 py-16 md:py-20">
-        <div className="mx-auto max-w-6xl">
+      <section className="bg-slate-50 px-6 py-20 md:py-24">
 
-          <div className="mx-auto mb-12 max-w-2xl text-center">
-            <span className="text-xs font-bold uppercase tracking-[0.18em] text-blue-600">
+        <div className="mx-auto max-w-7xl">
+
+          <div className="mx-auto max-w-3xl text-center">
+
+            <span className="inline-flex rounded-full bg-blue-50 px-5 py-2 text-xs font-bold uppercase tracking-wider text-blue-600">
               Why CornerSpan
             </span>
 
-            <h2 className="mt-3 text-3xl font-black text-slate-950 md:text-5xl">
+            <h2 className="mt-5 text-4xl font-black tracking-tight text-slate-900 md:text-5xl">
               Built for Real Construction Work
             </h2>
 
-            <p className="mt-4 text-sm leading-6 text-slate-500 md:text-base">
-              Simple tools focused on speed, clarity and practical estimation.
+            <p className="mt-4 text-base leading-7 text-slate-500 md:text-lg">
+              Simple tools designed to help you estimate materials
+              faster and make better project decisions.
             </p>
+
           </div>
 
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
 
-            {features.map((feature) => (
+          <div className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+
+            {[
+              {
+                icon: "⚡",
+                title: "Fast",
+                text: "Get estimates quickly without complicated steps.",
+              },
+              {
+                icon: "🎯",
+                title: "Practical",
+                text: "Designed around common construction calculations.",
+              },
+              {
+                icon: "📱",
+                title: "Mobile Ready",
+                text: "Use the calculators directly from your phone.",
+              },
+              {
+                icon: "🆓",
+                title: "Free Access",
+                text: "Start calculating without creating an account.",
+              },
+            ].map((item) => (
               <div
-                key={feature.title}
-                className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm"
+                key={item.title}
+                className="rounded-3xl border border-slate-200 bg-white p-7 shadow-sm"
               >
-                <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-xl font-black text-blue-600">
-                  {feature.icon}
+
+                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 text-2xl">
+                  {item.icon}
                 </div>
 
-                <h3 className="mt-5 text-lg font-bold text-slate-950">
-                  {feature.title}
+                <h3 className="mt-6 text-xl font-bold text-slate-900">
+                  {item.title}
                 </h3>
 
                 <p className="mt-2 text-sm leading-6 text-slate-500">
-                  {feature.description}
+                  {item.text}
                 </p>
+
               </div>
             ))}
 
           </div>
 
         </div>
+
       </section>
 
 
@@ -362,43 +375,66 @@ export default function Home() {
           HOW IT WORKS
       ====================================================== */}
 
-      <section className="bg-white px-6 py-16 md:py-20">
+      <section className="bg-white px-6 py-20 md:py-24">
+
         <div className="mx-auto max-w-6xl">
 
-          <div className="mx-auto mb-12 max-w-2xl text-center">
-            <span className="text-xs font-bold uppercase tracking-[0.18em] text-blue-600">
+          <div className="mx-auto max-w-3xl text-center">
+
+            <span className="inline-flex rounded-full bg-blue-50 px-5 py-2 text-xs font-bold uppercase tracking-wider text-blue-600">
               How It Works
             </span>
 
-            <h2 className="mt-3 text-3xl font-black text-slate-950 md:text-5xl">
-              Calculate in 3 Simple Steps
+            <h2 className="mt-5 text-4xl font-black tracking-tight text-slate-900 md:text-5xl">
+              Calculate in Three Simple Steps
             </h2>
+
           </div>
 
-          <div className="grid gap-5 md:grid-cols-3">
 
-            {steps.map((step) => (
+          <div className="mt-14 grid gap-8 md:grid-cols-3">
+
+            {[
+              {
+                number: "01",
+                title: "Choose a Calculator",
+                text: "Select the construction category that matches your project.",
+              },
+              {
+                number: "02",
+                title: "Enter Measurements",
+                text: "Enter your project dimensions and required inputs.",
+              },
+              {
+                number: "03",
+                title: "Get Your Estimate",
+                text: "View the calculated quantity and use it for planning.",
+              },
+            ].map((step) => (
               <div
                 key={step.number}
-                className="rounded-3xl border border-slate-200 bg-slate-50 p-7"
+                className="relative rounded-3xl border border-slate-200 bg-slate-50 p-7"
               >
-                <div className="text-4xl font-black text-blue-600">
+
+                <div className="text-5xl font-black text-blue-100">
                   {step.number}
                 </div>
 
-                <h3 className="mt-5 text-xl font-bold text-slate-950">
+                <h3 className="mt-5 text-xl font-bold text-slate-900">
                   {step.title}
                 </h3>
 
                 <p className="mt-3 text-sm leading-6 text-slate-500">
-                  {step.description}
+                  {step.text}
                 </p>
+
               </div>
             ))}
 
           </div>
 
         </div>
+
       </section>
 
 
@@ -406,36 +442,46 @@ export default function Home() {
           CALCULATOR GUIDES
       ====================================================== */}
 
-      <section className="bg-slate-50 px-6 py-16 md:py-20">
-        <div className="mx-auto max-w-6xl">
+      <section className="bg-slate-50 px-6 py-20 md:py-24">
 
-          <div className="mx-auto mb-10 max-w-2xl text-center">
-            <span className="text-xs font-bold uppercase tracking-[0.18em] text-blue-600">
-              Calculator Guides
-            </span>
+        <div className="mx-auto max-w-7xl">
 
-            <h2 className="mt-3 text-3xl font-black text-slate-950 md:text-5xl">
-              Learn Before You Calculate
-            </h2>
+          <div className="flex flex-col justify-between gap-5 md:flex-row md:items-end">
 
-            <p className="mt-4 text-sm leading-6 text-slate-500 md:text-base">
-              Practical guides to help you understand construction calculations.
-            </p>
+            <div>
+
+              <span className="inline-flex rounded-full bg-blue-50 px-5 py-2 text-xs font-bold uppercase tracking-wider text-blue-600">
+                Calculator Guides
+              </span>
+
+              <h2 className="mt-5 text-4xl font-black tracking-tight text-slate-900 md:text-5xl">
+                Learn Before You Calculate
+              </h2>
+
+              <p className="mt-4 max-w-2xl text-base leading-7 text-slate-500">
+                Simple guides that explain formulas, measurements and
+                construction estimation basics.
+              </p>
+
+            </div>
+
           </div>
 
-          <div className="grid gap-5 md:grid-cols-3">
+
+          <div className="mt-12 grid gap-5 md:grid-cols-3">
 
             {guides.map((guide) => (
               <Link
                 key={guide.title}
                 href={guide.href}
-                className="group rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
+                className="group rounded-3xl border border-slate-200 bg-white p-7 shadow-sm transition hover:-translate-y-1 hover:border-blue-200 hover:shadow-lg"
               >
-                <div className="text-sm font-bold text-blue-600">
-                  GUIDE
+
+                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 text-3xl">
+                  {guide.icon}
                 </div>
 
-                <h3 className="mt-4 text-xl font-bold text-slate-950 group-hover:text-blue-600">
+                <h3 className="mt-6 text-xl font-bold text-slate-900 group-hover:text-blue-600">
                   {guide.title}
                 </h3>
 
@@ -443,15 +489,17 @@ export default function Home() {
                   {guide.description}
                 </p>
 
-                <div className="mt-6 text-sm font-semibold text-blue-600">
+                <div className="mt-6 text-sm font-bold text-blue-600">
                   Read Guide →
                 </div>
+
               </Link>
             ))}
 
           </div>
 
         </div>
+
       </section>
 
 
@@ -459,39 +507,56 @@ export default function Home() {
           FAQ
       ====================================================== */}
 
-      <section className="bg-white px-6 py-16 md:py-20">
+      <section className="bg-white px-6 py-20 md:py-24">
+
         <div className="mx-auto max-w-4xl">
 
-          <div className="mx-auto mb-10 max-w-2xl text-center">
-            <span className="text-xs font-bold uppercase tracking-[0.18em] text-blue-600">
+          <div className="text-center">
+
+            <span className="inline-flex rounded-full bg-blue-50 px-5 py-2 text-xs font-bold uppercase tracking-wider text-blue-600">
               FAQ
             </span>
 
-            <h2 className="mt-3 text-3xl font-black text-slate-950 md:text-5xl">
+            <h2 className="mt-5 text-4xl font-black tracking-tight text-slate-900 md:text-5xl">
               Frequently Asked Questions
             </h2>
+
+            <p className="mt-4 text-base leading-7 text-slate-500">
+              Common questions about CornerSpan construction calculators.
+            </p>
+
           </div>
 
-          <div className="space-y-3">
+
+          <div className="mt-12 space-y-4">
 
             {faqs.map((faq) => (
               <details
                 key={faq.question}
-                className="group rounded-2xl border border-slate-200 bg-slate-50 p-5"
+                className="group rounded-2xl border border-slate-200 bg-white px-6 py-5 shadow-sm"
               >
-                <summary className="cursor-pointer list-none pr-8 text-base font-bold text-slate-950">
-                  {faq.question}
+
+                <summary className="cursor-pointer list-none pr-8 text-base font-bold text-slate-900">
+                  <div className="flex items-center justify-between gap-4">
+                    <span>{faq.question}</span>
+
+                    <span className="text-xl text-slate-400 transition group-open:rotate-45">
+                      +
+                    </span>
+                  </div>
                 </summary>
 
-                <p className="mt-4 text-sm leading-6 text-slate-600">
+                <p className="mt-4 border-t border-slate-100 pt-4 text-sm leading-6 text-slate-500">
                   {faq.answer}
                 </p>
+
               </details>
             ))}
 
           </div>
 
         </div>
+
       </section>
 
 
@@ -499,25 +564,28 @@ export default function Home() {
           CTA
       ====================================================== */}
 
-      <section className="px-6 py-16 md:py-20">
-        <div className="mx-auto max-w-5xl overflow-hidden rounded-[2rem] bg-blue-600 px-6 py-12 text-center shadow-xl shadow-blue-100 md:px-12">
+      <section className="px-6 py-20 md:py-24">
 
-          <h2 className="text-3xl font-black text-white md:text-5xl">
+        <div className="mx-auto max-w-6xl overflow-hidden rounded-[2rem] bg-gradient-to-r from-blue-600 to-cyan-500 px-7 py-14 text-center shadow-xl md:px-12 md:py-16">
+
+          <h2 className="text-3xl font-black tracking-tight text-white md:text-5xl">
             Ready to Calculate?
           </h2>
 
-          <p className="mx-auto mt-4 max-w-xl text-sm leading-6 text-blue-100 md:text-base">
-            Choose a construction calculator and get your result in seconds.
+          <p className="mx-auto mt-4 max-w-2xl text-sm leading-6 text-blue-50 md:text-lg">
+            Choose a construction calculator and get your estimate in
+            minutes.
           </p>
 
           <Link
             href="#calculators"
-            className="mt-7 inline-flex min-h-12 items-center justify-center rounded-xl bg-white px-7 text-sm font-bold text-blue-600 shadow-sm transition hover:bg-blue-50"
+            className="mt-8 inline-flex rounded-2xl bg-white px-8 py-4 text-sm font-bold text-blue-600 shadow-lg transition hover:-translate-y-0.5 hover:bg-slate-50 md:text-base"
           >
             Explore Calculators →
           </Link>
 
         </div>
+
       </section>
 
     </main>
