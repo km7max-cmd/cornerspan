@@ -7,7 +7,11 @@ type FAQItem = {
   answer: string;
 };
 
-const faqItems: FAQItem[] = [
+type Props = {
+  items?: FAQItem[];
+};
+
+const defaultFaqItems: FAQItem[] = [
   {
     question: "Are CornerSpan calculators free?",
     answer:
@@ -35,14 +39,15 @@ const faqItems: FAQItem[] = [
   },
 ];
 
-export default function FAQ() {
+export default function FAQ({ items }: Props) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+
+  const faqItems = items ?? defaultFaqItems;
 
   return (
     <section className="bg-white px-4 py-8 sm:px-6 sm:py-10">
       <div className="mx-auto max-w-4xl">
 
-        {/* Heading */}
         <div className="mb-6 text-center">
           <span className="inline-flex rounded-full border border-blue-100 bg-blue-50 px-3 py-1 text-[10px] font-bold tracking-[0.15em] text-blue-600">
             FAQ
@@ -57,14 +62,13 @@ export default function FAQ() {
           </p>
         </div>
 
-        {/* FAQ List */}
         <div className="space-y-2.5">
           {faqItems.map((item, index) => {
             const isOpen = openIndex === index;
 
             return (
               <div
-                key={item.question}
+                key={`${item.question}-${index}`}
                 className={`overflow-hidden rounded-xl border transition-all duration-200 ${
                   isOpen
                     ? "border-blue-200 bg-blue-50/40"
