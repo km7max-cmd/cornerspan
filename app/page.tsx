@@ -1,5 +1,6 @@
 import Link from "next/link";
 import SearchBar from "../components/SearchBar";
+import Stats from "../components/Stats";
 import PopularCalculators from "../components/PopularCalculators";
 const categories = [
   {
@@ -181,46 +182,8 @@ export default function Home() {
 
         </div>
       </section>
+      <Stats />
 
-
-      {/* =====================================================
-          STATS
-      ====================================================== */}
-
-      <section className="-mt-7 px-6 pb-16">
-
-        <div className="mx-auto grid max-w-5xl grid-cols-3 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-lg">
-
-          <div className="border-r border-slate-100 px-3 py-7 text-center md:py-9">
-            <div className="text-3xl font-black text-blue-600 md:text-4xl">
-              100+
-            </div>
-            <p className="mt-2 text-xs font-medium text-slate-500 md:text-sm">
-              Calculators
-            </p>
-          </div>
-
-          <div className="border-r border-slate-100 px-3 py-7 text-center md:py-9">
-            <div className="text-3xl font-black text-blue-600 md:text-4xl">
-              99.9%
-            </div>
-            <p className="mt-2 text-xs font-medium text-slate-500 md:text-sm">
-              Accuracy
-            </p>
-          </div>
-
-          <div className="px-3 py-7 text-center md:py-9">
-            <div className="text-3xl font-black text-blue-600 md:text-4xl">
-              24/7
-            </div>
-            <p className="mt-2 text-xs font-medium text-slate-500 md:text-sm">
-              Free Access
-            </p>
-          </div>
-
-        </div>
-
-      </section>
       <PopularCalculators />
 
       {/* =====================================================
