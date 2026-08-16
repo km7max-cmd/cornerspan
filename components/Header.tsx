@@ -2,18 +2,27 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import SearchBar from "./SearchBar";
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
 
   return (
     <header className="fixed left-0 right-0 top-0 z-[100] border-b border-slate-200/70 bg-white/95 backdrop-blur-md">
 
+      {/* Header Main */}
       <div className="mx-auto flex h-[76px] max-w-7xl items-center justify-between px-4 md:px-6">
 
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-3">
-
+        <Link
+          href="/"
+          onClick={() => {
+            setSearchOpen(false);
+            setMenuOpen(false);
+          }}
+          className="flex items-center gap-3"
+        >
           <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-600 text-2xl font-black text-white shadow-sm">
             C
           </div>
@@ -27,7 +36,6 @@ export default function Header() {
               CONSTRUCTION CALCULATORS
             </div>
           </div>
-
         </Link>
 
         {/* Desktop Navigation */}
@@ -56,33 +64,49 @@ export default function Header() {
 
         </nav>
 
-        {/* Right */}
+        {/* Right Side */}
         <div className="flex items-center gap-2">
 
-          {/* Search */}
-          <Link
-            href="/search"
+          {/* Search Button */}
+          <button
+            type="button"
             aria-label="Search calculators"
-            className="flex h-11 w-11 items-center justify-center rounded-xl text-slate-700 transition hover:bg-blue-50 hover:text-blue-600"
+            aria-expanded={searchOpen}
+            onClick={() => {
+              setSearchOpen(!searchOpen);
+              setMenuOpen(false);
+            }}
+            className={`flex h-11 w-11 items-center justify-center rounded-xl transition ${
+              searchOpen
+                ? "bg-blue-50 text-blue-600"
+                : "text-slate-700 hover:bg-blue-50 hover:text-blue-600"
+            }`}
           >
-            <svg
-              width="22"
-              height="22"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <circle cx="11" cy="11" r="7" />
-              <path d="m20 20-4-4" />
-            </svg>
-          </Link>
+            {searchOpen ? (
+              <span className="text-2xl leading-none">×</span>
+            ) : (
+              <svg
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <circle cx="11" cy="11" r="7" />
+                <path d="m20 20-4-4" />
+              </svg>
+            )}
+          </button>
 
           {/* Mobile Menu */}
           <button
             type="button"
-            aria-label="Open menu"
-            onClick={() => setMenuOpen(!menuOpen)}
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            onClick={() => {
+              setMenuOpen(!menuOpen);
+              setSearchOpen(false);
+            }}
             className="flex h-11 w-11 items-center justify-center rounded-xl text-slate-800 transition hover:bg-slate-100 md:hidden"
           >
             {menuOpen ? (
@@ -93,8 +117,12 @@ export default function Header() {
           </button>
 
         </div>
-
       </div>
+
+      {/* Search Panel */}
+      {searchOpen && (
+        <SearchBar onClose={() => setSearchOpen(false)} />
+      )}
 
       {/* Mobile Menu */}
       {menuOpen && (
@@ -127,7 +155,6 @@ export default function Header() {
             </Link>
 
           </div>
-
         </div>
       )}
 
