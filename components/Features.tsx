@@ -2,61 +2,67 @@ export default function Features() {
   const features = [
     {
       icon: "⚡",
-      title: "Fast Calculations",
+      title: "Fast & Simple",
       description:
-        "Get accurate construction estimates in seconds.",
+        "Get construction estimates quickly without complicated formulas.",
     },
     {
       icon: "🎯",
-      title: "Professional Accuracy",
+      title: "Accurate Results",
       description:
-        "Reliable calculations trusted by contractors.",
+        "Reliable calculations designed for real construction projects.",
     },
     {
       icon: "🆓",
-      title: "Always Free",
+      title: "100% Free",
       description:
-        "Unlimited access to every calculator anytime.",
+        "Use all CornerSpan calculators freely without registration.",
     },
   ];
 
   return (
-    <section className="mx-auto max-w-7xl px-6 py-14 md:py-16">
+    <section className="bg-slate-50 px-4 py-10 sm:px-6 sm:py-12">
+      <div className="mx-auto max-w-6xl">
 
-      <div className="mb-10 text-center">
+        {/* Heading */}
+        <div className="mx-auto mb-7 max-w-2xl text-center">
+          <span className="inline-flex rounded-full border border-blue-100 bg-blue-50 px-4 py-1.5 text-xs font-bold tracking-wider text-blue-600">
+            WHY CORNERSPAN
+          </span>
 
-        <h2 className="text-3xl font-black text-slate-900 md:text-4xl">
-          Why Choose CornerSpan?
-        </h2>
+          <h2 className="mt-3 text-2xl font-black tracking-tight text-slate-900 sm:text-3xl">
+            Built for Real Construction Work
+          </h2>
 
-        <p className="mx-auto mt-3 max-w-xl text-base leading-7 text-slate-600 md:text-lg">
-          Professional tools built for contractors,
-          engineers, builders and homeowners.
-        </p>
+          <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-slate-500 sm:text-base">
+            Simple, accurate and practical tools for contractors,
+            builders, engineers and homeowners.
+          </p>
+        </div>
 
-      </div>
+        {/* Features */}
+        <div className="grid gap-4 md:grid-cols-3">
+          {features.map((feature) => (
+            <div
+              key={feature.title}
+              className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-blue-200 hover:shadow-md"
+            >
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-2xl">
+                {feature.icon}
+              </div>
 
-      <div className="grid gap-5 md:grid-cols-3">
-                {features.map((feature) => (
-          <div
-            key={feature.title}
-            className="group rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-2 hover:border-blue-200 hover:shadow-xl"
-          >
-            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 text-3xl shadow-lg transition-transform duration-300 group-hover:scale-110">
-              {feature.icon}
+              <h3 className="mt-4 text-lg font-bold text-slate-900">
+                {feature.title}
+              </h3>
+
+              <p className="mt-1.5 text-sm leading-6 text-slate-500">
+                {feature.description}
+              </p>
             </div>
+          ))}
+        </div>
 
-            <h3 className="mt-5 text-xl font-bold text-slate-900">
-              {feature.title}
-            </h3>
-
-            <p className="mt-3 text-[15px] leading-7 text-slate-600">
-              {feature.description}
-            </p>
-          </div>
-        ))}
       </div>
-
     </section>
   );
 }
