@@ -1,6 +1,6 @@
 import Link from "next/link";
 import SearchBar from "../components/SearchBar";
-
+import PopularCalculators from "../components/PopularCalculators";
 const categories = [
   {
     name: "Concrete",
