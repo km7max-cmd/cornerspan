@@ -4,6 +4,7 @@ import HowItWorks from "../components/HowItWorks";
 import Stats from "../components/Stats";
 import Features from "../components/Features";
 import FAQ from "../components/FAQ";
+import CTA from "../components/CTA";
 import CalculatorGuides from "../components/CalculatorGuides";
 import PopularCalculators from "../components/PopularCalculators";
 const categories = [
@@ -192,7 +193,7 @@ export default function Home() {
       <HowItWorks />
       <CalculatorGuides />
       <FAQ />
-      
+      <CTA />
 
       {/* =====================================================
           CTA
