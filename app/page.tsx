@@ -1,6 +1,7 @@
 import Link from "next/link";
 import SearchBar from "../components/SearchBar";
 import Stats from "../components/Stats";
+import Features from "../components/Features";
 import PopularCalculators from "../components/PopularCalculators";
 const categories = [
   {
@@ -182,11 +183,9 @@ export default function Home() {
 
         </div>
       </section>
-      <Stats />
-
-      <PopularCalculators />
-
-      
+      <Stats />     
+      <PopularCalculators />      
+      <Features />
 
 
       {/* =====================================================
