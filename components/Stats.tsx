@@ -2,15 +2,11 @@ export default function Stats() {
   const stats = [
     {
       value: "100+",
-      label: "Construction Calculators",
-    },
-    {
-      value: "1M+",
-      label: "Calculations Performed",
+      label: "Calculators",
     },
     {
       value: "99.9%",
-      label: "Calculation Accuracy",
+      label: "Accuracy",
     },
     {
       value: "24/7",
@@ -19,44 +15,44 @@ export default function Stats() {
   ];
 
   return (
-    <section className="mx-auto max-w-6xl px-6 py-10 md:py-14">
-      <div className="rounded-2xl border border-slate-200/80 bg-white/80 px-4 py-7 backdrop-blur-sm md:px-8 md:py-8">
+    <section className="bg-slate-50 px-5 py-8 sm:py-10">
+      <div className="mx-auto max-w-5xl">
 
-        <div className="grid grid-cols-3 md:grid-cols-4">
+        <div className="grid grid-cols-3 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
 
-          {stats.map((item, index) => (
+          {stats.map((stat, index) => (
             <div
-              key={item.label}
+              key={stat.label}
               className={`
-                flex flex-col items-center justify-center px-4 text-center
+                flex
+                min-h-[90px]
+                flex-col
+                items-center
+                justify-center
+                px-2
+                py-4
+                text-center
+                sm:min-h-[105px]
+                sm:px-4
                 ${
-                  index !== 0
-                    ? "border-slate-200 md:border-l"
-                    : ""
-                }
-                ${
-                  index === 2
-                    ? "border-t pt-6 md:border-t-0 md:pt-0"
-                    : ""
-                }
-                ${
-                  index === 3
-                    ? "border-t pt-6 md:border-t-0 md:pt-0"
+                  index !== stats.length - 1
+                    ? "border-r border-slate-200"
                     : ""
                 }
               `}
             >
-              <div className="text-3xl font-bold tracking-tight text-slate-900 md:text-4xl">
-                {item.value}
+              <div className="text-2xl font-black tracking-tight text-blue-600 sm:text-3xl">
+                {stat.value}
               </div>
 
-              <div className="mt-1.5 max-w-[150px] text-xs font-medium leading-5 text-slate-500 md:text-sm">
-                {item.label}
+              <div className="mt-1 text-xs font-medium text-slate-500 sm:text-sm">
+                {stat.label}
               </div>
             </div>
           ))}
 
         </div>
+
       </div>
     </section>
   );
