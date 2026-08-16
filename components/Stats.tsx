@@ -41,13 +41,24 @@ export default function Stats() {
                 }
               `}
             >
-              <div className="text-lg font-black tracking-tight text-blue-600 sm:text-2xl">
-                {stat.value}
-              </div>
+            <div className={`text-lg font-black tracking-tight sm:text-2xl ${
+    stat.label === "Free Access"
+      ? "text-emerald-500"
+      : "text-blue-600"
+  }`}
+>
+  {stat.value}
+</div>
 
-              <div className="mt-0.5 text-[10px] font-medium text-slate-500 sm:text-xs">
-                {stat.label}
-              </div>
+<div
+  className={`mt-0.5 text-[10px] font-medium sm:text-xs ${
+    stat.label === "Free Access"
+      ? "text-emerald-600"
+      : "text-slate-500"
+  }`}
+>
+  {stat.label}
+</div>
             </div>
           ))}
 
