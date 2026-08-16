@@ -15,25 +15,25 @@ export default function Stats() {
   ];
 
   return (
-    <section className="bg-slate-50 px-5 py-8 sm:py-10">
-      <div className="mx-auto max-w-5xl">
+    <section className="bg-slate-50 px-4 py-5 sm:py-6">
+      <div className="mx-auto max-w-4xl">
 
-        <div className="grid grid-cols-3 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <div className="grid grid-cols-3 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
 
           {stats.map((stat, index) => (
             <div
               key={stat.label}
               className={`
                 flex
-                min-h-[90px]
+                min-h-[68px]
                 flex-col
                 items-center
                 justify-center
-                px-2
-                py-4
+                px-1
+                py-2
                 text-center
-                sm:min-h-[105px]
-                sm:px-4
+                sm:min-h-[78px]
+                sm:px-3
                 ${
                   index !== stats.length - 1
                     ? "border-r border-slate-200"
@@ -41,11 +41,11 @@ export default function Stats() {
                 }
               `}
             >
-              <div className="text-2xl font-black tracking-tight text-blue-600 sm:text-3xl">
+              <div className="text-lg font-black tracking-tight text-blue-600 sm:text-2xl">
                 {stat.value}
               </div>
 
-              <div className="mt-1 text-xs font-medium text-slate-500 sm:text-sm">
+              <div className="mt-0.5 text-[10px] font-medium text-slate-500 sm:text-xs">
                 {stat.label}
               </div>
             </div>
