@@ -221,6 +221,7 @@ export default function Home() {
         </div>
 
       </section>
+      <PopularCalculators />
 
       {/* =====================================================
           WHY CORNERSPAN
