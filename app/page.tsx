@@ -3,6 +3,7 @@ import SearchBar from "../components/SearchBar";
 import HowItWorks from "../components/HowItWorks";
 import Stats from "../components/Stats";
 import Features from "../components/Features";
+import FAQ from "../components/FAQ";
 import CalculatorGuides from "../components/CalculatorGuides";
 import PopularCalculators from "../components/PopularCalculators";
 const categories = [
@@ -190,61 +191,8 @@ export default function Home() {
       <Features />
       <HowItWorks />
       <CalculatorGuides />
-      {/* =====================================================
-          FAQ
-      ====================================================== */}
-
-      <section className="bg-white px-6 py-20 md:py-24">
-
-        <div className="mx-auto max-w-4xl">
-
-          <div className="text-center">
-
-            <span className="inline-flex rounded-full bg-blue-50 px-5 py-2 text-xs font-bold uppercase tracking-wider text-blue-600">
-              FAQ
-            </span>
-
-            <h2 className="mt-5 text-4xl font-black tracking-tight text-slate-900 md:text-5xl">
-              Frequently Asked Questions
-            </h2>
-
-            <p className="mt-4 text-base leading-7 text-slate-500">
-              Common questions about CornerSpan construction calculators.
-            </p>
-
-          </div>
-
-
-          <div className="mt-12 space-y-4">
-
-            {faqs.map((faq) => (
-              <details
-                key={faq.question}
-                className="group rounded-2xl border border-slate-200 bg-white px-6 py-5 shadow-sm"
-              >
-
-                <summary className="cursor-pointer list-none pr-8 text-base font-bold text-slate-900">
-                  <div className="flex items-center justify-between gap-4">
-                    <span>{faq.question}</span>
-
-                    <span className="text-xl text-slate-400 transition group-open:rotate-45">
-                      +
-                    </span>
-                  </div>
-                </summary>
-
-                <p className="mt-4 border-t border-slate-100 pt-4 text-sm leading-6 text-slate-500">
-                  {faq.answer}
-                </p>
-
-              </details>
-            ))}
-
-          </div>
-
-        </div>
-
-      </section>
+      <FAQ />
+      
 
 
       {/* =====================================================
