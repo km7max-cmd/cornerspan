@@ -2,60 +2,52 @@ export default function Features() {
   const features = [
     {
       icon: "⚡",
-      title: "Fast & Simple",
-      description:
-        "Get construction estimates quickly without complicated formulas.",
+      title: "Fast",
+      description: "Quick calculations",
     },
     {
       icon: "🎯",
-      title: "Accurate Results",
-      description:
-        "Reliable calculations designed for real construction projects.",
+      title: "Accurate",
+      description: "Reliable results",
     },
     {
       icon: "🆓",
-      title: "100% Free",
-      description:
-        "Use all CornerSpan calculators freely without registration.",
+      title: "Free",
+      description: "Always free",
     },
   ];
 
   return (
-    <section className="bg-slate-50 px-4 py-10 sm:px-6 sm:py-12">
-      <div className="mx-auto max-w-6xl">
+    <section className="bg-slate-50 px-4 py-7 sm:px-6 sm:py-9">
+      <div className="mx-auto max-w-5xl">
 
         {/* Heading */}
-        <div className="mx-auto mb-7 max-w-2xl text-center">
-          <span className="inline-flex rounded-full border border-blue-100 bg-blue-50 px-4 py-1.5 text-xs font-bold tracking-wider text-blue-600">
+        <div className="mb-5 text-center">
+          <span className="inline-flex rounded-full border border-blue-100 bg-blue-50 px-3 py-1 text-[10px] font-bold tracking-[0.15em] text-blue-600">
             WHY CORNERSPAN
           </span>
 
-          <h2 className="mt-3 text-2xl font-black tracking-tight text-slate-900 sm:text-3xl">
-            Built for Real Construction Work
+          <h2 className="mt-2 text-xl font-black tracking-tight text-slate-900 sm:text-2xl">
+            Simple. Accurate. Free.
           </h2>
-
-          <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-slate-500 sm:text-base">
-            Simple, accurate and practical tools for contractors,
-            builders, engineers and homeowners.
-          </p>
         </div>
 
-        {/* Features */}
-        <div className="grid gap-4 md:grid-cols-3">
+        {/* Compact Features */}
+        <div className="grid grid-cols-3 gap-2.5 sm:gap-4">
           {features.map((feature) => (
             <div
               key={feature.title}
-              className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-blue-200 hover:shadow-md"
+              className="rounded-xl border border-slate-200 bg-white px-2 py-4 text-center shadow-sm sm:rounded-2xl sm:px-4 sm:py-5"
             >
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-2xl">
+              <div className="mx-auto flex h-9 w-9 items-center justify-center rounded-lg bg-blue-50 text-lg sm:h-11 sm:w-11 sm:text-xl">
                 {feature.icon}
               </div>
 
-              <h3 className="mt-4 text-lg font-bold text-slate-900">
+              <h3 className="mt-2.5 text-sm font-bold text-slate-900 sm:text-base">
                 {feature.title}
               </h3>
 
-              <p className="mt-1.5 text-sm leading-6 text-slate-500">
+              <p className="mt-1 text-[10px] leading-4 text-slate-500 sm:text-xs">
                 {feature.description}
               </p>
             </div>
