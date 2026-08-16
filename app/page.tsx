@@ -3,6 +3,7 @@ import SearchBar from "../components/SearchBar";
 import HowItWorks from "../components/HowItWorks";
 import Stats from "../components/Stats";
 import Features from "../components/Features";
+import CalculatorGuides from "../components/CalculatorGuides";
 import PopularCalculators from "../components/PopularCalculators";
 const categories = [
   {
@@ -188,72 +189,7 @@ export default function Home() {
       <PopularCalculators />      
       <Features />
       <HowItWorks />
- 
-      {/* =====================================================
-          CALCULATOR GUIDES
-      ====================================================== */}
-
-      <section className="bg-slate-50 px-6 py-20 md:py-24">
-
-        <div className="mx-auto max-w-7xl">
-
-          <div className="flex flex-col justify-between gap-5 md:flex-row md:items-end">
-
-            <div>
-
-              <span className="inline-flex rounded-full bg-blue-50 px-5 py-2 text-xs font-bold uppercase tracking-wider text-blue-600">
-                Calculator Guides
-              </span>
-
-              <h2 className="mt-5 text-4xl font-black tracking-tight text-slate-900 md:text-5xl">
-                Learn Before You Calculate
-              </h2>
-
-              <p className="mt-4 max-w-2xl text-base leading-7 text-slate-500">
-                Simple guides that explain formulas, measurements and
-                construction estimation basics.
-              </p>
-
-            </div>
-
-          </div>
-
-
-          <div className="mt-12 grid gap-5 md:grid-cols-3">
-
-            {guides.map((guide) => (
-              <Link
-                key={guide.title}
-                href={guide.href}
-                className="group rounded-3xl border border-slate-200 bg-white p-7 shadow-sm transition hover:-translate-y-1 hover:border-blue-200 hover:shadow-lg"
-              >
-
-                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 text-3xl">
-                  {guide.icon}
-                </div>
-
-                <h3 className="mt-6 text-xl font-bold text-slate-900 group-hover:text-blue-600">
-                  {guide.title}
-                </h3>
-
-                <p className="mt-3 text-sm leading-6 text-slate-500">
-                  {guide.description}
-                </p>
-
-                <div className="mt-6 text-sm font-bold text-blue-600">
-                  Read Guide →
-                </div>
-
-              </Link>
-            ))}
-
-          </div>
-
-        </div>
-
-      </section>
-
-
+      <CalculatorGuides />
       {/* =====================================================
           FAQ
       ====================================================== */}
