@@ -1,5 +1,6 @@
 import Link from "next/link";
 import SearchBar from "../components/SearchBar";
+import HowItWorks from "../components/HowItWorks";
 import Stats from "../components/Stats";
 import Features from "../components/Features";
 import PopularCalculators from "../components/PopularCalculators";
@@ -186,75 +187,8 @@ export default function Home() {
       <Stats />     
       <PopularCalculators />      
       <Features />
-
-
-      {/* =====================================================
-          HOW IT WORKS
-      ====================================================== */}
-
-      <section className="bg-white px-6 py-20 md:py-24">
-
-        <div className="mx-auto max-w-6xl">
-
-          <div className="mx-auto max-w-3xl text-center">
-
-            <span className="inline-flex rounded-full bg-blue-50 px-5 py-2 text-xs font-bold uppercase tracking-wider text-blue-600">
-              How It Works
-            </span>
-
-            <h2 className="mt-5 text-4xl font-black tracking-tight text-slate-900 md:text-5xl">
-              Calculate in Three Simple Steps
-            </h2>
-
-          </div>
-
-
-          <div className="mt-14 grid gap-8 md:grid-cols-3">
-
-            {[
-              {
-                number: "01",
-                title: "Choose a Calculator",
-                text: "Select the construction category that matches your project.",
-              },
-              {
-                number: "02",
-                title: "Enter Measurements",
-                text: "Enter your project dimensions and required inputs.",
-              },
-              {
-                number: "03",
-                title: "Get Your Estimate",
-                text: "View the calculated quantity and use it for planning.",
-              },
-            ].map((step) => (
-              <div
-                key={step.number}
-                className="relative rounded-3xl border border-slate-200 bg-slate-50 p-7"
-              >
-
-                <div className="text-5xl font-black text-blue-100">
-                  {step.number}
-                </div>
-
-                <h3 className="mt-5 text-xl font-bold text-slate-900">
-                  {step.title}
-                </h3>
-
-                <p className="mt-3 text-sm leading-6 text-slate-500">
-                  {step.text}
-                </p>
-
-              </div>
-            ))}
-
-          </div>
-
-        </div>
-
-      </section>
-
-
+      <HowItWorks />
+ 
       {/* =====================================================
           CALCULATOR GUIDES
       ====================================================== */}
