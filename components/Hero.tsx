@@ -6,27 +6,25 @@ export default function Hero() {
 
       {/* Background Glow */}
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute left-[-120px] top-20 h-72 w-72 rounded-full bg-blue-200/30 blur-3xl" />
-        <div className="absolute right-[-120px] top-32 h-72 w-72 rounded-full bg-cyan-200/20 blur-3xl" />
+        <div className="absolute -left-24 top-10 h-56 w-56 rounded-full bg-blue-200/25 blur-3xl" />
+        <div className="absolute -right-24 top-20 h-56 w-56 rounded-full bg-cyan-200/15 blur-3xl" />
       </div>
 
-      <div className="relative mx-auto max-w-7xl px-5 pb-14 pt-[55px] md:px-6 md:pb-20 md:pt-[70px]">
+      <div className="relative mx-auto max-w-6xl px-4 pb-8 pt-8 sm:px-6 sm:pb-10 sm:pt-10">
 
         {/* Trusted Badge */}
-        <div className="mx-auto flex w-fit items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 shadow-sm">
+        <div className="mx-auto flex w-fit items-center gap-1.5 rounded-full border border-slate-200 bg-white px-3 py-1.5 shadow-sm">
+          <span className="h-2 w-2 rounded-full bg-emerald-500" />
 
-          <span className="h-2.5 w-2.5 rounded-full bg-emerald-500" />
-
-          <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-blue-700 sm:text-xs">
+          <span className="text-[9px] font-bold uppercase tracking-[0.15em] text-blue-700 sm:text-[10px]">
             Trusted Construction Tools
           </span>
-
         </div>
 
-        {/* Main Heading */}
-        <div className="mx-auto mt-7 max-w-4xl text-center">
+        {/* Heading */}
+        <div className="mx-auto mt-4 max-w-3xl text-center sm:mt-5">
 
-          <h1 className="text-4xl font-black leading-[1.08] tracking-tight text-slate-950 sm:text-5xl md:text-6xl lg:text-7xl">
+          <h1 className="text-3xl font-black leading-[1.08] tracking-tight text-slate-950 sm:text-4xl md:text-5xl">
 
             Smart{" "}
 
@@ -40,7 +38,7 @@ export default function Hero() {
 
           </h1>
 
-          <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-slate-600 md:mt-6 md:text-lg md:leading-8">
+          <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-slate-600 sm:text-base">
             Fast, accurate construction calculators for concrete,
             brick, steel, paint, roofing and more.
           </p>
@@ -48,18 +46,18 @@ export default function Hero() {
         </div>
 
         {/* Buttons */}
-        <div className="mx-auto mt-8 grid max-w-xl grid-cols-2 gap-3 md:mt-10 md:gap-4">
+        <div className="mx-auto mt-5 grid max-w-md grid-cols-2 gap-2.5 sm:mt-6 sm:gap-3">
 
           <Link
             href="/#calculators"
-            className="flex h-14 items-center justify-center rounded-2xl bg-blue-600 px-4 text-sm font-bold text-white shadow-lg shadow-blue-600/20 transition-all duration-300 hover:-translate-y-0.5 hover:bg-blue-700 hover:shadow-xl sm:text-base"
+            className="flex h-11 items-center justify-center rounded-xl bg-blue-600 px-3 text-xs font-bold text-white shadow-md shadow-blue-600/15 transition hover:bg-blue-700 sm:h-12 sm:text-sm"
           >
             All Calculators
           </Link>
 
           <Link
             href="/#categories"
-            className="flex h-14 items-center justify-center rounded-2xl border border-slate-200 bg-white px-4 text-sm font-bold text-slate-700 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-blue-200 hover:text-blue-600 hover:shadow-md sm:text-base"
+            className="flex h-11 items-center justify-center rounded-xl border border-slate-200 bg-white px-3 text-xs font-bold text-slate-700 shadow-sm transition hover:border-blue-200 hover:text-blue-600 sm:h-12 sm:text-sm"
           >
             Categories
           </Link>
@@ -67,21 +65,21 @@ export default function Hero() {
         </div>
 
         {/* Trust Points */}
-        <div className="mx-auto mt-9 flex max-w-2xl flex-wrap items-center justify-center gap-x-6 gap-y-3 text-xs font-medium text-slate-500 md:text-sm">
+        <div className="mx-auto mt-5 flex max-w-xl flex-wrap items-center justify-center gap-x-4 gap-y-2 text-[10px] font-medium text-slate-500 sm:mt-6 sm:text-xs">
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5">
             <span className="font-bold text-emerald-500">✓</span>
-            Accurate calculations
+            Accurate
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5">
             <span className="font-bold text-emerald-500">✓</span>
-            Free to use
+            Free
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5">
             <span className="font-bold text-emerald-500">✓</span>
-            Works on mobile
+            Mobile Friendly
           </div>
 
         </div>
