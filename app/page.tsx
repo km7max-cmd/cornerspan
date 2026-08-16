@@ -1,5 +1,6 @@
 import Link from "next/link";
 import SearchBar from "../components/SearchBar";
+import Hero from "../components/Hero";
 import HowItWorks from "../components/HowItWorks";
 import Stats from "../components/Stats";
 import Features from "../components/Features";
@@ -101,7 +102,7 @@ const guides = [
 export default function Home() {
   return (
     <main className="min-h-screen bg-slate-50 pt-[80px]">
-
+<Hero />
       {/* =====================================================
           HERO
       ====================================================== */}
