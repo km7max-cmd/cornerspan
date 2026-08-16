@@ -3,6 +3,10 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 
+type SearchBarProps = {
+  onClose: () => void;
+};
+
 const calculators = [
   {
     name: "Concrete Calculator",
@@ -48,14 +52,14 @@ const calculators = [
   },
 ];
 
-export default function SearchBar() {
+export default function SearchBar({ onClose }: SearchBarProps) {
   const [query, setQuery] = useState("");
 
   const results = useMemo(() => {
     const search = query.trim().toLowerCase();
 
     if (!search) {
-      return [];
+      return calculators;
     }
 
     return calculators.filter((calculator) =>
@@ -66,108 +70,120 @@ export default function SearchBar() {
   }, [query]);
 
   return (
-    <section className="relative z-30 mx-auto -mt-4 w-full max-w-5xl px-5 sm:px-6">
-      <div className="rounded-3xl bg-white p-4 shadow-xl">
+    <div className="absolute left-0 right-0 top-[76px] border-t border-slate-200 bg-white shadow-2xl">
 
-        {/* Search Box */}
+      <div className="mx-auto max-w-4xl px-4 py-5 md:px-6">
+
+        {/* Search Input */}
         <div className="relative">
 
-          {/* Search Icon */}
+          {/* Icon */}
           <span className="pointer-events-none absolute left-5 top-1/2 -translate-y-1/2 text-xl text-slate-400">
             🔍
           </span>
 
           <input
+            autoFocus
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search construction calculators..."
-            aria-label="Search construction calculators"
-            className="h-16 w-full rounded-full border border-slate-200 bg-white pl-14 pr-16 text-base text-slate-800 shadow-sm outline-none transition-all duration-300 placeholder:text-slate-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+            className="h-14 w-full rounded-2xl border border-slate-200 bg-slate-50 pl-14 pr-14 text-base text-slate-800 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100"
           />
 
-          {/* Clear Button */}
+          {/* Clear */}
           {query && (
             <button
               type="button"
               onClick={() => setQuery("")}
               aria-label="Clear search"
-              className="absolute right-3 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full text-lg text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
+              className="absolute right-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full text-xl text-slate-400 hover:bg-slate-200 hover:text-slate-700"
             >
               ×
             </button>
           )}
         </div>
 
-        {/* Search Results */}
-        {query.trim() && (
-          <div className="mt-4">
+        {/* Results */}
+        <div className="mt-4">
 
-            {results.length > 0 ? (
-              <div className="space-y-2">
+          {!query.trim() && (
+            <p className="mb-3 px-1 text-xs font-bold uppercase tracking-wider text-slate-400">
+              Popular Calculators
+            </p>
+          )}
 
-                <p className="px-2 text-xs font-bold uppercase tracking-wider text-slate-400">
-                  Search Results
-                </p>
+          {results.length > 0 ? (
+            <div className="grid gap-2 md:grid-cols-2">
 
-                {results.map((calculator) => (
-                  <Link
-                    key={calculator.href}
-                    href={calculator.href}
-                    onClick={() => setQuery("")}
-                    className="group flex items-center gap-4 rounded-2xl border border-slate-100 bg-slate-50 p-4 transition-all duration-200 hover:border-blue-200 hover:bg-blue-50"
-                  >
-                    {/* Icon */}
-                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white text-2xl shadow-sm">
-                      {calculator.icon}
-                    </div>
+              {results.map((calculator) => (
+                <Link
+                  key={calculator.href}
+                  href={calculator.href}
+                  onClick={onClose}
+                  className="group flex items-center gap-3 rounded-2xl border border-slate-100 bg-slate-50 p-3 transition hover:border-blue-200 hover:bg-blue-50"
+                >
 
-                    {/* Content */}
-                    <div className="min-w-0 flex-1">
-                      <h3 className="font-bold text-slate-900 group-hover:text-blue-600">
-                        {calculator.name}
-                      </h3>
+                  {/* Icon */}
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-xl shadow-sm">
+                    {calculator.icon}
+                  </div>
 
-                      <p className="mt-1 text-sm text-slate-500">
-                        {calculator.description}
-                      </p>
-                    </div>
+                  {/* Text */}
+                  <div className="min-w-0 flex-1">
+                    <h3 className="truncate text-sm font-bold text-slate-900 group-hover:text-blue-600">
+                      {calculator.name}
+                    </h3>
 
-                    {/* Arrow */}
-                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white text-sm text-slate-400 shadow-sm transition group-hover:bg-blue-600 group-hover:text-white">
-                      →
-                    </span>
-                  </Link>
-                ))}
-              </div>
-            ) : (
-              /* No Results */
-              <div className="rounded-2xl border border-slate-100 bg-slate-50 px-5 py-6 text-center">
-                <div className="text-3xl">🔎</div>
+                    <p className="mt-0.5 truncate text-xs text-slate-500">
+                      {calculator.description}
+                    </p>
+                  </div>
 
-                <h3 className="mt-3 font-bold text-slate-800">
-                  No calculator found
-                </h3>
+                  {/* Arrow */}
+                  <span className="text-sm text-slate-400 transition group-hover:translate-x-1 group-hover:text-blue-600">
+                    →
+                  </span>
 
-                <p className="mt-1 text-sm text-slate-500">
-                  Try searching for concrete, brick, steel, paint, tile or
-                  roofing.
-                </p>
-              </div>
-            )}
-          </div>
-        )}
+                </Link>
+              ))}
 
-        {/* Bottom Badge */}
-        {!query.trim() && (
-          <div className="mt-4 flex justify-center">
-            <span className="rounded-full bg-blue-50 px-4 py-2 text-xs font-semibold text-blue-600">
-              100+ Free Construction Calculators
-            </span>
-          </div>
-        )}
+            </div>
+          ) : (
+            <div className="rounded-2xl bg-slate-50 px-5 py-8 text-center">
+
+              <div className="text-3xl">🔎</div>
+
+              <h3 className="mt-3 font-bold text-slate-800">
+                No calculator found
+              </h3>
+
+              <p className="mt-1 text-sm text-slate-500">
+                Try concrete, brick, steel, paint, tile or roofing.
+              </p>
+
+            </div>
+          )}
+        </div>
+
+        {/* Bottom */}
+        <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-4">
+
+          <span className="text-xs font-medium text-slate-400">
+            100+ Free Construction Calculators
+          </span>
+
+          <button
+            type="button"
+            onClick={onClose}
+            className="text-xs font-semibold text-blue-600 hover:text-blue-700"
+          >
+            Close
+          </button>
+
+        </div>
 
       </div>
-    </section>
+    </div>
   );
 }
