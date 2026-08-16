@@ -195,34 +195,6 @@ export default function Home() {
       <FAQ />
       <CTA />
 
-      {/* =====================================================
-          CTA
-      ====================================================== */}
-
-      <section className="px-6 py-20 md:py-24">
-
-        <div className="mx-auto max-w-6xl overflow-hidden rounded-[2rem] bg-gradient-to-r from-blue-600 to-cyan-500 px-7 py-14 text-center shadow-xl md:px-12 md:py-16">
-
-          <h2 className="text-3xl font-black tracking-tight text-white md:text-5xl">
-            Ready to Calculate?
-          </h2>
-
-          <p className="mx-auto mt-4 max-w-2xl text-sm leading-6 text-blue-50 md:text-lg">
-            Choose a construction calculator and get your estimate in
-            minutes.
-          </p>
-
-          <Link
-            href="#calculators"
-            className="mt-8 inline-flex rounded-2xl bg-white px-8 py-4 text-sm font-bold text-blue-600 shadow-lg transition hover:-translate-y-0.5 hover:bg-slate-50 md:text-base"
-          >
-            Explore Calculators →
-          </Link>
-
-        </div>
-
-      </section>
-
     </main>
   );
 }
