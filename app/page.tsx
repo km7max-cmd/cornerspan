@@ -5,6 +5,7 @@ import HowItWorks from "../components/HowItWorks";
 import Stats from "../components/Stats";
 import Features from "../components/Features";
 import FAQ from "../components/FAQ";
+import CategoryCard from "../components/CategoryCard";
 import CTA from "../components/CTA";
 import CalculatorGuides from "../components/CalculatorGuides";
 import PopularCalculators from "../components/PopularCalculators";
@@ -105,7 +106,32 @@ export default function Home() {
 
       <Hero />
       <Stats />     
-      <PopularCalculators />      
+      <PopularCalculators /> 
+      <section
+  id="categories"
+  className="bg-slate-50 px-5 py-12 sm:px-6 md:py-16"
+>
+  <div className="mx-auto max-w-6xl">
+    <div className="mb-7">
+      <h2 className="text-2xl font-black text-slate-900 sm:text-3xl">
+        Browse by Category
+      </h2>
+
+      <p className="mt-2 text-sm text-slate-500 sm:text-base">
+        Find the right construction calculator by category.
+      </p>
+    </div>
+
+    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <CategoryCard title="Concrete Calculator" />
+      <CategoryCard title="Brick Calculator" />
+      <CategoryCard title="Steel Calculator" />
+      <CategoryCard title="Paint Calculator" />
+      <CategoryCard title="Tile Calculator" />
+      <CategoryCard title="Roofing Calculator" />
+    </div>
+  </div>
+</section>
       <Features />
       <HowItWorks />
       <CalculatorGuides />
