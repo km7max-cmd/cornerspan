@@ -7,7 +7,7 @@ export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <header className="fixed left-0 right-0 top-0 z-[100] border-b border-slate-200/70 bg-white/95 backdrop-blur-md">
+    <header className="fixed left-0 right-0 top-0 z-[100] border-b border-blue-100/70 bg-blue-50/95 backdrop-blur-md">
 
       <div className="mx-auto flex h-[76px] max-w-7xl items-center justify-between px-4 md:px-6">
 
