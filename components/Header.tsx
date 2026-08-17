@@ -17,7 +17,7 @@ export default function Header() {
     src="/logo.png"
     alt="CornerSpan - Construction Calculators"
     style={{
-      height: "28px",
+      height: "36px",
       width: "auto",
       objectFit: "contain",
     }}
