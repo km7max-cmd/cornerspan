@@ -49,7 +49,7 @@ export default function Hero() {
         <div className="mx-auto mt-5 grid max-w-md grid-cols-2 gap-2.5 sm:mt-6 sm:gap-3">
 
           <Link
-            href="/#calculators"
+            href="/calculators"
             className="flex h-11 items-center justify-center rounded-xl bg-blue-600 px-3 text-xs font-bold text-white shadow-md shadow-blue-600/15 transition hover:bg-blue-700 sm:h-12 sm:text-sm"
           >
             All Calculators
