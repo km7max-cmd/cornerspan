@@ -67,11 +67,11 @@ function LinkedInIcon() {
 }
 
 const socials = [
-  { name: "Facebook", icon: <FacebookIcon /> },
-  { name: "Instagram", icon: <InstagramIcon /> },
-  { name: "X", icon: <XIcon /> },
-  { name: "YouTube", icon: <YouTubeIcon /> },
-  { name: "LinkedIn", icon: <LinkedInIcon /> },
+  { name: "Facebook", icon: <FacebookIcon />, href: "#" },
+  { name: "Instagram", icon: <InstagramIcon />, href: "#" },
+  { name: "X", icon: <XIcon />, href: "#" },
+  { name: "YouTube", icon: <YouTubeIcon />, href: "#" },
+  { name: "LinkedIn", icon: <LinkedInIcon />, href: "#" },
 ];
 
 export default function Footer() {
@@ -80,14 +80,10 @@ export default function Footer() {
 
       <div className="mx-auto max-w-7xl px-5 sm:px-6">
 
-        {/* ================================================= */}
-        {/* ROW 1 — BRAND / DESCRIPTION / SOCIAL */}
-        {/* ================================================= */}
-
+        {/* BRAND */}
         <div className="flex flex-col items-center py-10 text-center">
 
           {/* Logo */}
-
           <Link
             href="/"
             aria-label="CornerSpan Home"
@@ -97,7 +93,6 @@ export default function Footer() {
           </Link>
 
           {/* Website Name */}
-
           <Link
             href="/"
             className="mt-4 text-2xl font-black tracking-tight text-slate-950"
@@ -106,87 +101,55 @@ export default function Footer() {
           </Link>
 
           {/* Tagline */}
-
           <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.22em] text-slate-400">
             Construction Calculators
           </p>
 
           {/* Description */}
-          {/* Starts directly below the logo/brand block */}
-
           <p className="mt-4 max-w-xl text-sm leading-6 text-slate-500">
             Professional construction calculators for contractors,
             engineers, builders and homeowners.
           </p>
 
-          {/* Social Icons — NO BACKGROUND */}
-
+          {/* Social Icons */}
           <div className="mt-6 flex items-center justify-center gap-5">
-
             {socials.map((social) => (
               <a
                 key={social.name}
-                href="#"
+                href={social.href}
                 aria-label={social.name}
-                className="
-                  text-slate-400
-                  transition-all
-                  duration-200
-                  hover:-translate-y-1
-                  hover:text-blue-600
-                "
+                className="text-slate-400 transition-all duration-200 hover:-translate-y-1 hover:text-blue-600"
               >
                 {social.icon}
               </a>
             ))}
-
           </div>
 
         </div>
 
-
-        {/* ================================================= */}
-        {/* ROW 2 — NORMAL LINKS */}
-        {/* ================================================= */}
-
+        {/* LINKS */}
         <div className="border-y border-slate-100 py-5">
-
           <nav
             aria-label="Footer navigation"
             className="flex flex-wrap items-center justify-center gap-x-7 gap-y-3"
           >
-
             {links.map((link) => (
               <Link
                 key={link.name}
                 href={link.href}
-                className="
-                  text-sm
-                  font-medium
-                  text-slate-500
-                  transition-colors
-                  hover:text-blue-600
-                "
+                className="text-sm font-medium text-slate-500 transition-colors hover:text-blue-600"
               >
                 {link.name}
               </Link>
             ))}
-
           </nav>
-
         </div>
 
-
-        {/* ================================================= */}
-        {/* ROW 3 — COPYRIGHT */}
-        {/* ================================================= */}
-
+        {/* COPYRIGHT */}
         <div className="py-5 text-center">
-
           <p className="text-xs font-medium text-slate-400 sm:text-sm">
             © {new Date().getFullYear()} CornerSpan. All rights reserved.
           </p>
-
         </div>
 
       </div>
