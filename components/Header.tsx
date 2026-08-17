@@ -16,7 +16,7 @@ export default function Header() {
   <img
     src="/logo.png"
     alt="CornerSpan - Construction Calculators"
-    className="h-8 w-auto object-contain sm:h-10"
+    className="h-4 w-auto object-contain sm:h-5"
   />
 </Link>
 
