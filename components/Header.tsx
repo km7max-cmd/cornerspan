@@ -2,9 +2,11 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import SearchBar from "./SearchBar";
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
 
   return (
     <header className="fixed left-0 right-0 top-0 z-[100] border-b border-blue-100/70 bg-blue-50/95 backdrop-blur-md">
@@ -67,10 +69,15 @@ export default function Header() {
         {/* Right */}
         <div className="flex items-center gap-2">
 
-          {/* Search */}
-          <Link
-            href="/search"
+          {/* Search Button */}
+          <button
+            type="button"
             aria-label="Search calculators"
+            aria-expanded={searchOpen}
+            onClick={() => {
+              setSearchOpen(!searchOpen);
+              setMenuOpen(false);
+            }}
             className="flex h-11 w-11 items-center justify-center rounded-xl text-slate-700 transition hover:bg-white hover:text-blue-600"
           >
             <svg
@@ -84,13 +91,17 @@ export default function Header() {
               <circle cx="11" cy="11" r="7" />
               <path d="m20 20-4-4" />
             </svg>
-          </Link>
+          </button>
 
           {/* Mobile Menu */}
           <button
             type="button"
             aria-label={menuOpen ? "Close menu" : "Open menu"}
-            onClick={() => setMenuOpen(!menuOpen)}
+            aria-expanded={menuOpen}
+            onClick={() => {
+              setMenuOpen(!menuOpen);
+              setSearchOpen(false);
+            }}
             className="flex h-11 w-11 items-center justify-center rounded-xl text-slate-800 transition hover:bg-white md:hidden"
           >
             {menuOpen ? (
@@ -103,6 +114,11 @@ export default function Header() {
         </div>
 
       </div>
+
+      {/* Search Panel */}
+      {searchOpen && (
+        <SearchBar onClose={() => setSearchOpen(false)} />
+      )}
 
       {/* Mobile Menu */}
       {menuOpen && (
