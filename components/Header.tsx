@@ -12,13 +12,13 @@ export default function Header() {
       <div className="mx-auto flex h-[76px] max-w-7xl items-center justify-between px-4 md:px-6">
 
         {/* Logo */}
-        <Link href="/" className="flex items-center">
-          <img
-            src="/logo.png"
-            alt="CornerSpan - Construction Calculators"
-            className="h-12 w-auto object-contain sm:h-14"
-          />
-        </Link>
+<Link href="/" className="flex items-center">
+  <img
+    src="/logo.png"
+    alt="CornerSpan - Construction Calculators"
+    className="h-10 w-auto object-contain sm:h-12"
+  />
+</Link>
 
         {/* Desktop Navigation */}
         <nav className="hidden items-center gap-7 md:flex">
