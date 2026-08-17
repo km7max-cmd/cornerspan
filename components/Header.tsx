@@ -14,7 +14,7 @@ export default function Header() {
         {/* Logo */}
         <Link href="/" className="flex items-center">
           <img
-            src="/file_000000004f4c8211ae58ec8a7fcbcf53.png"
+            src="src="/logo.png"
             alt="CornerSpan - Construction Calculators"
             className="h-12 w-auto object-contain sm:h-14"
           />
