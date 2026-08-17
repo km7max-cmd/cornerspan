@@ -10,7 +10,6 @@ export default function AboutPage() {
         <div className="pointer-events-none absolute -right-24 top-20 h-64 w-64 rounded-full bg-cyan-200/15 blur-3xl" />
 
         <div className="relative mx-auto max-w-5xl px-5 py-12 text-center sm:px-6 sm:py-16">
-
           <span className="inline-flex rounded-full border border-blue-100 bg-white px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-blue-600 shadow-sm">
             ABOUT CORNERSPAN
           </span>
@@ -26,11 +25,10 @@ export default function AboutPage() {
             CornerSpan is a practical collection of construction calculators
             built to make everyday material estimation and measurement easier.
           </p>
-
         </div>
       </section>
 
-      {/* What is CornerSpan */}
+      {/* What We Do */}
       <section className="px-5 py-10 sm:px-6 sm:py-14">
         <div className="mx-auto grid max-w-5xl gap-5 md:grid-cols-2">
 
@@ -71,10 +69,12 @@ export default function AboutPage() {
                 <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-600 text-sm font-black">
                   01
                 </span>
+
                 <div>
                   <h3 className="text-sm font-bold">
                     Easy to understand
                   </h3>
+
                   <p className="mt-1 text-xs leading-5 text-slate-400">
                     Clear inputs and straightforward results.
                   </p>
@@ -85,10 +85,12 @@ export default function AboutPage() {
                 <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-600 text-sm font-black">
                   02
                 </span>
+
                 <div>
                   <h3 className="text-sm font-bold">
                     Built for everyday use
                   </h3>
+
                   <p className="mt-1 text-xs leading-5 text-slate-400">
                     Designed for contractors, builders and homeowners.
                   </p>
@@ -99,10 +101,12 @@ export default function AboutPage() {
                 <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-600 text-sm font-black">
                   03
                 </span>
+
                 <div>
                   <h3 className="text-sm font-bold">
                     Mobile friendly
                   </h3>
+
                   <p className="mt-1 text-xs leading-5 text-slate-400">
                     Use CornerSpan wherever your project takes you.
                   </p>
@@ -115,7 +119,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Who It's For */}
+      {/* Who Uses CornerSpan */}
       <section className="bg-white px-5 py-10 sm:px-6 sm:py-14">
         <div className="mx-auto max-w-5xl">
 
@@ -146,6 +150,7 @@ export default function AboutPage() {
                 className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-5 text-center"
               >
                 <div className="text-2xl">{icon}</div>
+
                 <h3 className="mt-2 text-sm font-bold text-slate-800">
                   {title}
                 </h3>
@@ -153,11 +158,10 @@ export default function AboutPage() {
             ))}
 
           </div>
-
         </div>
       </section>
 
-      {/* Mission */}
+      {/* Our Goal */}
       <section className="px-5 py-10 sm:px-6 sm:py-14">
         <div className="mx-auto max-w-4xl rounded-2xl border border-blue-100 bg-blue-50 p-6 text-center sm:p-9">
 
@@ -165,4 +169,26 @@ export default function AboutPage() {
             Our Goal
           </span>
 
-          <h2 className="mt-2 text-2xl font-black text-slate-900 sm:text-3
+          <h2 className="mt-2 text-2xl font-black text-slate-900 sm:text-3xl">
+            Make construction estimation easier for everyone.
+          </h2>
+
+          <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-slate-600">
+            We are building CornerSpan as a growing library of practical
+            calculators, guides and tools that help people make faster,
+            better-informed construction estimates.
+          </p>
+
+          <Link
+            href="/#calculators"
+            className="mt-6 inline-flex rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-bold text-white shadow-sm transition hover:bg-blue-700"
+          >
+            Explore Calculators →
+          </Link>
+
+        </div>
+      </section>
+
+    </main>
+  );
+}
