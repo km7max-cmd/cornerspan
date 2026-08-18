@@ -15,12 +15,44 @@ type ThemeContextType = {
 };
 
 const ThemeContext =
-  createContext<ThemeContextType | undefined>(
-    undefined
-  );
+  createContext<ThemeContextType | undefined>(undefined);
 
-const SETTINGS_KEY =
-  "cornerspan-settings";
+const SETTINGS_KEY = "cornerspan-settings";
+
+function getSystemTheme(): "light" | "dark" {
+  return window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? "dark"
+    : "light";
+}
+
+function applyTheme(theme: Theme) {
+  const root = document.documentElement;
+
+  const actualTheme =
+    theme === "system"
+      ? getSystemTheme()
+      : theme;
+
+  if (actualTheme === "dark") {
+    root.classList.add("dark");
+    root.style.colorScheme = "dark";
+  } else {
+    root.classList.remove("dark");
+    root.style.colorScheme = "light";
+  }
+
+  const meta =
+    document.querySelector('meta[name="theme-color"]');
+
+  if (meta) {
+    meta.setAttribute(
+      "content",
+      actualTheme === "dark"
+        ? "#0f172a"
+        : "#2563eb"
+    );
+  }
+}
 
 export default function ThemeProvider({
   children,
@@ -33,9 +65,7 @@ export default function ThemeProvider({
   useEffect(() => {
     try {
       const stored =
-        localStorage.getItem(
-          SETTINGS_KEY
-        );
+        localStorage.getItem(SETTINGS_KEY);
 
       if (stored) {
         const settings = JSON.parse(stored);
@@ -46,42 +76,16 @@ export default function ThemeProvider({
           settings.theme === "system"
         ) {
           setThemeState(settings.theme);
+          applyTheme(settings.theme);
+          return;
         }
       }
-    } catch {
-      setThemeState("system");
-    }
+    } catch {}
+
+    applyTheme("system");
   }, []);
 
   useEffect(() => {
-    const root =
-      document.documentElement;
-
-    const applyTheme = (
-      selectedTheme: Theme
-    ) => {
-      if (selectedTheme === "dark") {
-        root.classList.add("dark");
-        return;
-      }
-
-      if (selectedTheme === "light") {
-        root.classList.remove("dark");
-        return;
-      }
-
-      const prefersDark =
-        window.matchMedia(
-          "(prefers-color-scheme: dark)"
-        ).matches;
-
-      if (prefersDark) {
-        root.classList.add("dark");
-      } else {
-        root.classList.remove("dark");
-      }
-    };
-
     applyTheme(theme);
 
     if (theme !== "system") {
@@ -110,16 +114,14 @@ export default function ThemeProvider({
     };
   }, [theme]);
 
-  const setTheme = (
-    newTheme: Theme
-  ) => {
+  function setTheme(newTheme: Theme) {
     setThemeState(newTheme);
+
+    applyTheme(newTheme);
 
     try {
       const stored =
-        localStorage.getItem(
-          SETTINGS_KEY
-        );
+        localStorage.getItem(SETTINGS_KEY);
 
       const settings = stored
         ? JSON.parse(stored)
@@ -132,10 +134,8 @@ export default function ThemeProvider({
           theme: newTheme,
         })
       );
-    } catch {
-      // Ignore storage errors
-    }
-  };
+    } catch {}
+  }
 
   return (
     <ThemeContext.Provider
