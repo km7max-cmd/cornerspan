@@ -1,4 +1,4 @@
-"use client";
+Link client";
 
 import Link from "next/link";
 
@@ -83,14 +83,19 @@ export default function Footer() {
         {/* BRAND */}
         <div className="flex flex-col items-center py-10 text-center">
 
+          
           {/* Logo */}
           <Link
-            href="/"
-            aria-label="CornerSpan Home"
-            className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-700 text-2xl font-black text-white shadow-lg shadow-blue-600/20 transition-transform duration-200 hover:-translate-y-1"
-          >
-            C
-          </Link>
+  href="/"
+  aria-label="CornerSpan Home"
+  className="flex items-center justify-center"
+>
+  <img
+    src="/logo.png"
+    alt="CornerSpan - Construction Calculators"
+    className="h-14 w-auto object-contain"
+  />
+</Link>
 
           {/* Website Name */}
           <Link
