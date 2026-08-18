@@ -8,6 +8,7 @@ export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
 
+  
   return (
     <header className="fixed left-0 right-0 top-0 z-[100] border-b border-blue-100/70 bg-blue-50/95 backdrop-blur-md">
 
