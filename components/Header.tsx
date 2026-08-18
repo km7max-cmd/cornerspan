@@ -25,42 +25,43 @@ export default function Header() {
   return (
     <header className="fixed left-0 right-0 top-0 z-[100] border-b border-blue-100/70 bg-blue-50/95 backdrop-blur-md">
 
-      {/* ================================================= */}
       {/* Main Header */}
-      {/* ================================================= */}
 
       <div className="mx-auto flex h-[76px] max-w-7xl items-center justify-between px-4 md:px-6">
 
-        {/* ================================================= */}
         {/* Logo */}
-        {/* ================================================= */}
 
         <Link
           href="/"
           onClick={closeMenu}
           className="flex items-center"
         >
-          <picture>
-  <source
-    media="(prefers-color-scheme: dark)"
-    srcSet="/logo-dark.png"
-  />
+          {/* Light Mode Logo */}
+          <img
+            src="/logo.png"
+            alt="CornerSpan - Construction Calculators"
+            className="cornerspan-logo-light"
+            style={{
+              height: "56px",
+              width: "auto",
+              objectFit: "contain",
+            }}
+          />
 
-  <img
-    src="/logo.png"
-    alt="CornerSpan - Construction Calculators"
-    style={{
-      height: "56px",
-      width: "auto",
-      objectFit: "contain",
-    }}
-  />
-</picture>
+          {/* Dark Mode Logo */}
+          <img
+            src="/logo-dark.png"
+            alt="CornerSpan - Construction Calculators"
+            className="cornerspan-logo-dark"
+            style={{
+              height: "56px",
+              width: "auto",
+              objectFit: "contain",
+            }}
+          />
         </Link>
 
-        {/* ================================================= */}
         {/* Desktop Navigation */}
-        {/* ================================================= */}
 
         <nav className="hidden items-center gap-6 md:flex">
 
@@ -115,9 +116,7 @@ export default function Header() {
 
         </nav>
 
-        {/* ================================================= */}
         {/* Right Controls */}
-        {/* ================================================= */}
 
         <div className="flex items-center gap-2">
 
@@ -178,9 +177,7 @@ export default function Header() {
 
       </div>
 
-      {/* ================================================= */}
       {/* Search Panel */}
-      {/* ================================================= */}
 
       {searchOpen && (
         <SearchBar
@@ -190,16 +187,12 @@ export default function Header() {
         />
       )}
 
-      {/* ================================================= */}
       {/* Mobile Menu */}
-      {/* ================================================= */}
 
       {menuOpen && (
         <div className="border-t border-blue-100 bg-white px-5 py-4 shadow-lg md:hidden">
 
           <nav className="flex flex-col gap-1">
-
-            {/* Home */}
 
             <Link
               href="/"
@@ -209,8 +202,6 @@ export default function Header() {
               Home
             </Link>
 
-            {/* All Calculators */}
-
             <Link
               href="/calculators"
               onClick={closeMenu}
@@ -218,8 +209,6 @@ export default function Header() {
             >
               All Calculators
             </Link>
-
-            {/* Categories */}
 
             <Link
               href="/#categories"
@@ -229,8 +218,6 @@ export default function Header() {
               Categories
             </Link>
 
-            {/* Favorites */}
-
             <Link
               href="/favorites"
               onClick={closeMenu}
@@ -238,8 +225,6 @@ export default function Header() {
             >
               Favorites
             </Link>
-
-            {/* Settings */}
 
             <Link
               href="/settings"
@@ -249,8 +234,6 @@ export default function Header() {
               Settings
             </Link>
 
-            {/* Guides */}
-
             <Link
               href="/guides"
               onClick={closeMenu}
@@ -258,8 +241,6 @@ export default function Header() {
             >
               Guides
             </Link>
-
-            {/* Blog */}
 
             <Link
               href="/blog"
@@ -269,8 +250,6 @@ export default function Header() {
               Blog
             </Link>
 
-            {/* About */}
-
             <Link
               href="/about"
               onClick={closeMenu}
@@ -278,8 +257,6 @@ export default function Header() {
             >
               About
             </Link>
-
-            {/* Contact */}
 
             <Link
               href="/contact"
