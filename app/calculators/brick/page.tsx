@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Breadcrumb from "../../../components/Breadcrumb";
-import CalculatorHero from "../../../components/CalculatorHero";
+import CalculatorHero from "../../components/CalculatorHero";
 
 export default function BrickCalculator() {
   const [wallLength, setWallLength] = useState("");
