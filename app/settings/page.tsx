@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTheme } from "../components/ThemeProvider";
 
 type Theme = "system" | "light" | "dark";
 type UnitSystem = "metric" | "imperial";
@@ -32,6 +33,8 @@ const currencyNames: Record<string, string> = {
 };
 
 export default function SettingsPage() {
+  const { theme, setTheme } = useTheme();
+
   const [settings, setSettings] =
     useState<Settings>(DEFAULT_SETTINGS);
 
@@ -44,19 +47,43 @@ export default function SettingsPage() {
         localStorage.getItem(SETTINGS_KEY);
 
       if (stored) {
+        const parsed = JSON.parse(stored);
+
         setSettings({
           ...DEFAULT_SETTINGS,
-          ...JSON.parse(stored),
+          ...parsed,
+          theme: theme,
         });
       }
     } catch {
-      setSettings(DEFAULT_SETTINGS);
+      setSettings({
+        ...DEFAULT_SETTINGS,
+        theme,
+      });
     }
-  }, []);
+  }, [theme]);
 
   function saveSettings(
     updated: Settings
   ) {
+    setSettings(updated);
+
+    localStorage.setItem(
+      SETTINGS_KEY,
+      JSON.stringify(updated)
+    );
+  }
+
+  function handleThemeChange(
+    newTheme: Theme
+  ) {
+    setTheme(newTheme);
+
+    const updated = {
+      ...settings,
+      theme: newTheme,
+    };
+
     setSettings(updated);
 
     localStorage.setItem(
@@ -118,7 +145,12 @@ export default function SettingsPage() {
       SETTINGS_KEY
     );
 
-    setSettings(DEFAULT_SETTINGS);
+    setTheme("system");
+
+    setSettings({
+      ...DEFAULT_SETTINGS,
+      theme: "system",
+    });
 
     alert("All local data cleared.");
   }
@@ -204,11 +236,9 @@ export default function SettingsPage() {
               <select
                 value={settings.theme}
                 onChange={(e) =>
-                  saveSettings({
-                    ...settings,
-                    theme:
-                      e.target.value as Theme,
-                  })
+                  handleThemeChange(
+                    e.target.value as Theme
+                  )
                 }
                 className="mt-2 h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none focus:border-blue-500"
               >
