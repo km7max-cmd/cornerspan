@@ -466,3 +466,23 @@ html.dark header a {
 html.dark header a:hover {
   color: #60a5fa;
 }
+ /* =========================================================
+   CornerSpan Logo Theme Switching
+   ========================================================= */
+
+.cornerspan-logo-dark {
+  display: none;
+}
+
+html.dark .cornerspan-logo-light {
+  display: none !important;
+}
+
+html.dark .cornerspan-logo-dark {
+  display: block !important;
+}
+
+/* Do not apply brightness filter to dark logo */
+html.dark header img[alt*="CornerSpan"] {
+  filter: none !important;
+}
