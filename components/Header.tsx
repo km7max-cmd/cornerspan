@@ -49,7 +49,13 @@ export default function Header() {
           >
             Categories
           </Link>
-
+ <Link
+  href="/favorites"
+  onClick={() => setMenuOpen(false)}
+  className="rounded-xl px-4 py-3 font-semibold text-slate-700 hover:bg-blue-50 hover:text-blue-600"
+>
+  Favorites
+</Link>
           <Link
             href="/guides"
             className="text-sm font-semibold text-slate-600 transition hover:text-blue-600"
