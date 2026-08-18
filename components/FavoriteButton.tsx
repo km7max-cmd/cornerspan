@@ -6,17 +6,27 @@ type Props = {
   title: string;
 };
 
-const STORAGE_KEY = "cornerspan-favorites";
+export const FAVORITES_KEY = "cornerspan-favorites";
 
 export default function FavoriteButton({ title }: Props) {
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
     try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      const favorites: string[] = stored ? JSON.parse(stored) : [];
+      const stored =
+        localStorage.getItem(FAVORITES_KEY);
 
-      setSaved(favorites.includes(title));
+      const favorites: string[] = stored
+        ? JSON.parse(stored)
+        : [];
+
+      const exists = favorites.some(
+        (item) =>
+          item.toLowerCase().trim() ===
+          title.toLowerCase().trim()
+      );
+
+      setSaved(exists);
     } catch {
       setSaved(false);
     }
@@ -24,22 +34,43 @@ export default function FavoriteButton({ title }: Props) {
 
   function toggleFavorite() {
     try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      const favorites: string[] = stored ? JSON.parse(stored) : [];
+      const stored =
+        localStorage.getItem(FAVORITES_KEY);
+
+      const favorites: string[] = stored
+        ? JSON.parse(stored)
+        : [];
+
+      const exists = favorites.some(
+        (item) =>
+          item.toLowerCase().trim() ===
+          title.toLowerCase().trim()
+      );
 
       let updated: string[];
 
-      if (favorites.includes(title)) {
-        updated = favorites.filter((item) => item !== title);
-        setSaved(false);
+      if (exists) {
+        updated = favorites.filter(
+          (item) =>
+            item.toLowerCase().trim() !==
+            title.toLowerCase().trim()
+        );
       } else {
         updated = [...favorites, title];
-        setSaved(true);
       }
 
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+      localStorage.setItem(
+        FAVORITES_KEY,
+        JSON.stringify(updated)
+      );
+
+      setSaved(!exists);
+
+      window.dispatchEvent(
+        new Event("cornerspan-favorites-changed")
+      );
     } catch {
-      // Ignore storage errors
+      // Ignore localStorage errors
     }
   }
 
@@ -47,7 +78,11 @@ export default function FavoriteButton({ title }: Props) {
     <button
       type="button"
       onClick={toggleFavorite}
-      aria-label={saved ? "Remove from favorites" : "Save calculator"}
+      aria-label={
+        saved
+          ? "Remove from favorites"
+          : "Save calculator"
+      }
       aria-pressed={saved}
       className={`flex h-11 items-center gap-2 rounded-xl border px-4 text-sm font-semibold transition ${
         saved
