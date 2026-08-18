@@ -45,7 +45,7 @@ function InstagramIcon() {
 function XIcon() {
   return (
     <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor">
-      <path d="M18.9 2H22l-6.8 7.8L23.2 22h-6.3l-4.9-6.4L6.4 22H3.3l7.2-8.2L2.9 2h6.4l4.4 5.8L18.9 2Zm-1.1 17.9h1.7L8.3 4H6.5l11.3 15.9Z" />
+      <path d="M18.9 2H22l-6.8 7.8L23.2 22h-6.3l-4.9-6.4L2.9 2h6.4l4.4 5.8L18.9 2Zm-1.1 17.9h1.7L8.3 4H6.5l11.3 15.9Z" />
     </svg>
   );
 }
@@ -79,34 +79,30 @@ export default function Footer() {
     <footer className="border-t border-slate-200 bg-white">
       <div className="mx-auto max-w-7xl px-5 sm:px-6">
 
-        {/* Brand */}
-        <div className="flex flex-col items-center py-10 text-center">
+        <div className="flex flex-col items-center py-8 text-center">
 
-          {/* Logo */}
           <Link
             href="/"
             aria-label="CornerSpan Home"
             className="flex items-center justify-center"
           >
             <img
-  src="/logo.png"
-  alt="CornerSpan - Construction Calculators"
-  className="h-auto w-[220px] max-w-full object-contain"
-/>
+              src="/logo.png"
+              alt="CornerSpan - Construction Calculators"
+              className="h-auto w-[220px] max-w-full object-contain"
+            />
+          </Link>
 
-          {/* Tagline */}
-          <p className="mt-3 text-[10px] font-bold uppercase tracking-[0.22em] text-slate-400">
+          <p className="mt-2 text-[9px] font-bold uppercase tracking-[0.22em] text-slate-400">
             Construction Calculators
           </p>
 
-          {/* Description */}
-          <p className="mt-4 max-w-xl text-sm leading-6 text-slate-500">
+          <p className="mt-3 max-w-xl text-sm leading-6 text-slate-500">
             Professional construction calculators for contractors,
             engineers, builders and homeowners.
           </p>
 
-          {/* Social Icons */}
-          <div className="mt-6 flex items-center justify-center gap-5">
+          <div className="mt-5 flex items-center justify-center gap-5">
             {socials.map((social) => (
               <a
                 key={social.name}
@@ -120,7 +116,6 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Footer Links */}
         <div className="border-y border-slate-100 py-5">
           <nav
             aria-label="Footer navigation"
@@ -138,7 +133,6 @@ export default function Footer() {
           </nav>
         </div>
 
-        {/* Copyright */}
         <div className="py-5 text-center">
           <p className="text-xs font-medium text-slate-400 sm:text-sm">
             © {new Date().getFullYear()} CornerSpan. All rights reserved.
