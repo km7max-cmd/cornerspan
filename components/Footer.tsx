@@ -76,7 +76,7 @@ const socials = [
 
 export default function Footer() {
   return (
-    <footer className="border-t border-slate-200 bg-white">
+    <footer className="border-t border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950">
       <div className="mx-auto max-w-7xl px-5 sm:px-6">
 
         <div className="flex flex-col items-center py-8 text-center">
@@ -86,18 +86,25 @@ export default function Footer() {
             aria-label="CornerSpan Home"
             className="flex items-center justify-center"
           >
-            <img
-              src="/logo.png"
-              alt="CornerSpan - Construction Calculators"
-              className="h-auto w-[220px] max-w-full object-contain"
-            />
+            <picture>
+              <source
+                media="(prefers-color-scheme: dark)"
+                srcSet="/logo-dark.png"
+              />
+
+              <img
+                src="/logo.png"
+                alt="CornerSpan - Construction Calculators"
+                className="h-auto w-[220px] max-w-full object-contain"
+              />
+            </picture>
           </Link>
 
           <p className="mt-2 text-[9px] font-bold uppercase tracking-[0.22em] text-slate-400">
             Construction Calculators
           </p>
 
-          <p className="mt-3 max-w-xl text-sm leading-6 text-slate-500">
+          <p className="mt-3 max-w-xl text-sm leading-6 text-slate-500 dark:text-slate-400">
             Professional construction calculators for contractors,
             engineers, builders and homeowners.
           </p>
@@ -108,7 +115,7 @@ export default function Footer() {
                 key={social.name}
                 href="#"
                 aria-label={social.name}
-                className="text-slate-400 transition-all duration-200 hover:-translate-y-1 hover:text-blue-600"
+                className="text-slate-400 transition-all duration-200 hover:-translate-y-1 hover:text-blue-600 dark:text-slate-300"
               >
                 {social.icon}
               </a>
@@ -116,7 +123,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="border-y border-slate-100 py-5">
+        <div className="border-y border-slate-100 py-5 dark:border-slate-800">
           <nav
             aria-label="Footer navigation"
             className="flex flex-wrap items-center justify-center gap-x-7 gap-y-3"
@@ -125,7 +132,7 @@ export default function Footer() {
               <Link
                 key={link.name}
                 href={link.href}
-                className="text-sm font-medium text-slate-500 transition-colors hover:text-blue-600"
+                className="text-sm font-medium text-slate-500 transition-colors hover:text-blue-600 dark:text-slate-400"
               >
                 {link.name}
               </Link>
