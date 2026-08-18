@@ -133,3 +133,29 @@ img {
 .cs-primary {
   color: var(--primary);
 }
+
+/* =========================================================
+   CornerSpan Theme Sync
+   ========================================================= */
+
+html.dark,
+html.dark body {
+  background: #0f172a;
+  color: #f8fafc;
+  color-scheme: dark;
+}
+
+html:not(.dark),
+html:not(.dark) body {
+  color-scheme: light;
+}
+
+/* Android / mobile browser navigation area */
+
+html.dark body {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+html:not(.dark) body {
+  padding-bottom: env(safe-area-inset-bottom);
+}
