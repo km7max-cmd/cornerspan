@@ -86,18 +86,21 @@ export default function Footer() {
             aria-label="CornerSpan Home"
             className="flex items-center justify-center"
           >
-            <picture>
-              <source
-                media="(prefers-color-scheme: dark)"
-                srcSet="/logo-dark.png"
-              />
+            <>
+  {/* Light Mode Logo */}
+  <img
+    src="/logo.png"
+    alt="CornerSpan - Construction Calculators"
+    className="h-auto w-[220px] max-w-full object-contain dark:hidden"
+  />
 
-              <img
-                src="/logo.png"
-                alt="CornerSpan - Construction Calculators"
-                className="h-auto w-[220px] max-w-full object-contain"
-              />
-            </picture>
+  {/* Dark Mode Logo */}
+  <img
+    src="/logo-dark.png"
+    alt="CornerSpan - Construction Calculators"
+    className="hidden h-auto w-[220px] max-w-full object-contain dark:block"
+  />
+</>
           </Link>
 
           <p className="mt-2 text-[9px] font-bold uppercase tracking-[0.22em] text-slate-400">
