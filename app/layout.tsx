@@ -3,10 +3,12 @@ import type { Metadata, Viewport } from "next";
 
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import ThemeProvider from "./components/ThemeProvider";
 
 export const metadata: Metadata = {
   title: {
-    default: "CornerSpan | Professional Construction Calculators",
+    default:
+      "CornerSpan | Professional Construction Calculators",
     template: "%s | CornerSpan",
   },
 
@@ -40,7 +42,8 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "CornerSpan",
-    description: "Professional Construction Calculators",
+    description:
+      "Professional Construction Calculators",
   },
 
   robots: {
@@ -64,13 +67,17 @@ export default function RootLayout({
     <html lang="en">
       <body className="bg-blue-50 text-slate-900 antialiased">
 
-        <Header />
+        <ThemeProvider>
 
-        <main>
-          {children}
-        </main>
+          <Header />
 
-        <Footer />
+          <main>
+            {children}
+          </main>
+
+          <Footer />
+
+        </ThemeProvider>
 
       </body>
     </html>
