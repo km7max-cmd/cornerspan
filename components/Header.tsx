@@ -40,15 +40,22 @@ export default function Header() {
           onClick={closeMenu}
           className="flex items-center"
         >
-          <img
-            src="/logo.png"
-            alt="CornerSpan - Construction Calculators"
-            style={{
-              height: "56px",
-              width: "auto",
-              objectFit: "contain",
-            }}
-          />
+          <picture>
+  <source
+    media="(prefers-color-scheme: dark)"
+    srcSet="/logo-dark.png"
+  />
+
+  <img
+    src="/logo.png"
+    alt="CornerSpan - Construction Calculators"
+    style={{
+      height: "56px",
+      width: "auto",
+      objectFit: "contain",
+    }}
+  />
+</picture>
         </Link>
 
         {/* ================================================= */}
