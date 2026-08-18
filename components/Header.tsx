@@ -8,14 +8,22 @@ export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
 
-  
+  const closeMenu = () => {
+    setMenuOpen(false);
+  };
+
   return (
     <header className="fixed left-0 right-0 top-0 z-[100] border-b border-blue-100/70 bg-blue-50/95 backdrop-blur-md">
 
+      {/* Header Bar */}
       <div className="mx-auto flex h-[76px] max-w-7xl items-center justify-between px-4 md:px-6">
 
         {/* Logo */}
-        <Link href="/" className="flex items-center">
+        <Link
+          href="/"
+          onClick={closeMenu}
+          className="flex items-center"
+        >
           <img
             src="/logo.png"
             alt="CornerSpan - Construction Calculators"
@@ -50,13 +58,14 @@ export default function Header() {
           >
             Categories
           </Link>
- <Link
-  href="/favorites"
-  onClick={() => setMenuOpen(false)}
-  className="rounded-xl px-4 py-3 font-semibold text-slate-700 hover:bg-blue-50 hover:text-blue-600"
->
-  Favorites
-</Link>
+
+          <Link
+            href="/favorites"
+            className="text-sm font-semibold text-slate-600 transition hover:text-blue-600"
+          >
+            Favorites
+          </Link>
+
           <Link
             href="/guides"
             className="text-sm font-semibold text-slate-600 transition hover:text-blue-600"
@@ -73,7 +82,7 @@ export default function Header() {
 
         </nav>
 
-        {/* Right */}
+        {/* Right Side */}
         <div className="flex items-center gap-2">
 
           {/* Search Button */}
@@ -100,10 +109,14 @@ export default function Header() {
             </svg>
           </button>
 
-          {/* Mobile Menu */}
+          {/* Mobile Menu Button */}
           <button
             type="button"
-            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            aria-label={
+              menuOpen
+                ? "Close menu"
+                : "Open menu"
+            }
             aria-expanded={menuOpen}
             onClick={() => {
               setMenuOpen(!menuOpen);
@@ -112,9 +125,13 @@ export default function Header() {
             className="flex h-11 w-11 items-center justify-center rounded-xl text-slate-800 transition hover:bg-white md:hidden"
           >
             {menuOpen ? (
-              <span className="text-2xl">×</span>
+              <span className="text-2xl">
+                ×
+              </span>
             ) : (
-              <span className="text-2xl">☰</span>
+              <span className="text-2xl">
+                ☰
+              </span>
             )}
           </button>
 
@@ -124,7 +141,11 @@ export default function Header() {
 
       {/* Search Panel */}
       {searchOpen && (
-        <SearchBar onClose={() => setSearchOpen(false)} />
+        <SearchBar
+          onClose={() =>
+            setSearchOpen(false)
+          }
+        />
       )}
 
       {/* Mobile Menu */}
@@ -133,57 +154,73 @@ export default function Header() {
 
           <nav className="flex flex-col gap-1">
 
+            {/* Home */}
             <Link
               href="/"
-              onClick={() => setMenuOpen(false)}
+              onClick={closeMenu}
               className="rounded-xl px-4 py-3 font-semibold text-slate-700 transition hover:bg-blue-50 hover:text-blue-600"
             >
               Home
             </Link>
 
+            {/* All Calculators */}
             <Link
               href="/calculators"
-              onClick={() => setMenuOpen(false)}
+              onClick={closeMenu}
               className="rounded-xl px-4 py-3 font-semibold text-slate-700 transition hover:bg-blue-50 hover:text-blue-600"
             >
               All Calculators
             </Link>
 
+            {/* Categories */}
             <Link
               href="/#categories"
-              onClick={() => setMenuOpen(false)}
+              onClick={closeMenu}
               className="rounded-xl px-4 py-3 font-semibold text-slate-700 transition hover:bg-blue-50 hover:text-blue-600"
             >
               Categories
             </Link>
 
+            {/* Favorites */}
+            <Link
+              href="/favorites"
+              onClick={closeMenu}
+              className="rounded-xl px-4 py-3 font-semibold text-slate-700 transition hover:bg-blue-50 hover:text-blue-600"
+            >
+              Favorites
+            </Link>
+
+            {/* Guides */}
             <Link
               href="/guides"
-              onClick={() => setMenuOpen(false)}
+              onClick={closeMenu}
               className="rounded-xl px-4 py-3 font-semibold text-slate-700 transition hover:bg-blue-50 hover:text-blue-600"
             >
               Guides
             </Link>
 
+            {/* Blog */}
             <Link
               href="/blog"
-              onClick={() => setMenuOpen(false)}
+              onClick={closeMenu}
               className="rounded-xl px-4 py-3 font-semibold text-slate-700 transition hover:bg-blue-50 hover:text-blue-600"
             >
               Blog
             </Link>
 
+            {/* About */}
             <Link
               href="/about"
-              onClick={() => setMenuOpen(false)}
+              onClick={closeMenu}
               className="rounded-xl px-4 py-3 font-semibold text-slate-700 transition hover:bg-blue-50 hover:text-blue-600"
             >
               About
             </Link>
 
+            {/* Contact */}
             <Link
               href="/contact"
-              onClick={() => setMenuOpen(false)}
+              onClick={closeMenu}
               className="rounded-xl px-4 py-3 font-semibold text-slate-700 transition hover:bg-blue-50 hover:text-blue-600"
             >
               Contact
