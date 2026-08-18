@@ -34,55 +34,66 @@ const calculators: Favorite[] = [
 const STORAGE_KEY = "cornerspan-favorites";
 
 export default function FavoritesPage() {
-  const [favorites, setFavorites] = useState<Favorite[]>([]);
+  const [savedNames, setSavedNames] = useState<string[]>([]);
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
+    const loadFavorites = () => {
+      try {
+        const stored =
+          localStorage.getItem(STORAGE_KEY);
 
-      if (!stored) {
-        return;
+        if (!stored) {
+          setSavedNames([]);
+          setLoaded(true);
+          return;
+        }
+
+        const parsed = JSON.parse(stored);
+
+        if (Array.isArray(parsed)) {
+          setSavedNames(parsed);
+        } else {
+          setSavedNames([]);
+        }
+      } catch {
+        setSavedNames([]);
       }
 
-      const savedNames: string[] = JSON.parse(stored);
+      setLoaded(true);
+    };
 
-      const savedCalculators = calculators.filter(
-        (calculator) =>
-          savedNames.includes(calculator.name)
-      );
-
-      setFavorites(savedCalculators);
-    } catch {
-      setFavorites([]);
-    }
+    loadFavorites();
   }, []);
 
+  const favorites = calculators.filter((calculator) =>
+    savedNames.includes(calculator.name)
+  );
+
   const removeFavorite = (name: string) => {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
+    const updated = savedNames.filter(
+      (item) => item !== name
+    );
 
-      const savedNames: string[] = stored
-        ? JSON.parse(stored)
-        : [];
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify(updated)
+    );
 
-      const updated = savedNames.filter(
-        (item) => item !== name
-      );
-
-      localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify(updated)
-      );
-
-      setFavorites((current) =>
-        current.filter(
-          (item) => item.name !== name
-        )
-      );
-    } catch {
-      // Ignore storage errors
-    }
+    setSavedNames(updated);
   };
+
+  if (!loaded) {
+    return (
+      <main className="min-h-screen bg-slate-50 px-5 py-16">
+        <div className="mx-auto max-w-4xl text-center">
+          <p className="text-slate-500">
+            Loading favorites...
+          </p>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-slate-50">
@@ -101,7 +112,7 @@ export default function FavoritesPage() {
             </span>
           </h1>
 
-          <p className="mt-3 max-w-xl text-sm leading-6 text-slate-600 sm:text-base">
+          <p className="mt-3 text-sm leading-6 text-slate-600 sm:text-base">
             Your saved construction calculators.
           </p>
 
@@ -109,7 +120,6 @@ export default function FavoritesPage() {
       </section>
 
       <section className="px-5 py-8 sm:px-6 sm:py-12">
-
         <div className="mx-auto max-w-4xl">
 
           {favorites.length === 0 ? (
@@ -125,13 +135,13 @@ export default function FavoritesPage() {
               </h2>
 
               <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-slate-500">
-                Save your frequently used calculators and
-                they will appear here.
+                Save your frequently used calculators
+                and they will appear here.
               </p>
 
               <Link
                 href="/calculators"
-                className="mt-6 inline-flex rounded-xl bg-blue-600 px-5 py-3 text-sm font-bold text-white hover:bg-blue-700"
+                className="mt-6 inline-flex rounded-xl bg-blue-600 px-5 py-3 text-sm font-bold text-white"
               >
                 Browse Calculators
               </Link>
@@ -151,14 +161,14 @@ export default function FavoritesPage() {
 
                   <Link
                     href={calculator.href}
-                    className="flex min-w-0 flex-1 items-center gap-4"
+                    className="flex flex-1 items-center gap-4"
                   >
 
                     <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-xl">
                       ★
                     </span>
 
-                    <span className="min-w-0">
+                    <span>
                       <span className="block font-bold text-slate-900">
                         {calculator.name}
                       </span>
@@ -177,7 +187,7 @@ export default function FavoritesPage() {
                         calculator.name
                       )
                     }
-                    className="shrink-0 rounded-lg border border-slate-200 px-3 py-2 text-xs font-bold text-slate-500 hover:border-red-200 hover:text-red-600"
+                    className="rounded-lg border border-slate-200 px-3 py-2 text-xs font-bold text-slate-500 hover:border-red-200 hover:text-red-600"
                   >
                     Remove
                   </button>
@@ -191,7 +201,6 @@ export default function FavoritesPage() {
           )}
 
         </div>
-
       </section>
 
     </main>
