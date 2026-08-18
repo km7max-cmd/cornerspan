@@ -5,29 +5,38 @@ import { useEffect, useState } from "react";
 type Theme = "system" | "light" | "dark";
 type UnitSystem = "metric" | "imperial";
 
-const SETTINGS_KEY = "cornerspan-settings";
-
 type Settings = {
   theme: Theme;
   unitSystem: UnitSystem;
   currency: string;
-  showDetails: boolean;
   notifications: boolean;
 };
+
+const SETTINGS_KEY = "cornerspan-settings";
 
 const DEFAULT_SETTINGS: Settings = {
   theme: "system",
   unitSystem: "metric",
   currency: "USD",
-  showDetails: true,
   notifications: true,
+};
+
+const currencyNames: Record<string, string> = {
+  USD: "US Dollar",
+  INR: "Indian Rupee",
+  EUR: "Euro",
+  GBP: "British Pound",
+  AED: "UAE Dirham",
+  AUD: "Australian Dollar",
+  CAD: "Canadian Dollar",
 };
 
 export default function SettingsPage() {
   const [settings, setSettings] =
     useState<Settings>(DEFAULT_SETTINGS);
 
-  const [saved, setSaved] = useState(false);
+  const [openSection, setOpenSection] =
+    useState<string | null>(null);
 
   useEffect(() => {
     try {
@@ -45,69 +54,57 @@ export default function SettingsPage() {
     }
   }, []);
 
-  function updateSetting<K extends keyof Settings>(
-    key: K,
-    value: Settings[K]
+  function saveSettings(
+    updated: Settings
   ) {
-    setSettings((previous) => ({
-      ...previous,
-      [key]: value,
-    }));
+    setSettings(updated);
 
-    setSaved(false);
-  }
-
-  function saveSettings() {
-    try {
-      localStorage.setItem(
-        SETTINGS_KEY,
-        JSON.stringify(settings)
-      );
-
-      setSaved(true);
-
-      setTimeout(() => {
-        setSaved(false);
-      }, 2000);
-    } catch {
-      setSaved(false);
-    }
+    localStorage.setItem(
+      SETTINGS_KEY,
+      JSON.stringify(updated)
+    );
   }
 
   function clearFavorites() {
-    const confirmed = window.confirm(
-      "Remove all saved calculators from Favorites?"
-    );
-
-    if (!confirmed) return;
+    if (
+      !window.confirm(
+        "Remove all saved calculators?"
+      )
+    ) {
+      return;
+    }
 
     localStorage.removeItem(
       "cornerspan-favorites"
     );
 
-    alert("Favorites cleared successfully.");
+    alert("Favorites cleared.");
   }
 
   function clearHistory() {
-    const confirmed = window.confirm(
-      "Clear all calculator history?"
-    );
-
-    if (!confirmed) return;
+    if (
+      !window.confirm(
+        "Clear all calculator history?"
+      )
+    ) {
+      return;
+    }
 
     localStorage.removeItem(
       "concrete-history"
     );
 
-    alert("History cleared successfully.");
+    alert("History cleared.");
   }
 
   function clearAllData() {
-    const confirmed = window.confirm(
-      "This will remove your Favorites, History and CornerSpan settings. Continue?"
-    );
-
-    if (!confirmed) return;
+    if (
+      !window.confirm(
+        "Clear all CornerSpan data from this device?"
+      )
+    ) {
+      return;
+    }
 
     localStorage.removeItem(
       "cornerspan-favorites"
@@ -123,51 +120,82 @@ export default function SettingsPage() {
 
     setSettings(DEFAULT_SETTINGS);
 
-    alert(
-      "All local CornerSpan data has been cleared."
-    );
+    alert("All local data cleared.");
   }
 
   return (
     <main className="min-h-screen bg-slate-50">
 
-      {/* Hero */}
+      {/* Header */}
 
-      <section className="bg-gradient-to-b from-blue-50 via-white to-slate-50">
+      <section className="border-b border-slate-200 bg-white">
 
-        <div className="mx-auto max-w-4xl px-5 pb-10 pt-10 sm:px-6 sm:pb-12 sm:pt-14">
+        <div className="mx-auto max-w-3xl px-5 py-8">
 
-          <h1 className="text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">
+          <h1 className="text-3xl font-black text-slate-950">
             Settings
           </h1>
 
-          <p className="mt-3 max-w-xl text-sm leading-6 text-slate-600 sm:text-base">
-            Customize your CornerSpan calculator experience.
+          <p className="mt-1 text-sm text-slate-500">
+            Customize your CornerSpan experience.
           </p>
 
         </div>
 
       </section>
 
-      {/* Settings */}
+      {/* Settings List */}
 
-      <section className="px-5 py-8 sm:px-6 sm:py-12">
+      <section className="px-5 py-6">
 
-        <div className="mx-auto max-w-4xl space-y-6">
+        <div className="mx-auto max-w-3xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
 
           {/* Appearance */}
 
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+          <button
+            type="button"
+            onClick={() =>
+              setOpenSection(
+                openSection === "appearance"
+                  ? null
+                  : "appearance"
+              )
+            }
+            className="flex w-full items-center gap-4 border-b border-slate-100 px-5 py-4 text-left transition hover:bg-slate-50"
+          >
 
-            <h2 className="text-xl font-black text-slate-950">
-              Appearance
-            </h2>
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-xl">
+              🎨
+            </span>
 
-            <p className="mt-1 text-sm text-slate-500">
-              Choose how CornerSpan should look.
-            </p>
+            <span className="min-w-0 flex-1">
 
-            <div className="mt-5">
+              <span className="block font-bold text-slate-900">
+                Appearance
+              </span>
+
+              <span className="block text-xs text-slate-500">
+                Theme:{" "}
+                {settings.theme === "system"
+                  ? "System"
+                  : settings.theme === "light"
+                  ? "Light"
+                  : "Dark"}
+              </span>
+
+            </span>
+
+            <span className="text-xl text-slate-400">
+              {openSection === "appearance"
+                ? "⌃"
+                : "›"}
+            </span>
+
+          </button>
+
+          {openSection === "appearance" && (
+
+            <div className="border-b border-slate-100 bg-slate-50 px-5 py-4">
 
               <label className="text-sm font-bold text-slate-700">
                 Theme
@@ -176,12 +204,13 @@ export default function SettingsPage() {
               <select
                 value={settings.theme}
                 onChange={(e) =>
-                  updateSetting(
-                    "theme",
-                    e.target.value as Theme
-                  )
+                  saveSettings({
+                    ...settings,
+                    theme:
+                      e.target.value as Theme,
+                  })
                 }
-                className="mt-2 h-12 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm text-slate-800 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+                className="mt-2 h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none focus:border-blue-500"
               >
                 <option value="system">
                   System Default
@@ -198,270 +227,265 @@ export default function SettingsPage() {
 
             </div>
 
-          </div>
+          )}
 
           {/* Calculator Preferences */}
 
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+          <button
+            type="button"
+            onClick={() =>
+              setOpenSection(
+                openSection === "calculator"
+                  ? null
+                  : "calculator"
+              )
+            }
+            className="flex w-full items-center gap-4 border-b border-slate-100 px-5 py-4 text-left transition hover:bg-slate-50"
+          >
 
-            <h2 className="text-xl font-black text-slate-950">
-              Calculator Preferences
-            </h2>
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-xl">
+              🧮
+            </span>
 
-            <p className="mt-1 text-sm text-slate-500">
-              Set your preferred calculator defaults.
-            </p>
+            <span className="min-w-0 flex-1">
 
-            <div className="mt-5 space-y-5">
+              <span className="block font-bold text-slate-900">
+                Calculator Preferences
+              </span>
 
-              {/* Unit */}
+              <span className="block text-xs text-slate-500">
+                {settings.unitSystem === "metric"
+                  ? "Metric"
+                  : "Imperial"}{" "}
+                • {settings.currency}
+              </span>
+
+            </span>
+
+            <span className="text-xl text-slate-400">
+              {openSection === "calculator"
+                ? "⌃"
+                : "›"}
+            </span>
+
+          </button>
+
+          {openSection === "calculator" && (
+
+            <div className="space-y-4 border-b border-slate-100 bg-slate-50 px-5 py-4">
 
               <div>
 
                 <label className="text-sm font-bold text-slate-700">
-                  Default Unit System
+                  Unit System
                 </label>
 
                 <select
                   value={settings.unitSystem}
                   onChange={(e) =>
-                    updateSetting(
-                      "unitSystem",
-                      e.target.value as UnitSystem
-                    )
+                    saveSettings({
+                      ...settings,
+                      unitSystem:
+                        e.target.value as UnitSystem,
+                    })
                   }
-                  className="mt-2 h-12 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm text-slate-800 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+                  className="mt-2 h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none focus:border-blue-500"
                 >
                   <option value="metric">
-                    Metric (m, cm, mm, kg)
+                    Metric
                   </option>
 
                   <option value="imperial">
-                    Imperial (ft, in, lb)
+                    Imperial
                   </option>
+
                 </select>
 
               </div>
 
-              {/* Currency */}
-
               <div>
 
                 <label className="text-sm font-bold text-slate-700">
-                  Default Currency
+                  Currency
                 </label>
 
                 <select
                   value={settings.currency}
                   onChange={(e) =>
-                    updateSetting(
-                      "currency",
-                      e.target.value
-                    )
+                    saveSettings({
+                      ...settings,
+                      currency:
+                        e.target.value,
+                    })
                   }
-                  className="mt-2 h-12 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm text-slate-800 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+                  className="mt-2 h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none focus:border-blue-500"
                 >
-                  <option value="USD">
-                    USD — US Dollar
-                  </option>
-
-                  <option value="INR">
-                    INR — Indian Rupee
-                  </option>
-
-                  <option value="EUR">
-                    EUR — Euro
-                  </option>
-
-                  <option value="GBP">
-                    GBP — British Pound
-                  </option>
-
-                  <option value="AED">
-                    AED — UAE Dirham
-                  </option>
-
-                  <option value="AUD">
-                    AUD — Australian Dollar
-                  </option>
-
-                  <option value="CAD">
-                    CAD — Canadian Dollar
-                  </option>
+                  {Object.entries(
+                    currencyNames
+                  ).map(
+                    ([code, name]) => (
+                      <option
+                        key={code}
+                        value={code}
+                      >
+                        {code} — {name}
+                      </option>
+                    )
+                  )}
                 </select>
 
               </div>
 
-              {/* Details */}
-
-              <label className="flex cursor-pointer items-center justify-between rounded-xl border border-slate-200 p-4">
-
-                <div>
-
-                  <p className="font-bold text-slate-800">
-                    Show Calculation Details
-                  </p>
-
-                  <p className="mt-1 text-xs text-slate-500">
-                    Show detailed calculation information in results.
-                  </p>
-
-                </div>
-
-                <input
-                  type="checkbox"
-                  checked={settings.showDetails}
-                  onChange={(e) =>
-                    updateSetting(
-                      "showDetails",
-                      e.target.checked
-                    )
-                  }
-                  className="h-5 w-5 accent-blue-600"
-                />
-
-              </label>
-
-              {/* Notifications */}
-
-              <label className="flex cursor-pointer items-center justify-between rounded-xl border border-slate-200 p-4">
-
-                <div>
-
-                  <p className="font-bold text-slate-800">
-                    Notifications
-                  </p>
-
-                  <p className="mt-1 text-xs text-slate-500">
-                    Allow useful calculator notifications.
-                  </p>
-
-                </div>
-
-                <input
-                  type="checkbox"
-                  checked={settings.notifications}
-                  onChange={(e) =>
-                    updateSetting(
-                      "notifications",
-                      e.target.checked
-                    )
-                  }
-                  className="h-5 w-5 accent-blue-600"
-                />
-
-              </label>
-
             </div>
+
+          )}
+
+          {/* Favorites */}
+
+          <button
+            type="button"
+            onClick={clearFavorites}
+            className="flex w-full items-center gap-4 border-b border-slate-100 px-5 py-4 text-left transition hover:bg-slate-50"
+          >
+
+            <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50 text-xl">
+              ⭐
+            </span>
+
+            <span className="flex-1">
+
+              <span className="block font-bold text-slate-900">
+                Favorites
+              </span>
+
+              <span className="block text-xs text-slate-500">
+                Manage saved calculators
+              </span>
+
+            </span>
+
+            <span className="text-xl text-slate-400">
+              ›
+            </span>
+
+          </button>
+
+          {/* History */}
+
+          <button
+            type="button"
+            onClick={clearHistory}
+            className="flex w-full items-center gap-4 border-b border-slate-100 px-5 py-4 text-left transition hover:bg-slate-50"
+          >
+
+            <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50 text-xl">
+              🕘
+            </span>
+
+            <span className="flex-1">
+
+              <span className="block font-bold text-slate-900">
+                History
+              </span>
+
+              <span className="block text-xs text-slate-500">
+                Manage calculation history
+              </span>
+
+            </span>
+
+            <span className="text-xl text-slate-400">
+              ›
+            </span>
+
+          </button>
+
+          {/* Notifications */}
+
+          <div className="flex items-center gap-4 border-b border-slate-100 px-5 py-4">
+
+            <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50 text-xl">
+              🔔
+            </span>
+
+            <span className="flex-1">
+
+              <span className="block font-bold text-slate-900">
+                Notifications
+              </span>
+
+              <span className="block text-xs text-slate-500">
+                Calculator notifications
+              </span>
+
+            </span>
+
+            <input
+              type="checkbox"
+              checked={
+                settings.notifications
+              }
+              onChange={(e) =>
+                saveSettings({
+                  ...settings,
+                  notifications:
+                    e.target.checked,
+                })
+              }
+              className="h-5 w-5 accent-blue-600"
+            />
 
           </div>
 
-          {/* Save */}
+          {/* Privacy */}
 
-          <div className="rounded-2xl border border-blue-100 bg-blue-50 p-5 sm:p-6">
+          <button
+            type="button"
+            onClick={clearAllData}
+            className="flex w-full items-center gap-4 border-b border-slate-100 px-5 py-4 text-left transition hover:bg-slate-50"
+          >
 
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-red-50 text-xl">
+              🔒
+            </span>
 
-              <div>
+            <span className="flex-1">
 
-                <h2 className="font-black text-slate-900">
-                  Save Settings
-                </h2>
+              <span className="block font-bold text-slate-900">
+                Privacy & Data
+              </span>
 
-                <p className="mt-1 text-sm text-slate-600">
-                  Your preferences are stored on this device.
-                </p>
+              <span className="block text-xs text-slate-500">
+                Manage local CornerSpan data
+              </span>
 
-              </div>
+            </span>
 
-              <button
-                type="button"
-                onClick={saveSettings}
-                className="rounded-xl bg-blue-600 px-6 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-blue-700"
-              >
-                {saved
-                  ? "✓ Saved"
-                  : "Save Settings"}
-              </button>
+            <span className="text-xl text-slate-400">
+              ›
+            </span>
 
-            </div>
-
-          </div>
-
-          {/* Data */}
-
-          <div className="rounded-2xl border border-red-100 bg-white p-5 shadow-sm sm:p-6">
-
-            <h2 className="text-xl font-black text-slate-950">
-              Your Data
-            </h2>
-
-            <p className="mt-1 text-sm text-slate-500">
-              Manage data stored locally on this device.
-            </p>
-
-            <div className="mt-5 grid gap-3 sm:grid-cols-3">
-
-              <button
-                type="button"
-                onClick={clearFavorites}
-                className="rounded-xl border border-slate-200 px-4 py-3 text-sm font-bold text-slate-700 transition hover:border-red-200 hover:bg-red-50 hover:text-red-600"
-              >
-                Clear Favorites
-              </button>
-
-              <button
-                type="button"
-                onClick={clearHistory}
-                className="rounded-xl border border-slate-200 px-4 py-3 text-sm font-bold text-slate-700 transition hover:border-red-200 hover:bg-red-50 hover:text-red-600"
-              >
-                Clear History
-              </button>
-
-              <button
-                type="button"
-                onClick={clearAllData}
-                className="rounded-xl border border-red-200 px-4 py-3 text-sm font-bold text-red-600 transition hover:bg-red-50"
-              >
-                Clear All Data
-              </button>
-
-            </div>
-
-          </div>
+          </button>
 
           {/* About */}
 
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+          <div className="flex items-center gap-4 px-5 py-4">
 
-            <h2 className="text-xl font-black text-slate-950">
-              About CornerSpan
-            </h2>
+            <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-100 text-xl">
+              ℹ️
+            </span>
 
-            <div className="mt-4 space-y-2 text-sm text-slate-600">
+            <span className="flex-1">
 
-              <p>
-                <span className="font-bold text-slate-800">
-                  Website:
-                </span>{" "}
-                CornerSpan Construction Calculators
-              </p>
+              <span className="block font-bold text-slate-900">
+                About CornerSpan
+              </span>
 
-              <p>
-                <span className="font-bold text-slate-800">
-                  Version:
-                </span>{" "}
-                1.0
-              </p>
+              <span className="block text-xs text-slate-500">
+                Construction Calculators • Version 1.0
+              </span>
 
-              <p>
-                <span className="font-bold text-slate-800">
-                  Data:
-                </span>{" "}
-                Preferences are stored locally on your device.
-              </p>
-
-            </div>
+            </span>
 
           </div>
 
