@@ -3,76 +3,97 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-type Favorite = {
-  name: string;
-  href: string;
-};
+const STORAGE_KEY = "cornerspan-favorites";
 
-const calculators: Favorite[] = [
+const calculatorMap: Record<
+  string,
   {
+    name: string;
+    href: string;
+  }
+> = {
+  concrete: {
     name: "Concrete Calculator",
     href: "/calculators/concrete",
   },
-  {
+
+  "concrete calculator": {
+    name: "Concrete Calculator",
+    href: "/calculators/concrete",
+  },
+
+  brick: {
     name: "Brick Calculator",
     href: "/calculators/brick",
   },
-  {
+
+  "brick calculator": {
+    name: "Brick Calculator",
+    href: "/calculators/brick",
+  },
+
+  steel: {
     name: "Steel Calculator",
     href: "/calculators/steel",
   },
-  {
+
+  "steel calculator": {
+    name: "Steel Calculator",
+    href: "/calculators/steel",
+  },
+
+  paint: {
     name: "Paint Calculator",
     href: "/calculators/paint",
   },
-  {
+
+  "paint calculator": {
+    name: "Paint Calculator",
+    href: "/calculators/paint",
+  },
+
+  tile: {
     name: "Tile Calculator",
     href: "/calculators/tile",
   },
-];
 
-const STORAGE_KEY = "cornerspan-favorites";
+  "tile calculator": {
+    name: "Tile Calculator",
+    href: "/calculators/tile",
+  },
+};
 
 export default function FavoritesPage() {
-  const [savedNames, setSavedNames] = useState<string[]>([]);
+  const [favorites, setFavorites] = useState<string[]>([]);
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    const loadFavorites = () => {
-      try {
-        const stored =
-          localStorage.getItem(STORAGE_KEY);
+    try {
+      const stored =
+        localStorage.getItem(STORAGE_KEY);
 
-        if (!stored) {
-          setSavedNames([]);
-          setLoaded(true);
-          return;
-        }
-
+      if (stored) {
         const parsed = JSON.parse(stored);
 
         if (Array.isArray(parsed)) {
-          setSavedNames(parsed);
-        } else {
-          setSavedNames([]);
+          setFavorites(
+            parsed.filter(
+              (item): item is string =>
+                typeof item === "string"
+            )
+          );
         }
-      } catch {
-        setSavedNames([]);
       }
+    } catch {
+      setFavorites([]);
+    }
 
-      setLoaded(true);
-    };
-
-    loadFavorites();
+    setLoaded(true);
   }, []);
 
-  const favorites = calculators.filter((calculator) =>
-    savedNames.includes(calculator.name)
-  );
-
-  const removeFavorite = (name: string) => {
-    const updated = savedNames.filter(
-      (item) => item !== name
+  const removeFavorite = (item: string) => {
+    const updated = favorites.filter(
+      (favorite) => favorite !== item
     );
 
     localStorage.setItem(
@@ -80,24 +101,24 @@ export default function FavoritesPage() {
       JSON.stringify(updated)
     );
 
-    setSavedNames(updated);
+    setFavorites(updated);
   };
 
-  if (!loaded) {
-    return (
-      <main className="min-h-screen bg-slate-50 px-5 py-16">
-        <div className="mx-auto max-w-4xl text-center">
-          <p className="text-slate-500">
-            Loading favorites...
-          </p>
-        </div>
-      </main>
-    );
-  }
+  const savedCalculators = favorites
+    .map((item) => {
+      const key = item.trim().toLowerCase();
+
+      return {
+        original: item,
+        data: calculatorMap[key],
+      };
+    })
+    .filter((item) => item.data);
 
   return (
     <main className="min-h-screen bg-slate-50">
 
+      {/* Header */}
       <section className="bg-gradient-to-b from-blue-50 via-white to-slate-50">
         <div className="mx-auto max-w-4xl px-5 pb-10 pt-10 sm:px-6 sm:pb-12 sm:pt-14">
 
@@ -119,29 +140,36 @@ export default function FavoritesPage() {
         </div>
       </section>
 
+      {/* Content */}
       <section className="px-5 py-8 sm:px-6 sm:py-12">
         <div className="mx-auto max-w-4xl">
 
-          {favorites.length === 0 ? (
+          {!loaded ? (
+
+            <div className="rounded-2xl border bg-white p-10 text-center">
+              Loading...
+            </div>
+
+          ) : savedCalculators.length === 0 ? (
 
             <div className="rounded-2xl border border-slate-200 bg-white px-6 py-16 text-center shadow-sm">
 
-              <div className="text-5xl">
+              <div className="text-6xl">
                 ☆
               </div>
 
-              <h2 className="mt-4 text-xl font-bold text-slate-900">
+              <h2 className="mt-5 text-2xl font-bold text-slate-900">
                 No saved calculators
               </h2>
 
-              <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-slate-500">
+              <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-slate-500">
                 Save your frequently used calculators
                 and they will appear here.
               </p>
 
               <Link
                 href="/calculators"
-                className="mt-6 inline-flex rounded-xl bg-blue-600 px-5 py-3 text-sm font-bold text-white"
+                className="mt-6 inline-flex rounded-xl bg-blue-600 px-6 py-3 text-sm font-bold text-white"
               >
                 Browse Calculators
               </Link>
@@ -152,49 +180,49 @@ export default function FavoritesPage() {
 
             <div className="space-y-3">
 
-              {favorites.map((calculator) => (
+              {savedCalculators.map(
+                ({ original, data }) => (
 
-                <div
-                  key={calculator.name}
-                  className="flex items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
-                >
-
-                  <Link
-                    href={calculator.href}
-                    className="flex flex-1 items-center gap-4"
+                  <div
+                    key={original}
+                    className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
                   >
 
-                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-xl">
-                      ★
-                    </span>
+                    <Link
+                      href={data.href}
+                      className="flex flex-1 items-center gap-4"
+                    >
 
-                    <span>
-                      <span className="block font-bold text-slate-900">
-                        {calculator.name}
+                      <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-2xl text-blue-600">
+                        ★
                       </span>
 
-                      <span className="mt-1 block text-xs text-slate-500">
-                        Open calculator →
-                      </span>
-                    </span>
+                      <div>
+                        <div className="font-bold text-slate-900">
+                          {data.name}
+                        </div>
 
-                  </Link>
+                        <div className="mt-1 text-xs text-slate-500">
+                          Open calculator →
+                        </div>
+                      </div>
 
-                  <button
-                    type="button"
-                    onClick={() =>
-                      removeFavorite(
-                        calculator.name
-                      )
-                    }
-                    className="rounded-lg border border-slate-200 px-3 py-2 text-xs font-bold text-slate-500 hover:border-red-200 hover:text-red-600"
-                  >
-                    Remove
-                  </button>
+                    </Link>
 
-                </div>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        removeFavorite(original)
+                      }
+                      className="rounded-lg border border-slate-200 px-3 py-2 text-xs font-bold text-slate-500 hover:border-red-200 hover:text-red-600"
+                    >
+                      Remove
+                    </button>
 
-              ))}
+                  </div>
+
+                )
+              )}
 
             </div>
 
