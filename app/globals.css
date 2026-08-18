@@ -407,3 +407,62 @@ html.dark {
 html.dark header img[alt*="CornerSpan"] {
   filter: brightness(1.35) contrast(1.08) saturate(1.12);
 }
+
+/* =========================================================
+   DARK MODE - BLACK ELEMENTS → WHITE
+   ========================================================= */
+
+html.dark {
+  color-scheme: dark;
+}
+
+/* Text */
+
+html.dark .text-black {
+  color: #ffffff !important;
+}
+
+html.dark .text-slate-950,
+html.dark .text-slate-900 {
+  color: #ffffff !important;
+}
+
+html.dark .text-slate-800 {
+  color: #f1f5f9 !important;
+}
+
+html.dark .text-slate-700 {
+  color: #e2e8f0 !important;
+}
+
+/* Icons using currentColor */
+
+html.dark svg {
+  color: #f8fafc;
+}
+
+html.dark button {
+  color: #f8fafc;
+}
+
+/* Header icons */
+
+html.dark header svg {
+  color: #ffffff !important;
+}
+
+/* Hamburger */
+
+html.dark header button span {
+  color: #ffffff !important;
+}
+
+/* Links */
+
+html.dark header a {
+  color: #f8fafc;
+}
+
+html.dark header a:hover {
+  color: #60a5fa;
+}
