@@ -1,9 +1,9 @@
-Link client";
+"use client";
 
 import Link from "next/link";
 
 const links = [
-  { name: "Calculators", href: "/#calculators" },
+  { name: "Calculators", href: "/calculators" },
   { name: "About", href: "/about" },
   { name: "Contact", href: "/contact" },
   { name: "Blog", href: "/blog" },
@@ -67,45 +67,36 @@ function LinkedInIcon() {
 }
 
 const socials = [
-  { name: "Facebook", icon: <FacebookIcon />, href: "#" },
-  { name: "Instagram", icon: <InstagramIcon />, href: "#" },
-  { name: "X", icon: <XIcon />, href: "#" },
-  { name: "YouTube", icon: <YouTubeIcon />, href: "#" },
-  { name: "LinkedIn", icon: <LinkedInIcon />, href: "#" },
+  { name: "Facebook", icon: <FacebookIcon /> },
+  { name: "Instagram", icon: <InstagramIcon /> },
+  { name: "X", icon: <XIcon /> },
+  { name: "YouTube", icon: <YouTubeIcon /> },
+  { name: "LinkedIn", icon: <LinkedInIcon /> },
 ];
 
 export default function Footer() {
   return (
     <footer className="border-t border-slate-200 bg-white">
-
       <div className="mx-auto max-w-7xl px-5 sm:px-6">
 
-        {/* BRAND */}
+        {/* Brand */}
         <div className="flex flex-col items-center py-10 text-center">
-          
+
           {/* Logo */}
           <Link
-  href="/"
-  aria-label="CornerSpan Home"
-  className="flex items-center justify-center"
->
-  <img
-    src="/logo.png"
-    alt="CornerSpan - Construction Calculators"
-    className="h-14 w-auto object-contain"
-  />
-</Link>
-
-          {/* Website Name */}
-          <Link
             href="/"
-            className="mt-4 text-2xl font-black tracking-tight text-slate-950"
+            aria-label="CornerSpan Home"
+            className="flex items-center justify-center"
           >
-            Corner<span className="text-blue-600">Span</span>
+            <img
+              src="/logo.png"
+              alt="CornerSpan - Construction Calculators"
+              className="h-14 w-auto object-contain"
+            />
           </Link>
 
           {/* Tagline */}
-          <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.22em] text-slate-400">
+          <p className="mt-3 text-[10px] font-bold uppercase tracking-[0.22em] text-slate-400">
             Construction Calculators
           </p>
 
@@ -120,7 +111,7 @@ export default function Footer() {
             {socials.map((social) => (
               <a
                 key={social.name}
-                href={social.href}
+                href="#"
                 aria-label={social.name}
                 className="text-slate-400 transition-all duration-200 hover:-translate-y-1 hover:text-blue-600"
               >
@@ -128,10 +119,9 @@ export default function Footer() {
               </a>
             ))}
           </div>
-
         </div>
 
-        {/* LINKS */}
+        {/* Footer Links */}
         <div className="border-y border-slate-100 py-5">
           <nav
             aria-label="Footer navigation"
@@ -149,7 +139,7 @@ export default function Footer() {
           </nav>
         </div>
 
-        {/* COPYRIGHT */}
+        {/* Copyright */}
         <div className="py-5 text-center">
           <p className="text-xs font-medium text-slate-400 sm:text-sm">
             © {new Date().getFullYear()} CornerSpan. All rights reserved.
@@ -157,7 +147,6 @@ export default function Footer() {
         </div>
 
       </div>
-
     </footer>
   );
 }
