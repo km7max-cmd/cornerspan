@@ -400,3 +400,10 @@ html.dark ::-webkit-scrollbar-thumb:hover {
 html.dark {
   background-color: #0f172a;
 }
+/* =========================================================
+   CornerSpan Logo - Dark Mode Visibility
+   ========================================================= */
+
+html.dark header img[alt*="CornerSpan"] {
+  filter: brightness(1.35) contrast(1.08) saturate(1.12);
+}
