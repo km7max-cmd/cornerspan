@@ -89,10 +89,10 @@ export default function Footer() {
             className="flex items-center justify-center"
           >
             <img
-            src="/logo.png"
-            alt="CornerSpan - Construction Calculators"
-            className="h-auto w-[220px] max-w-full object-contain"
-            />
+  src="/logo.png"
+  alt="CornerSpan - Construction Calculators"
+  className="h-auto w-[220px] max-w-full object-contain"
+/>
 
           {/* Tagline */}
           <p className="mt-3 text-[10px] font-bold uppercase tracking-[0.22em] text-slate-400">
