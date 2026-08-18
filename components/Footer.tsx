@@ -82,7 +82,6 @@ export default function Footer() {
 
         {/* BRAND */}
         <div className="flex flex-col items-center py-10 text-center">
-
           
           {/* Logo */}
           <Link
