@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
 
 const links = [
   { name: "Calculators", href: "/calculators" },
@@ -12,8 +11,6 @@ const links = [
   { name: "Terms & Conditions", href: "/terms" },
   { name: "Disclaimer", href: "/disclaimer" },
 ];
-
-const SETTINGS_KEY = "cornerspan-settings";
 
 function FacebookIcon() {
   return (
@@ -56,7 +53,7 @@ function XIcon() {
 function YouTubeIcon() {
   return (
     <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor">
-      <path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1c.5-1.9.5-5.8.5-5.8s0-3.9-.5-5.8ZM9.6 15.6V8.4l6.3 3.6-6.3 3.6Z" />
+      <path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1c.5-1.9.5-5.8-.5-5.8s0-3.9-.5-5.8ZM9.6 15.6V8.4l6.3 3.6-6.3 3.6Z" />
     </svg>
   );
 }
@@ -78,65 +75,8 @@ const socials = [
 ];
 
 export default function Footer() {
-  const [isDark, setIsDark] = useState(false);
-
-  useEffect(() => {
-    function updateTheme() {
-      try {
-        const stored = localStorage.getItem(SETTINGS_KEY);
-
-        if (stored) {
-          const settings = JSON.parse(stored);
-
-          if (settings.theme === "dark") {
-            setIsDark(true);
-            return;
-          }
-
-          if (settings.theme === "light") {
-            setIsDark(false);
-            return;
-          }
-        }
-
-        // System theme
-        setIsDark(
-          window.matchMedia &&
-            window.matchMedia("(prefers-color-scheme: dark)").matches
-        );
-      } catch {
-        setIsDark(false);
-      }
-    }
-
-    updateTheme();
-
-    const mediaQuery = window.matchMedia(
-      "(prefers-color-scheme: dark)"
-    );
-
-    mediaQuery.addEventListener("change", updateTheme);
-
-    const handleStorage = () => {
-      updateTheme();
-    };
-
-    window.addEventListener("storage", handleStorage);
-
-    return () => {
-      mediaQuery.removeEventListener("change", updateTheme);
-      window.removeEventListener("storage", handleStorage);
-    };
-  }, []);
-
   return (
-    <footer
-      className={
-        isDark
-          ? "border-t border-slate-800 bg-slate-800 text-white"
-          : "border-t border-slate-200 bg-white text-slate-900"
-      }
-    >
+    <footer className="border-t border-slate-800 bg-slate-800">
       <div className="mx-auto max-w-7xl px-5 sm:px-6">
 
         {/* Logo + Description */}
@@ -149,29 +89,17 @@ export default function Footer() {
             className="flex items-center justify-center"
           >
             <img
-              src={isDark ? "/logo-dark.png" : "/logo.png"}
+              src="/logo-dark.png?v=2"
               alt="CornerSpan - Construction Calculators"
               className="h-auto w-[220px] max-w-full object-contain"
             />
           </Link>
 
-          <p
-            className={
-              isDark
-                ? "mt-2 text-[9px] font-bold uppercase tracking-[0.22em] text-slate-300"
-                : "mt-2 text-[9px] font-bold uppercase tracking-[0.22em] text-slate-400"
-            }
-          >
+          <p className="mt-2 text-[9px] font-bold uppercase tracking-[0.22em] text-slate-300">
             Construction Calculators
           </p>
 
-          <p
-            className={
-              isDark
-                ? "mt-3 max-w-xl text-sm leading-6 text-slate-300"
-                : "mt-3 max-w-xl text-sm leading-6 text-slate-500"
-            }
-          >
+          <p className="mt-3 max-w-xl text-sm leading-6 text-slate-300">
             Professional construction calculators for contractors,
             engineers, builders and homeowners.
           </p>
@@ -184,11 +112,7 @@ export default function Footer() {
                 key={social.name}
                 href="#"
                 aria-label={social.name}
-                className={
-                  isDark
-                    ? "text-slate-200 transition-all duration-200 hover:-translate-y-1 hover:text-blue-400"
-                    : "text-slate-400 transition-all duration-200 hover:-translate-y-1 hover:text-blue-600"
-                }
+                className="text-slate-200 transition-all duration-200 hover:-translate-y-1 hover:text-blue-400"
               >
                 {social.icon}
               </a>
@@ -196,15 +120,9 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Navigation */}
+        {/* Footer Navigation */}
 
-        <div
-          className={
-            isDark
-              ? "border-y border-slate-700 py-5"
-              : "border-y border-slate-100 py-5"
-          }
-        >
+        <div className="border-y border-slate-700 py-5">
           <nav
             aria-label="Footer navigation"
             className="flex flex-wrap items-center justify-center gap-x-7 gap-y-3"
@@ -213,11 +131,7 @@ export default function Footer() {
               <Link
                 key={link.name}
                 href={link.href}
-                className={
-                  isDark
-                    ? "text-sm font-medium text-slate-300 transition-colors hover:text-blue-400"
-                    : "text-sm font-medium text-slate-500 transition-colors hover:text-blue-600"
-                }
+                className="text-sm font-medium text-slate-300 transition-colors hover:text-blue-400"
               >
                 {link.name}
               </Link>
@@ -228,13 +142,7 @@ export default function Footer() {
         {/* Copyright */}
 
         <div className="py-5 text-center">
-          <p
-            className={
-              isDark
-                ? "text-xs font-medium text-slate-400 sm:text-sm"
-                : "text-xs font-medium text-slate-400 sm:text-sm"
-            }
-          >
+          <p className="text-xs font-medium text-slate-400 sm:text-sm">
             © {new Date().getFullYear()} CornerSpan. All rights reserved.
           </p>
         </div>
