@@ -2,63 +2,43 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-
-type HistoryItem = {
-  length: number;
-  width: number;
-  depth: number;
-  volume: number;
-};
-
-type HistoryRecord = HistoryItem & {
-  calculator: string;
-  date: string;
-};
-
-const CONCRETE_HISTORY_KEY = "concrete-history";
+import {
+  clearGlobalHistory,
+  deleteGlobalHistory,
+  getGlobalHistory,
+  type GlobalHistoryItem,
+} from "../../components/GlobalHistory";
 
 export default function HistoryPage() {
-  const [history, setHistory] = useState<HistoryRecord[]>([]);
+  const [history, setHistory] = useState<GlobalHistoryItem[]>([]);
 
   useEffect(() => {
-    try {
-      const saved = localStorage.getItem(
-        CONCRETE_HISTORY_KEY
-      );
-
-      if (!saved) return;
-
-      const parsed: HistoryItem[] =
-        JSON.parse(saved);
-
-      if (!Array.isArray(parsed)) return;
-
-      const records: HistoryRecord[] =
-        parsed.map((item) => ({
-          ...item,
-          calculator: "Concrete Calculator",
-          date: "Recent",
-        }));
-
-      setHistory(records);
-    } catch {
-      setHistory([]);
-    }
+    setHistory(getGlobalHistory());
   }, []);
 
-  function clearHistory() {
-    if (
-      !window.confirm(
-        "Clear all calculation history?"
-      )
-    ) {
+  function refreshHistory() {
+    setHistory(getGlobalHistory());
+  }
+
+  function handleDelete(id: string) {
+    deleteGlobalHistory(id);
+    refreshHistory();
+  }
+
+  function handleClearAll() {
+    if (history.length === 0) {
       return;
     }
 
-    localStorage.removeItem(
-      CONCRETE_HISTORY_KEY
+    const confirmed = window.confirm(
+      "Clear all calculation history?"
     );
 
+    if (!confirmed) {
+      return;
+    }
+
+    clearGlobalHistory();
     setHistory([]);
   }
 
@@ -68,14 +48,28 @@ export default function HistoryPage() {
 
         {/* Header */}
 
-        <div className="mb-6">
-          <h1 className="text-3xl font-black tracking-tight text-slate-950">
-            Calculation History
-          </h1>
+        <div className="mb-6 flex items-start justify-between gap-4">
 
-          <p className="mt-1 text-sm text-slate-500">
-            View your recent CornerSpan calculations.
-          </p>
+          <div>
+            <h1 className="text-3xl font-black tracking-tight text-slate-950">
+              Calculation History
+            </h1>
+
+            <p className="mt-1 text-sm text-slate-500">
+              Your recent CornerSpan calculations.
+            </p>
+          </div>
+
+          {history.length > 0 && (
+            <button
+              type="button"
+              onClick={handleClearAll}
+              className="shrink-0 rounded-xl bg-red-50 px-4 py-2.5 text-sm font-bold text-red-600 transition hover:bg-red-100"
+            >
+              Clear All
+            </button>
+          )}
+
         </div>
 
         {/* Empty State */}
@@ -87,12 +81,13 @@ export default function HistoryPage() {
               🕘
             </div>
 
-            <h2 className="mt-4 text-lg font-bold text-slate-900">
+            <h2 className="mt-4 text-xl font-bold text-slate-900">
               No calculation history
             </h2>
 
-            <p className="mt-1 text-sm text-slate-500">
-              Your recent calculations will appear here.
+            <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-slate-500">
+              Your calculations will automatically appear here
+              after you use CornerSpan calculators.
             </p>
 
             <Link
@@ -105,69 +100,76 @@ export default function HistoryPage() {
           </div>
         )}
 
-        {/* History */}
+        {/* History List */}
 
         {history.length > 0 && (
           <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
 
-            <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4">
+            <div className="border-b border-slate-100 px-5 py-4">
 
-              <div>
-                <h2 className="font-bold text-slate-900">
-                  Recent Calculations
-                </h2>
+              <h2 className="font-bold text-slate-900">
+                Recent Calculations
+              </h2>
 
-                <p className="text-xs text-slate-500">
-                  {history.length} recent calculation
-                  {history.length !== 1 ? "s" : ""}
-                </p>
-              </div>
-
-              <button
-                type="button"
-                onClick={clearHistory}
-                className="rounded-xl bg-red-50 px-3 py-2 text-sm font-semibold text-red-600 transition hover:bg-red-100"
-              >
-                Clear All
-              </button>
+              <p className="mt-1 text-xs text-slate-500">
+                {history.length} saved calculation
+                {history.length === 1 ? "" : "s"}
+              </p>
 
             </div>
 
             <div className="divide-y divide-slate-100">
 
-              {history.map((item, index) => (
+              {history.map((item) => (
                 <div
-                  key={`${item.date}-${index}`}
-                  className="px-5 py-4 transition hover:bg-slate-50"
+                  key={item.id}
+                  className="flex items-center gap-4 px-5 py-4 transition hover:bg-slate-50"
                 >
 
-                  <div className="flex items-start justify-between gap-4">
+                  {/* Icon */}
 
-                    <div className="min-w-0">
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-xl">
+                    🧮
+                  </div>
 
-                      <p className="font-bold text-slate-900">
-                        {item.calculator}
-                      </p>
+                  {/* Details */}
 
-                      <p className="mt-1 text-sm text-slate-500">
-                        {item.length} ×{" "}
-                        {item.width} ×{" "}
-                        {item.depth}
-                      </p>
+                  <div className="min-w-0 flex-1">
 
-                    </div>
+                    <h3 className="font-bold text-slate-900">
+                      {item.calculator}
+                    </h3>
 
-                    <div className="shrink-0 text-right">
+                    <p className="mt-1 text-sm text-slate-500">
+                      {item.summary}
+                    </p>
 
-                      <p className="font-bold text-blue-600">
-                        {item.volume.toFixed(2)} m³
-                      </p>
+                    <p className="mt-1 text-xs text-slate-400">
+                      {new Date(
+                        item.timestamp
+                      ).toLocaleString()}
+                    </p>
 
-                      <p className="mt-1 text-xs text-slate-400">
-                        {item.date}
-                      </p>
+                  </div>
 
-                    </div>
+                  {/* Result */}
+
+                  <div className="flex shrink-0 items-center gap-3">
+
+                    <span className="font-bold text-blue-600">
+                      {item.result}
+                    </span>
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        handleDelete(item.id)
+                      }
+                      aria-label={`Delete ${item.calculator} history`}
+                      className="flex h-9 w-9 items-center justify-center rounded-lg text-lg text-slate-400 transition hover:bg-red-50 hover:text-red-600"
+                    >
+                      ×
+                    </button>
 
                   </div>
 
