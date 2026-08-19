@@ -2,198 +2,211 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Construction Guides | Concrete, Brick & Steel Calculations",
+  title: "Construction Calculation Guides",
   description:
-    "Learn how to calculate concrete volume, brick quantity and steel weight with simple construction calculation guides and practical examples.",
+    "Simple construction calculation guides for concrete volume, brick quantity and steel weight. Learn the formulas with practical examples before using a calculator.",
   keywords: [
-    "construction guides",
+    "construction calculation guide",
     "concrete volume guide",
     "brick calculation guide",
     "steel weight guide",
-    "construction calculation",
+    "construction calculator guide",
   ],
-  alternates: {
-    canonical: "/guides",
-  },
-  robots: {
-    index: true,
-    follow: true,
-  },
-  openGraph: {
-    title: "Construction Guides | CornerSpan",
-    description:
-      "Simple guides for concrete, brick and steel construction calculations.",
-    type: "website",
-  },
 };
 
 const guides = [
   {
-    title: "Concrete Volume Calculator Guide",
+    category: "CONCRETE",
+    title: "Concrete Volume Guide",
     description:
       "Learn how to calculate concrete volume using length, width and depth.",
     href: "/guides/concrete-volume",
-    category: "Concrete",
   },
   {
+    category: "BRICK",
     title: "Brick Calculation Guide",
     description:
       "Learn how to estimate the number of bricks required for a wall.",
     href: "/guides/brick-calculation",
-    category: "Brick",
   },
   {
+    category: "STEEL",
     title: "Steel Weight Guide",
     description:
       "Learn how to calculate steel weight using bar diameter and length.",
     href: "/guides/steel-weight",
-    category: "Steel",
   },
 ];
 
-const structuredData = {
-  "@context": "https://schema.org",
-  "@type": "CollectionPage",
-  name: "Construction Guides",
-  description:
-    "Construction calculation guides covering concrete, brick and steel estimation.",
-  url: "/guides",
-  isPartOf: {
-    "@type": "WebSite",
-    name: "CornerSpan",
-  },
-};
-
 export default function GuidesPage() {
   return (
-    <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(structuredData),
-        }}
-      />
+    <main className="min-h-screen bg-slate-50">
 
-      <main className="min-h-screen bg-slate-50">
+      {/* Hero */}
 
-        {/* Intro */}
+      <section className="border-b border-slate-200 bg-white">
+        <div className="mx-auto max-w-5xl px-5 py-12 sm:px-6 sm:py-16">
 
-        <section className="border-b border-slate-200 bg-white">
+          <p className="mb-4 text-sm font-semibold text-blue-600">
+            Construction Guides
+          </p>
 
-          <div className="mx-auto max-w-5xl px-5 py-10 sm:px-6 sm:py-12">
+          <h1 className="max-w-3xl text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">
+            Construction Calculation Guides
+          </h1>
 
-            <p className="text-sm font-semibold text-blue-700">
-              Construction Guides
+          <p className="mt-5 max-w-2xl text-base leading-7 text-slate-600 sm:text-lg">
+            Simple guides to help you understand common construction
+            calculations before using a calculator.
+          </p>
+
+        </div>
+      </section>
+
+      {/* Guides */}
+
+      <section className="px-5 py-10 sm:px-6 sm:py-14">
+        <div className="mx-auto max-w-5xl">
+
+          <div className="mb-7">
+            <h2 className="text-2xl font-black text-slate-950 sm:text-3xl">
+              Popular Guides
+            </h2>
+
+            <p className="mt-2 text-sm text-slate-600 sm:text-base">
+              Learn the calculation method step by step.
             </p>
-
-            <h1 className="mt-2 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">
-              Construction Calculation Guides
-            </h1>
-
-            <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-600 sm:text-base">
-              Simple guides to help you understand common construction
-              calculations before using a calculator.
-            </p>
-
           </div>
 
-        </section>
+          <div className="divide-y divide-slate-200 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
 
-        {/* Guides */}
+            {guides.map((guide) => (
+              <Link
+                key={guide.href}
+                href={guide.href}
+                className="group block px-5 py-6 transition hover:bg-slate-50 sm:px-7"
+              >
+                <div className="flex items-start justify-between gap-5">
 
-        <section className="px-5 py-8 sm:px-6 sm:py-10">
+                  <div className="min-w-0">
 
-          <div className="mx-auto max-w-5xl">
-
-            <div className="divide-y divide-slate-200 overflow-hidden rounded-2xl border border-slate-200 bg-white">
-
-              {guides.map((guide) => (
-                <Link
-                  key={guide.href}
-                  href={guide.href}
-                  className="group block px-5 py-5 transition hover:bg-slate-50 sm:px-6"
-                >
-
-                  <article>
-
-                    <p className="text-xs font-bold uppercase tracking-wide text-blue-700">
+                    <p className="text-xs font-bold tracking-wide text-blue-600">
                       {guide.category}
                     </p>
 
-                    <div className="mt-1 flex items-center justify-between gap-4">
+                    <h3 className="mt-2 text-xl font-bold text-slate-950 group-hover:text-blue-600 sm:text-2xl">
+                      {guide.title}
+                    </h3>
 
-                      <h2 className="text-lg font-bold text-slate-950 group-hover:text-blue-700 sm:text-xl">
-                        {guide.title}
-                      </h2>
-
-                      <span className="shrink-0 text-sm font-semibold text-blue-700">
-                        Read →
-                      </span>
-
-                    </div>
-
-                    <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
+                    <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600 sm:text-base">
                       {guide.description}
                     </p>
 
-                  </article>
+                  </div>
 
-                </Link>
-              ))}
+                  <span className="shrink-0 pt-5 text-sm font-semibold text-blue-600">
+                    Read →
+                  </span>
 
+                </div>
+              </Link>
+            ))}
+
+          </div>
+
+        </div>
+      </section>
+
+      {/* Why Guides */}
+
+      <section className="border-y border-slate-200 bg-white px-5 py-10 sm:px-6 sm:py-14">
+        <div className="mx-auto max-w-5xl">
+
+          <h2 className="text-2xl font-black text-slate-950 sm:text-3xl">
+            Why use a construction guide?
+          </h2>
+
+          <p className="mt-4 max-w-3xl text-sm leading-7 text-slate-600 sm:text-base">
+            Understanding the formula helps you check your measurements,
+            avoid common mistakes and use construction calculators with
+            confidence.
+          </p>
+
+          <div className="mt-7 grid gap-4 sm:grid-cols-3">
+
+            <div className="rounded-xl border border-slate-200 bg-slate-50 p-5">
+              <h3 className="font-bold text-slate-950">
+                Understand the formula
+              </h3>
+              <p className="mt-2 text-sm leading-6 text-slate-600">
+                See what measurements are required and how they are used.
+              </p>
+            </div>
+
+            <div className="rounded-xl border border-slate-200 bg-slate-50 p-5">
+              <h3 className="font-bold text-slate-950">
+                Follow an example
+              </h3>
+              <p className="mt-2 text-sm leading-6 text-slate-600">
+                Learn the calculation with a simple practical example.
+              </p>
+            </div>
+
+            <div className="rounded-xl border border-slate-200 bg-slate-50 p-5">
+              <h3 className="font-bold text-slate-950">
+                Use the calculator
+              </h3>
+              <p className="mt-2 text-sm leading-6 text-slate-600">
+                Apply what you learned using the relevant CornerSpan tool.
+              </p>
             </div>
 
           </div>
 
-        </section>
+        </div>
+      </section>
 
-        {/* Short SEO content */}
+      {/* Calculator Links */}
 
-        <section className="border-t border-slate-200 bg-white px-5 py-8 sm:px-6 sm:py-10">
+      <section className="px-5 py-10 sm:px-6 sm:py-14">
+        <div className="mx-auto max-w-5xl">
 
-          <div className="mx-auto max-w-5xl">
+          <h2 className="text-2xl font-black text-slate-950 sm:text-3xl">
+            Construction Calculators
+          </h2>
 
-            <h2 className="text-xl font-bold text-slate-950">
-              Construction Calculation Guides
-            </h2>
+          <p className="mt-2 text-sm text-slate-600 sm:text-base">
+            Ready to calculate? Open a calculator directly.
+          </p>
 
-            <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
-              Construction quantity calculations are easier when you understand
-              the measurements and formulas involved. These guides explain
-              common methods for estimating concrete, bricks and reinforcement
-              steel in a clear and practical way.
-            </p>
+          <div className="mt-6 flex flex-wrap gap-x-6 gap-y-3">
 
-            <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm font-semibold">
+            <Link
+              href="/calculators/concrete"
+              className="font-semibold text-blue-600 hover:underline"
+            >
+              Concrete Calculator →
+            </Link>
 
-              <Link
-                href="/calculators/concrete"
-                className="text-blue-700 hover:underline"
-              >
-                Concrete Calculator →
-              </Link>
+            <Link
+              href="/calculators/brick"
+              className="font-semibold text-blue-600 hover:underline"
+            >
+              Brick Calculator →
+            </Link>
 
-              <Link
-                href="/calculators/brick"
-                className="text-blue-700 hover:underline"
-              >
-                Brick Calculator →
-              </Link>
-
-              <Link
-                href="/calculators/steel"
-                className="text-blue-700 hover:underline"
-              >
-                Steel Calculator →
-              </Link>
-
-            </div>
+            <Link
+              href="/calculators/steel"
+              className="font-semibold text-blue-600 hover:underline"
+            >
+              Steel Calculator →
+            </Link>
 
           </div>
 
-        </section>
+        </div>
+      </section>
 
-      </main>
-    </>
+    </main>
   );
 }
