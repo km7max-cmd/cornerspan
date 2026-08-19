@@ -79,9 +79,9 @@ export default function RootLayout({
             Home page already has its own correct spacing,
             so we don't apply padding here globally.
           */}
-          <main>
-            {children}
-          </main>
+          <main className="pt-[76px]">
+  {children}
+</main>
 
           <Footer />
 
