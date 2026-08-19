@@ -14,6 +14,7 @@ import AboutCalculator from "./components/AboutCalculator";
 import { calculateConcrete, Unit } from "./utils/calculateConcrete";
 import { jsPDF } from "jspdf";
 import Toast from "../../components/Toast";
+import { addGlobalHistory } from "../../components/GlobalHistory";
 
 type CurrencyCode =
   | "USD"
@@ -949,24 +950,36 @@ export default function ConcreteCalculator() {
     // History
     // ==================================================
 
-    const newHistory: HistoryItem[] = [
-      {
-        length: l,
-        width: w,
-        depth: d,
-        volume: Number(
-          output.volume.toFixed(3)
-        ),
-      },
-      ...history,
-    ].slice(0, 5);
+    const calculatedVolume = Number(
+  output.volume.toFixed(3)
+);
 
-    setHistory(newHistory);
+const newHistory: HistoryItem[] = [
+  {
+    length: l,
+    width: w,
+    depth: d,
+    volume: calculatedVolume,
+  },
+  ...history,
+].slice(0, 5);
 
-    localStorage.setItem(
-      "concrete-history",
-      JSON.stringify(newHistory)
-    );
+setHistory(newHistory);
+
+localStorage.setItem(
+  "concrete-history",
+  JSON.stringify(newHistory)
+);
+
+// ==================================================
+// Global CornerSpan History
+// ==================================================
+
+addGlobalHistory(
+  "Concrete Calculator",
+  `${l} × ${w} × ${d}`,
+  `${calculatedVolume.toFixed(2)} m³`
+);
 
     // ==================================================
     // Notification
