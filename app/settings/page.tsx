@@ -1,5 +1,8 @@
 "use client";
 
+"use client";
+
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useTheme } from "../components/ThemeProvider";
 
@@ -402,33 +405,28 @@ export default function SettingsPage() {
 
           {/* History */}
 
-          <button
-            type="button"
-            onClick={clearHistory}
-            className="flex w-full items-center gap-4 border-b border-slate-100 px-5 py-4 text-left transition hover:bg-slate-50"
-          >
+<Link
+  href="/history"
+  className="flex w-full items-center gap-4 border-b border-slate-100 px-5 py-4 text-left transition hover:bg-slate-50"
+>
+  <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50 text-xl">
+    🕘
+  </span>
 
-            <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50 text-xl">
-              🕘
-            </span>
+  <span className="flex-1">
+    <span className="block font-bold text-slate-900">
+      History
+    </span>
 
-            <span className="flex-1">
+    <span className="block text-xs text-slate-500">
+      View calculation history
+    </span>
+  </span>
 
-              <span className="block font-bold text-slate-900">
-                History
-              </span>
-
-              <span className="block text-xs text-slate-500">
-                Manage calculation history
-              </span>
-
-            </span>
-
-            <span className="text-xl text-slate-400">
-              ›
-            </span>
-
-          </button>
+  <span className="text-xl text-slate-400">
+    ›
+  </span>
+</Link>
 
           {/* Notifications */}
 
