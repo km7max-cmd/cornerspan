@@ -7,7 +7,7 @@ import {
   deleteGlobalHistory,
   getGlobalHistory,
   type GlobalHistoryItem,
-} from "../../components/GlobalHistory";
+} from "../components/GlobalHistory";
 
 export default function HistoryPage() {
   const [history, setHistory] = useState<GlobalHistoryItem[]>([]);
