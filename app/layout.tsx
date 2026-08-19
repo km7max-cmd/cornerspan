@@ -71,6 +71,14 @@ export default function RootLayout({
 
           <Header />
 
+          {/* 
+            Header is fixed and 76px tall.
+            Inner pages need top spacing so their
+            hero/content does not go underneath it.
+
+            Home page already has its own correct spacing,
+            so we don't apply padding here globally.
+          */}
           <main>
             {children}
           </main>
