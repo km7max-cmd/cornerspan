@@ -18,6 +18,51 @@ const DEFAULT_SETTINGS: Settings = {
   notifications: true,
 };
 
+/* =========================================================
+   Notification Helpers
+   ========================================================= */
+
+function notificationsSupported(): boolean {
+  return (
+    typeof window !== "undefined" &&
+    "Notification" in window
+  );
+}
+
+function getNotificationPermission(): NotificationPermission | "unsupported" {
+  if (!notificationsSupported()) {
+    return "unsupported";
+  }
+
+  return Notification.permission;
+}
+
+function sendTestNotification(): boolean {
+  if (!notificationsSupported()) {
+    return false;
+  }
+
+  if (Notification.permission !== "granted") {
+    return false;
+  }
+
+  new Notification(
+    "CornerSpan Notifications",
+    {
+      body:
+        "Notifications are working. You can receive important CornerSpan updates here.",
+      icon: "/logo-dark.png",
+      badge: "/logo-dark.png",
+    }
+  );
+
+  return true;
+}
+
+/* =========================================================
+   Settings Page
+   ========================================================= */
+
 export default function SettingsPage() {
   const { theme, setTheme } = useTheme();
 
@@ -26,6 +71,18 @@ export default function SettingsPage() {
 
   const [openSection, setOpenSection] =
     useState<string | null>(null);
+
+  const [notificationPermission, setNotificationPermission] =
+    useState<
+      NotificationPermission | "unsupported"
+    >("unsupported");
+
+  const [notificationMessage, setNotificationMessage] =
+    useState("");
+
+  /* =======================================================
+     Load Settings
+     ======================================================= */
 
   useEffect(() => {
     try {
@@ -52,7 +109,15 @@ export default function SettingsPage() {
         theme,
       });
     }
+
+    setNotificationPermission(
+      getNotificationPermission()
+    );
   }, [theme]);
+
+  /* =======================================================
+     Save Settings
+     ======================================================= */
 
   function saveSettings(
     updated: Settings
@@ -65,6 +130,10 @@ export default function SettingsPage() {
     );
   }
 
+  /* =======================================================
+     Theme
+     ======================================================= */
+
   function handleThemeChange(
     newTheme: Theme
   ) {
@@ -75,6 +144,182 @@ export default function SettingsPage() {
       theme: newTheme,
     });
   }
+
+  /* =======================================================
+     Notifications
+     ======================================================= */
+
+  async function handleNotificationToggle() {
+    if (!notificationsSupported()) {
+      setNotificationMessage(
+        "Browser notifications are not supported on this device."
+      );
+
+      return;
+    }
+
+    /* -----------------------------------------------
+       TURN OFF
+       ----------------------------------------------- */
+
+    if (settings.notifications) {
+      saveSettings({
+        ...settings,
+        notifications: false,
+      });
+
+      setNotificationMessage(
+        "CornerSpan notifications are turned off."
+      );
+
+      return;
+    }
+
+    /* -----------------------------------------------
+       Already Granted
+       ----------------------------------------------- */
+
+    if (
+      Notification.permission ===
+      "granted"
+    ) {
+      saveSettings({
+        ...settings,
+        notifications: true,
+      });
+
+      setNotificationPermission(
+        "granted"
+      );
+
+      setNotificationMessage(
+        "CornerSpan notifications are enabled."
+      );
+
+      sendTestNotification();
+
+      return;
+    }
+
+    /* -----------------------------------------------
+       Request Permission
+       ----------------------------------------------- */
+
+    if (
+      Notification.permission ===
+      "default"
+    ) {
+      try {
+        const permission =
+          await Notification.requestPermission();
+
+        setNotificationPermission(
+          permission
+        );
+
+        if (
+          permission === "granted"
+        ) {
+          saveSettings({
+            ...settings,
+            notifications: true,
+          });
+
+          setNotificationMessage(
+            "Notifications enabled successfully."
+          );
+
+          sendTestNotification();
+
+          return;
+        }
+
+        saveSettings({
+          ...settings,
+          notifications: false,
+        });
+
+        setNotificationMessage(
+          "Notification permission was not granted."
+        );
+
+        return;
+      } catch {
+        saveSettings({
+          ...settings,
+          notifications: false,
+        });
+
+        setNotificationMessage(
+          "Unable to request notification permission."
+        );
+
+        return;
+      }
+    }
+
+    /* -----------------------------------------------
+       Permission Denied
+       ----------------------------------------------- */
+
+    if (
+      Notification.permission ===
+      "denied"
+    ) {
+      saveSettings({
+        ...settings,
+        notifications: false,
+      });
+
+      setNotificationPermission(
+        "denied"
+      );
+
+      setNotificationMessage(
+        "Notifications are blocked in your browser. Allow them from your browser/site settings."
+      );
+
+      return;
+    }
+  }
+
+  /* =======================================================
+     Test Notification
+     ======================================================= */
+
+  function handleTestNotification() {
+    if (!notificationsSupported()) {
+      setNotificationMessage(
+        "Browser notifications are not supported on this device."
+      );
+
+      return;
+    }
+
+    if (
+      Notification.permission !==
+      "granted"
+    ) {
+      setNotificationMessage(
+        "Please enable notifications first."
+      );
+
+      return;
+    }
+
+    const sent =
+      sendTestNotification();
+
+    if (sent) {
+      setNotificationMessage(
+        "Test notification sent successfully."
+      );
+    }
+  }
+
+  /* =======================================================
+     Clear Favorites
+     ======================================================= */
 
   function clearFavorites() {
     if (
@@ -89,29 +334,46 @@ export default function SettingsPage() {
       "cornerspan-favorites"
     );
 
-    alert("Favorites cleared.");
+    alert(
+      "Favorites cleared successfully."
+    );
   }
+
+  /* =======================================================
+     Clear History
+     ======================================================= */
 
   function clearHistory() {
     if (
       !window.confirm(
-        "Clear all calculation history?"
+        "Clear all calculator history?"
       )
     ) {
       return;
     }
 
+    /*
+     * Global history
+     */
     localStorage.removeItem(
       "cornerspan-history"
     );
 
-    // Remove old Concrete history too.
+    /*
+     * Old Concrete Calculator history
+     */
     localStorage.removeItem(
       "concrete-history"
     );
 
-    alert("Calculation history cleared.");
+    alert(
+      "Calculation history cleared successfully."
+    );
   }
+
+  /* =======================================================
+     Reset Settings
+     ======================================================= */
 
   function resetSettings() {
     if (
@@ -122,30 +384,44 @@ export default function SettingsPage() {
       return;
     }
 
-    setTheme("system");
-
     const defaultSettings: Settings = {
       ...DEFAULT_SETTINGS,
       theme: "system",
     };
 
-    setSettings(defaultSettings);
+    setTheme("system");
+
+    setSettings(
+      defaultSettings
+    );
 
     localStorage.setItem(
       SETTINGS_KEY,
-      JSON.stringify(defaultSettings)
+      JSON.stringify(
+        defaultSettings
+      )
     );
 
-    alert("Settings reset successfully.");
+    setNotificationPermission(
+      getNotificationPermission()
+    );
+
+    alert(
+      "Settings reset successfully."
+    );
   }
 
+  /* =======================================================
+     Clear All Data
+     ======================================================= */
+
   function clearAllData() {
-    const confirmed =
+    const firstConfirm =
       window.confirm(
         "Clear ALL CornerSpan data stored on this device?\n\nThis will remove favorites, history and settings."
       );
 
-    if (!confirmed) {
+    if (!firstConfirm) {
       return;
     }
 
@@ -186,10 +462,45 @@ export default function SettingsPage() {
     );
   }
 
+  /* =======================================================
+     Notification Status Text
+     ======================================================= */
+
+  function getNotificationStatus() {
+    if (
+      notificationPermission ===
+      "unsupported"
+    ) {
+      return "Not supported on this browser";
+    }
+
+    if (
+      notificationPermission ===
+      "granted"
+    ) {
+      return "Browser permission allowed";
+    }
+
+    if (
+      notificationPermission ===
+      "denied"
+    ) {
+      return "Blocked in browser settings";
+    }
+
+    return "Permission not requested";
+  }
+
+  /* =======================================================
+     UI
+     ======================================================= */
+
   return (
     <main className="min-h-screen bg-slate-50">
 
+      {/* ================================================= */}
       {/* Page Header */}
+      {/* ================================================= */}
 
       <section className="border-b border-slate-200 bg-white">
 
@@ -207,7 +518,9 @@ export default function SettingsPage() {
 
       </section>
 
+      {/* ================================================= */}
       {/* Settings List */}
+      {/* ================================================= */}
 
       <section className="px-5 py-6">
 
@@ -221,40 +534,50 @@ export default function SettingsPage() {
             type="button"
             onClick={() =>
               setOpenSection(
-                openSection === "appearance"
+                openSection ===
+                  "appearance"
                   ? null
                   : "appearance"
               )
             }
             className="flex w-full items-center gap-4 border-b border-slate-100 px-5 py-4 text-left transition hover:bg-slate-50"
           >
+
             <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-xl">
               🎨
             </span>
 
             <span className="min-w-0 flex-1">
+
               <span className="block font-bold text-slate-900">
                 Appearance
               </span>
 
               <span className="block text-xs text-slate-500">
                 Theme:{" "}
-                {settings.theme === "system"
+                {settings.theme ===
+                "system"
                   ? "System"
-                  : settings.theme === "light"
+                  : settings.theme ===
+                    "light"
                   ? "Light"
                   : "Dark"}
               </span>
+
             </span>
 
             <span className="text-xl text-slate-400">
-              {openSection === "appearance"
+              {openSection ===
+              "appearance"
                 ? "⌃"
                 : "›"}
             </span>
+
           </button>
 
-          {openSection === "appearance" && (
+          {openSection ===
+            "appearance" && (
+
             <div className="border-b border-slate-100 bg-slate-50 px-5 py-4">
 
               <label className="text-sm font-bold text-slate-700">
@@ -262,14 +585,18 @@ export default function SettingsPage() {
               </label>
 
               <select
-                value={settings.theme}
+                value={
+                  settings.theme
+                }
                 onChange={(e) =>
                   handleThemeChange(
-                    e.target.value as Theme
+                    e.target
+                      .value as Theme
                   )
                 }
                 className="mt-2 h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none focus:border-blue-500"
               >
+
                 <option value="system">
                   System Default
                 </option>
@@ -281,9 +608,11 @@ export default function SettingsPage() {
                 <option value="dark">
                   Dark
                 </option>
+
               </select>
 
             </div>
+
           )}
 
           {/* ================================================= */}
@@ -294,11 +623,13 @@ export default function SettingsPage() {
             href="/favorites"
             className="flex w-full items-center gap-4 border-b border-slate-100 px-5 py-4 text-left transition hover:bg-slate-50"
           >
+
             <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-xl">
               ⭐
             </span>
 
             <span className="flex-1">
+
               <span className="block font-bold text-slate-900">
                 Favorites
               </span>
@@ -306,11 +637,13 @@ export default function SettingsPage() {
               <span className="block text-xs text-slate-500">
                 Manage saved calculators
               </span>
+
             </span>
 
             <span className="text-xl text-slate-400">
               ›
             </span>
+
           </Link>
 
           {/* ================================================= */}
@@ -321,11 +654,13 @@ export default function SettingsPage() {
             href="/history"
             className="flex w-full items-center gap-4 border-b border-slate-100 px-5 py-4 text-left transition hover:bg-slate-50"
           >
+
             <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-xl">
               🕘
             </span>
 
             <span className="flex-1">
+
               <span className="block font-bold text-slate-900">
                 History
               </span>
@@ -333,31 +668,48 @@ export default function SettingsPage() {
               <span className="block text-xs text-slate-500">
                 View calculation history
               </span>
+
             </span>
 
             <span className="text-xl text-slate-400">
               ›
             </span>
+
           </Link>
 
           {/* ================================================= */}
           {/* Notifications */}
           {/* ================================================= */}
 
-          <div className="flex items-center gap-4 border-b border-slate-100 px-5 py-4">
+          <button
+            type="button"
+            onClick={() =>
+              setOpenSection(
+                openSection ===
+                  "notifications"
+                  ? null
+                  : "notifications"
+              )
+            }
+            className="flex w-full items-center gap-4 border-b border-slate-100 px-5 py-4 text-left transition hover:bg-slate-50"
+          >
 
             <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-xl">
               🔔
             </span>
 
-            <span className="flex-1">
+            <span className="min-w-0 flex-1">
+
               <span className="block font-bold text-slate-900">
                 Notifications
               </span>
 
               <span className="block text-xs text-slate-500">
-                Allow CornerSpan updates and announcements
+                {settings.notifications
+                  ? "Notifications enabled"
+                  : "Notifications disabled"}
               </span>
+
             </span>
 
             <button
@@ -366,19 +718,17 @@ export default function SettingsPage() {
               aria-checked={
                 settings.notifications
               }
-              onClick={() =>
-                saveSettings({
-                  ...settings,
-                  notifications:
-                    !settings.notifications,
-                })
-              }
+              onClick={(e) => {
+                e.stopPropagation();
+                handleNotificationToggle();
+              }}
               className={`relative h-6 w-11 shrink-0 rounded-full transition ${
                 settings.notifications
                   ? "bg-blue-600"
                   : "bg-slate-300"
               }`}
             >
+
               <span
                 className={`absolute top-1 h-4 w-4 rounded-full bg-white shadow-sm transition ${
                   settings.notifications
@@ -386,9 +736,104 @@ export default function SettingsPage() {
                     : "left-1"
                 }`}
               />
+
             </button>
 
-          </div>
+            <span className="text-xl text-slate-400">
+              {openSection ===
+              "notifications"
+                ? "⌃"
+                : "›"}
+            </span>
+
+          </button>
+
+          {/* ================================================= */}
+          {/* Notification Details */}
+          {/* ================================================= */}
+
+          {openSection ===
+            "notifications" && (
+
+            <div className="border-b border-slate-100 bg-slate-50 px-5 py-5">
+
+              <div className="rounded-xl border border-blue-100 bg-blue-50 p-4">
+
+                <h3 className="font-bold text-slate-900">
+                  CornerSpan Notifications
+                </h3>
+
+                <p className="mt-1 text-sm leading-6 text-slate-600">
+                  Get important updates,
+                  new calculator announcements
+                  and major CornerSpan improvements.
+                </p>
+
+              </div>
+
+              {/* Status */}
+
+              <div className="mt-4 rounded-xl border border-slate-200 bg-white p-4">
+
+                <div className="flex items-center justify-between gap-4">
+
+                  <span className="text-sm font-semibold text-slate-700">
+                    Browser Permission
+                  </span>
+
+                  <span
+                    className={`text-xs font-bold ${
+                      notificationPermission ===
+                      "granted"
+                        ? "text-green-600"
+                        : notificationPermission ===
+                          "denied"
+                        ? "text-red-600"
+                        : "text-slate-500"
+                    }`}
+                  >
+                    {getNotificationStatus()}
+                  </span>
+
+                </div>
+
+              </div>
+
+              {/* Message */}
+
+              {notificationMessage && (
+
+                <div className="mt-3 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-600">
+                  {notificationMessage}
+                </div>
+
+              )}
+
+              {/* Test */}
+
+              <button
+                type="button"
+                onClick={
+                  handleTestNotification
+                }
+                disabled={
+                  !settings.notifications ||
+                  notificationPermission !==
+                    "granted"
+                }
+                className="mt-4 w-full rounded-xl bg-blue-600 px-4 py-3 text-sm font-bold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-slate-300"
+              >
+                Send Test Notification
+              </button>
+
+              <p className="mt-3 text-center text-xs leading-5 text-slate-500">
+                You can turn notifications
+                off at any time.
+              </p>
+
+            </div>
+
+          )}
 
           {/* ================================================= */}
           {/* Privacy & Data */}
@@ -398,18 +843,21 @@ export default function SettingsPage() {
             type="button"
             onClick={() =>
               setOpenSection(
-                openSection === "privacy"
+                openSection ===
+                  "privacy"
                   ? null
                   : "privacy"
               )
             }
             className="flex w-full items-center gap-4 border-b border-slate-100 px-5 py-4 text-left transition hover:bg-slate-50"
           >
+
             <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-red-50 text-xl">
               🔒
             </span>
 
             <span className="flex-1">
+
               <span className="block font-bold text-slate-900">
                 Privacy & Data
               </span>
@@ -417,59 +865,79 @@ export default function SettingsPage() {
               <span className="block text-xs text-slate-500">
                 Manage data stored on this device
               </span>
+
             </span>
 
             <span className="text-xl text-slate-400">
-              {openSection === "privacy"
+              {openSection ===
+              "privacy"
                 ? "⌃"
                 : "›"}
             </span>
+
           </button>
 
-          {openSection === "privacy" && (
+          {/* ================================================= */}
+          {/* Privacy Details */}
+          {/* ================================================= */}
+
+          {openSection ===
+            "privacy" && (
+
             <div className="border-b border-slate-100 bg-slate-50 px-5 py-5">
 
               <div className="rounded-xl border border-blue-100 bg-blue-50 p-4">
 
                 <h3 className="font-bold text-slate-900">
-                  Your local data
+                  Your Local Data
                 </h3>
 
                 <p className="mt-1 text-sm leading-6 text-slate-600">
-                  CornerSpan stores your favorites,
-                  calculation history and preferences
-                  locally in this browser on your device.
+                  CornerSpan stores your
+                  favorites, calculation history
+                  and preferences locally in this
+                  browser on your device.
                 </p>
 
               </div>
 
-              <div className="mt-4 space-y-2">
+              {/* Clear Favorites */}
 
-                <button
-                  type="button"
-                  onClick={clearFavorites}
-                  className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-left text-sm font-semibold text-slate-700 transition hover:bg-slate-100"
-                >
-                  ⭐ Clear Favorites
-                </button>
+              <button
+                type="button"
+                onClick={
+                  clearFavorites
+                }
+                className="mt-4 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-left text-sm font-semibold text-slate-700 transition hover:bg-slate-100"
+              >
+                ⭐ Clear Favorites
+              </button>
 
-                <button
-                  type="button"
-                  onClick={clearHistory}
-                  className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-left text-sm font-semibold text-slate-700 transition hover:bg-slate-100"
-                >
-                  🕘 Clear History
-                </button>
+              {/* Clear History */}
 
-                <button
-                  type="button"
-                  onClick={resetSettings}
-                  className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-left text-sm font-semibold text-slate-700 transition hover:bg-slate-100"
-                >
-                  ⚙️ Reset Settings
-                </button>
+              <button
+                type="button"
+                onClick={
+                  clearHistory
+                }
+                className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-left text-sm font-semibold text-slate-700 transition hover:bg-slate-100"
+              >
+                🕘 Clear History
+              </button>
 
-              </div>
+              {/* Reset Settings */}
+
+              <button
+                type="button"
+                onClick={
+                  resetSettings
+                }
+                className="mt-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-left text-sm font-semibold text-slate-700 transition hover:bg-slate-100"
+              >
+                ⚙️ Reset Settings
+              </button>
+
+              {/* Clear All */}
 
               <div className="mt-5 rounded-xl border border-red-200 bg-red-50 p-4">
 
@@ -478,13 +946,16 @@ export default function SettingsPage() {
                 </h3>
 
                 <p className="mt-1 text-sm leading-6 text-red-600">
-                  This removes CornerSpan favorites,
-                  history and settings from this device.
+                  Permanently remove CornerSpan
+                  favorites, history and settings
+                  from this device.
                 </p>
 
                 <button
                   type="button"
-                  onClick={clearAllData}
+                  onClick={
+                    clearAllData
+                  }
                   className="mt-4 w-full rounded-xl bg-red-600 px-4 py-3 text-sm font-bold text-white transition hover:bg-red-700"
                 >
                   Clear All Data
@@ -493,6 +964,7 @@ export default function SettingsPage() {
               </div>
 
             </div>
+
           )}
 
           {/* ================================================= */}
@@ -506,6 +978,7 @@ export default function SettingsPage() {
             </span>
 
             <span className="flex-1">
+
               <span className="block font-bold text-slate-900">
                 About CornerSpan
               </span>
@@ -513,6 +986,7 @@ export default function SettingsPage() {
               <span className="block text-xs text-slate-500">
                 Construction Calculators • Version 1.0
               </span>
+
             </span>
 
           </div>
