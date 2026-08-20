@@ -2,26 +2,10 @@ import type { Metadata } from "next";
 import ConcreteCalculator from "./ConcreteCalculator";
 
 export const metadata: Metadata = {
-  title:
-    "Concrete Calculator – Concrete Volume, Cement, Sand & Aggregate",
+  title: "Concrete Calculator | Volume, Cement, Sand & Aggregate",
 
   description:
-    "Free concrete calculator to calculate concrete volume, dry volume, cement bags, sand, aggregate, water and material cost. Supports multiple units, mix ratios and material prices.",
-
-  keywords: [
-    "concrete calculator",
-    "concrete volume calculator",
-    "cement calculator",
-    "cement bags calculator",
-    "sand calculator",
-    "aggregate calculator",
-    "concrete material calculator",
-    "concrete quantity calculator",
-    "construction calculator",
-    "concrete cost calculator",
-    "cement sand aggregate calculator",
-    "concrete mix calculator",
-  ],
+    "Free online concrete calculator to calculate concrete volume, cement bags, sand, aggregate, water and material cost. Supports multiple units and concrete mix ratios.",
 
   robots: {
     index: true,
@@ -37,10 +21,10 @@ export const metadata: Metadata = {
 
   openGraph: {
     title:
-      "Concrete Calculator – Concrete Volume & Material Calculator",
+      "Concrete Calculator | Volume, Cement, Sand & Aggregate",
 
     description:
-      "Calculate concrete volume, cement bags, sand, aggregate, water and material cost with this free concrete calculator.",
+      "Calculate concrete volume, cement bags, sand, aggregate, water and material cost with this free online concrete calculator.",
 
     type: "website",
   },
@@ -49,10 +33,10 @@ export const metadata: Metadata = {
     card: "summary_large_image",
 
     title:
-      "Concrete Calculator – Concrete Volume & Material Calculator",
+      "Concrete Calculator | Volume, Cement, Sand & Aggregate",
 
     description:
-      "Free concrete calculator for volume, cement, sand, aggregate, water and material cost.",
+      "Free online concrete calculator for concrete volume, cement bags, sand, aggregate, water and material cost.",
   },
 };
 
@@ -64,17 +48,19 @@ export default function Page() {
 
     name: "Concrete Calculator",
 
-    applicationCategory:
-      "UtilitiesApplication",
+    url: "https://cornerspan.vercel.app/calculators/concrete",
 
-    operatingSystem:
-      "Web",
+    applicationCategory: "UtilitiesApplication",
+
+    operatingSystem: "All",
 
     description:
-      "Free online concrete calculator for calculating concrete volume, dry volume, cement bags, sand, aggregate, water and material cost.",
+      "Free online concrete calculator for calculating concrete volume, cement bags, sand, aggregate, water and material cost.",
 
     browserRequirements:
-      "Requires JavaScript. Requires a modern web browser.",
+      "Requires a modern web browser with JavaScript enabled.",
+
+    isAccessibleForFree: true,
 
     offers: {
       "@type": "Offer",
@@ -83,14 +69,13 @@ export default function Page() {
     },
 
     featureList: [
-      "Concrete volume calculation",
-      "Dry volume calculation",
-      "Cement bag calculation",
+      "Concrete volume calculator",
+      "Cement bags calculation",
       "Sand quantity calculation",
       "Aggregate quantity calculation",
-      "Water requirement estimation",
-      "Material cost calculation",
-      "Multiple dimension units",
+      "Water requirement calculation",
+      "Concrete material cost calculation",
+      "Multiple measurement units",
       "Concrete mix ratio calculation",
       "Material price calculation",
     ],
@@ -106,37 +91,41 @@ export default function Page() {
         "@type": "ListItem",
         position: 1,
         name: "Home",
+        item: "https://cornerspan.vercel.app/",
       },
+
       {
         "@type": "ListItem",
         position: 2,
         name: "Calculators",
+        item: "https://cornerspan.vercel.app/calculators",
       },
+
       {
         "@type": "ListItem",
         position: 3,
         name: "Concrete Calculator",
+        item:
+          "https://cornerspan.vercel.app/calculators/concrete",
       },
     ],
   };
 
   return (
     <>
+      {/* WebApplication Schema */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(
-            structuredData
-          ),
+          __html: JSON.stringify(structuredData),
         }}
       />
 
+      {/* Breadcrumb Schema */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(
-            breadcrumbData
-          ),
+          __html: JSON.stringify(breadcrumbData),
         }}
       />
 
