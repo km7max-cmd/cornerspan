@@ -25,22 +25,17 @@ export default function Hero() {
         <div className="mx-auto mt-4 max-w-3xl text-center sm:mt-5">
 
           <h1 className="text-3xl font-black leading-[1.08] tracking-tight text-slate-950 sm:text-4xl md:text-5xl">
-
-            Smart{" "}
-
+            Free{" "}
             <span className="bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent">
               Construction
             </span>
-
             <br />
-
             Calculators
-
           </h1>
 
           <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-slate-600 sm:text-base">
-            Fast, accurate construction calculators for concrete,
-            brick, steel, paint, roofing and more.
+            Free online calculators for concrete, brick, steel, paint, tile,
+            roofing and other common construction estimates.
           </p>
 
         </div>
@@ -56,10 +51,10 @@ export default function Hero() {
           </Link>
 
           <Link
-            href="/#categories"
+            href="/#calculators"
             className="flex h-11 items-center justify-center rounded-xl border border-slate-200 bg-white px-3 text-xs font-bold text-slate-700 shadow-sm transition hover:border-blue-200 hover:text-blue-600 sm:h-12 sm:text-sm"
           >
-            Categories
+            Browse Calculators
           </Link>
 
         </div>
