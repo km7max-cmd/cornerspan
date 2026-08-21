@@ -1,9 +1,9 @@
 "use client";
 
 import type { Currency } from "../types";
+
 import {
   CURRENCY_OPTIONS,
-  getCurrencySymbol,
 } from "../data/brickOptions";
 
 type CostDetailsProps = {
@@ -42,11 +42,19 @@ export default function CostDetails({
   const inputClass =
     "h-12 min-w-0 flex-1 bg-transparent px-3 text-base text-slate-900 outline-none";
 
+  const selectClass =
+    "h-12 w-full rounded-xl border border-slate-200 bg-white px-3 text-base text-slate-900 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100";
+
   const labelClass =
     "mb-1.5 block text-sm font-semibold text-slate-700";
 
+  const currencyOption =
+    CURRENCY_OPTIONS.find(
+      (item) => item.value === currency
+    );
+
   const currencySymbol =
-    getCurrencySymbol(currency);
+    currencyOption?.symbol ?? "$";
 
   return (
     <section className="border-b border-slate-100">
@@ -68,7 +76,7 @@ export default function CostDetails({
           </h2>
 
           <p className="mt-1 text-sm leading-6 text-slate-500">
-            Enter material prices to estimate total cost.
+            Enter material prices to estimate the total cost.
           </p>
 
         </div>
@@ -109,22 +117,7 @@ export default function CostDetails({
                   event.target.value as Currency
                 )
               }
-              className="
-                h-12
-                w-full
-                rounded-xl
-                border
-                border-slate-200
-                bg-white
-                px-3
-                text-base
-                text-slate-900
-                outline-none
-                transition
-                focus:border-blue-500
-                focus:ring-4
-                focus:ring-blue-100
-              "
+              className={selectClass}
             >
               {CURRENCY_OPTIONS.map(
                 (option) => (
@@ -216,6 +209,11 @@ export default function CostDetails({
 
             </div>
 
+            <p className="mt-1.5 text-xs leading-5 text-slate-500">
+              Price is calculated using the cement bag size
+              selected in the Mortar & Cement section.
+            </p>
+
           </div>
 
           {/* =================================================
@@ -255,6 +253,10 @@ export default function CostDetails({
 
             </div>
 
+            <p className="mt-1.5 text-xs leading-5 text-slate-500">
+              Enter the local sand price per cubic meter.
+            </p>
+
           </div>
 
           {/* =================================================
@@ -264,9 +266,9 @@ export default function CostDetails({
           <div className="mt-5 rounded-xl bg-slate-50 px-4 py-3">
 
             <p className="text-xs leading-5 text-slate-600">
-              Cost estimates depend on the prices you enter.
-              Actual material prices vary by location,
-              supplier and market conditions.
+              Cost estimates use the selected currency and
+              entered material prices. They are intended for
+              planning purposes only.
             </p>
 
           </div>
