@@ -17,6 +17,14 @@ function safeNumber(
   value: string | number,
   fallback = 0
 ): number {
+  if (
+    value === "" ||
+    value === null ||
+    value === undefined
+  ) {
+    return fallback;
+  }
+
   const number =
     typeof value === "number"
       ? value
