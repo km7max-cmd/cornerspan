@@ -25,39 +25,30 @@ export default function BrickCalculator() {
   const [waste, setWaste] = useState("10");
   const [quantity, setQuantity] = useState("1");
 
+  // Door openings
+  const [doorQuantity, setDoorQuantity] = useState("0");
+  const [doorWidth, setDoorWidth] = useState("3");
+  const [doorHeight, setDoorHeight] = useState("7");
+
+  // Window openings
+  const [windowQuantity, setWindowQuantity] = useState("0");
+  const [windowWidth, setWindowWidth] = useState("4");
+  const [windowHeight, setWindowHeight] = useState("4");
+
   const [price, setPrice] = useState("0.85");
   const [currency, setCurrency] = useState("USD");
 
   const currencySymbol =
     CURRENCY_SYMBOLS[currency] || "$";
 
-  /*
-   * -------------------------------------------------------
-   * BRICK CALCULATION
-   *
-   * Wall dimensions = feet
-   * Brick dimensions = inches
-   *
-   * Mortar joint is added to brick length and height.
-   *
-   * Example:
-   * Brick = 8 × 2.25 in
-   * Mortar = 0.375 in
-   *
-   * Effective size:
-   * 8.375 × 2.625 in
-   *
-   * -------------------------------------------------------
-   */
-
   const result = useMemo(() => {
-    const length = Number(wallLength) || 0;
-    const height = Number(wallHeight) || 0;
+    const length = Math.max(0, Number(wallLength) || 0);
+    const height = Math.max(0, Number(wallHeight) || 0);
 
-    const bLength = Number(brickLength) || 0;
-    const bHeight = Number(brickHeight) || 0;
+    const bLength = Math.max(0, Number(brickLength) || 0);
+    const bHeight = Math.max(0, Number(brickHeight) || 0);
 
-    const joint = Number(mortarJoint) || 0;
+    const joint = Math.max(0, Number(mortarJoint) || 0);
 
     const wastePercent =
       Math.max(0, Number(waste) || 0);
@@ -68,46 +59,93 @@ export default function BrickCalculator() {
     const brickPrice =
       Math.max(0, Number(price) || 0);
 
-    /*
-     * Wall area
-     */
-    const wallArea =
+    // --------------------------------------------------
+    // GROSS WALL AREA
+    // --------------------------------------------------
+
+    const grossWallArea =
       length * height * qty;
 
-    /*
-     * Effective brick dimensions including
-     * mortar joint.
-     */
+    // --------------------------------------------------
+    // DOOR OPENING AREA
+    // Same door dimensions applied to each wall.
+    // --------------------------------------------------
+
+    const doors =
+      Math.max(0, Number(doorQuantity) || 0);
+
+    const dWidth =
+      Math.max(0, Number(doorWidth) || 0);
+
+    const dHeight =
+      Math.max(0, Number(doorHeight) || 0);
+
+    const doorArea =
+      doors * dWidth * dHeight * qty;
+
+    // --------------------------------------------------
+    // WINDOW OPENING AREA
+    // --------------------------------------------------
+
+    const windows =
+      Math.max(0, Number(windowQuantity) || 0);
+
+    const wWidth =
+      Math.max(0, Number(windowWidth) || 0);
+
+    const wHeight =
+      Math.max(0, Number(windowHeight) || 0);
+
+    const windowArea =
+      windows * wWidth * wHeight * qty;
+
+    // --------------------------------------------------
+    // TOTAL OPENINGS
+    // --------------------------------------------------
+
+    const openingArea =
+      doorArea + windowArea;
+
+    // --------------------------------------------------
+    // NET WALL AREA
+    // --------------------------------------------------
+
+    const netWallArea =
+      Math.max(
+        0,
+        grossWallArea - openingArea
+      );
+
+    // --------------------------------------------------
+    // EFFECTIVE BRICK SIZE
+    // --------------------------------------------------
+
     const effectiveLength =
       bLength + joint;
 
     const effectiveHeight =
       bHeight + joint;
 
-    /*
-     * Brick face area in square inches.
-     */
     const effectiveBrickArea =
       effectiveLength *
       effectiveHeight;
 
-    /*
-     * Convert to square feet.
-     */
     const effectiveBrickAreaSqFt =
       effectiveBrickArea / 144;
 
-    /*
-     * Base number of bricks.
-     */
+    // --------------------------------------------------
+    // BASE BRICKS
+    // --------------------------------------------------
+
     const baseBricks =
       effectiveBrickAreaSqFt > 0
-        ? wallArea / effectiveBrickAreaSqFt
+        ? netWallArea / effectiveBrickAreaSqFt
         : 0;
 
-    /*
-     * Add waste.
-     */
+    // --------------------------------------------------
+    // WASTE
+    // --------------------------------------------------
+
     const wasteBricks =
       baseBricks *
       (wastePercent / 100);
@@ -118,26 +156,34 @@ export default function BrickCalculator() {
     const bricks =
       Math.ceil(totalBeforeRound);
 
-    /*
-     * Estimated cost.
-     */
+    // --------------------------------------------------
+    // COST
+    // --------------------------------------------------
+
     const cost =
       bricks * brickPrice;
 
-    /*
-     * Bricks per square foot.
-     */
+    // --------------------------------------------------
+    // BRICKS PER SQ FT
+    // --------------------------------------------------
+
     const bricksPerSqFt =
       effectiveBrickAreaSqFt > 0
         ? 1 / effectiveBrickAreaSqFt
         : 0;
 
     return {
-      wallArea,
+      grossWallArea,
+      doorArea,
+      windowArea,
+      openingArea,
+      netWallArea,
+
       baseBricks,
       wasteBricks,
       bricks,
       cost,
+
       effectiveLength,
       effectiveHeight,
       bricksPerSqFt,
@@ -150,6 +196,15 @@ export default function BrickCalculator() {
     mortarJoint,
     waste,
     quantity,
+
+    doorQuantity,
+    doorWidth,
+    doorHeight,
+
+    windowQuantity,
+    windowWidth,
+    windowHeight,
+
     price,
   ]);
 
@@ -169,7 +224,7 @@ export default function BrickCalculator() {
         <CalculatorHero
           title="Brick"
           highlight="Calculator"
-          description="Calculate the number of bricks required for a wall, including mortar joints, waste and estimated cost."
+          description="Calculate the number of bricks required for a wall, including mortar joints, openings, waste and estimated cost."
         />
 
         <div className="mx-auto mt-6 max-w-xl">
@@ -192,8 +247,6 @@ export default function BrickCalculator() {
 
             </div>
 
-            {/* Diagram */}
-
             <div className="bg-gradient-to-b from-slate-50 to-blue-50 px-4 py-6">
 
               <div className="relative mx-auto flex h-56 max-w-md items-center justify-center">
@@ -202,10 +255,8 @@ export default function BrickCalculator() {
                   viewBox="0 0 500 260"
                   className="h-full w-full"
                   role="img"
-                  aria-label="Brick dimension diagram showing brick length, height and mortar joint"
+                  aria-label="Brick dimension diagram"
                 >
-
-                  {/* Ground shadow */}
 
                   <ellipse
                     cx="250"
@@ -214,8 +265,6 @@ export default function BrickCalculator() {
                     ry="18"
                     fill="#dbeafe"
                   />
-
-                  {/* Main brick */}
 
                   <rect
                     x="115"
@@ -227,8 +276,6 @@ export default function BrickCalculator() {
                     stroke="#9f3f25"
                     strokeWidth="3"
                   />
-
-                  {/* Brick lines */}
 
                   <line
                     x1="205"
@@ -248,8 +295,6 @@ export default function BrickCalculator() {
                     strokeWidth="3"
                   />
 
-                  {/* Top highlight */}
-
                   <line
                     x1="125"
                     y1="95"
@@ -258,8 +303,6 @@ export default function BrickCalculator() {
                     stroke="#ef9a78"
                     strokeWidth="3"
                   />
-
-                  {/* Length arrow */}
 
                   <line
                     x1="115"
@@ -291,8 +334,6 @@ export default function BrickCalculator() {
                     Length
                   </text>
 
-                  {/* Height arrow */}
-
                   <line
                     x1="420"
                     y1="85"
@@ -321,8 +362,6 @@ export default function BrickCalculator() {
                   >
                     Height
                   </text>
-
-                  {/* Mortar joint indicator */}
 
                   <line
                     x1="115"
@@ -459,13 +498,13 @@ export default function BrickCalculator() {
 
               {/* Quantity */}
 
-              <div className="mb-6">
+              <div>
 
                 <label className={labelClass}>
                   Quantity
                 </label>
 
-                <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-white focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-100">
+                <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-white">
 
                   <input
                     type="number"
@@ -481,6 +520,198 @@ export default function BrickCalculator() {
 
                   <div className="flex h-12 items-center border-l border-slate-200 px-4 text-sm text-slate-500">
                     walls
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+
+            {/* =================================================
+                OPENINGS
+            ================================================= */}
+
+            <div className="border-t border-slate-100 bg-blue-50/40 p-5 sm:p-7">
+
+              <h2 className="text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">
+                Door & Window Openings
+              </h2>
+
+              <p className="mt-1 text-sm leading-6 text-slate-500">
+                Enter openings to subtract them from the wall area.
+              </p>
+
+              {/* DOOR */}
+
+              <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-4">
+
+                <h3 className="text-lg font-bold text-slate-900">
+                  Door
+                </h3>
+
+                <div className="mt-4">
+
+                  <label className={labelClass}>
+                    Quantity
+                  </label>
+
+                  <input
+                    type="number"
+                    min="0"
+                    step="1"
+                    inputMode="numeric"
+                    value={doorQuantity}
+                    onChange={(e) =>
+                      setDoorQuantity(e.target.value)
+                    }
+                    className={inputClass}
+                  />
+
+                </div>
+
+                <div className="mt-4 grid grid-cols-2 gap-3">
+
+                  <div>
+
+                    <label className={labelClass}>
+                      Width
+                    </label>
+
+                    <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-white">
+
+                      <input
+                        type="number"
+                        min="0"
+                        step="any"
+                        value={doorWidth}
+                        onChange={(e) =>
+                          setDoorWidth(e.target.value)
+                        }
+                        className="h-12 min-w-0 flex-1 px-3 outline-none"
+                      />
+
+                      <div className="flex h-12 items-center border-l border-slate-200 px-3 text-sm text-blue-700">
+                        ft
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  <div>
+
+                    <label className={labelClass}>
+                      Height
+                    </label>
+
+                    <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-white">
+
+                      <input
+                        type="number"
+                        min="0"
+                        step="any"
+                        value={doorHeight}
+                        onChange={(e) =>
+                          setDoorHeight(e.target.value)
+                        }
+                        className="h-12 min-w-0 flex-1 px-3 outline-none"
+                      />
+
+                      <div className="flex h-12 items-center border-l border-slate-200 px-3 text-sm text-blue-700">
+                        ft
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+              {/* WINDOW */}
+
+              <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-4">
+
+                <h3 className="text-lg font-bold text-slate-900">
+                  Window
+                </h3>
+
+                <div className="mt-4">
+
+                  <label className={labelClass}>
+                    Quantity
+                  </label>
+
+                  <input
+                    type="number"
+                    min="0"
+                    step="1"
+                    inputMode="numeric"
+                    value={windowQuantity}
+                    onChange={(e) =>
+                      setWindowQuantity(e.target.value)
+                    }
+                    className={inputClass}
+                  />
+
+                </div>
+
+                <div className="mt-4 grid grid-cols-2 gap-3">
+
+                  <div>
+
+                    <label className={labelClass}>
+                      Width
+                    </label>
+
+                    <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-white">
+
+                      <input
+                        type="number"
+                        min="0"
+                        step="any"
+                        value={windowWidth}
+                        onChange={(e) =>
+                          setWindowWidth(e.target.value)
+                        }
+                        className="h-12 min-w-0 flex-1 px-3 outline-none"
+                      />
+
+                      <div className="flex h-12 items-center border-l border-slate-200 px-3 text-sm text-blue-700">
+                        ft
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  <div>
+
+                    <label className={labelClass}>
+                      Height
+                    </label>
+
+                    <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-white">
+
+                      <input
+                        type="number"
+                        min="0"
+                        step="any"
+                        value={windowHeight}
+                        onChange={(e) =>
+                          setWindowHeight(e.target.value)
+                        }
+                        className="h-12 min-w-0 flex-1 px-3 outline-none"
+                      />
+
+                      <div className="flex h-12 items-center border-l border-slate-200 px-3 text-sm text-blue-700">
+                        ft
+                      </div>
+
+                    </div>
+
                   </div>
 
                 </div>
@@ -713,7 +944,7 @@ export default function BrickCalculator() {
             </div>
 
             {/* =================================================
-                LIVE RESULT
+                RESULT
             ================================================= */}
 
             <div className="border-t border-slate-100 p-5 sm:p-7">
@@ -722,23 +953,45 @@ export default function BrickCalculator() {
                 Calculation Result
               </h2>
 
-              {/* Wall Area */}
+              {/* Net Wall Area */}
 
               <div className="mb-4 rounded-2xl bg-blue-50 p-5">
 
                 <p className="text-sm font-medium text-slate-500">
-                  Wall Area
+                  Net Wall Area
                 </p>
 
                 <p className="mt-1 text-3xl font-bold text-blue-600">
-                  {result.wallArea.toFixed(2)} sq ft
+                  {result.netWallArea.toFixed(2)} sq ft
                 </p>
 
               </div>
 
               <div className="grid grid-cols-2 gap-3">
 
-                {/* Bricks */}
+                <div className="rounded-2xl bg-slate-50 p-4">
+
+                  <p className="text-sm text-slate-500">
+                    Gross Wall Area
+                  </p>
+
+                  <p className="mt-1 text-xl font-bold text-slate-900">
+                    {result.grossWallArea.toFixed(2)} sq ft
+                  </p>
+
+                </div>
+
+                <div className="rounded-2xl bg-slate-50 p-4">
+
+                  <p className="text-sm text-slate-500">
+                    Opening Area
+                  </p>
+
+                  <p className="mt-1 text-xl font-bold text-slate-900">
+                    {result.openingArea.toFixed(2)} sq ft
+                  </p>
+
+                </div>
 
                 <div className="rounded-2xl bg-slate-50 p-4">
 
@@ -752,8 +1005,6 @@ export default function BrickCalculator() {
 
                 </div>
 
-                {/* Bricks per sqft */}
-
                 <div className="rounded-2xl bg-slate-50 p-4">
 
                   <p className="text-sm text-slate-500">
@@ -766,8 +1017,6 @@ export default function BrickCalculator() {
 
                 </div>
 
-                {/* Base bricks */}
-
                 <div className="rounded-2xl bg-slate-50 p-4">
 
                   <p className="text-sm text-slate-500">
@@ -775,12 +1024,12 @@ export default function BrickCalculator() {
                   </p>
 
                   <p className="mt-1 text-xl font-bold text-slate-900">
-                    {Math.ceil(result.baseBricks).toLocaleString()}
+                    {Math.ceil(
+                      result.baseBricks
+                    ).toLocaleString()}
                   </p>
 
                 </div>
-
-                {/* Waste */}
 
                 <div className="rounded-2xl bg-slate-50 p-4">
 
@@ -789,7 +1038,9 @@ export default function BrickCalculator() {
                   </p>
 
                   <p className="mt-1 text-xl font-bold text-slate-900">
-                    {Math.ceil(result.wasteBricks).toLocaleString()}
+                    {Math.ceil(
+                      result.wasteBricks
+                    ).toLocaleString()}
                   </p>
 
                 </div>
@@ -820,10 +1071,10 @@ export default function BrickCalculator() {
             <div className="border-t border-slate-100 px-5 py-4 sm:px-7">
 
               <p className="text-xs leading-5 text-slate-500 sm:text-sm">
-                Brick quantity is an estimate based on wall area,
-                brick face dimensions, mortar joint and the selected
-                waste percentage. Actual requirements may vary
-                depending on mortar thickness, openings, wall
+                Brick quantity is estimated from the net wall area
+                after deducting door and window openings. Mortar
+                joint, waste percentage and brick dimensions are
+                included. Actual requirements may vary by
                 construction method and site conditions.
               </p>
 
@@ -852,8 +1103,8 @@ export default function BrickCalculator() {
               </li>
 
               <li>
-                Door and window openings should be deducted from
-                the wall area for a more accurate estimate.
+                Door and window openings are automatically deducted
+                from the wall area.
               </li>
 
               <li>
