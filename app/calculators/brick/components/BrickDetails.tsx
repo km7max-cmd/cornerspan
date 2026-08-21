@@ -6,14 +6,10 @@ import type {
 } from "../types";
 
 import {
-  LENGTH_UNITS,
-} from "../units";
-
-import {
+  LENGTH_UNIT_OPTIONS,
   MORTAR_JOINT_OPTIONS,
+  COMMON_BRICK_SIZES,
 } from "../data/brickOptions";
-
-import UnitSelect from "./UnitSelect";
 
 type BrickDetailsProps = {
   open: boolean;
@@ -63,8 +59,23 @@ export default function BrickDetails({
   const inputClass =
     "h-12 min-w-0 flex-1 bg-transparent px-3 text-base text-slate-900 outline-none";
 
+  const selectClass =
+    "h-12 border-l border-slate-200 bg-white px-3 text-sm font-semibold text-blue-700 outline-none";
+
   const labelClass =
     "mb-1.5 block text-sm font-semibold text-slate-700";
+
+  const applyBrickSize = (
+    length: string,
+    height: string,
+    width: string,
+    unit: LengthUnit
+  ) => {
+    setBrickLength(length);
+    setBrickHeight(height);
+    setBrickWidth(width);
+    setBrickUnit(unit);
+  };
 
   return (
     <section className="border-b border-slate-100">
@@ -86,7 +97,7 @@ export default function BrickDetails({
           </h2>
 
           <p className="mt-1 text-sm leading-6 text-slate-500">
-            Enter brick dimensions, mortar joint and waste.
+            Set brick dimensions, mortar joint and waste.
           </p>
 
         </div>
@@ -111,25 +122,83 @@ export default function BrickDetails({
         <div className="border-t border-slate-100 bg-white p-5 sm:px-7 sm:py-6">
 
           {/* =================================================
-              COMMON UNIT
+              COMMON BRICK SIZES
           ================================================= */}
 
           <div className="mb-6">
 
             <label className={labelClass}>
-              Brick Dimension Unit
+              Common Brick Size
             </label>
 
-            <UnitSelect
-              value={brickUnit}
-              onChange={(value) =>
-                setBrickUnit(
-                  value as LengthUnit
-                )
-              }
-              options={LENGTH_UNITS}
-              ariaLabel="Brick dimension unit"
-            />
+            <div className="space-y-2">
+
+              {COMMON_BRICK_SIZES.map(
+                (brick) => {
+                  const selected =
+                    brickLength ===
+                      brick.length &&
+                    brickHeight ===
+                      brick.height &&
+                    brickWidth ===
+                      brick.width &&
+                    brickUnit ===
+                      brick.unit;
+
+                  return (
+                    <button
+                      key={brick.name}
+                      type="button"
+                      onClick={() =>
+                        applyBrickSize(
+                          brick.length,
+                          brick.height,
+                          brick.width,
+                          brick.unit
+                        )
+                      }
+                      className={`flex w-full items-center justify-between rounded-xl border px-4 py-3 text-left transition ${
+                        selected
+                          ? "border-blue-500 bg-blue-50"
+                          : "border-slate-200 bg-white hover:border-slate-300"
+                      }`}
+                    >
+
+                      <div>
+
+                        <p className="text-sm font-semibold text-slate-900">
+                          {brick.name}
+                        </p>
+
+                        <p className="mt-0.5 text-xs text-slate-500">
+                          {brick.length} ×{" "}
+                          {brick.height} ×{" "}
+                          {brick.width}{" "}
+                          {brick.unit}
+                        </p>
+
+                      </div>
+
+                      <span
+                        className={`flex h-5 w-5 items-center justify-center rounded-full border ${
+                          selected
+                            ? "border-blue-600 bg-blue-600 text-white"
+                            : "border-slate-300 bg-white"
+                        }`}
+                      >
+                        {selected && (
+                          <span className="text-xs">
+                            ✓
+                          </span>
+                        )}
+                      </span>
+
+                    </button>
+                  );
+                }
+              )}
+
+            </div>
 
           </div>
 
@@ -156,20 +225,30 @@ export default function BrickDetails({
                     event.target.value
                   )
                 }
-                placeholder="Enter brick length"
                 className={inputClass}
               />
 
-              <UnitSelect
+              <select
                 value={brickUnit}
-                onChange={(value) =>
+                onChange={(event) =>
                   setBrickUnit(
-                    value as LengthUnit
+                    event.target.value as LengthUnit
                   )
                 }
-                options={LENGTH_UNITS}
-                ariaLabel="Brick length unit"
-              />
+                className={selectClass}
+                aria-label="Brick length unit"
+              >
+                {LENGTH_UNIT_OPTIONS.map(
+                  (option) => (
+                    <option
+                      key={option.value}
+                      value={option.value}
+                    >
+                      {option.value}
+                    </option>
+                  )
+                )}
+              </select>
 
             </div>
 
@@ -198,20 +277,12 @@ export default function BrickDetails({
                     event.target.value
                   )
                 }
-                placeholder="Enter brick height"
                 className={inputClass}
               />
 
-              <UnitSelect
-                value={brickUnit}
-                onChange={(value) =>
-                  setBrickUnit(
-                    value as LengthUnit
-                  )
-                }
-                options={LENGTH_UNITS}
-                ariaLabel="Brick height unit"
-              />
+              <span className="flex h-12 items-center border-l border-slate-200 px-4 text-sm font-semibold text-blue-700">
+                {brickUnit}
+              </span>
 
             </div>
 
@@ -221,7 +292,7 @@ export default function BrickDetails({
               BRICK WIDTH
           ================================================= */}
 
-          <div className="mb-6">
+          <div className="mb-5">
 
             <label className={labelClass}>
               Brick Width
@@ -240,20 +311,12 @@ export default function BrickDetails({
                     event.target.value
                   )
                 }
-                placeholder="Enter brick width"
                 className={inputClass}
               />
 
-              <UnitSelect
-                value={brickUnit}
-                onChange={(value) =>
-                  setBrickUnit(
-                    value as LengthUnit
-                  )
-                }
-                options={LENGTH_UNITS}
-                ariaLabel="Brick width unit"
-              />
+              <span className="flex h-12 items-center border-l border-slate-200 px-4 text-sm font-semibold text-blue-700">
+                {brickUnit}
+              </span>
 
             </div>
 
@@ -263,7 +326,7 @@ export default function BrickDetails({
               MORTAR JOINT
           ================================================= */}
 
-          <div className="mb-6">
+          <div className="mb-5">
 
             <label className={labelClass}>
               Mortar Joint
@@ -305,11 +368,6 @@ export default function BrickDetails({
               )}
             </select>
 
-            <p className="mt-1.5 text-xs leading-5 text-slate-500">
-              The mortar joint is added to the brick
-              length and height when estimating brick quantity.
-            </p>
-
           </div>
 
           {/* =================================================
@@ -346,8 +404,8 @@ export default function BrickDetails({
             </div>
 
             <p className="mt-1.5 text-xs leading-5 text-slate-500">
-              Add extra bricks for cutting, breakage and
-              installation waste.
+              A 5–10% allowance is commonly used for
+              breakage, cutting and site waste.
             </p>
 
           </div>
