@@ -91,6 +91,829 @@ const CURRENCY_SYMBOLS: Record<string, string> = {
   CAD: "C$",
 };
 
+/* =========================================================
+   CONCRETE DIAGRAM
+========================================================= */
+
+type DiagramProps = {
+  form: string;
+};
+
+function ConcreteDiagram({
+  form,
+}: DiagramProps) {
+  const blue = "#2563eb";
+  const concrete = "#cbd5e1";
+  const concreteDark = "#94a3b8";
+  const line = "#64748b";
+
+  const markerId = `arrow-${form
+    .replace(/\s+/g, "-")
+    .replace(/,/g, "")
+    .toLowerCase()}`;
+
+  return (
+    <div className="mt-5 overflow-hidden rounded-2xl border border-slate-200 bg-slate-50">
+
+      {/* Diagram Header */}
+
+      <div className="flex items-center justify-between border-b border-slate-200 bg-white px-4 py-3">
+        <span className="text-sm font-semibold text-slate-600">
+          Dimension Preview
+        </span>
+
+        <span className="rounded-full bg-blue-50 px-3 py-1 text-sm font-semibold text-blue-700">
+          {form}
+        </span>
+      </div>
+
+      {/* SVG */}
+
+      <div className="flex min-h-[260px] items-center justify-center p-3 sm:min-h-[300px]">
+
+        <svg
+          viewBox="0 0 600 340"
+          className="h-auto w-full max-w-[600px]"
+          role="img"
+          aria-label={`${form} concrete dimension diagram showing length, width and depth`}
+        >
+          <defs>
+            <marker
+              id={markerId}
+              markerWidth="8"
+              markerHeight="8"
+              refX="5"
+              refY="4"
+              orient="auto-start-reverse"
+              markerUnits="strokeWidth"
+            >
+              <path
+                d="M 0 0 L 8 4 L 0 8 z"
+                fill={blue}
+              />
+            </marker>
+          </defs>
+
+          {/* =================================================
+              SLAB
+          ================================================= */}
+
+          {form === "Slab" && (
+            <>
+              {/* slab body */}
+
+              <polygon
+                points="145,180 430,130 500,165 215,220"
+                fill={concrete}
+                stroke={line}
+                strokeWidth="3"
+              />
+
+              <polygon
+                points="215,220 500,165 500,195 215,250"
+                fill={concreteDark}
+                stroke={line}
+                strokeWidth="3"
+              />
+
+              <polygon
+                points="145,180 215,220 215,250 145,210"
+                fill="#b6c2d1"
+                stroke={line}
+                strokeWidth="3"
+              />
+
+              {/* reinforcement lines */}
+
+              <line
+                x1="190"
+                y1="183"
+                x2="450"
+                y2="140"
+                stroke="#7c8ea3"
+                strokeWidth="3"
+              />
+
+              <line
+                x1="205"
+                y1="198"
+                x2="465"
+                y2="155"
+                stroke="#7c8ea3"
+                strokeWidth="3"
+              />
+
+              {/* length */}
+
+              <line
+                x1="145"
+                y1="105"
+                x2="500"
+                y2="105"
+                stroke={blue}
+                strokeWidth="4"
+                markerStart={`url(#${markerId})`}
+                markerEnd={`url(#${markerId})`}
+              />
+
+              <text
+                x="322"
+                y="88"
+                textAnchor="middle"
+                fill={blue}
+                fontSize="18"
+                fontWeight="700"
+              >
+                Length
+              </text>
+
+              {/* width */}
+
+              <line
+                x1="125"
+                y1="180"
+                x2="195"
+                y2="220"
+                stroke={blue}
+                strokeWidth="4"
+                markerStart={`url(#${markerId})`}
+                markerEnd={`url(#${markerId})`}
+              />
+
+              <text
+                x="105"
+                y="218"
+                fill={blue}
+                fontSize="18"
+                fontWeight="700"
+              >
+                Width
+              </text>
+
+              {/* depth */}
+
+              <line
+                x1="525"
+                y1="165"
+                x2="525"
+                y2="195"
+                stroke={blue}
+                strokeWidth="4"
+                markerStart={`url(#${markerId})`}
+                markerEnd={`url(#${markerId})`}
+              />
+
+              <text
+                x="535"
+                y="187"
+                fill={blue}
+                fontSize="17"
+                fontWeight="700"
+              >
+                Depth
+              </text>
+            </>
+          )}
+
+          {/* =================================================
+              WALL
+          ================================================= */}
+
+          {form === "Wall" && (
+            <>
+              {/* wall */}
+
+              <rect
+                x="170"
+                y="80"
+                width="300"
+                height="165"
+                rx="3"
+                fill={concrete}
+                stroke={line}
+                strokeWidth="3"
+              />
+
+              {/* block lines */}
+
+              {[125, 165, 205].map((y) => (
+                <line
+                  key={y}
+                  x1="170"
+                  y1={y}
+                  x2="470"
+                  y2={y}
+                  stroke="#94a3b8"
+                  strokeWidth="2"
+                />
+              ))}
+
+              {/* vertical joints */}
+
+              {[220, 270, 320, 370, 420].map((x) => (
+                <line
+                  key={x}
+                  x1={x}
+                  y1="80"
+                  x2={x}
+                  y2="125"
+                  stroke="#94a3b8"
+                  strokeWidth="2"
+                />
+              ))}
+
+              {[195, 245, 295, 345, 395, 445].map((x) => (
+                <line
+                  key={x}
+                  x1={x}
+                  y1="125"
+                  x2={x}
+                  y2="165"
+                  stroke="#94a3b8"
+                  strokeWidth="2"
+                />
+              ))}
+
+              {/* length */}
+
+              <line
+                x1="170"
+                y1="55"
+                x2="470"
+                y2="55"
+                stroke={blue}
+                strokeWidth="4"
+                markerStart={`url(#${markerId})`}
+                markerEnd={`url(#${markerId})`}
+              />
+
+              <text
+                x="320"
+                y="38"
+                textAnchor="middle"
+                fill={blue}
+                fontSize="18"
+                fontWeight="700"
+              >
+                Length
+              </text>
+
+              {/* height */}
+
+              <line
+                x1="135"
+                y1="80"
+                x2="135"
+                y2="245"
+                stroke={blue}
+                strokeWidth="4"
+                markerStart={`url(#${markerId})`}
+                markerEnd={`url(#${markerId})`}
+              />
+
+              <text
+                x="105"
+                y="170"
+                textAnchor="middle"
+                transform="rotate(-90 105 170)"
+                fill={blue}
+                fontSize="18"
+                fontWeight="700"
+              >
+                Height
+              </text>
+
+              {/* thickness */}
+
+              <line
+                x1="470"
+                y1="265"
+                x2="500"
+                y2="265"
+                stroke={blue}
+                strokeWidth="4"
+                markerStart={`url(#${markerId})`}
+                markerEnd={`url(#${markerId})`}
+              />
+
+              <text
+                x="485"
+                y="292"
+                textAnchor="middle"
+                fill={blue}
+                fontSize="17"
+                fontWeight="700"
+              >
+                Thickness
+              </text>
+            </>
+          )}
+
+          {/* =================================================
+              FOOTER
+          ================================================= */}
+
+          {form === "Footer" && (
+            <>
+              {/* footing base */}
+
+              <rect
+                x="130"
+                y="190"
+                width="340"
+                height="65"
+                rx="5"
+                fill={concreteDark}
+                stroke={line}
+                strokeWidth="3"
+              />
+
+              {/* column / pedestal */}
+
+              <rect
+                x="230"
+                y="115"
+                width="140"
+                height="75"
+                rx="4"
+                fill={concrete}
+                stroke={line}
+                strokeWidth="3"
+              />
+
+              {/* ground */}
+
+              <line
+                x1="90"
+                y1="255"
+                x2="510"
+                y2="255"
+                stroke="#94a3b8"
+                strokeWidth="3"
+              />
+
+              {/* length */}
+
+              <line
+                x1="130"
+                y1="285"
+                x2="470"
+                y2="285"
+                stroke={blue}
+                strokeWidth="4"
+                markerStart={`url(#${markerId})`}
+                markerEnd={`url(#${markerId})`}
+              />
+
+              <text
+                x="300"
+                y="315"
+                textAnchor="middle"
+                fill={blue}
+                fontSize="18"
+                fontWeight="700"
+              >
+                Length
+              </text>
+
+              {/* width */}
+
+              <line
+                x1="110"
+                y1="190"
+                x2="110"
+                y2="255"
+                stroke={blue}
+                strokeWidth="4"
+                markerStart={`url(#${markerId})`}
+                markerEnd={`url(#${markerId})`}
+              />
+
+              <text
+                x="78"
+                y="225"
+                textAnchor="middle"
+                transform="rotate(-90 78 225)"
+                fill={blue}
+                fontSize="18"
+                fontWeight="700"
+              >
+                Depth
+              </text>
+
+              {/* pedestal width */}
+
+              <line
+                x1="230"
+                y1="95"
+                x2="370"
+                y2="95"
+                stroke={blue}
+                strokeWidth="4"
+                markerStart={`url(#${markerId})`}
+                markerEnd={`url(#${markerId})`}
+              />
+
+              <text
+                x="300"
+                y="78"
+                textAnchor="middle"
+                fill={blue}
+                fontSize="17"
+                fontWeight="700"
+              >
+                Width
+              </text>
+            </>
+          )}
+
+          {/* =================================================
+              COLUMN
+          ================================================= */}
+
+          {form === "Column" && (
+            <>
+              {/* column */}
+
+              <rect
+                x="235"
+                y="65"
+                width="130"
+                height="195"
+                rx="4"
+                fill={concrete}
+                stroke={line}
+                strokeWidth="3"
+              />
+
+              {/* vertical reinforcement */}
+
+              {[260, 295, 330].map((x) => (
+                <line
+                  key={x}
+                  x1={x}
+                  y1="80"
+                  x2={x}
+                  y2="245"
+                  stroke="#94a3b8"
+                  strokeWidth="3"
+                />
+              ))}
+
+              {/* height */}
+
+              <line
+                x1="200"
+                y1="65"
+                x2="200"
+                y2="260"
+                stroke={blue}
+                strokeWidth="4"
+                markerStart={`url(#${markerId})`}
+                markerEnd={`url(#${markerId})`}
+              />
+
+              <text
+                x="165"
+                y="165"
+                textAnchor="middle"
+                transform="rotate(-90 165 165)"
+                fill={blue}
+                fontSize="18"
+                fontWeight="700"
+              >
+                Height
+              </text>
+
+              {/* width */}
+
+              <line
+                x1="235"
+                y1="290"
+                x2="365"
+                y2="290"
+                stroke={blue}
+                strokeWidth="4"
+                markerStart={`url(#${markerId})`}
+                markerEnd={`url(#${markerId})`}
+              />
+
+              <text
+                x="300"
+                y="320"
+                textAnchor="middle"
+                fill={blue}
+                fontSize="18"
+                fontWeight="700"
+              >
+                Width
+              </text>
+
+              {/* depth */}
+
+              <line
+                x1="380"
+                y1="65"
+                x2="420"
+                y2="65"
+                stroke={blue}
+                strokeWidth="4"
+                markerStart={`url(#${markerId})`}
+                markerEnd={`url(#${markerId})`}
+              />
+
+              <text
+                x="400"
+                y="42"
+                textAnchor="middle"
+                fill={blue}
+                fontSize="17"
+                fontWeight="700"
+              >
+                Depth
+              </text>
+            </>
+          )}
+
+          {/* =================================================
+              CURBS / GUTTER / BARRIER
+          ================================================= */}
+
+          {form === "Curbs, Gutter Barrier" && (
+            <>
+              {/* road */}
+
+              <rect
+                x="90"
+                y="235"
+                width="420"
+                height="30"
+                fill="#d1d5db"
+                stroke={line}
+                strokeWidth="2"
+              />
+
+              {/* curb */}
+
+              <path
+                d="M150 235 L150 155 L220 155 L220 175 L410 175 L410 235 Z"
+                fill={concrete}
+                stroke={line}
+                strokeWidth="3"
+              />
+
+              {/* gutter */}
+
+              <path
+                d="M220 235 L220 205 L410 205 L410 235"
+                fill="#b8c4d2"
+                stroke={line}
+                strokeWidth="3"
+              />
+
+              {/* length */}
+
+              <line
+                x1="150"
+                y1="120"
+                x2="410"
+                y2="120"
+                stroke={blue}
+                strokeWidth="4"
+                markerStart={`url(#${markerId})`}
+                markerEnd={`url(#${markerId})`}
+              />
+
+              <text
+                x="280"
+                y="100"
+                textAnchor="middle"
+                fill={blue}
+                fontSize="18"
+                fontWeight="700"
+              >
+                Length
+              </text>
+
+              {/* height */}
+
+              <line
+                x1="120"
+                y1="155"
+                x2="120"
+                y2="235"
+                stroke={blue}
+                strokeWidth="4"
+                markerStart={`url(#${markerId})`}
+                markerEnd={`url(#${markerId})`}
+              />
+
+              <text
+                x="88"
+                y="200"
+                textAnchor="middle"
+                transform="rotate(-90 88 200)"
+                fill={blue}
+                fontSize="18"
+                fontWeight="700"
+              >
+                Height
+              </text>
+
+              {/* width */}
+
+              <line
+                x1="420"
+                y1="280"
+                x2="480"
+                y2="280"
+                stroke={blue}
+                strokeWidth="4"
+                markerStart={`url(#${markerId})`}
+                markerEnd={`url(#${markerId})`}
+              />
+
+              <text
+                x="450"
+                y="310"
+                textAnchor="middle"
+                fill={blue}
+                fontSize="17"
+                fontWeight="700"
+              >
+                Width
+              </text>
+            </>
+          )}
+
+          {/* =================================================
+              STAIRS
+          ================================================= */}
+
+          {form === "Stairs" && (
+            <>
+              {/* steps */}
+
+              <path
+                d="
+                  M130 250
+                  L130 215
+                  L190 215
+                  L190 180
+                  L250 180
+                  L250 145
+                  L310 145
+                  L310 110
+                  L370 110
+                  L370 75
+                  L430 75
+                  L430 250
+                  Z
+                "
+                fill={concrete}
+                stroke={line}
+                strokeWidth="3"
+              />
+
+              {/* step highlight lines */}
+
+              <line
+                x1="130"
+                y1="215"
+                x2="190"
+                y2="215"
+                stroke="#94a3b8"
+                strokeWidth="3"
+              />
+
+              <line
+                x1="190"
+                y1="180"
+                x2="250"
+                y2="180"
+                stroke="#94a3b8"
+                strokeWidth="3"
+              />
+
+              <line
+                x1="250"
+                y1="145"
+                x2="310"
+                y2="145"
+                stroke="#94a3b8"
+                strokeWidth="3"
+              />
+
+              <line
+                x1="310"
+                y1="110"
+                x2="370"
+                y2="110"
+                stroke="#94a3b8"
+                strokeWidth="3"
+              />
+
+              <line
+                x1="370"
+                y1="75"
+                x2="430"
+                y2="75"
+                stroke="#94a3b8"
+                strokeWidth="3"
+              />
+
+              {/* total length */}
+
+              <line
+                x1="130"
+                y1="285"
+                x2="430"
+                y2="285"
+                stroke={blue}
+                strokeWidth="4"
+                markerStart={`url(#${markerId})`}
+                markerEnd={`url(#${markerId})`}
+              />
+
+              <text
+                x="280"
+                y="320"
+                textAnchor="middle"
+                fill={blue}
+                fontSize="18"
+                fontWeight="700"
+              >
+                Length
+              </text>
+
+              {/* width */}
+
+              <line
+                x1="455"
+                y1="75"
+                x2="500"
+                y2="75"
+                stroke={blue}
+                strokeWidth="4"
+                markerStart={`url(#${markerId})`}
+                markerEnd={`url(#${markerId})`}
+              />
+
+              <text
+                x="478"
+                y="50"
+                textAnchor="middle"
+                fill={blue}
+                fontSize="17"
+                fontWeight="700"
+              >
+                Width
+              </text>
+
+              {/* height */}
+
+              <line
+                x1="105"
+                y1="75"
+                x2="105"
+                y2="250"
+                stroke={blue}
+                strokeWidth="4"
+                markerStart={`url(#${markerId})`}
+                markerEnd={`url(#${markerId})`}
+              />
+
+              <text
+                x="70"
+                y="165"
+                textAnchor="middle"
+                transform="rotate(-90 70 165)"
+                fill={blue}
+                fontSize="18"
+                fontWeight="700"
+              >
+                Height
+              </text>
+            </>
+          )}
+        </svg>
+      </div>
+
+      {/* Diagram Description */}
+
+      <div className="border-t border-slate-200 bg-white px-4 py-3 text-center">
+        <p className="text-sm leading-6 text-slate-500">
+          Enter Length × Width × Depth / Height
+        </p>
+      </div>
+    </div>
+  );
+}
+
+/* =========================================================
+   MAIN COMPONENT
+========================================================= */
+
 export default function CalculatorForm({
   length,
   width,
@@ -139,10 +962,18 @@ export default function CalculatorForm({
 
   onCalculate,
 }: CalculatorFormProps) {
-  /*
-   * M20 is the default because it is a common
-   * general-purpose concrete grade.
-   */
+
+  /* =======================================================
+     CONCRETE FORM
+  ======================================================= */
+
+  const [concreteForm, setConcreteForm] =
+    useState("Slab");
+
+  /* =======================================================
+     MIX
+  ======================================================= */
+
   const [mixRatioType, setMixRatioType] =
     useState("M20");
 
@@ -161,9 +992,10 @@ export default function CalculatorForm({
   const currencySymbol =
     CURRENCY_SYMBOLS[currency] || "$";
 
-  /*
-   * Small, clean controls.
-   */
+  /* =======================================================
+     STYLES
+  ======================================================= */
+
   const inputClass =
     "h-12 w-full rounded-xl border border-slate-200 bg-white px-3 text-base text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100";
 
@@ -176,11 +1008,14 @@ export default function CalculatorForm({
   const priceInputClass =
     "h-12 min-w-0 flex-1 bg-transparent px-3 text-base text-slate-900 outline-none";
 
-  /*
-   * Get selected mix ratio.
-   */
+  /* =======================================================
+     MIX RATIO
+  ======================================================= */
+
   const getMixRatio = (): MixRatio => {
+
     switch (mixRatioType) {
+
       case "M10":
         return {
           cement: 1,
@@ -226,13 +1061,72 @@ export default function CalculatorForm({
   };
 
   const handleCalculate = () => {
-    const ratio = getMixRatio();
-
-    onCalculate(ratio);
+    onCalculate(getMixRatio());
   };
 
   return (
     <section className="w-full overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+
+      {/* =====================================================
+          CONCRETE FORM
+      ===================================================== */}
+
+      <div className="border-b border-slate-100 p-5 sm:p-7">
+
+        <div className="mb-5">
+
+          <h2 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+            Choose a concrete form
+          </h2>
+
+          <p className="mt-1 text-sm leading-6 text-slate-500 sm:text-base">
+            Choose the type of concrete work.
+          </p>
+
+        </div>
+
+        <label className={labelClass}>
+          Concrete form
+        </label>
+
+        <select
+          value={concreteForm}
+          onChange={(e) =>
+            setConcreteForm(e.target.value)
+          }
+          className={inputClass}
+          aria-label="Concrete form"
+        >
+          <option value="Slab">
+            Slab
+          </option>
+
+          <option value="Wall">
+            Wall
+          </option>
+
+          <option value="Footer">
+            Footer
+          </option>
+
+          <option value="Column">
+            Column
+          </option>
+
+          <option value="Curbs, Gutter Barrier">
+            Curbs, Gutter Barrier
+          </option>
+
+          <option value="Stairs">
+            Stairs
+          </option>
+        </select>
+
+        <ConcreteDiagram
+          form={concreteForm}
+        />
+
+      </div>
 
       {/* =====================================================
           CONCRETE DIMENSIONS
@@ -241,18 +1135,21 @@ export default function CalculatorForm({
       <div className="p-5 sm:p-7">
 
         <div className="mb-6">
+
           <h2 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
-            Concrete Volume
+            Dimensions
           </h2>
 
           <p className="mt-1 text-sm leading-6 text-slate-500 sm:text-base">
             Enter the dimensions of your concrete work.
           </p>
+
         </div>
 
         {/* Length */}
 
         <div className="mb-4">
+
           <label className={labelClass}>
             Length
           </label>
@@ -293,11 +1190,13 @@ export default function CalculatorForm({
             </select>
 
           </div>
+
         </div>
 
         {/* Width */}
 
         <div className="mb-4">
+
           <label className={labelClass}>
             Width
           </label>
@@ -338,11 +1237,13 @@ export default function CalculatorForm({
             </select>
 
           </div>
+
         </div>
 
-        {/* Thickness */}
+        {/* Thickness / Height */}
 
         <div className="mb-4">
+
           <label className={labelClass}>
             Thickness / Height
           </label>
@@ -383,16 +1284,18 @@ export default function CalculatorForm({
             </select>
 
           </div>
+
         </div>
 
         {/* Quantity */}
 
         <div>
+
           <label className={labelClass}>
             Quantity
           </label>
 
-          <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-white focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-100">
+          <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-white">
 
             <input
               type="number"
@@ -411,12 +1314,13 @@ export default function CalculatorForm({
             </div>
 
           </div>
+
         </div>
 
       </div>
 
       {/* =====================================================
-          MIX / MATERIAL ESTIMATE
+          MATERIAL ESTIMATE
       ===================================================== */}
 
       <div className="border-t border-slate-100 bg-slate-50/60 p-5 sm:p-7">
@@ -427,8 +1331,11 @@ export default function CalculatorForm({
             setShowMaterials(!showMaterials)
           }
           className="flex w-full items-center justify-between text-left"
+          aria-expanded={showMaterials}
         >
+
           <div>
+
             <h2 className="text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">
               Material Estimate
             </h2>
@@ -436,19 +1343,23 @@ export default function CalculatorForm({
             <p className="mt-1 text-sm text-slate-500">
               Cement, sand, aggregate, water and cost
             </p>
+
           </div>
 
           <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white text-lg font-semibold text-slate-600 shadow-sm">
             {showMaterials ? "−" : "+"}
           </span>
+
         </button>
 
         {showMaterials && (
+
           <div className="mt-6">
 
             {/* Concrete Grade */}
 
             <div className="mb-5">
+
               <label className={labelClass}>
                 Concrete Grade / Mix
               </label>
@@ -462,6 +1373,7 @@ export default function CalculatorForm({
                 }
                 className={inputClass}
               >
+
                 <option value="M10">
                   M10 — 1 : 3 : 6
                 </option>
@@ -481,15 +1393,19 @@ export default function CalculatorForm({
                 <option value="Custom">
                   Custom Mix
                 </option>
+
               </select>
+
             </div>
 
-            {/* Custom */}
+            {/* Custom Mix */}
 
             {mixRatioType === "Custom" && (
+
               <div className="mb-5 grid grid-cols-3 gap-2">
 
                 <div>
+
                   <label className="mb-1 block text-xs font-medium text-slate-600">
                     Cement
                   </label>
@@ -506,9 +1422,11 @@ export default function CalculatorForm({
                     }
                     className={inputClass}
                   />
+
                 </div>
 
                 <div>
+
                   <label className="mb-1 block text-xs font-medium text-slate-600">
                     Sand
                   </label>
@@ -525,9 +1443,11 @@ export default function CalculatorForm({
                     }
                     className={inputClass}
                   />
+
                 </div>
 
                 <div>
+
                   <label className="mb-1 block text-xs font-medium text-slate-600">
                     Aggregate
                   </label>
@@ -544,14 +1464,17 @@ export default function CalculatorForm({
                     }
                     className={inputClass}
                   />
+
                 </div>
 
               </div>
+
             )}
 
             {/* Currency */}
 
             <div className="mb-5">
+
               <label className={labelClass}>
                 Currency
               </label>
@@ -563,6 +1486,7 @@ export default function CalculatorForm({
                 }
                 className={inputClass}
               >
+
                 <option value="USD">
                   🇺🇸 US Dollar ($)
                 </option>
@@ -590,12 +1514,15 @@ export default function CalculatorForm({
                 <option value="CAD">
                   🇨🇦 Canadian Dollar (C$)
                 </option>
+
               </select>
+
             </div>
 
             {/* Cement */}
 
             <div className="mb-4">
+
               <label className={labelClass}>
                 Cement Price
               </label>
@@ -629,6 +1556,7 @@ export default function CalculatorForm({
                   }
                   className={unitSelectClass}
                 >
+
                   <option value="Bag">
                     / Bag
                   </option>
@@ -644,14 +1572,17 @@ export default function CalculatorForm({
                   <option value="US ton">
                     / US ton
                   </option>
+
                 </select>
 
               </div>
+
             </div>
 
             {/* Sand */}
 
             <div className="mb-4">
+
               <label className={labelClass}>
                 Sand Price
               </label>
@@ -685,6 +1616,7 @@ export default function CalculatorForm({
                   }
                   className={unitSelectClass}
                 >
+
                   <option value="m³">
                     / m³
                   </option>
@@ -700,14 +1632,17 @@ export default function CalculatorForm({
                   <option value="US ton">
                     / US ton
                   </option>
+
                 </select>
 
               </div>
+
             </div>
 
             {/* Sand Density */}
 
             <div className="mb-4">
+
               <label className={labelClass}>
                 Sand Density
               </label>
@@ -721,6 +1656,7 @@ export default function CalculatorForm({
                 }
                 className={inputClass}
               >
+
                 <option value="1600">
                   1600 kg/m³
                 </option>
@@ -740,12 +1676,15 @@ export default function CalculatorForm({
                 <option value="1800">
                   1800 kg/m³
                 </option>
+
               </select>
+
             </div>
 
             {/* Aggregate */}
 
             <div className="mb-4">
+
               <label className={labelClass}>
                 Aggregate Price
               </label>
@@ -779,6 +1718,7 @@ export default function CalculatorForm({
                   }
                   className={unitSelectClass}
                 >
+
                   <option value="m³">
                     / m³
                   </option>
@@ -794,14 +1734,17 @@ export default function CalculatorForm({
                   <option value="US ton">
                     / US ton
                   </option>
+
                 </select>
 
               </div>
+
             </div>
 
             {/* Aggregate Density */}
 
-            <div className="mb-2">
+            <div>
+
               <label className={labelClass}>
                 Aggregate Density
               </label>
@@ -815,6 +1758,7 @@ export default function CalculatorForm({
                 }
                 className={inputClass}
               >
+
                 <option value="1400">
                   1400 kg/m³
                 </option>
@@ -838,10 +1782,13 @@ export default function CalculatorForm({
                 <option value="1650">
                   1650 kg/m³
                 </option>
+
               </select>
+
             </div>
 
           </div>
+
         )}
 
       </div>
@@ -866,9 +1813,11 @@ export default function CalculatorForm({
       ===================================================== */}
 
       {error && (
+
         <div className="mx-5 mb-4 rounded-xl border border-red-100 bg-red-50 p-3 text-sm font-medium text-red-600 sm:mx-7">
           {error}
         </div>
+
       )}
 
       {/* =====================================================
