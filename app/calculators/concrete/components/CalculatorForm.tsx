@@ -52,35 +52,18 @@ type CalculatorFormProps = {
   setSandPrice: (value: string) => void;
   setAggregatePrice: (value: string) => void;
 
-  onCalculate: (
-    mixRatio: MixRatio
-  ) => void;
+  onCalculate: (mixRatio: MixRatio) => void;
 };
 
 const units: {
   value: Unit;
   label: string;
 }[] = [
-  {
-    value: "Meter",
-    label: "m",
-  },
-  {
-    value: "Feet",
-    label: "ft",
-  },
-  {
-    value: "Centimeter",
-    label: "cm",
-  },
-  {
-    value: "Millimeter",
-    label: "mm",
-  },
-  {
-    value: "Inch",
-    label: "in",
-  },
+  { value: "Meter", label: "m" },
+  { value: "Feet", label: "ft" },
+  { value: "Centimeter", label: "cm" },
+  { value: "Millimeter", label: "mm" },
+  { value: "Inch", label: "in" },
 ];
 
 const CURRENCY_SYMBOLS: Record<string, string> = {
@@ -159,6 +142,29 @@ export default function CalculatorForm({
   const currencySymbol =
     CURRENCY_SYMBOLS[currency] || "$";
 
+  // --------------------------------------------------
+  // Styles
+  // --------------------------------------------------
+
+  const inputClass =
+    "h-14 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 text-base text-slate-900 outline-none transition-all duration-200 placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-100";
+
+  const unitSelectClass =
+    "h-14 shrink-0 border-l border-slate-200 bg-transparent px-4 text-sm font-bold text-blue-700 outline-none";
+
+  const labelClass =
+    "mb-2 block text-sm font-semibold text-slate-700";
+
+  const priceInputClass =
+    "h-14 min-w-0 flex-1 bg-transparent px-3 text-base text-slate-900 outline-none";
+
+  const fieldWrapper =
+    "flex overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 transition-all duration-200 focus-within:border-blue-500 focus-within:bg-white focus-within:ring-4 focus-within:ring-blue-100";
+
+  // --------------------------------------------------
+  // Calculate
+  // --------------------------------------------------
+
   const handleCalculate = () => {
     let mixRatio: MixRatio;
 
@@ -185,71 +191,53 @@ export default function CalculatorForm({
     onCalculate(mixRatio);
   };
 
-  const sectionClass =
-    "border-b border-slate-100 p-5 sm:p-6";
+  // --------------------------------------------------
+  // 3D Form Class
+  // --------------------------------------------------
 
-  const labelClass =
-    "mb-2 block text-[13px] font-semibold text-slate-700";
+  const getFormShape = () => {
+    switch (concreteForm) {
+      case "Column":
+        return "h-36 w-24 sm:h-44 sm:w-28";
 
-  const inputClass =
-    "h-12 w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 text-[15px] text-slate-900 outline-none transition placeholder:text-slate-400 hover:border-slate-300 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10";
+      case "Wall":
+        return "h-32 w-56 sm:h-40 sm:w-72";
 
-  const unitSelectClass =
-    "h-12 shrink-0 border-l border-slate-200 bg-transparent px-3 text-sm font-semibold text-blue-700 outline-none";
+      case "Footer":
+        return "h-16 w-64 sm:h-20 sm:w-80";
 
-  const fieldWrapperClass =
-    "flex overflow-hidden rounded-xl border border-slate-200 bg-slate-50 transition hover:border-slate-300 focus-within:border-blue-500 focus-within:bg-white focus-within:ring-4 focus-within:ring-blue-500/10";
+      case "Stairs":
+        return "h-28 w-64 sm:h-36 sm:w-80";
 
-  const priceInputClass =
-    "h-12 min-w-0 flex-1 bg-transparent px-2 text-[15px] font-medium text-slate-900 outline-none placeholder:text-slate-400";
+      case "Curbs, Gutter Barrier":
+        return "h-20 w-64 sm:h-24 sm:w-80";
+
+      default:
+        return "h-24 w-64 sm:h-28 sm:w-80";
+    }
+  };
 
   return (
-    <section className="w-full overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-[0_8px_30px_rgba(15,23,42,0.06)]">
+    <section className="w-full overflow-hidden rounded-[28px] border border-slate-200/80 bg-white shadow-[0_12px_40px_rgba(15,23,42,0.08)]">
 
       {/* ================================================= */}
-      {/* Form Header */}
+      {/* CONCRETE FORM */}
       {/* ================================================= */}
 
-      <div className="border-b border-slate-100 bg-gradient-to-r from-slate-50 to-white px-5 py-4 sm:px-6">
+      <div className="border-b border-slate-100 p-5 sm:p-7">
 
-        <div className="flex items-center gap-3">
+        <div className="mb-6 flex items-start gap-3">
 
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-lg">
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-blue-50 text-xl">
             🧱
           </div>
 
           <div>
-            <h2 className="text-lg font-bold tracking-tight text-slate-900 sm:text-xl">
-              Concrete Calculator
+            <h2 className="text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">
+              Choose a concrete form
             </h2>
 
-            <p className="mt-0.5 text-xs text-slate-500">
-              Enter your project measurements and material details.
-            </p>
-          </div>
-
-        </div>
-
-      </div>
-
-      {/* ================================================= */}
-      {/* Concrete Form */}
-      {/* ================================================= */}
-
-      <div className={sectionClass}>
-
-        <div className="mb-4 flex items-center gap-3">
-
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-50 text-sm font-bold text-blue-600">
-            01
-          </div>
-
-          <div>
-            <h3 className="text-base font-bold text-slate-900 sm:text-lg">
-              Concrete Form
-            </h3>
-
-            <p className="text-xs text-slate-500">
+            <p className="mt-1 text-sm text-slate-500">
               Choose the type of concrete work.
             </p>
           </div>
@@ -267,53 +255,93 @@ export default function CalculatorForm({
           }
           className={inputClass}
         >
-          <option value="Slab">
-            Slab
-          </option>
-
-          <option value="Wall">
-            Wall
-          </option>
-
-          <option value="Footer">
-            Footer
-          </option>
-
-          <option value="Column">
-            Column
-          </option>
-
+          <option value="Slab">Slab</option>
+          <option value="Wall">Wall</option>
+          <option value="Footer">Footer</option>
+          <option value="Column">Column</option>
           <option value="Curbs, Gutter Barrier">
             Curbs, Gutter Barrier
           </option>
-
-          <option value="Stairs">
-            Stairs
-          </option>
+          <option value="Stairs">Stairs</option>
         </select>
 
-        {/* Visual Preview */}
+        {/* ================================================= */}
+        {/* REALISTIC 3D DIAGRAM */}
+        {/* ================================================= */}
 
-        <div className="mt-4 flex h-32 items-center justify-center rounded-2xl border border-slate-100 bg-gradient-to-br from-slate-50 to-blue-50/40">
+        <div className="relative mt-5 h-64 overflow-hidden rounded-[24px] border border-slate-200 bg-gradient-to-br from-slate-50 via-white to-blue-50">
 
-          <div className="text-center">
+          {/* Grid floor */}
 
-            <div
-              className={`mx-auto mb-3 rounded-lg bg-gradient-to-br from-slate-400 to-slate-500 shadow-[0_6px_15px_rgba(71,85,105,0.18)] ${
-                concreteForm === "Column"
-                  ? "h-20 w-14"
-                  : concreteForm === "Wall"
-                    ? "h-16 w-32"
-                    : concreteForm === "Stairs"
-                      ? "h-12 w-36"
-                      : "h-8 w-40"
-              }`}
-            />
+          <div
+            className="absolute inset-x-0 bottom-0 h-24 opacity-40"
+            style={{
+              backgroundImage:
+                "linear-gradient(#cbd5e1 1px, transparent 1px), linear-gradient(90deg, #cbd5e1 1px, transparent 1px)",
+              backgroundSize: "28px 28px",
+              transform:
+                "perspective(300px) rotateX(55deg) scale(1.5)",
+              transformOrigin: "bottom",
+            }}
+          />
 
-            <p className="text-xs font-semibold text-slate-500">
-              {concreteForm}
-            </p>
+          {/* Dimension labels */}
 
+          <div className="absolute left-4 top-4 rounded-xl bg-white/90 px-3 py-2 text-xs font-semibold text-slate-600 shadow-sm backdrop-blur">
+            3D Preview
+          </div>
+
+          <div className="absolute right-4 top-4 rounded-xl bg-blue-50 px-3 py-2 text-xs font-bold text-blue-700">
+            {concreteForm}
+          </div>
+
+          {/* Concrete block */}
+
+          <div className="absolute inset-0 flex items-center justify-center">
+
+            <div className="relative">
+
+              {/* top face */}
+
+              <div
+                className={`relative z-20 ${getFormShape()} rounded-xl border border-slate-400 bg-gradient-to-br from-slate-300 via-slate-400 to-slate-500 shadow-xl`}
+                style={{
+                  transform:
+                    "perspective(700px) rotateX(58deg) rotateZ(-18deg)",
+                  transformOrigin: "center",
+                }}
+              />
+
+              {/* depth side */}
+
+              <div
+                className={`absolute left-3 top-6 z-10 ${getFormShape()} rounded-xl bg-slate-500/80 shadow-lg`}
+                style={{
+                  transform:
+                    "perspective(700px) rotateX(58deg) rotateZ(-18deg) translateY(22px) translateX(12px)",
+                  transformOrigin: "center",
+                }}
+              />
+
+              {/* highlight */}
+
+              <div
+                className={`absolute left-1 top-1 z-30 ${getFormShape()} rounded-xl border border-white/30 bg-white/10`}
+                style={{
+                  transform:
+                    "perspective(700px) rotateX(58deg) rotateZ(-18deg)",
+                  transformOrigin: "center",
+                }}
+              />
+
+            </div>
+
+          </div>
+
+          {/* Dimension indicators */}
+
+          <div className="absolute bottom-5 left-5 rounded-xl bg-white/95 px-3 py-2 text-xs font-semibold text-slate-600 shadow-md">
+            L × W × D
           </div>
 
         </div>
@@ -321,38 +349,44 @@ export default function CalculatorForm({
       </div>
 
       {/* ================================================= */}
-      {/* Dimensions */}
+      {/* DIMENSIONS */}
       {/* ================================================= */}
 
-      <div className={sectionClass}>
+      <div className="border-b border-slate-100 p-5 sm:p-7">
 
-        <div className="mb-5 flex items-center gap-3">
+        <div className="mb-6 flex items-start gap-3">
 
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-50 text-sm font-bold text-blue-600">
-            02
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-blue-50 text-xl">
+            📐
           </div>
 
           <div>
-            <h3 className="text-base font-bold text-slate-900 sm:text-lg">
+            <h2 className="text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">
               Dimensions
-            </h3>
+            </h2>
 
-            <p className="text-xs text-slate-500">
-              Enter the measurements of your concrete work.
+            <p className="mt-1 text-sm text-slate-500">
+              Enter the dimensions of your concrete work.
             </p>
           </div>
 
         </div>
 
+        {/* ================================================= */}
         {/* Length */}
+        {/* ================================================= */}
 
-        <div className="mb-4">
+        <div className="mb-5">
 
           <label className={labelClass}>
             Length
           </label>
 
-          <div className={fieldWrapperClass}>
+          <div className={fieldWrapper}>
+
+            <div className="flex w-10 shrink-0 items-center justify-center text-slate-400">
+              ↔
+            </div>
 
             <input
               type="number"
@@ -363,7 +397,7 @@ export default function CalculatorForm({
                 setLength(e.target.value)
               }
               placeholder="Enter length"
-              className="h-12 min-w-0 flex-1 bg-transparent px-3.5 text-[15px] text-slate-900 outline-none placeholder:text-slate-400"
+              className="h-14 min-w-0 flex-1 bg-transparent pr-3 text-base text-slate-900 outline-none placeholder:text-slate-400"
             />
 
             <select
@@ -374,7 +408,6 @@ export default function CalculatorForm({
                 )
               }
               className={unitSelectClass}
-              aria-label="Length unit"
             >
               {units.map((item) => (
                 <option
@@ -390,15 +423,21 @@ export default function CalculatorForm({
 
         </div>
 
+        {/* ================================================= */}
         {/* Width */}
+        {/* ================================================= */}
 
-        <div className="mb-4">
+        <div className="mb-5">
 
           <label className={labelClass}>
             Width
           </label>
 
-          <div className={fieldWrapperClass}>
+          <div className={fieldWrapper}>
+
+            <div className="flex w-10 shrink-0 items-center justify-center text-slate-400">
+              ↕
+            </div>
 
             <input
               type="number"
@@ -409,7 +448,7 @@ export default function CalculatorForm({
                 setWidth(e.target.value)
               }
               placeholder="Enter width"
-              className="h-12 min-w-0 flex-1 bg-transparent px-3.5 text-[15px] text-slate-900 outline-none placeholder:text-slate-400"
+              className="h-14 min-w-0 flex-1 bg-transparent pr-3 text-base text-slate-900 outline-none placeholder:text-slate-400"
             />
 
             <select
@@ -420,7 +459,6 @@ export default function CalculatorForm({
                 )
               }
               className={unitSelectClass}
-              aria-label="Width unit"
             >
               {units.map((item) => (
                 <option
@@ -436,15 +474,21 @@ export default function CalculatorForm({
 
         </div>
 
+        {/* ================================================= */}
         {/* Depth */}
+        {/* ================================================= */}
 
-        <div className="mb-4">
+        <div className="mb-5">
 
           <label className={labelClass}>
             Height / Depth
           </label>
 
-          <div className={fieldWrapperClass}>
+          <div className={fieldWrapper}>
+
+            <div className="flex w-10 shrink-0 items-center justify-center text-slate-400">
+              ↕
+            </div>
 
             <input
               type="number"
@@ -455,7 +499,7 @@ export default function CalculatorForm({
                 setDepth(e.target.value)
               }
               placeholder="Enter height / depth"
-              className="h-12 min-w-0 flex-1 bg-transparent px-3.5 text-[15px] text-slate-900 outline-none placeholder:text-slate-400"
+              className="h-14 min-w-0 flex-1 bg-transparent pr-3 text-base text-slate-900 outline-none placeholder:text-slate-400"
             />
 
             <select
@@ -466,7 +510,6 @@ export default function CalculatorForm({
                 )
               }
               className={unitSelectClass}
-              aria-label="Depth unit"
             >
               {units.map((item) => (
                 <option
@@ -482,7 +525,9 @@ export default function CalculatorForm({
 
         </div>
 
+        {/* ================================================= */}
         {/* Quantity */}
+        {/* ================================================= */}
 
         <div>
 
@@ -490,7 +535,11 @@ export default function CalculatorForm({
             Quantity
           </label>
 
-          <div className={fieldWrapperClass}>
+          <div className={fieldWrapper}>
+
+            <div className="flex w-10 shrink-0 items-center justify-center text-slate-400">
+              #
+            </div>
 
             <input
               type="number"
@@ -500,10 +549,10 @@ export default function CalculatorForm({
               onChange={(e) =>
                 setQuantity(e.target.value)
               }
-              className="h-12 min-w-0 flex-1 bg-transparent px-3.5 text-[15px] text-slate-900 outline-none"
+              className="h-14 min-w-0 flex-1 bg-transparent px-2 text-base text-slate-900 outline-none"
             />
 
-            <div className="flex h-12 items-center border-l border-slate-200 px-3 text-xs font-semibold text-slate-500">
+            <div className="flex h-14 items-center border-l border-slate-200 px-4 text-sm font-medium text-slate-500">
               pieces
             </div>
 
@@ -511,34 +560,49 @@ export default function CalculatorForm({
 
         </div>
 
+        {/* Dimension hint */}
+
+        <div className="mt-5 flex items-center gap-3 rounded-2xl border border-blue-100 bg-blue-50 p-4">
+
+          <span className="text-lg">
+            💡
+          </span>
+
+          <p className="text-xs leading-5 text-blue-800 sm:text-sm">
+            Enter Length × Width × Depth. Units can be changed
+            independently for each dimension.
+          </p>
+
+        </div>
+
       </div>
 
       {/* ================================================= */}
-      {/* Mix Ratio */}
+      {/* MIX RATIO */}
       {/* ================================================= */}
 
-      <div className={sectionClass}>
+      <div className="border-b border-slate-100 p-5 sm:p-7">
 
-        <div className="mb-5 flex items-center gap-3">
+        <div className="mb-6 flex items-start gap-3">
 
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-50 text-sm font-bold text-amber-600">
-            03
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-amber-50 text-xl">
+            ⚖️
           </div>
 
           <div>
-            <h3 className="text-base font-bold text-slate-900 sm:text-lg">
+            <h2 className="text-xl font-bold text-slate-900 sm:text-2xl">
               Mix Ratio
-            </h3>
+            </h2>
 
-            <p className="text-xs text-slate-500">
-              Select cement, sand and aggregate proportions.
+            <p className="mt-1 text-sm text-slate-500">
+              Cement : Sand : Aggregate
             </p>
           </div>
 
         </div>
 
         <label className={labelClass}>
-          Cement : Sand : Aggregate
+          Concrete mix ratio
         </label>
 
         <select
@@ -557,121 +621,83 @@ export default function CalculatorForm({
           </option>
 
           <option value="Custom">
-            Custom ratio
+            Custom
           </option>
         </select>
 
-        {/* Custom Ratio */}
-
         {mixRatioType === "Custom" && (
-          <div className="mt-4 rounded-2xl border border-blue-100 bg-blue-50/50 p-4">
+          <div className="mt-4 grid grid-cols-3 gap-3">
 
-            <p className="mb-3 text-xs font-semibold text-blue-800">
-              Enter your custom mix ratio
-            </p>
+            <div>
+              <label className="mb-2 block text-xs font-semibold text-slate-600">
+                Cement
+              </label>
 
-            <div className="grid grid-cols-3 gap-2.5">
+              <input
+                type="number"
+                min="0"
+                step="any"
+                value={customCement}
+                onChange={(e) =>
+                  setCustomCement(e.target.value)
+                }
+                className={inputClass}
+              />
+            </div>
 
-              <div>
-                <label className="mb-1.5 block text-[11px] font-semibold text-slate-600">
-                  Cement
-                </label>
+            <div>
+              <label className="mb-2 block text-xs font-semibold text-slate-600">
+                Sand
+              </label>
 
-                <input
-                  type="number"
-                  min="0"
-                  step="any"
-                  value={customCement}
-                  onChange={(e) =>
-                    setCustomCement(
-                      e.target.value
-                    )
-                  }
-                  className={inputClass}
-                />
-              </div>
+              <input
+                type="number"
+                min="0"
+                step="any"
+                value={customSand}
+                onChange={(e) =>
+                  setCustomSand(e.target.value)
+                }
+                className={inputClass}
+              />
+            </div>
 
-              <div>
-                <label className="mb-1.5 block text-[11px] font-semibold text-slate-600">
-                  Sand
-                </label>
+            <div>
+              <label className="mb-2 block text-xs font-semibold text-slate-600">
+                Aggregate
+              </label>
 
-                <input
-                  type="number"
-                  min="0"
-                  step="any"
-                  value={customSand}
-                  onChange={(e) =>
-                    setCustomSand(
-                      e.target.value
-                    )
-                  }
-                  className={inputClass}
-                />
-              </div>
-
-              <div>
-                <label className="mb-1.5 block text-[11px] font-semibold text-slate-600">
-                  Aggregate
-                </label>
-
-                <input
-                  type="number"
-                  min="0"
-                  step="any"
-                  value={customAggregate}
-                  onChange={(e) =>
-                    setCustomAggregate(
-                      e.target.value
-                    )
-                  }
-                  className={inputClass}
-                />
-              </div>
-
+              <input
+                type="number"
+                min="0"
+                step="any"
+                value={customAggregate}
+                onChange={(e) =>
+                  setCustomAggregate(e.target.value)
+                }
+                className={inputClass}
+              />
             </div>
 
           </div>
         )}
 
-        <div className="mt-3 rounded-xl border border-amber-100 bg-amber-50/70 px-3.5 py-3">
-
-          <p className="text-xs leading-5 text-amber-800">
-            Material quantities are estimates. Structural concrete
-            mix design should follow project specifications and
-            applicable engineering standards.
-          </p>
-
-        </div>
+        <p className="mt-3 text-xs leading-5 text-slate-500">
+          Material quantities are estimates. Structural concrete mix
+          design should follow project specifications and applicable
+          engineering standards.
+        </p>
 
       </div>
 
       {/* ================================================= */}
-      {/* Currency */}
+      {/* CURRENCY */}
       {/* ================================================= */}
 
-      <div className={sectionClass}>
-
-        <div className="mb-4 flex items-center gap-3">
-
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-50 text-sm font-bold text-emerald-600">
-            04
-          </div>
-
-          <div>
-            <h3 className="text-base font-bold text-slate-900 sm:text-lg">
-              Currency
-            </h3>
-
-            <p className="text-xs text-slate-500">
-              Choose the currency for material pricing.
-            </p>
-          </div>
-
-        </div>
+      <div className="border-b border-slate-100 p-5 sm:p-7">
 
         <label className={labelClass}>
-          Price currency
+          Currency
         </label>
 
         <select
@@ -713,24 +739,24 @@ export default function CalculatorForm({
       </div>
 
       {/* ================================================= */}
-      {/* Material Prices */}
+      {/* MATERIAL PRICES */}
       {/* ================================================= */}
 
-      <div className={sectionClass}>
+      <div className="p-5 sm:p-7">
 
-        <div className="mb-5 flex items-center gap-3">
+        <div className="mb-6 flex items-start gap-3">
 
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-violet-50 text-sm font-bold text-violet-600">
-            05
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-emerald-50 text-xl">
+            💰
           </div>
 
           <div>
-            <h3 className="text-base font-bold text-slate-900 sm:text-lg">
+            <h2 className="text-xl font-bold text-slate-900 sm:text-2xl">
               Material Prices
-            </h3>
+            </h2>
 
-            <p className="text-xs text-slate-500">
-              Optional — add local prices to estimate cost.
+            <p className="mt-1 text-sm text-slate-500">
+              Enter local material prices for cost estimation.
             </p>
           </div>
 
@@ -738,29 +764,15 @@ export default function CalculatorForm({
 
         {/* Cement */}
 
-        <div className="mb-5 rounded-2xl border border-slate-200 bg-slate-50/70 p-3.5">
+        <div className="mb-5">
 
-          <div className="mb-3 flex items-center justify-between">
+          <label className={labelClass}>
+            Cement
+          </label>
 
-            <div>
-              <h4 className="text-sm font-bold text-slate-900">
-                Cement
-              </h4>
+          <div className={fieldWrapper}>
 
-              <p className="mt-0.5 text-[11px] text-slate-500">
-                Price per selected unit
-              </p>
-            </div>
-
-            <span className="rounded-lg bg-white px-2 py-1 text-xs font-bold text-slate-500 shadow-sm">
-              {currency}
-            </span>
-
-          </div>
-
-          <div className={fieldWrapperClass}>
-
-            <div className="flex h-12 items-center px-3 text-sm font-bold text-slate-500">
+            <div className="flex h-14 items-center px-4 text-base font-bold text-slate-500">
               {currencySymbol}
             </div>
 
@@ -770,9 +782,7 @@ export default function CalculatorForm({
               step="any"
               value={cementPrice}
               onChange={(e) =>
-                setCementPrice(
-                  e.target.value
-                )
+                setCementPrice(e.target.value)
               }
               placeholder="0.00"
               className={priceInputClass}
@@ -781,28 +791,14 @@ export default function CalculatorForm({
             <select
               value={cementUnit}
               onChange={(e) =>
-                setCementUnit(
-                  e.target.value
-                )
+                setCementUnit(e.target.value)
               }
               className={unitSelectClass}
-              aria-label="Cement price unit"
             >
-              <option value="Bag">
-                / Bag
-              </option>
-
-              <option value="kg">
-                / kg
-              </option>
-
-              <option value="tonne">
-                / tonne
-              </option>
-
-              <option value="US ton">
-                / US ton
-              </option>
+              <option value="Bag">/ Bag</option>
+              <option value="kg">/ kg</option>
+              <option value="tonne">/ tonne</option>
+              <option value="US ton">/ US ton</option>
             </select>
 
           </div>
@@ -811,29 +807,15 @@ export default function CalculatorForm({
 
         {/* Sand */}
 
-        <div className="mb-5 rounded-2xl border border-slate-200 bg-slate-50/70 p-3.5">
+        <div className="mb-5">
 
-          <div className="mb-3 flex items-center justify-between">
+          <label className={labelClass}>
+            Sand
+          </label>
 
-            <div>
-              <h4 className="text-sm font-bold text-slate-900">
-                Sand
-              </h4>
+          <div className={fieldWrapper}>
 
-              <p className="mt-0.5 text-[11px] text-slate-500">
-                Price and density
-              </p>
-            </div>
-
-            <span className="rounded-lg bg-white px-2 py-1 text-xs font-bold text-slate-500 shadow-sm">
-              {currency}
-            </span>
-
-          </div>
-
-          <div className={fieldWrapperClass}>
-
-            <div className="flex h-12 items-center px-3 text-sm font-bold text-slate-500">
+            <div className="flex h-14 items-center px-4 text-base font-bold text-slate-500">
               {currencySymbol}
             </div>
 
@@ -843,9 +825,7 @@ export default function CalculatorForm({
               step="any"
               value={sandPrice}
               onChange={(e) =>
-                setSandPrice(
-                  e.target.value
-                )
+                setSandPrice(e.target.value)
               }
               placeholder="0.00"
               className={priceInputClass}
@@ -854,66 +834,36 @@ export default function CalculatorForm({
             <select
               value={sandUnit}
               onChange={(e) =>
-                setSandUnit(
-                  e.target.value
-                )
+                setSandUnit(e.target.value)
               }
               className={unitSelectClass}
-              aria-label="Sand price unit"
             >
-              <option value="m³">
-                / m³
-              </option>
-
-              <option value="yd³">
-                / yd³
-              </option>
-
-              <option value="tonne">
-                / tonne
-              </option>
-
-              <option value="US ton">
-                / US ton
-              </option>
+              <option value="m³">/ m³</option>
+              <option value="yd³">/ yd³</option>
+              <option value="tonne">/ tonne</option>
+              <option value="US ton">/ US ton</option>
             </select>
 
           </div>
 
-          <div className="mt-3">
+          <div className="mt-4">
 
-            <label className="mb-1.5 block text-[11px] font-semibold text-slate-600">
+            <label className={labelClass}>
               Sand Density
             </label>
 
             <select
               value={sandDensity}
               onChange={(e) =>
-                setSandDensity(
-                  e.target.value
-                )
+                setSandDensity(e.target.value)
               }
               className={inputClass}
             >
-              <option value="1600">
-                1600 kg/m³
-              </option>
-
-              <option value="1650">
-                1650 kg/m³
-              </option>
-
-              <option value="1700">
-                1700 kg/m³
-              </option>
-
-              <option value="1750">
-                1750 kg/m³
-              </option>
-
-              <option value="1800">
-                1800 kg/m³
-              </option>
+              <option value="1600">1600 kg/m³</option>
+              <option value="1650">1650 kg/m³</option>
+              <option value="1700">1700 kg/m³</option>
+              <option value="1750">1750 kg/m³</option>
+              <option value="1800">1800 kg/m³</option>
             </select>
 
           </div>
@@ -922,29 +872,15 @@ export default function CalculatorForm({
 
         {/* Aggregate */}
 
-        <div className="rounded-2xl border border-slate-200 bg-slate-50/70 p-3.5">
+        <div className="mb-5">
 
-          <div className="mb-3 flex items-center justify-between">
+          <label className={labelClass}>
+            Aggregate
+          </label>
 
-            <div>
-              <h4 className="text-sm font-bold text-slate-900">
-                Aggregate
-              </h4>
+          <div className={fieldWrapper}>
 
-              <p className="mt-0.5 text-[11px] text-slate-500">
-                Price and density
-              </p>
-            </div>
-
-            <span className="rounded-lg bg-white px-2 py-1 text-xs font-bold text-slate-500 shadow-sm">
-              {currency}
-            </span>
-
-          </div>
-
-          <div className={fieldWrapperClass}>
-
-            <div className="flex h-12 items-center px-3 text-sm font-bold text-slate-500">
+            <div className="flex h-14 items-center px-4 text-base font-bold text-slate-500">
               {currencySymbol}
             </div>
 
@@ -954,9 +890,7 @@ export default function CalculatorForm({
               step="any"
               value={aggregatePrice}
               onChange={(e) =>
-                setAggregatePrice(
-                  e.target.value
-                )
+                setAggregatePrice(e.target.value)
               }
               placeholder="0.00"
               className={priceInputClass}
@@ -965,124 +899,61 @@ export default function CalculatorForm({
             <select
               value={aggregateUnit}
               onChange={(e) =>
-                setAggregateUnit(
-                  e.target.value
-                )
+                setAggregateUnit(e.target.value)
               }
               className={unitSelectClass}
-              aria-label="Aggregate price unit"
             >
-              <option value="m³">
-                / m³
-              </option>
-
-              <option value="yd³">
-                / yd³
-              </option>
-
-              <option value="tonne">
-                / tonne
-              </option>
-
-              <option value="US ton">
-                / US ton
-              </option>
+              <option value="m³">/ m³</option>
+              <option value="yd³">/ yd³</option>
+              <option value="tonne">/ tonne</option>
+              <option value="US ton">/ US ton</option>
             </select>
 
           </div>
 
-          <div className="mt-3">
+          <div className="mt-4">
 
-            <label className="mb-1.5 block text-[11px] font-semibold text-slate-600">
+            <label className={labelClass}>
               Aggregate Density
             </label>
 
             <select
               value={aggregateDensity}
               onChange={(e) =>
-                setAggregateDensity(
-                  e.target.value
-                )
+                setAggregateDensity(e.target.value)
               }
               className={inputClass}
             >
-              <option value="1400">
-                1400 kg/m³
-              </option>
-
-              <option value="1450">
-                1450 kg/m³
-              </option>
-
-              <option value="1500">
-                1500 kg/m³
-              </option>
-
-              <option value="1550">
-                1550 kg/m³
-              </option>
-
-              <option value="1600">
-                1600 kg/m³
-              </option>
-
-              <option value="1650">
-                1650 kg/m³
-              </option>
-
+              <option value="1400">1400 kg/m³</option>
+              <option value="1450">1450 kg/m³</option>
+              <option value="1500">1500 kg/m³</option>
+              <option value="1550">1550 kg/m³</option>
+              <option value="1600">1600 kg/m³</option>
+              <option value="1650">1650 kg/m³</option>
             </select>
 
           </div>
 
         </div>
 
-      </div>
+        {/* Error */}
 
-      {/* ================================================= */}
-      {/* Error */}
-      {/* ================================================= */}
-
-      {error && (
-        <div className="mx-5 mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 sm:mx-6">
-
-          <div className="flex items-start gap-2">
-
-            <span className="mt-0.5 text-sm">
-              ⚠️
-            </span>
-
-            <p className="text-sm font-medium leading-5 text-red-700">
-              {error}
-            </p>
-
+        {error && (
+          <div className="mb-4 flex items-start gap-3 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm font-medium text-red-700">
+            <span>⚠️</span>
+            <span>{error}</span>
           </div>
+        )}
 
-        </div>
-      )}
-
-      {/* ================================================= */}
-      {/* Calculate CTA */}
-      {/* ================================================= */}
-
-      <div className="border-t border-slate-100 bg-slate-50/70 p-5 sm:p-6">
+        {/* Calculate */}
 
         <button
           type="button"
           onClick={handleCalculate}
-          className="group flex h-13 w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 px-5 py-3.5 text-sm font-bold text-white shadow-lg shadow-blue-600/20 transition duration-200 hover:-translate-y-0.5 hover:from-blue-700 hover:to-blue-800 hover:shadow-xl hover:shadow-blue-600/25 active:translate-y-0"
+          className="h-14 w-full rounded-2xl bg-gradient-to-r from-blue-600 to-blue-700 text-base font-bold text-white shadow-lg shadow-blue-200 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-blue-200 active:translate-y-0"
         >
-          <span>
-            Calculate Concrete
-          </span>
-
-          <span className="text-base transition-transform group-hover:translate-x-0.5">
-            →
-          </span>
+          Calculate Concrete
         </button>
-
-        <p className="mt-2 text-center text-[11px] text-slate-500">
-          Get concrete volume, material quantities and estimated cost
-        </p>
 
       </div>
 
