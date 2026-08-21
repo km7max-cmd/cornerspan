@@ -3,9 +3,7 @@ import type {
   BrickCalculatorState,
 } from "../types";
 
-import {
-  lengthToMeters,
-} from "../units";
+import { lengthToMeters } from "../units";
 
 import {
   MORTAR_RATIO_OPTIONS,
@@ -51,10 +49,7 @@ function toMeters(
 /* =========================================================
    MORTAR JOINT → METERS
 
-   IMPORTANT:
-   Mortar joint is ALWAYS stored as inches.
-
-   1 inch = 0.0254 m
+   Mortar joint is stored as inches.
 ========================================================= */
 
 function mortarJointToMeters(
@@ -226,8 +221,6 @@ export function calculateBrick(
 
   /* =======================================================
      8. MORTAR JOINT
-
-     Stored independently in inches.
   ======================================================= */
 
   const mortarJointMeters =
@@ -237,8 +230,6 @@ export function calculateBrick(
 
   /* =======================================================
      9. EFFECTIVE BRICK FACE
-
-     Brick dimension + mortar joint
   ======================================================= */
 
   const effectiveLength =
@@ -273,8 +264,6 @@ export function calculateBrick(
 
   /* =======================================================
      12. DOUBLE WALL
-
-     Double wall = two brick layers.
   ======================================================= */
 
   if (
@@ -298,7 +287,10 @@ export function calculateBrick(
 
   const wasteBricks =
     baseBricks *
-    (wastePercent / 100);
+    (
+      wastePercent /
+      100
+    );
 
   const totalBricks =
     Math.ceil(
@@ -315,7 +307,14 @@ export function calculateBrick(
     0.09290304;
 
   /* =======================================================
-     15. BRICK COST
+     15. BRICKS PER AREA
+  ======================================================= */
+
+  const bricksPerArea =
+    bricksPerSqM;
+
+  /* =======================================================
+     16. BRICK COST
   ======================================================= */
 
   const pricePerBrick =
@@ -351,7 +350,7 @@ export function calculateBrick(
   let mortarCost = 0;
 
   /* =======================================================
-     16. MORTAR CALCULATION
+     17. MORTAR CALCULATION
   ======================================================= */
 
   if (state.includeMortar) {
@@ -409,7 +408,7 @@ export function calculateBrick(
         1,
         safeNumber(
           state.mortarWetToDryRatio,
-          1.33
+          1.52
         )
       );
 
@@ -515,7 +514,7 @@ export function calculateBrick(
         : 0;
 
     /* =====================================================
-       COST
+       MORTAR COST
     ===================================================== */
 
     const cementPrice =
@@ -548,7 +547,7 @@ export function calculateBrick(
   }
 
   /* =======================================================
-     TOTAL COST
+     18. TOTAL MATERIAL COST
   ======================================================= */
 
   const totalMaterialCost =
@@ -556,21 +555,40 @@ export function calculateBrick(
     mortarCost;
 
   /* =======================================================
-     RESULT
+     19. RESULT
   ======================================================= */
 
   return {
+    /* Wall */
+
     wallArea:
       grossWallArea,
+
+    wallAreaUnit:
+      "m²",
 
     openingArea:
       openingArea,
 
+    openingAreaUnit:
+      "m²",
+
     netWallArea:
       netWallArea,
 
+    netWallAreaUnit:
+      "m²",
+
+    /* Bricks */
+
     bricksPerSqFt:
       bricksPerSqFt,
+
+    bricksPerArea:
+      bricksPerArea,
+
+    bricksPerAreaUnit:
+      "m²",
 
     baseBricks:
       baseBricks,
@@ -584,17 +602,33 @@ export function calculateBrick(
     brickCost:
       brickCost,
 
+    /* Mortar */
+
     mortarWetVolume:
       mortarWetVolume,
+
+    mortarWetVolumeUnit:
+      "m³",
 
     mortarDryVolume:
       mortarDryVolume,
 
+    mortarDryVolumeUnit:
+      "m³",
+
     mortarTotalDryVolume:
       mortarTotalDryVolume,
 
+    mortarTotalDryVolumeUnit:
+      "m³",
+
+    /* Cement */
+
     cementVolume:
       cementVolume,
+
+    cementVolumeUnit:
+      "m³",
 
     cementWeight:
       cementWeight,
@@ -602,8 +636,15 @@ export function calculateBrick(
     cementBags:
       cementBags,
 
+    /* Sand */
+
     sandVolume:
       sandVolume,
+
+    sandVolumeUnit:
+      "m³",
+
+    /* Cost */
 
     mortarCost:
       mortarCost,
