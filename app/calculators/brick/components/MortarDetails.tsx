@@ -75,7 +75,7 @@ export default function MortarDetails({
         <div className="min-w-0">
 
           <h2 className="text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">
-            Mortar & Materials
+            Mortar & Cement
           </h2>
 
           <p className="mt-1 text-sm leading-6 text-slate-500">
@@ -107,56 +107,47 @@ export default function MortarDetails({
               INCLUDE MORTAR
           ================================================= */}
 
-          <div className="mb-6 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+          <div className="mb-5 flex items-center justify-between rounded-2xl border border-slate-200 bg-slate-50 p-4">
 
-            <div className="flex items-center justify-between gap-4">
+            <div className="pr-4">
 
-              <div>
+              <p className="text-sm font-bold text-slate-900">
+                Include Mortar Estimate
+              </p>
 
-                <p className="text-sm font-semibold text-slate-900">
-                  Include Mortar Estimate
-                </p>
-
-                <p className="mt-1 text-xs leading-5 text-slate-500">
-                  Calculate cement and sand required for
-                  the mortar joints.
-                </p>
-
-              </div>
-
-              <button
-                type="button"
-                role="switch"
-                aria-checked={includeMortar}
-                onClick={() =>
-                  setIncludeMortar(
-                    !includeMortar
-                  )
-                }
-                className={`relative h-7 w-12 shrink-0 rounded-full transition ${
-                  includeMortar
-                    ? "bg-blue-600"
-                    : "bg-slate-300"
-                }`}
-              >
-
-                <span
-                  className={`absolute top-1 h-5 w-5 rounded-full bg-white shadow-sm transition ${
-                    includeMortar
-                      ? "left-6"
-                      : "left-1"
-                  }`}
-                />
-
-              </button>
+              <p className="mt-1 text-xs leading-5 text-slate-500">
+                Calculate cement and sand required for mortar.
+              </p>
 
             </div>
 
-          </div>
+            <button
+              type="button"
+              role="switch"
+              aria-checked={includeMortar}
+              onClick={() =>
+                setIncludeMortar(
+                  !includeMortar
+                )
+              }
+              className={`relative h-7 w-12 shrink-0 rounded-full transition ${
+                includeMortar
+                  ? "bg-blue-600"
+                  : "bg-slate-300"
+              }`}
+            >
 
-          {/* =================================================
-              MORTAR SETTINGS
-          ================================================= */}
+              <span
+                className={`absolute top-1 h-5 w-5 rounded-full bg-white shadow-sm transition ${
+                  includeMortar
+                    ? "left-6"
+                    : "left-1"
+                }`}
+              />
+
+            </button>
+
+          </div>
 
           {includeMortar && (
             <>
@@ -193,14 +184,13 @@ export default function MortarDetails({
                 </select>
 
                 <p className="mt-1.5 text-xs leading-5 text-slate-500">
-                  Common masonry mortar ratios are provided
-                  for estimation purposes.
+                  Ratio is expressed as cement : sand.
                 </p>
 
               </div>
 
               {/* =================================================
-                  WET → DRY FACTOR
+                  WET TO DRY
               ================================================= */}
 
               <div className="mb-5">
@@ -209,40 +199,23 @@ export default function MortarDetails({
                   Wet to Dry Mortar Factor
                 </label>
 
-                <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-white">
-
-                  <input
-                    type="number"
-                    min="1"
-                    step="0.01"
-                    inputMode="decimal"
-                    value={mortarWetToDryRatio}
-                    onChange={(event) =>
-                      setMortarWetToDryRatio(
-                        event.target.value
-                      )
-                    }
-                    className="
-                      h-12
-                      min-w-0
-                      flex-1
-                      bg-transparent
-                      px-3
-                      text-base
-                      text-slate-900
-                      outline-none
-                    "
-                  />
-
-                  <span className="flex h-12 items-center border-l border-slate-200 px-4 text-sm text-slate-500">
-                    factor
-                  </span>
-
-                </div>
+                <input
+                  type="number"
+                  min="1"
+                  step="0.01"
+                  inputMode="decimal"
+                  value={mortarWetToDryRatio}
+                  onChange={(event) =>
+                    setMortarWetToDryRatio(
+                      event.target.value
+                    )
+                  }
+                  className={inputClass}
+                />
 
                 <p className="mt-1.5 text-xs leading-5 text-slate-500">
-                  Default is 1.33 for converting wet mortar
-                  volume to estimated dry material volume.
+                  Default: 1.33. This converts estimated wet
+                  mortar volume to dry material volume.
                 </p>
 
               </div>
@@ -257,7 +230,7 @@ export default function MortarDetails({
                   Mortar Waste
                 </label>
 
-                <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-white">
+                <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-white focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-100">
 
                   <input
                     type="number"
@@ -271,16 +244,7 @@ export default function MortarDetails({
                         event.target.value
                       )
                     }
-                    className="
-                      h-12
-                      min-w-0
-                      flex-1
-                      bg-transparent
-                      px-3
-                      text-base
-                      text-slate-900
-                      outline-none
-                    "
+                    className="h-12 min-w-0 flex-1 bg-transparent px-3 text-base text-slate-900 outline-none"
                   />
 
                   <span className="flex h-12 items-center border-l border-slate-200 px-4 text-sm font-semibold text-slate-500">
@@ -314,16 +278,7 @@ export default function MortarDetails({
                         event.target.value
                       )
                     }
-                    className="
-                      h-12
-                      min-w-0
-                      flex-1
-                      bg-transparent
-                      px-3
-                      text-base
-                      text-slate-900
-                      outline-none
-                    "
+                    className="h-12 min-w-0 flex-1 bg-transparent px-3 text-base text-slate-900 outline-none"
                   />
 
                   <span className="flex h-12 items-center border-l border-slate-200 px-4 text-sm text-slate-500">
@@ -357,16 +312,7 @@ export default function MortarDetails({
                         event.target.value
                       )
                     }
-                    className="
-                      h-12
-                      min-w-0
-                      flex-1
-                      bg-transparent
-                      px-3
-                      text-base
-                      text-slate-900
-                      outline-none
-                    "
+                    className="h-12 min-w-0 flex-1 bg-transparent px-3 text-base text-slate-900 outline-none"
                   />
 
                   <span className="flex h-12 items-center border-l border-slate-200 px-4 text-sm text-slate-500">
