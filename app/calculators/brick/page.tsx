@@ -14,178 +14,231 @@ const CURRENCY_SYMBOLS: Record<string, string> = {
   CAD: "C$",
 };
 
+type Opening = {
+  quantity: string;
+  width: string;
+  height: string;
+};
+
 export default function BrickCalculator() {
   // =========================================================
   // WALL
   // =========================================================
 
+  const [wallType, setWallType] = useState<"single" | "double">("single");
+
   const [wallLength, setWallLength] = useState("");
   const [wallHeight, setWallHeight] = useState("");
-  const [quantity, setQuantity] = useState("1");
+  const [wallQuantity, setWallQuantity] = useState("1");
 
   // =========================================================
-  // DOOR
+  // OPENINGS
   // =========================================================
 
-  const [doorOpen, setDoorOpen] = useState(false);
-  const [doorQuantity, setDoorQuantity] = useState("0");
-  const [doorWidth, setDoorWidth] = useState("3");
-  const [doorHeight, setDoorHeight] = useState("7");
+  const [door, setDoor] = useState<Opening>({
+    quantity: "0",
+    width: "3",
+    height: "7",
+  });
+
+  const [window, setWindow] = useState<Opening>({
+    quantity: "0",
+    width: "4",
+    height: "4",
+  });
 
   // =========================================================
-  // WINDOW
+  // BRICK
   // =========================================================
 
-  const [windowOpen, setWindowOpen] = useState(false);
-  const [windowQuantity, setWindowQuantity] = useState("0");
-  const [windowWidth, setWindowWidth] = useState("4");
-  const [windowHeight, setWindowHeight] = useState("4");
+  const [brickLength, setBrickLength] = useState("8");
+  const [brickHeight, setBrickHeight] = useState("2.25");
+  const [brickWidth, setBrickWidth] = useState("3.75");
+
+  const [mortarJoint, setMortarJoint] = useState("0.375");
 
   // =========================================================
-  // BRICK SETTINGS
+  // BRICKS / COST
   // =========================================================
 
-  const [brickSettingsOpen, setBrickSettingsOpen] =
-    useState(false);
+  const [waste, setWaste] = useState("5");
 
-  const [brickLength, setBrickLength] =
-    useState("8");
+  const [currency, setCurrency] = useState("USD");
 
-  const [brickHeight, setBrickHeight] =
-    useState("2.25");
+  const [price, setPrice] = useState("0.85");
 
-  const [mortarJoint, setMortarJoint] =
-    useState("0.375");
+  // =========================================================
+  // ACCORDIONS
+  // =========================================================
 
-  const [waste, setWaste] =
-    useState("10");
-
-  const [price, setPrice] =
-    useState("0.85");
-
-  const [currency, setCurrency] =
-    useState("USD");
+  const [openSection, setOpenSection] = useState<
+    "wall" | "openings" | "brick" | "required" | "cost" | null
+  >("wall");
 
   const currencySymbol =
     CURRENCY_SYMBOLS[currency] || "$";
+
+  // =========================================================
+  // ACCORDION
+  // =========================================================
+
+  const toggleSection = (
+    section: "wall" | "openings" | "brick" | "required" | "cost"
+  ) => {
+    setOpenSection((current) =>
+      current === section ? null : section
+    );
+  };
 
   // =========================================================
   // CALCULATION
   // =========================================================
 
   const result = useMemo(() => {
-    const length =
-      Number(wallLength) || 0;
+    const length = Math.max(0, Number(wallLength) || 0);
 
-    const height =
-      Number(wallHeight) || 0;
+    const height = Math.max(0, Number(wallHeight) || 0);
 
-    const walls =
-      Math.max(1, Number(quantity) || 1);
+    const quantity = Math.max(
+      1,
+      Number(wallQuantity) || 1
+    );
 
-    const rawWallArea =
-      length * height * walls;
+    const bLength = Math.max(
+      0,
+      Number(brickLength) || 0
+    );
 
-    // -------------------------
-    // Door area
-    // -------------------------
+    const bHeight = Math.max(
+      0,
+      Number(brickHeight) || 0
+    );
 
-    const doors =
-      Math.max(0, Number(doorQuantity) || 0);
+    const bWidth = Math.max(
+      0,
+      Number(brickWidth) || 0
+    );
 
-    const dWidth =
-      Math.max(0, Number(doorWidth) || 0);
+    const joint = Math.max(
+      0,
+      Number(mortarJoint) || 0
+    );
 
-    const dHeight =
-      Math.max(0, Number(doorHeight) || 0);
+    const wastePercent = Math.max(
+      0,
+      Number(waste) || 0
+    );
+
+    const brickPrice = Math.max(
+      0,
+      Number(price) || 0
+    );
+
+    // ---------------------------------------------------------
+    // WALL AREA
+    // ---------------------------------------------------------
+
+    const grossWallArea =
+      length * height * quantity;
+
+    // ---------------------------------------------------------
+    // DOOR AREA
+    // ---------------------------------------------------------
+
+    const doorQty = Math.max(
+      0,
+      Number(door.quantity) || 0
+    );
+
+    const doorWidth = Math.max(
+      0,
+      Number(door.width) || 0
+    );
+
+    const doorHeight = Math.max(
+      0,
+      Number(door.height) || 0
+    );
 
     const doorArea =
-      doors * dWidth * dHeight;
+      doorQty *
+      doorWidth *
+      doorHeight;
 
-    // -------------------------
-    // Window area
-    // -------------------------
+    // ---------------------------------------------------------
+    // WINDOW AREA
+    // ---------------------------------------------------------
 
-    const windows =
-      Math.max(0, Number(windowQuantity) || 0);
+    const windowQty = Math.max(
+      0,
+      Number(window.quantity) || 0
+    );
 
-    const wWidth =
-      Math.max(0, Number(windowWidth) || 0);
+    const windowWidth = Math.max(
+      0,
+      Number(window.width) || 0
+    );
 
-    const wHeight =
-      Math.max(0, Number(windowHeight) || 0);
+    const windowHeight = Math.max(
+      0,
+      Number(window.height) || 0
+    );
 
     const windowArea =
-      windows * wWidth * wHeight;
+      windowQty *
+      windowWidth *
+      windowHeight;
 
-    // -------------------------
-    // Net wall area
-    // -------------------------
+    // ---------------------------------------------------------
+    // NET WALL AREA
+    // ---------------------------------------------------------
 
-    const openingsArea =
+    const openingArea =
       doorArea + windowArea;
 
-    const wallArea =
-      Math.max(
-        0,
-        rawWallArea - openingsArea
-      );
+    const netWallArea = Math.max(
+      0,
+      grossWallArea - openingArea
+    );
 
-    // -------------------------
-    // Brick dimensions
-    // -------------------------
+    // ---------------------------------------------------------
+    // EFFECTIVE BRICK FACE
+    //
+    // Brick length + mortar
+    // Brick height + mortar
+    // ---------------------------------------------------------
 
-    const bLength =
-      Math.max(
-        0,
-        Number(brickLength) || 0
-      );
-
-    const bHeight =
-      Math.max(
-        0,
-        Number(brickHeight) || 0
-      );
-
-    const joint =
-      Math.max(
-        0,
-        Number(mortarJoint) || 0
-      );
-
-    // Effective brick size
     const effectiveLength =
       bLength + joint;
 
     const effectiveHeight =
       bHeight + joint;
 
-    const effectiveBrickArea =
+    const brickFaceAreaSqIn =
       effectiveLength *
       effectiveHeight;
 
-    const effectiveBrickAreaSqFt =
-      effectiveBrickArea / 144;
+    const brickFaceAreaSqFt =
+      brickFaceAreaSqIn / 144;
 
-    // -------------------------
-    // Bricks
-    // -------------------------
+    // ---------------------------------------------------------
+    // BASE BRICKS
+    // ---------------------------------------------------------
 
-    const bricksPerSqFt =
-      effectiveBrickAreaSqFt > 0
-        ? 1 / effectiveBrickAreaSqFt
+    let baseBricks =
+      brickFaceAreaSqFt > 0
+        ? netWallArea /
+          brickFaceAreaSqFt
         : 0;
 
-    const baseBricks =
-      bricksPerSqFt > 0
-        ? wallArea * bricksPerSqFt
-        : 0;
+    // Double wall = approximately two brick faces
+    if (wallType === "double") {
+      baseBricks *= 2;
+    }
 
-    const wastePercent =
-      Math.max(
-        0,
-        Number(waste) || 0
-      );
+    // ---------------------------------------------------------
+    // WASTE
+    // ---------------------------------------------------------
 
     const wasteBricks =
       baseBricks *
@@ -196,53 +249,92 @@ export default function BrickCalculator() {
         baseBricks + wasteBricks
       );
 
-    // -------------------------
-    // Cost
-    // -------------------------
-
-    const brickPrice =
-      Math.max(
-        0,
-        Number(price) || 0
-      );
+    // ---------------------------------------------------------
+    // COST
+    // ---------------------------------------------------------
 
     const cost =
       totalBricks * brickPrice;
 
+    // ---------------------------------------------------------
+    // BRICKS PER SQ FT
+    // ---------------------------------------------------------
+
+    const bricksPerSqFt =
+      brickFaceAreaSqFt > 0
+        ? 1 / brickFaceAreaSqFt
+        : 0;
+
     return {
-      rawWallArea,
+      grossWallArea,
       doorArea,
       windowArea,
-      openingsArea,
-      wallArea,
+      openingArea,
+      netWallArea,
       baseBricks,
       wasteBricks,
       totalBricks,
       cost,
       bricksPerSqFt,
+      effectiveLength,
+      effectiveHeight,
+      bWidth,
     };
   }, [
+    wallType,
     wallLength,
     wallHeight,
-    quantity,
-
-    doorQuantity,
-    doorWidth,
-    doorHeight,
-
-    windowQuantity,
-    windowWidth,
-    windowHeight,
-
+    wallQuantity,
+    door,
+    window,
     brickLength,
     brickHeight,
+    brickWidth,
     mortarJoint,
     waste,
     price,
   ]);
 
   // =========================================================
-  // STYLES
+  // CLEAR
+  // =========================================================
+
+  const clearAll = () => {
+    setWallType("single");
+
+    setWallLength("");
+    setWallHeight("");
+    setWallQuantity("1");
+
+    setDoor({
+      quantity: "0",
+      width: "3",
+      height: "7",
+    });
+
+    setWindow({
+      quantity: "0",
+      width: "4",
+      height: "4",
+    });
+
+    setBrickLength("8");
+    setBrickHeight("2.25");
+    setBrickWidth("3.75");
+
+    setMortarJoint("0.375");
+
+    setWaste("5");
+
+    setCurrency("USD");
+
+    setPrice("0.85");
+
+    setOpenSection("wall");
+  };
+
+  // =========================================================
+  // SHARED CLASSES
   // =========================================================
 
   const inputClass =
@@ -255,7 +347,51 @@ export default function BrickCalculator() {
     "flex h-12 items-center border-l border-slate-200 px-4 text-sm font-semibold text-blue-700";
 
   // =========================================================
-  // UI
+  // SECTION HEADER
+  // =========================================================
+
+  const SectionHeader = ({
+    id,
+    title,
+    description,
+  }: {
+    id: "wall" | "openings" | "brick" | "required" | "cost";
+    title: string;
+    description: string;
+  }) => {
+    const isOpen = openSection === id;
+
+    return (
+      <button
+        type="button"
+        onClick={() => toggleSection(id)}
+        className="flex w-full items-center justify-between gap-4 px-5 py-5 text-left sm:px-7"
+      >
+        <div className="min-w-0">
+          <h2 className="text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">
+            {title}
+          </h2>
+
+          <p className="mt-1 text-sm leading-6 text-slate-500">
+            {description}
+          </p>
+        </div>
+
+        <span
+          className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition ${
+            isOpen
+              ? "bg-blue-600 text-white"
+              : "bg-slate-100 text-slate-600"
+          }`}
+        >
+          {isOpen ? "−" : "+"}
+        </span>
+      </button>
+    );
+  };
+
+  // =========================================================
+  // RENDER
   // =========================================================
 
   return (
@@ -268,178 +404,229 @@ export default function BrickCalculator() {
         <CalculatorHero
           title="Brick"
           highlight="Calculator"
-          description="Calculate the number of bricks required for a wall, including openings, mortar joints, waste and estimated cost."
+          description="Calculate bricks required for walls with openings, mortar joints, waste and estimated material cost."
         />
 
         <div className="mx-auto mt-6 max-w-xl">
 
           {/* =================================================
-              BRICK PREVIEW
+              BRICK DIAGRAM
           ================================================= */}
 
-          <section className="mb-6 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+          <section className="mb-5 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
 
             <div className="border-b border-slate-100 px-5 py-5 sm:px-7">
 
               <h2 className="text-2xl font-bold tracking-tight text-slate-900">
-                Brick Dimensions
+                Brick Wall
               </h2>
 
-              <p className="mt-1 text-sm leading-6 text-slate-500">
-                Standard brick size with mortar joint.
+              <p className="mt-1 text-sm text-slate-500">
+                Wall dimensions and brick layout reference
               </p>
 
             </div>
 
-            <div className="bg-gradient-to-b from-slate-50 to-blue-50 px-4 py-6">
+            <div className="bg-gradient-to-b from-slate-50 to-blue-50 px-4 py-5">
 
-              <div className="relative mx-auto flex h-56 max-w-md items-center justify-center">
+              <svg
+                viewBox="0 0 500 260"
+                className="mx-auto h-auto w-full max-w-md"
+                role="img"
+                aria-label="Brick wall dimension diagram"
+              >
 
-                <svg
-                  viewBox="0 0 500 260"
-                  className="h-full w-full"
-                  role="img"
-                  aria-label="Brick dimension diagram"
+                {/* Wall */}
+
+                <rect
+                  x="100"
+                  y="70"
+                  width="300"
+                  height="125"
+                  rx="5"
+                  fill="#df7049"
+                  stroke="#a84329"
+                  strokeWidth="4"
+                />
+
+                {/* Horizontal mortar */}
+
+                <line
+                  x1="100"
+                  y1="112"
+                  x2="400"
+                  y2="112"
+                  stroke="#b94e32"
+                  strokeWidth="4"
+                />
+
+                <line
+                  x1="100"
+                  y1="153"
+                  x2="400"
+                  y2="153"
+                  stroke="#b94e32"
+                  strokeWidth="4"
+                />
+
+                {/* Vertical joints */}
+
+                <line
+                  x1="175"
+                  y1="70"
+                  x2="175"
+                  y2="112"
+                  stroke="#b94e32"
+                  strokeWidth="4"
+                />
+
+                <line
+                  x1="250"
+                  y1="70"
+                  x2="250"
+                  y2="112"
+                  stroke="#b94e32"
+                  strokeWidth="4"
+                />
+
+                <line
+                  x1="325"
+                  y1="70"
+                  x2="325"
+                  y2="112"
+                  stroke="#b94e32"
+                  strokeWidth="4"
+                />
+
+                <line
+                  x1="140"
+                  y1="112"
+                  x2="140"
+                  y2="153"
+                  stroke="#b94e32"
+                  strokeWidth="4"
+                />
+
+                <line
+                  x1="215"
+                  y1="112"
+                  x2="215"
+                  y2="153"
+                  stroke="#b94e32"
+                  strokeWidth="4"
+                />
+
+                <line
+                  x1="290"
+                  y1="112"
+                  x2="290"
+                  y2="153"
+                  stroke="#b94e32"
+                  strokeWidth="4"
+                />
+
+                <line
+                  x1="365"
+                  y1="112"
+                  x2="365"
+                  y2="153"
+                  stroke="#b94e32"
+                  strokeWidth="4"
+                />
+
+                <line
+                  x1="175"
+                  y1="153"
+                  x2="175"
+                  y2="195"
+                  stroke="#b94e32"
+                  strokeWidth="4"
+                />
+
+                <line
+                  x1="250"
+                  y1="153"
+                  x2="250"
+                  y2="195"
+                  stroke="#b94e32"
+                  strokeWidth="4"
+                />
+
+                <line
+                  x1="325"
+                  y1="153"
+                  x2="325"
+                  y2="195"
+                  stroke="#b94e32"
+                  strokeWidth="4"
+                />
+
+                {/* Length arrow */}
+
+                <line
+                  x1="100"
+                  y1="35"
+                  x2="400"
+                  y2="35"
+                  stroke="#2563eb"
+                  strokeWidth="4"
+                />
+
+                <polygon
+                  points="100,35 116,25 116,45"
+                  fill="#2563eb"
+                />
+
+                <polygon
+                  points="400,35 384,25 384,45"
+                  fill="#2563eb"
+                />
+
+                <text
+                  x="250"
+                  y="25"
+                  textAnchor="middle"
+                  fill="#1d4ed8"
+                  fontSize="18"
+                  fontWeight="700"
                 >
+                  Wall Length
+                </text>
 
-                  <ellipse
-                    cx="250"
-                    cy="218"
-                    rx="170"
-                    ry="18"
-                    fill="#dbeafe"
-                  />
+                {/* Height arrow */}
 
-                  <rect
-                    x="115"
-                    y="85"
-                    width="270"
-                    height="85"
-                    rx="6"
-                    fill="#d96b45"
-                    stroke="#9f3f25"
-                    strokeWidth="3"
-                  />
+                <line
+                  x1="435"
+                  y1="70"
+                  x2="435"
+                  y2="195"
+                  stroke="#2563eb"
+                  strokeWidth="4"
+                />
 
-                  <line
-                    x1="205"
-                    y1="85"
-                    x2="205"
-                    y2="170"
-                    stroke="#b44e31"
-                    strokeWidth="3"
-                  />
+                <polygon
+                  points="435,70 425,86 445,86"
+                  fill="#2563eb"
+                />
 
-                  <line
-                    x1="295"
-                    y1="85"
-                    x2="295"
-                    y2="170"
-                    stroke="#b44e31"
-                    strokeWidth="3"
-                  />
+                <polygon
+                  points="435,195 425,179 445,179"
+                  fill="#2563eb"
+                />
 
-                  <line
-                    x1="125"
-                    y1="95"
-                    x2="375"
-                    y2="95"
-                    stroke="#ef9a78"
-                    strokeWidth="3"
-                  />
+                <text
+                  x="455"
+                  y="137"
+                  fill="#1d4ed8"
+                  fontSize="17"
+                  fontWeight="700"
+                  transform="rotate(90 455 137)"
+                  textAnchor="middle"
+                >
+                  Wall Height
+                </text>
 
-                  <line
-                    x1="115"
-                    y1="58"
-                    x2="385"
-                    y2="58"
-                    stroke="#2563eb"
-                    strokeWidth="4"
-                  />
-
-                  <polygon
-                    points="115,58 130,49 130,67"
-                    fill="#2563eb"
-                  />
-
-                  <polygon
-                    points="385,58 370,49 370,67"
-                    fill="#2563eb"
-                  />
-
-                  <text
-                    x="250"
-                    y="43"
-                    textAnchor="middle"
-                    fill="#1d4ed8"
-                    fontSize="18"
-                    fontWeight="700"
-                  >
-                    Length
-                  </text>
-
-                  <line
-                    x1="420"
-                    y1="85"
-                    x2="420"
-                    y2="170"
-                    stroke="#2563eb"
-                    strokeWidth="4"
-                  />
-
-                  <polygon
-                    points="420,85 411,100 429,100"
-                    fill="#2563eb"
-                  />
-
-                  <polygon
-                    points="420,170 411,155 429,155"
-                    fill="#2563eb"
-                  />
-
-                  <text
-                    x="440"
-                    y="132"
-                    fill="#1d4ed8"
-                    fontSize="17"
-                    fontWeight="700"
-                  >
-                    Height
-                  </text>
-
-                  <line
-                    x1="115"
-                    y1="190"
-                    x2="145"
-                    y2="190"
-                    stroke="#64748b"
-                    strokeWidth="5"
-                  />
-
-                  <line
-                    x1="145"
-                    y1="190"
-                    x2="175"
-                    y2="190"
-                    stroke="#cbd5e1"
-                    strokeWidth="5"
-                    strokeDasharray="4 5"
-                  />
-
-                  <text
-                    x="250"
-                    y="215"
-                    textAnchor="middle"
-                    fill="#475569"
-                    fontSize="16"
-                    fontWeight="600"
-                  >
-                    Mortar joint included
-                  </text>
-
-                </svg>
-
-              </div>
+              </svg>
 
               <div className="mx-auto mt-2 max-w-sm rounded-xl bg-white px-4 py-3 text-center shadow-sm">
 
@@ -449,7 +636,8 @@ export default function BrickCalculator() {
 
                 <p className="mt-1 text-lg font-bold text-slate-900">
                   {brickLength || "8"} ×{" "}
-                  {brickHeight || "2.25"} inches
+                  {brickHeight || "2.25"} ×{" "}
+                  {brickWidth || "3.75"} in
                 </p>
 
               </div>
@@ -459,191 +647,202 @@ export default function BrickCalculator() {
           </section>
 
           {/* =================================================
-              MAIN CALCULATOR
+              MAIN ACCORDION
           ================================================= */}
 
           <section className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
 
             {/* =================================================
-                WALL DIMENSIONS
+                WALL DETAILS
             ================================================= */}
 
-            <div className="p-5 sm:p-7">
+            <div>
 
-              <div className="mb-6">
+              <SectionHeader
+                id="wall"
+                title="Wall Details"
+                description="Enter the size and type of wall."
+              />
 
-                <h2 className="text-2xl font-bold tracking-tight text-slate-900">
-                  Wall Dimensions
-                </h2>
+              {openSection === "wall" && (
+                <div className="border-t border-slate-100 p-5 sm:px-7 sm:py-6">
 
-                <p className="mt-1 text-sm leading-6 text-slate-500">
-                  Enter the dimensions of the wall you want to build.
-                </p>
+                  {/* Wall Type */}
 
-              </div>
+                  <div className="mb-6">
 
-              {/* Wall Length */}
+                    <label className={labelClass}>
+                      Type of Wall
+                    </label>
 
-              <div className="mb-4">
+                    <div className="grid grid-cols-2 gap-3">
 
-                <label className={labelClass}>
-                  Wall Length
-                </label>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setWallType("single")
+                        }
+                        className={`rounded-xl border p-4 text-left transition ${
+                          wallType === "single"
+                            ? "border-blue-500 bg-blue-50 ring-2 ring-blue-100"
+                            : "border-slate-200 bg-white"
+                        }`}
+                      >
+                        <div className="font-semibold text-slate-900">
+                          Single Wall
+                        </div>
 
-                <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-white focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-100">
+                        <div className="mt-1 text-xs text-slate-500">
+                          One brick layer
+                        </div>
+                      </button>
 
-                  <input
-                    type="number"
-                    min="0"
-                    step="any"
-                    inputMode="decimal"
-                    placeholder="Enter wall length"
-                    value={wallLength}
-                    onChange={(e) =>
-                      setWallLength(e.target.value)
-                    }
-                    className="h-12 min-w-0 flex-1 bg-transparent px-3 text-base text-slate-900 outline-none"
-                  />
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setWallType("double")
+                        }
+                        className={`rounded-xl border p-4 text-left transition ${
+                          wallType === "double"
+                            ? "border-blue-500 bg-blue-50 ring-2 ring-blue-100"
+                            : "border-slate-200 bg-white"
+                        }`}
+                      >
+                        <div className="font-semibold text-slate-900">
+                          Double Wall
+                        </div>
 
-                  <div className={unitClass}>
-                    ft
+                        <div className="mt-1 text-xs text-slate-500">
+                          Two brick layers
+                        </div>
+                      </button>
+
+                    </div>
+
+                  </div>
+
+                  {/* Length */}
+
+                  <div className="mb-4">
+
+                    <label className={labelClass}>
+                      Wall Length
+                    </label>
+
+                    <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-white">
+
+                      <input
+                        type="number"
+                        min="0"
+                        step="any"
+                        inputMode="decimal"
+                        value={wallLength}
+                        onChange={(e) =>
+                          setWallLength(e.target.value)
+                        }
+                        placeholder="Enter wall length"
+                        className="h-12 min-w-0 flex-1 bg-transparent px-3 text-base outline-none"
+                      />
+
+                      <span className={unitClass}>
+                        ft
+                      </span>
+
+                    </div>
+
+                  </div>
+
+                  {/* Height */}
+
+                  <div className="mb-4">
+
+                    <label className={labelClass}>
+                      Wall Height
+                    </label>
+
+                    <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-white">
+
+                      <input
+                        type="number"
+                        min="0"
+                        step="any"
+                        inputMode="decimal"
+                        value={wallHeight}
+                        onChange={(e) =>
+                          setWallHeight(e.target.value)
+                        }
+                        placeholder="Enter wall height"
+                        className="h-12 min-w-0 flex-1 bg-transparent px-3 text-base outline-none"
+                      />
+
+                      <span className={unitClass}>
+                        ft
+                      </span>
+
+                    </div>
+
+                  </div>
+
+                  {/* Quantity */}
+
+                  <div>
+
+                    <label className={labelClass}>
+                      Quantity
+                    </label>
+
+                    <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-white">
+
+                      <input
+                        type="number"
+                        min="1"
+                        step="1"
+                        value={wallQuantity}
+                        onChange={(e) =>
+                          setWallQuantity(e.target.value)
+                        }
+                        className="h-12 min-w-0 flex-1 bg-transparent px-3 text-base outline-none"
+                      />
+
+                      <span className="flex h-12 items-center border-l border-slate-200 px-4 text-sm text-slate-500">
+                        walls
+                      </span>
+
+                    </div>
+
                   </div>
 
                 </div>
-
-              </div>
-
-              {/* Wall Height */}
-
-              <div className="mb-4">
-
-                <label className={labelClass}>
-                  Wall Height
-                </label>
-
-                <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-white focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-100">
-
-                  <input
-                    type="number"
-                    min="0"
-                    step="any"
-                    inputMode="decimal"
-                    placeholder="Enter wall height"
-                    value={wallHeight}
-                    onChange={(e) =>
-                      setWallHeight(e.target.value)
-                    }
-                    className="h-12 min-w-0 flex-1 bg-transparent px-3 text-base text-slate-900 outline-none"
-                  />
-
-                  <div className={unitClass}>
-                    ft
-                  </div>
-
-                </div>
-
-              </div>
-
-              {/* Quantity */}
-
-              <div>
-
-                <label className={labelClass}>
-                  Quantity
-                </label>
-
-                <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-white focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-100">
-
-                  <input
-                    type="number"
-                    min="1"
-                    step="1"
-                    inputMode="numeric"
-                    value={quantity}
-                    onChange={(e) =>
-                      setQuantity(e.target.value)
-                    }
-                    className="h-12 min-w-0 flex-1 bg-transparent px-3 text-base text-slate-900 outline-none"
-                  />
-
-                  <div className="flex h-12 items-center border-l border-slate-200 px-4 text-sm text-slate-500">
-                    walls
-                  </div>
-
-                </div>
-
-              </div>
+              )}
 
             </div>
 
             {/* =================================================
-                DOOR & WINDOW ACCORDION
+                OPENINGS
             ================================================= */}
 
-            <div className="border-t border-slate-100 bg-slate-50/60">
+            <div className="border-t border-slate-100">
 
-              <button
-                type="button"
-                onClick={() =>
-                  setDoorOpen(!doorOpen)
-                }
-                className="flex w-full items-center justify-between px-5 py-5 text-left sm:px-7"
-              >
+              <SectionHeader
+                id="openings"
+                title="Door & Window Openings"
+                description="Subtract openings from the wall area."
+              />
 
-                <div>
+              {openSection === "openings" && (
+                <div className="border-t border-slate-100 bg-slate-50/60 p-5 sm:px-7 sm:py-6">
 
-                  <h2 className="text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">
-                    Door & Window Openings
-                  </h2>
+                  {/* Door */}
 
-                  <p className="mt-1 text-sm leading-6 text-slate-500">
-                    Subtract doors and windows from wall area.
-                  </p>
+                  <div className="mb-4 rounded-2xl border border-slate-200 bg-white p-4">
 
-                </div>
+                    <h3 className="mb-4 text-lg font-bold text-slate-900">
+                      Door
+                    </h3>
 
-                <span className="ml-4 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-xl font-semibold text-slate-600 shadow-sm">
-                  {doorOpen ? "−" : "+"}
-                </span>
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
 
-              </button>
-
-              {doorOpen && (
-
-                <div className="border-t border-slate-100 px-5 pb-6 pt-5 sm:px-7">
-
-                  {/* =================================================
-                      DOOR ACCORDION
-                  ================================================= */}
-
-                  <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white">
-
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setDoorOpen(!doorOpen)
-                      }
-                      className="hidden"
-                    />
-
-                    <div className="border-b border-slate-100 px-5 py-4">
-
-                      <h3 className="text-lg font-bold text-slate-900">
-                        Door
-                      </h3>
-
-                      <p className="mt-1 text-sm text-slate-500">
-                        Enter the number and size of doors.
-                      </p>
-
-                    </div>
-
-                    <div className="p-5">
-
-                      {/* Door Quantity */}
-
-                      <div className="mb-4">
-
+                      <div>
                         <label className={labelClass}>
                           Quantity
                         </label>
@@ -651,286 +850,155 @@ export default function BrickCalculator() {
                         <input
                           type="number"
                           min="0"
-                          step="1"
-                          inputMode="numeric"
-                          value={doorQuantity}
+                          value={door.quantity}
                           onChange={(e) =>
-                            setDoorQuantity(
-                              e.target.value
-                            )
+                            setDoor({
+                              ...door,
+                              quantity: e.target.value,
+                            })
                           }
                           className={inputClass}
                         />
-
                       </div>
 
-                      <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className={labelClass}>
+                          Width (ft)
+                        </label>
 
-                        {/* Door Width */}
-
-                        <div>
-
-                          <label className={labelClass}>
-                            Width
-                          </label>
-
-                          <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-white">
-
-                            <input
-                              type="number"
-                              min="0"
-                              step="any"
-                              value={doorWidth}
-                              onChange={(e) =>
-                                setDoorWidth(
-                                  e.target.value
-                                )
-                              }
-                              className="h-12 min-w-0 flex-1 bg-transparent px-3 text-base outline-none"
-                            />
-
-                            <div className="flex h-12 items-center border-l border-slate-200 px-3 text-sm text-slate-500">
-                              ft
-                            </div>
-
-                          </div>
-
-                        </div>
-
-                        {/* Door Height */}
-
-                        <div>
-
-                          <label className={labelClass}>
-                            Height
-                          </label>
-
-                          <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-white">
-
-                            <input
-                              type="number"
-                              min="0"
-                              step="any"
-                              value={doorHeight}
-                              onChange={(e) =>
-                                setDoorHeight(
-                                  e.target.value
-                                )
-                              }
-                              className="h-12 min-w-0 flex-1 bg-transparent px-3 text-base outline-none"
-                            />
-
-                            <div className="flex h-12 items-center border-l border-slate-200 px-3 text-sm text-slate-500">
-                              ft
-                            </div>
-
-                          </div>
-
-                        </div>
-
+                        <input
+                          type="number"
+                          min="0"
+                          step="any"
+                          value={door.width}
+                          onChange={(e) =>
+                            setDoor({
+                              ...door,
+                              width: e.target.value,
+                            })
+                          }
+                          className={inputClass}
+                        />
                       </div>
 
-                      <div className="mt-4 rounded-xl bg-slate-50 p-3 text-sm text-slate-500">
+                      <div>
+                        <label className={labelClass}>
+                          Height (ft)
+                        </label>
 
-                        Door opening area:{" "}
-
-                        <span className="font-semibold text-slate-900">
-                          {result.doorArea.toFixed(2)} sq ft
-                        </span>
-
+                        <input
+                          type="number"
+                          min="0"
+                          step="any"
+                          value={door.height}
+                          onChange={(e) =>
+                            setDoor({
+                              ...door,
+                              height: e.target.value,
+                            })
+                          }
+                          className={inputClass}
+                        />
                       </div>
 
                     </div>
 
                   </div>
 
-                  {/* =================================================
-                      WINDOW ACCORDION
-                  ================================================= */}
+                  {/* Window */}
 
-                  <div className="mt-4 overflow-hidden rounded-2xl border border-slate-200 bg-white">
+                  <div className="rounded-2xl border border-slate-200 bg-white p-4">
 
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setWindowOpen(!windowOpen)
-                      }
-                      className="flex w-full items-center justify-between px-5 py-4 text-left"
-                    >
+                    <h3 className="mb-4 text-lg font-bold text-slate-900">
+                      Window
+                    </h3>
+
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
 
                       <div>
+                        <label className={labelClass}>
+                          Quantity
+                        </label>
 
-                        <h3 className="text-lg font-bold text-slate-900">
-                          Window
-                        </h3>
-
-                        <p className="mt-1 text-sm text-slate-500">
-                          Enter the number and size of windows.
-                        </p>
-
+                        <input
+                          type="number"
+                          min="0"
+                          value={window.quantity}
+                          onChange={(e) =>
+                            setWindow({
+                              ...window,
+                              quantity: e.target.value,
+                            })
+                          }
+                          className={inputClass}
+                        />
                       </div>
 
-                      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-slate-50 text-lg font-semibold text-slate-600">
-                        {windowOpen ? "−" : "+"}
-                      </span>
+                      <div>
+                        <label className={labelClass}>
+                          Width (ft)
+                        </label>
 
-                    </button>
-
-                    {windowOpen && (
-
-                      <div className="border-t border-slate-100 p-5">
-
-                        {/* Window Quantity */}
-
-                        <div className="mb-4">
-
-                          <label className={labelClass}>
-                            Quantity
-                          </label>
-
-                          <input
-                            type="number"
-                            min="0"
-                            step="1"
-                            inputMode="numeric"
-                            value={windowQuantity}
-                            onChange={(e) =>
-                              setWindowQuantity(
-                                e.target.value
-                              )
-                            }
-                            className={inputClass}
-                          />
-
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-3">
-
-                          {/* Window Width */}
-
-                          <div>
-
-                            <label className={labelClass}>
-                              Width
-                            </label>
-
-                            <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-white">
-
-                              <input
-                                type="number"
-                                min="0"
-                                step="any"
-                                value={windowWidth}
-                                onChange={(e) =>
-                                  setWindowWidth(
-                                    e.target.value
-                                  )
-                                }
-                                className="h-12 min-w-0 flex-1 bg-transparent px-3 text-base outline-none"
-                              />
-
-                              <div className="flex h-12 items-center border-l border-slate-200 px-3 text-sm text-slate-500">
-                                ft
-                              </div>
-
-                            </div>
-
-                          </div>
-
-                          {/* Window Height */}
-
-                          <div>
-
-                            <label className={labelClass}>
-                              Height
-                            </label>
-
-                            <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-white">
-
-                              <input
-                                type="number"
-                                min="0"
-                                step="any"
-                                value={windowHeight}
-                                onChange={(e) =>
-                                  setWindowHeight(
-                                    e.target.value
-                                  )
-                                }
-                                className="h-12 min-w-0 flex-1 bg-transparent px-3 text-base outline-none"
-                              />
-
-                              <div className="flex h-12 items-center border-l border-slate-200 px-3 text-sm text-slate-500">
-                                ft
-                              </div>
-
-                            </div>
-
-                          </div>
-
-                        </div>
-
-                        <div className="mt-4 rounded-xl bg-slate-50 p-3 text-sm text-slate-500">
-
-                          Window opening area:{" "}
-
-                          <span className="font-semibold text-slate-900">
-                            {result.windowArea.toFixed(2)} sq ft
-                          </span>
-
-                        </div>
-
+                        <input
+                          type="number"
+                          min="0"
+                          step="any"
+                          value={window.width}
+                          onChange={(e) =>
+                            setWindow({
+                              ...window,
+                              width: e.target.value,
+                            })
+                          }
+                          className={inputClass}
+                        />
                       </div>
 
-                    )}
+                      <div>
+                        <label className={labelClass}>
+                          Height (ft)
+                        </label>
+
+                        <input
+                          type="number"
+                          min="0"
+                          step="any"
+                          value={window.height}
+                          onChange={(e) =>
+                            setWindow({
+                              ...window,
+                              height: e.target.value,
+                            })
+                          }
+                          className={inputClass}
+                        />
+                      </div>
+
+                    </div>
 
                   </div>
 
                 </div>
-
               )}
 
             </div>
 
             {/* =================================================
-                BRICK SETTINGS ACCORDION
+                BRICK DETAILS
             ================================================= */}
 
             <div className="border-t border-slate-100">
 
-              <button
-                type="button"
-                onClick={() =>
-                  setBrickSettingsOpen(
-                    !brickSettingsOpen
-                  )
-                }
-                className="flex w-full items-center justify-between bg-slate-50/60 px-5 py-5 text-left sm:px-7"
-              >
+              <SectionHeader
+                id="brick"
+                title="Brick Details"
+                description="Set brick size and mortar joint."
+              />
 
-                <div>
+              {openSection === "brick" && (
+                <div className="border-t border-slate-100 bg-slate-50/60 p-5 sm:px-7 sm:py-6">
 
-                  <h2 className="text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">
-                    Brick Settings
-                  </h2>
-
-                  <p className="mt-1 text-sm text-slate-500">
-                    Brick size, mortar joint, waste and price.
-                  </p>
-
-                </div>
-
-                <span className="ml-4 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-xl font-semibold text-slate-600 shadow-sm">
-                  {brickSettingsOpen ? "−" : "+"}
-                </span>
-
-              </button>
-
-              {brickSettingsOpen && (
-
-                <div className="border-t border-slate-100 bg-slate-50/60 p-5 sm:p-7">
-
-                  {/* Brick Length */}
+                  {/* Length */}
 
                   <div className="mb-4">
 
@@ -946,22 +1014,20 @@ export default function BrickCalculator() {
                         step="any"
                         value={brickLength}
                         onChange={(e) =>
-                          setBrickLength(
-                            e.target.value
-                          )
+                          setBrickLength(e.target.value)
                         }
                         className="h-12 min-w-0 flex-1 bg-transparent px-3 text-base outline-none"
                       />
 
-                      <div className={unitClass}>
+                      <span className={unitClass}>
                         in
-                      </div>
+                      </span>
 
                     </div>
 
                   </div>
 
-                  {/* Brick Height */}
+                  {/* Height */}
 
                   <div className="mb-4">
 
@@ -977,16 +1043,43 @@ export default function BrickCalculator() {
                         step="any"
                         value={brickHeight}
                         onChange={(e) =>
-                          setBrickHeight(
-                            e.target.value
-                          )
+                          setBrickHeight(e.target.value)
                         }
                         className="h-12 min-w-0 flex-1 bg-transparent px-3 text-base outline-none"
                       />
 
-                      <div className={unitClass}>
+                      <span className={unitClass}>
                         in
-                      </div>
+                      </span>
+
+                    </div>
+
+                  </div>
+
+                  {/* Width */}
+
+                  <div className="mb-4">
+
+                    <label className={labelClass}>
+                      Brick Width
+                    </label>
+
+                    <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-white">
+
+                      <input
+                        type="number"
+                        min="0"
+                        step="any"
+                        value={brickWidth}
+                        onChange={(e) =>
+                          setBrickWidth(e.target.value)
+                        }
+                        className="h-12 min-w-0 flex-1 bg-transparent px-3 text-base outline-none"
+                      />
+
+                      <span className={unitClass}>
+                        in
+                      </span>
 
                     </div>
 
@@ -994,22 +1087,19 @@ export default function BrickCalculator() {
 
                   {/* Mortar */}
 
-                  <div className="mb-4">
+                  <div>
 
                     <label className={labelClass}>
-                      Mortar Joint
+                      Mortar Joint Thickness
                     </label>
 
                     <select
                       value={mortarJoint}
                       onChange={(e) =>
-                        setMortarJoint(
-                          e.target.value
-                        )
+                        setMortarJoint(e.target.value)
                       }
                       className={inputClass}
                     >
-
                       <option value="0.25">
                         1/4 inch
                       </option>
@@ -1025,17 +1115,36 @@ export default function BrickCalculator() {
                       <option value="0.625">
                         5/8 inch
                       </option>
-
                     </select>
 
                   </div>
 
+                </div>
+              )}
+
+            </div>
+
+            {/* =================================================
+                BRICKS REQUIRED
+            ================================================= */}
+
+            <div className="border-t border-slate-100">
+
+              <SectionHeader
+                id="required"
+                title="Bricks Required"
+                description="View quantity and waste estimate."
+              />
+
+              {openSection === "required" && (
+                <div className="border-t border-slate-100 p-5 sm:px-7 sm:py-6">
+
                   {/* Waste */}
 
-                  <div className="mb-4">
+                  <div className="mb-5">
 
                     <label className={labelClass}>
-                      Waste
+                      Brick Wastage
                     </label>
 
                     <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-white">
@@ -1047,20 +1156,96 @@ export default function BrickCalculator() {
                         step="1"
                         value={waste}
                         onChange={(e) =>
-                          setWaste(
-                            e.target.value
-                          )
+                          setWaste(e.target.value)
                         }
                         className="h-12 min-w-0 flex-1 bg-transparent px-3 text-base outline-none"
                       />
 
-                      <div className="flex h-12 items-center border-l border-slate-200 px-4 text-sm font-semibold text-slate-500">
+                      <span className="flex h-12 items-center border-l border-slate-200 px-4 text-sm font-semibold text-slate-500">
                         %
-                      </div>
+                      </span>
 
                     </div>
 
                   </div>
+
+                  {/* Result */}
+
+                  <div className="grid grid-cols-2 gap-3">
+
+                    <div className="rounded-2xl bg-blue-50 p-4">
+
+                      <p className="text-sm text-slate-500">
+                        Bricks Needed
+                      </p>
+
+                      <p className="mt-1 text-2xl font-bold text-blue-700">
+                        {Math.ceil(
+                          result.baseBricks
+                        ).toLocaleString()}
+                      </p>
+
+                    </div>
+
+                    <div className="rounded-2xl bg-slate-50 p-4">
+
+                      <p className="text-sm text-slate-500">
+                        Bricks / sq ft
+                      </p>
+
+                      <p className="mt-1 text-2xl font-bold text-slate-900">
+                        {result.bricksPerSqFt.toFixed(2)}
+                      </p>
+
+                    </div>
+
+                    <div className="rounded-2xl bg-slate-50 p-4">
+
+                      <p className="text-sm text-slate-500">
+                        Waste Bricks
+                      </p>
+
+                      <p className="mt-1 text-xl font-bold text-slate-900">
+                        {Math.ceil(
+                          result.wasteBricks
+                        ).toLocaleString()}
+                      </p>
+
+                    </div>
+
+                    <div className="rounded-2xl bg-green-50 p-4">
+
+                      <p className="text-sm text-slate-500">
+                        Total Bricks
+                      </p>
+
+                      <p className="mt-1 text-2xl font-bold text-green-700">
+                        {result.totalBricks.toLocaleString()}
+                      </p>
+
+                    </div>
+
+                  </div>
+
+                </div>
+              )}
+
+            </div>
+
+            {/* =================================================
+                COST
+            ================================================= */}
+
+            <div className="border-t border-slate-100">
+
+              <SectionHeader
+                id="cost"
+                title="Cost of Materials"
+                description="Estimate the total brick material cost."
+              />
+
+              {openSection === "cost" && (
+                <div className="border-t border-slate-100 bg-slate-50/60 p-5 sm:px-7 sm:py-6">
 
                   {/* Currency */}
 
@@ -1073,13 +1258,10 @@ export default function BrickCalculator() {
                     <select
                       value={currency}
                       onChange={(e) =>
-                        setCurrency(
-                          e.target.value
-                        )
+                        setCurrency(e.target.value)
                       }
                       className={inputClass}
                     >
-
                       <option value="USD">
                         🇺🇸 US Dollar ($)
                       </option>
@@ -1107,14 +1289,13 @@ export default function BrickCalculator() {
                       <option value="CAD">
                         🇨🇦 Canadian Dollar (C$)
                       </option>
-
                     </select>
 
                   </div>
 
                   {/* Price */}
 
-                  <div>
+                  <div className="mb-5">
 
                     <label className={labelClass}>
                       Price per Brick
@@ -1122,9 +1303,9 @@ export default function BrickCalculator() {
 
                     <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-white">
 
-                      <div className="flex h-12 items-center px-3 text-base font-semibold text-slate-500">
+                      <span className="flex h-12 items-center px-3 text-base font-semibold text-slate-500">
                         {currencySymbol}
-                      </div>
+                      </span>
 
                       <input
                         type="number"
@@ -1132,168 +1313,149 @@ export default function BrickCalculator() {
                         step="any"
                         value={price}
                         onChange={(e) =>
-                          setPrice(
-                            e.target.value
-                          )
+                          setPrice(e.target.value)
                         }
                         placeholder="0.00"
-                        className="h-12 min-w-0 flex-1 bg-transparent px-3 text-base outline-none"
+                        className="h-12 min-w-0 flex-1 bg-transparent px-2 text-base outline-none"
                       />
 
-                      <div className="flex h-12 items-center border-l border-slate-200 px-3 text-sm text-slate-500">
+                      <span className="flex h-12 items-center border-l border-slate-200 px-3 text-sm text-slate-500">
                         / brick
-                      </div>
+                      </span>
 
                     </div>
 
                   </div>
 
-                </div>
+                  {/* Cost */}
 
+                  <div className="rounded-2xl bg-green-50 p-5">
+
+                    <p className="text-sm font-medium text-slate-500">
+                      Estimated Cost
+                    </p>
+
+                    <p className="mt-1 text-3xl font-bold text-green-700">
+                      {currencySymbol}
+                      {result.cost.toFixed(2)}
+                    </p>
+
+                    <p className="mt-2 text-xs text-slate-500">
+                      Based on {result.totalBricks.toLocaleString()} bricks
+                    </p>
+
+                  </div>
+
+                </div>
               )}
 
             </div>
 
-            {/* =================================================
-                RESULT
-            ================================================= */}
+          </section>
 
-            <div className="border-t border-slate-100 p-5 sm:p-7">
+          {/* =================================================
+              QUICK RESULT
+          ================================================= */}
 
-              <h2 className="mb-5 text-2xl font-bold text-slate-900">
-                Calculation Result
-              </h2>
+          <section className="mt-5 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
 
-              {/* Wall Area */}
+            <h2 className="text-xl font-bold text-slate-900">
+              Quick Result
+            </h2>
 
-              <div className="mb-4 rounded-2xl bg-blue-50 p-5">
+            <div className="mt-4 grid grid-cols-2 gap-3">
 
-                <p className="text-sm font-medium text-slate-500">
+              <div className="rounded-2xl bg-blue-50 p-4">
+
+                <p className="text-sm text-slate-500">
                   Net Wall Area
                 </p>
 
-                <p className="mt-1 text-3xl font-bold text-blue-600">
-                  {result.wallArea.toFixed(2)} sq ft
+                <p className="mt-1 text-xl font-bold text-blue-700">
+                  {result.netWallArea.toFixed(2)} sq ft
                 </p>
 
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="rounded-2xl bg-green-50 p-4">
 
-                {/* Total Bricks */}
-
-                <div className="rounded-2xl bg-slate-50 p-4">
-
-                  <p className="text-sm text-slate-500">
-                    Total Bricks
-                  </p>
-
-                  <p className="mt-1 text-2xl font-bold text-slate-900">
-                    {result.totalBricks.toLocaleString()}
-                  </p>
-
-                </div>
-
-                {/* Bricks per sqft */}
-
-                <div className="rounded-2xl bg-slate-50 p-4">
-
-                  <p className="text-sm text-slate-500">
-                    Bricks / sq ft
-                  </p>
-
-                  <p className="mt-1 text-2xl font-bold text-slate-900">
-                    {result.bricksPerSqFt.toFixed(2)}
-                  </p>
-
-                </div>
-
-                {/* Base Bricks */}
-
-                <div className="rounded-2xl bg-slate-50 p-4">
-
-                  <p className="text-sm text-slate-500">
-                    Base Bricks
-                  </p>
-
-                  <p className="mt-1 text-xl font-bold text-slate-900">
-                    {Math.ceil(
-                      result.baseBricks
-                    ).toLocaleString()}
-                  </p>
-
-                </div>
-
-                {/* Waste */}
-
-                <div className="rounded-2xl bg-slate-50 p-4">
-
-                  <p className="text-sm text-slate-500">
-                    Waste Bricks
-                  </p>
-
-                  <p className="mt-1 text-xl font-bold text-slate-900">
-                    {Math.ceil(
-                      result.wasteBricks
-                    ).toLocaleString()}
-                  </p>
-
-                </div>
-
-              </div>
-
-              {/* Openings summary */}
-
-              {(result.doorArea > 0 ||
-                result.windowArea > 0) && (
-
-                <div className="mt-4 rounded-2xl bg-amber-50 p-4">
-
-                  <p className="text-sm font-medium text-amber-700">
-                    Openings Deducted
-                  </p>
-
-                  <p className="mt-1 text-lg font-bold text-amber-900">
-                    {result.openingsArea.toFixed(2)} sq ft
-                  </p>
-
-                </div>
-
-              )}
-
-              {/* Cost */}
-
-              <div className="mt-4 rounded-2xl bg-green-50 p-5">
-
-                <p className="text-sm font-medium text-slate-500">
-                  Estimated Material Cost
+                <p className="text-sm text-slate-500">
+                  Total Bricks
                 </p>
 
-                <p className="mt-1 text-3xl font-bold text-green-700">
-                  {currencySymbol}
-                  {result.cost.toFixed(2)}
+                <p className="mt-1 text-xl font-bold text-green-700">
+                  {result.totalBricks.toLocaleString()}
                 </p>
 
               </div>
 
             </div>
 
-            {/* =================================================
-                NOTE
-            ================================================= */}
+          </section>
 
-            <div className="border-t border-slate-100 px-5 py-4 sm:px-7">
+          {/* =================================================
+              ACTIONS
+          ================================================= */}
 
-              <p className="text-xs leading-5 text-slate-500 sm:text-sm">
-                Brick quantity is an estimate based on net wall
-                area, brick face dimensions, mortar joint and
-                selected waste percentage. Door and window
-                openings are deducted from the wall area.
-                Actual requirements may vary depending on
-                construction method and site conditions.
-              </p>
+          <div className="mt-5 grid grid-cols-2 gap-3">
 
-            </div>
+            <button
+              type="button"
+              onClick={async () => {
+                const text =
+                  `CornerSpan Brick Calculator\n\n` +
+                  `Wall Area: ${result.netWallArea.toFixed(2)} sq ft\n` +
+                  `Total Bricks: ${result.totalBricks.toLocaleString()}\n` +
+                  `Estimated Cost: ${currencySymbol}${result.cost.toFixed(2)}`;
+
+                if (
+                  typeof navigator !== "undefined" &&
+                  navigator.share
+                ) {
+                  await navigator.share({
+                    title: "Brick Calculation",
+                    text,
+                  });
+                } else if (
+                  typeof navigator !== "undefined" &&
+                  navigator.clipboard
+                ) {
+                  await navigator.clipboard.writeText(text);
+                  alert("Result copied.");
+                }
+              }}
+              className="h-12 rounded-xl bg-blue-600 px-4 font-semibold text-white shadow-sm transition hover:bg-blue-700 active:scale-[0.99]"
+            >
+              Share Result
+            </button>
+
+            <button
+              type="button"
+              onClick={clearAll}
+              className="h-12 rounded-xl border border-slate-200 bg-white px-4 font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 active:scale-[0.99]"
+            >
+              Clear All
+            </button>
+
+          </div>
+
+          {/* =================================================
+              NOTE
+          ================================================= */}
+
+          <section className="mt-5 rounded-2xl border border-blue-100 bg-blue-50 p-5">
+
+            <h3 className="mb-2 text-lg font-bold text-slate-900">
+              Brick Calculator Note
+            </h3>
+
+            <p className="text-sm leading-6 text-slate-600">
+              This calculator provides an estimate based on wall
+              dimensions, openings, brick face dimensions, mortar
+              joint and wastage. Actual brick requirements can vary
+              depending on construction method, mortar thickness,
+              local brick sizes and site conditions.
+            </p>
 
           </section>
 
@@ -1301,28 +1463,28 @@ export default function BrickCalculator() {
               TIPS
           ================================================= */}
 
-          <section className="mt-6 rounded-2xl border border-blue-100 bg-blue-50 p-5">
+          <section className="mt-5 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
 
             <h3 className="mb-3 text-xl font-bold text-slate-900">
               Brick Calculator Tips
             </h3>
 
-            <ul className="list-disc space-y-2 pl-5 text-sm leading-6 text-slate-700">
+            <ul className="list-disc space-y-2 pl-5 text-sm leading-6 text-slate-600">
 
               <li>
-                Add 5–10% extra bricks for breakage and cutting.
+                Add extra bricks for breakage and cutting.
               </li>
 
               <li>
-                Mortar joints affect the number of bricks required.
+                Door and window openings are deducted from wall area.
               </li>
 
               <li>
-                Door and window openings are deducted automatically.
+                Mortar joints change the number of bricks required.
               </li>
 
               <li>
-                Brick dimensions can vary by region and manufacturer.
+                Brick dimensions vary by region and manufacturer.
               </li>
 
             </ul>
