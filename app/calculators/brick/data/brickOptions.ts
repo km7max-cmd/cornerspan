@@ -1,136 +1,99 @@
 import type {
   Currency,
+  CurrencyOption,
+  LengthUnit,
   MortarJoint,
   MortarRatio,
 } from "../types";
 
 /* =========================================================
-   BRICK SIZE OPTIONS
+   LENGTH UNITS
 ========================================================= */
 
-export type BrickSizeOption = {
-  id: string;
-  name: string;
-  length: number;
-  height: number;
-  width: number;
-  unit: "in";
-};
-
-export const BRICK_SIZE_OPTIONS: BrickSizeOption[] = [
+export const LENGTH_UNIT_OPTIONS: {
+  value: LengthUnit;
+  label: string;
+}[] = [
   {
-    id: "standard",
-    name: "Standard Brick",
-    length: 8,
-    height: 2.25,
-    width: 3.625,
-    unit: "in",
+    value: "mm",
+    label: "Millimeter (mm)",
   },
-
   {
-    id: "modular",
-    name: "Modular Brick",
-    length: 7.625,
-    height: 2.25,
-    width: 3.625,
-    unit: "in",
+    value: "cm",
+    label: "Centimeter (cm)",
   },
-
   {
-    id: "queen",
-    name: "Queen Brick",
-    length: 7.625,
-    height: 2.75,
-    width: 3.125,
-    unit: "in",
+    value: "m",
+    label: "Meter (m)",
   },
-
   {
-    id: "utility",
-    name: "Utility Brick",
-    length: 7.625,
-    height: 3.625,
-    width: 3.625,
-    unit: "in",
+    value: "in",
+    label: "Inch (in)",
+  },
+  {
+    value: "ft",
+    label: "Feet (ft)",
+  },
+  {
+    value: "yd",
+    label: "Yard (yd)",
   },
 ];
 
 /* =========================================================
-   DEFAULT BRICK
+   MORTAR JOINTS
 ========================================================= */
 
-export const DEFAULT_BRICK_SIZE =
-  BRICK_SIZE_OPTIONS[0];
-
-/* =========================================================
-   MORTAR JOINT OPTIONS
-========================================================= */
-
-export type MortarJointOption = {
+export const MORTAR_JOINT_OPTIONS: {
   value: MortarJoint;
   label: string;
-  inches: number;
-};
-
-export const MORTAR_JOINT_OPTIONS: MortarJointOption[] = [
+}[] = [
   {
     value: "0.25",
-    label: "1/4 inch",
-    inches: 0.25,
+    label: '1/4 inch',
   },
-
   {
     value: "0.375",
-    label: "3/8 inch — Standard",
-    inches: 0.375,
+    label: '3/8 inch — Standard',
   },
-
   {
     value: "0.5",
-    label: "1/2 inch",
-    inches: 0.5,
+    label: '1/2 inch',
   },
-
   {
     value: "0.625",
-    label: "5/8 inch",
-    inches: 0.625,
+    label: '5/8 inch',
   },
 ];
 
 /* =========================================================
-   MORTAR MIX RATIO
+   MORTAR RATIOS
 ========================================================= */
 
-export type MortarRatioOption = {
+export const MORTAR_RATIO_OPTIONS: {
   value: MortarRatio;
   label: string;
   cement: number;
   sand: number;
-};
-
-export const MORTAR_RATIO_OPTIONS: MortarRatioOption[] = [
+}[] = [
   {
     value: "1:6",
     label: "1 : 6 — Cement : Sand",
     cement: 1,
     sand: 6,
   },
-
   {
     value: "1:5",
     label: "1 : 5 — Cement : Sand",
     cement: 1,
     sand: 5,
   },
-
   {
     value: "1:4",
     label: "1 : 4 — Cement : Sand",
     cement: 1,
     sand: 4,
   },
-
   {
     value: "1:3",
     label: "1 : 3 — Cement : Sand",
@@ -140,40 +103,8 @@ export const MORTAR_RATIO_OPTIONS: MortarRatioOption[] = [
 ];
 
 /* =========================================================
-   WASTE OPTIONS
+   CURRENCIES
 ========================================================= */
-
-export const WASTE_OPTIONS = [
-  {
-    value: "5",
-    label: "5%",
-  },
-
-  {
-    value: "10",
-    label: "10% — Recommended",
-  },
-
-  {
-    value: "15",
-    label: "15%",
-  },
-
-  {
-    value: "20",
-    label: "20%",
-  },
-];
-
-/* =========================================================
-   CURRENCY OPTIONS
-========================================================= */
-
-export type CurrencyOption = {
-  value: Currency;
-  label: string;
-  symbol: string;
-};
 
 export const CURRENCY_OPTIONS: CurrencyOption[] = [
   {
@@ -181,37 +112,31 @@ export const CURRENCY_OPTIONS: CurrencyOption[] = [
     label: "🇺🇸 US Dollar ($)",
     symbol: "$",
   },
-
   {
     value: "INR",
     label: "🇮🇳 Indian Rupee (₹)",
     symbol: "₹",
   },
-
   {
     value: "EUR",
     label: "🇪🇺 Euro (€)",
     symbol: "€",
   },
-
   {
     value: "GBP",
     label: "🇬🇧 British Pound (£)",
     symbol: "£",
   },
-
   {
     value: "AED",
     label: "🇦🇪 UAE Dirham (AED)",
     symbol: "AED",
   },
-
   {
     value: "AUD",
     label: "🇦🇺 Australian Dollar (A$)",
     symbol: "A$",
   },
-
   {
     value: "CAD",
     label: "🇨🇦 Canadian Dollar (C$)",
@@ -220,7 +145,7 @@ export const CURRENCY_OPTIONS: CurrencyOption[] = [
 ];
 
 /* =========================================================
-   CURRENCY SYMBOL HELPER
+   CURRENCY SYMBOL
 ========================================================= */
 
 export function getCurrencySymbol(
@@ -236,43 +161,91 @@ export function getCurrencySymbol(
 }
 
 /* =========================================================
+   COMMON BRICK SIZES
+========================================================= */
+
+export const COMMON_BRICK_SIZES = [
+  {
+    name: "Standard US Brick",
+    length: "8",
+    height: "2.25",
+    width: "3.625",
+    unit: "in" as LengthUnit,
+  },
+
+  {
+    name: "Modular Brick",
+    length: "7.625",
+    height: "2.25",
+    width: "3.625",
+    unit: "in" as LengthUnit,
+  },
+
+  {
+    name: "Large Brick",
+    length: "8",
+    height: "2.625",
+    width: "3.625",
+    unit: "in" as LengthUnit,
+  },
+];
+
+/* =========================================================
    DEFAULT VALUES
 ========================================================= */
 
-export const DEFAULT_BRICK_LENGTH = "8";
+export const BRICK_DEFAULTS = {
+  wallType: "single" as const,
 
-export const DEFAULT_BRICK_HEIGHT = "2.25";
+  wallLength: "",
+  wallHeight: "",
 
-export const DEFAULT_BRICK_WIDTH = "3.625";
+  wallLengthUnit: "ft" as LengthUnit,
+  wallHeightUnit: "ft" as LengthUnit,
 
-export const DEFAULT_MORTAR_JOINT: MortarJoint =
-  "0.375";
+  quantity: "1",
 
-export const DEFAULT_WASTE = "10";
+  doorQuantity: "0",
+  doorWidth: "3",
+  doorHeight: "7",
 
-export const DEFAULT_MORTAR_RATIO: MortarRatio =
-  "1:6";
+  doorWidthUnit: "ft" as LengthUnit,
+  doorHeightUnit: "ft" as LengthUnit,
 
-export const DEFAULT_CURRENCY: Currency =
-  "USD";
+  windowQuantity: "0",
+  windowWidth: "3",
+  windowHeight: "4",
 
-export const DEFAULT_BRICK_PRICE = "0.85";
+  windowWidthUnit: "ft" as LengthUnit,
+  windowHeightUnit: "ft" as LengthUnit,
 
-/* =========================================================
-   DEFAULT MORTAR SETTINGS
-========================================================= */
+  brickLength: "8",
+  brickHeight: "2.25",
+  brickWidth: "3.625",
 
-export const DEFAULT_MORTAR_WET_TO_DRY =
-  1.33;
+  brickUnit: "in" as LengthUnit,
 
-export const DEFAULT_MORTAR_WASTE = 10;
+  mortarJoint: "0.375" as MortarJoint,
 
-/* =========================================================
-   DEFAULT CEMENT SETTINGS
-========================================================= */
+  mortarRatio: "1:6" as MortarRatio,
 
-export const DEFAULT_CEMENT_DENSITY =
-  1440;
+  includeMortar: true,
 
-export const DEFAULT_CEMENT_BAG_SIZE =
-  50;
+  mortarWetToDryRatio: "1.33",
+
+  mortarWaste: "10",
+
+  cementDensity: "1440",
+
+  cementBagSize: "50",
+
+  currency: "USD" as Currency,
+
+  pricePerBrick: "0.85",
+
+  cementPrice: "8",
+
+  sandPrice: "35",
+
+  waste: "10",
+};
