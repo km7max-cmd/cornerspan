@@ -1,8 +1,7 @@
 "use client";
 
 import type { LengthUnit } from "../types";
-import { LENGTH_UNITS } from "../units";
-import UnitSelect from "./UnitSelect";
+import { LENGTH_UNIT_OPTIONS } from "../data/brickOptions";
 
 type OpeningDetailsProps = {
   open: boolean;
@@ -76,11 +75,11 @@ export default function OpeningDetails({
   const inputClass =
     "h-12 min-w-0 flex-1 bg-transparent px-3 text-base text-slate-900 outline-none";
 
+  const selectClass =
+    "h-12 border-l border-slate-200 bg-white px-3 text-sm font-semibold text-blue-700 outline-none";
+
   const labelClass =
     "mb-1.5 block text-sm font-semibold text-slate-700";
-
-  const fieldClass =
-    "mb-4";
 
   return (
     <section className="border-b border-slate-100">
@@ -98,11 +97,11 @@ export default function OpeningDetails({
         <div className="min-w-0">
 
           <h2 className="text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">
-            Door & Window Openings
+            Doors & Windows
           </h2>
 
           <p className="mt-1 text-sm leading-6 text-slate-500">
-            Deduct doors and windows from the wall area.
+            Deduct door and window openings from the wall area.
           </p>
 
         </div>
@@ -127,72 +126,56 @@ export default function OpeningDetails({
         <div className="border-t border-slate-100 bg-white p-5 sm:px-7 sm:py-6">
 
           {/* =================================================
-              DOOR
+              DOORS
           ================================================= */}
 
-          <div className="mb-8">
+          <div className="rounded-2xl border border-slate-200 p-4">
 
-            <div className="mb-5 flex items-center gap-3">
+            <div className="mb-4">
 
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-xl">
-                🚪
-              </div>
+              <h3 className="text-lg font-bold text-slate-900">
+                Doors
+              </h3>
 
-              <div>
-
-                <h3 className="text-lg font-bold text-slate-900">
-                  Door
-                </h3>
-
-                <p className="text-xs text-slate-500">
-                  Enter the number and size of doors.
-                </p>
-
-              </div>
+              <p className="mt-1 text-xs text-slate-500">
+                Enter the number and size of doors.
+              </p>
 
             </div>
 
             {/* Door Quantity */}
 
-            <div className={fieldClass}>
+            <div className="mb-4">
 
               <label className={labelClass}>
                 Door Quantity
               </label>
 
-              <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-white transition focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-100">
-
-                <input
-                  type="number"
-                  min="0"
-                  step="1"
-                  inputMode="numeric"
-                  value={doorQuantity}
-                  onChange={(event) =>
-                    setDoorQuantity(
-                      event.target.value
-                    )
-                  }
-                  className={inputClass}
-                />
-
-                <span className="flex h-12 items-center border-l border-slate-200 px-4 text-sm text-slate-500">
-                  doors
-                </span>
-
-              </div>
+              <input
+                type="number"
+                min="0"
+                step="1"
+                inputMode="numeric"
+                value={doorQuantity}
+                onChange={(event) =>
+                  setDoorQuantity(
+                    event.target.value
+                  )
+                }
+                className="h-12 w-full rounded-xl border border-slate-200 bg-white px-3 text-base text-slate-900 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+              />
 
             </div>
 
             {/* Door Width */}
 
-            <div className={fieldClass}>
+            <div className="mb-4">
 
               <label className={labelClass}>
                 Door Width
               </label>
 
-              <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-white transition focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-100">
+              <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-white focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-100">
 
                 <input
                   type="number"
@@ -205,20 +188,30 @@ export default function OpeningDetails({
                       event.target.value
                     )
                   }
-                  placeholder="Enter width"
                   className={inputClass}
                 />
 
-                <UnitSelect
+                <select
                   value={doorWidthUnit}
-                  onChange={(value) =>
+                  onChange={(event) =>
                     setDoorWidthUnit(
-                      value as LengthUnit
+                      event.target.value as LengthUnit
                     )
                   }
-                  options={LENGTH_UNITS}
-                  ariaLabel="Door width unit"
-                />
+                  className={selectClass}
+                  aria-label="Door width unit"
+                >
+                  {LENGTH_UNIT_OPTIONS.map(
+                    (option) => (
+                      <option
+                        key={option.value}
+                        value={option.value}
+                      >
+                        {option.value}
+                      </option>
+                    )
+                  )}
+                </select>
 
               </div>
 
@@ -232,7 +225,7 @@ export default function OpeningDetails({
                 Door Height
               </label>
 
-              <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-white transition focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-100">
+              <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-white focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-100">
 
                 <input
                   type="number"
@@ -245,20 +238,30 @@ export default function OpeningDetails({
                       event.target.value
                     )
                   }
-                  placeholder="Enter height"
                   className={inputClass}
                 />
 
-                <UnitSelect
+                <select
                   value={doorHeightUnit}
-                  onChange={(value) =>
+                  onChange={(event) =>
                     setDoorHeightUnit(
-                      value as LengthUnit
+                      event.target.value as LengthUnit
                     )
                   }
-                  options={LENGTH_UNITS}
-                  ariaLabel="Door height unit"
-                />
+                  className={selectClass}
+                  aria-label="Door height unit"
+                >
+                  {LENGTH_UNIT_OPTIONS.map(
+                    (option) => (
+                      <option
+                        key={option.value}
+                        value={option.value}
+                      >
+                        {option.value}
+                      </option>
+                    )
+                  )}
+                </select>
 
               </div>
 
@@ -267,72 +270,56 @@ export default function OpeningDetails({
           </div>
 
           {/* =================================================
-              WINDOW
+              WINDOWS
           ================================================= */}
 
-          <div>
+          <div className="mt-4 rounded-2xl border border-slate-200 p-4">
 
-            <div className="mb-5 flex items-center gap-3">
+            <div className="mb-4">
 
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-xl">
-                🪟
-              </div>
+              <h3 className="text-lg font-bold text-slate-900">
+                Windows
+              </h3>
 
-              <div>
-
-                <h3 className="text-lg font-bold text-slate-900">
-                  Window
-                </h3>
-
-                <p className="text-xs text-slate-500">
-                  Enter the number and size of windows.
-                </p>
-
-              </div>
+              <p className="mt-1 text-xs text-slate-500">
+                Enter the number and size of windows.
+              </p>
 
             </div>
 
             {/* Window Quantity */}
 
-            <div className={fieldClass}>
+            <div className="mb-4">
 
               <label className={labelClass}>
                 Window Quantity
               </label>
 
-              <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-white transition focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-100">
-
-                <input
-                  type="number"
-                  min="0"
-                  step="1"
-                  inputMode="numeric"
-                  value={windowQuantity}
-                  onChange={(event) =>
-                    setWindowQuantity(
-                      event.target.value
-                    )
-                  }
-                  className={inputClass}
-                />
-
-                <span className="flex h-12 items-center border-l border-slate-200 px-4 text-sm text-slate-500">
-                  windows
-                </span>
-
-              </div>
+              <input
+                type="number"
+                min="0"
+                step="1"
+                inputMode="numeric"
+                value={windowQuantity}
+                onChange={(event) =>
+                  setWindowQuantity(
+                    event.target.value
+                  )
+                }
+                className="h-12 w-full rounded-xl border border-slate-200 bg-white px-3 text-base text-slate-900 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+              />
 
             </div>
 
             {/* Window Width */}
 
-            <div className={fieldClass}>
+            <div className="mb-4">
 
               <label className={labelClass}>
                 Window Width
               </label>
 
-              <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-white transition focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-100">
+              <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-white focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-100">
 
                 <input
                   type="number"
@@ -345,20 +332,30 @@ export default function OpeningDetails({
                       event.target.value
                     )
                   }
-                  placeholder="Enter width"
                   className={inputClass}
                 />
 
-                <UnitSelect
+                <select
                   value={windowWidthUnit}
-                  onChange={(value) =>
+                  onChange={(event) =>
                     setWindowWidthUnit(
-                      value as LengthUnit
+                      event.target.value as LengthUnit
                     )
                   }
-                  options={LENGTH_UNITS}
-                  ariaLabel="Window width unit"
-                />
+                  className={selectClass}
+                  aria-label="Window width unit"
+                >
+                  {LENGTH_UNIT_OPTIONS.map(
+                    (option) => (
+                      <option
+                        key={option.value}
+                        value={option.value}
+                      >
+                        {option.value}
+                      </option>
+                    )
+                  )}
+                </select>
 
               </div>
 
@@ -372,7 +369,7 @@ export default function OpeningDetails({
                 Window Height
               </label>
 
-              <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-white transition focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-100">
+              <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-white focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-100">
 
                 <input
                   type="number"
@@ -385,20 +382,30 @@ export default function OpeningDetails({
                       event.target.value
                     )
                   }
-                  placeholder="Enter height"
                   className={inputClass}
                 />
 
-                <UnitSelect
+                <select
                   value={windowHeightUnit}
-                  onChange={(value) =>
+                  onChange={(event) =>
                     setWindowHeightUnit(
-                      value as LengthUnit
+                      event.target.value as LengthUnit
                     )
                   }
-                  options={LENGTH_UNITS}
-                  ariaLabel="Window height unit"
-                />
+                  className={selectClass}
+                  aria-label="Window height unit"
+                >
+                  {LENGTH_UNIT_OPTIONS.map(
+                    (option) => (
+                      <option
+                        key={option.value}
+                        value={option.value}
+                      >
+                        {option.value}
+                      </option>
+                    )
+                  )}
+                </select>
 
               </div>
 
@@ -410,12 +417,12 @@ export default function OpeningDetails({
               INFO
           ================================================= */}
 
-          <div className="mt-6 rounded-xl bg-slate-50 px-4 py-3">
+          <div className="mt-5 rounded-xl bg-blue-50 px-4 py-3">
 
             <p className="text-xs leading-5 text-slate-600">
-              Door and window areas are automatically deducted
-              from the total wall area before calculating the
-              required number of bricks.
+              Door and window areas are automatically
+              deducted from the wall area before calculating
+              the required number of bricks.
             </p>
 
           </div>
