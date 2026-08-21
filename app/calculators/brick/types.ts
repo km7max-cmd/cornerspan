@@ -4,9 +4,7 @@ export type LengthUnit =
   | "m"
   | "in"
   | "ft"
-  | "yd"
-  | "ft-in"
-  | "m-cm";
+  | "yd";
 
 export type AreaUnit =
   | "mm²"
@@ -49,6 +47,10 @@ export type MortarRatio =
   | "1:4"
   | "1:3";
 
+/* =========================================================
+   BRICK DIMENSIONS
+========================================================= */
+
 export type BrickDimensions = {
   length: number;
   height: number;
@@ -56,97 +58,168 @@ export type BrickDimensions = {
   unit: LengthUnit;
 };
 
+/* =========================================================
+   WALL DIMENSIONS
+========================================================= */
+
 export type WallDimensions = {
   length: number;
   height: number;
   unit: LengthUnit;
 };
 
+/* =========================================================
+   OPENING
+========================================================= */
+
 export type Opening = {
   quantity: number;
   width: number;
   height: number;
-  unit: LengthUnit;
+  widthUnit: LengthUnit;
+  heightUnit: LengthUnit;
 };
 
+/* =========================================================
+   CALCULATOR STATE
+========================================================= */
+
 export type BrickCalculatorState = {
+  /* Wall */
+
   wallType: WallType;
 
   wallLength: string;
   wallHeight: string;
+
   wallLengthUnit: LengthUnit;
   wallHeightUnit: LengthUnit;
 
   quantity: string;
 
+  /* Door */
+
   doorQuantity: string;
   doorWidth: string;
   doorHeight: string;
+
   doorWidthUnit: LengthUnit;
   doorHeightUnit: LengthUnit;
+
+  /* Window */
 
   windowQuantity: string;
   windowWidth: string;
   windowHeight: string;
+
   windowWidthUnit: LengthUnit;
   windowHeightUnit: LengthUnit;
+
+  /* Brick */
 
   brickLength: string;
   brickHeight: string;
   brickWidth: string;
+
   brickUnit: LengthUnit;
+
+  /* Mortar */
 
   mortarJoint: MortarJoint;
 
-  waste: string;
-
-  currency: Currency;
-  pricePerBrick: string;
+  mortarRatio: MortarRatio;
 
   includeMortar: boolean;
 
   mortarWetToDryRatio: string;
+
   mortarWaste: string;
-  mortarRatio: MortarRatio;
+
+  /* Cement */
 
   cementDensity: string;
+
   cementBagSize: string;
 
+  /* Cost */
+
+  currency: Currency;
+
+  pricePerBrick: string;
+
   cementPrice: string;
+
   sandPrice: string;
+
+  /* Options */
+
+  waste: string;
 };
 
+/* =========================================================
+   CALCULATION RESULT
+========================================================= */
+
 export type BrickCalculationResult = {
+  /* Wall */
+
   wallArea: number;
+
   openingArea: number;
+
   netWallArea: number;
+
+  /* Bricks */
 
   bricksPerSqFt: number;
 
   baseBricks: number;
+
   wasteBricks: number;
+
   totalBricks: number;
 
   brickCost: number;
 
+  /* Mortar */
+
   mortarWetVolume: number;
+
   mortarDryVolume: number;
+
   mortarTotalDryVolume: number;
 
+  /* Cement */
+
   cementVolume: number;
+
   cementWeight: number;
+
   cementBags: number;
 
+  /* Sand */
+
   sandVolume: number;
+
+  /* Cost */
+
   mortarCost: number;
 
   totalMaterialCost: number;
 };
 
+/* =========================================================
+   UNIT OPTION
+========================================================= */
+
 export type UnitOption = {
   value: LengthUnit;
   label: string;
 };
+
+/* =========================================================
+   CURRENCY OPTION
+========================================================= */
 
 export type CurrencyOption = {
   value: Currency;
@@ -154,4 +227,10 @@ export type CurrencyOption = {
   symbol: string;
 };
 
-export type OpeningType = "door" | "window";
+/* =========================================================
+   OPENING TYPE
+========================================================= */
+
+export type OpeningType =
+  | "door"
+  | "window";
