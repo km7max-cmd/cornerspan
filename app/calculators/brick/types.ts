@@ -165,13 +165,23 @@ export type BrickCalculationResult = {
 
   wallArea: number;
 
+  wallAreaUnit: AreaUnit;
+
   openingArea: number;
 
+  openingAreaUnit: AreaUnit;
+
   netWallArea: number;
+
+  netWallAreaUnit: AreaUnit;
 
   /* Bricks */
 
   bricksPerSqFt: number;
+
+  bricksPerArea: number;
+
+  bricksPerAreaUnit: AreaUnit;
 
   baseBricks: number;
 
@@ -185,13 +195,21 @@ export type BrickCalculationResult = {
 
   mortarWetVolume: number;
 
+  mortarWetVolumeUnit: VolumeUnit;
+
   mortarDryVolume: number;
 
+  mortarDryVolumeUnit: VolumeUnit;
+
   mortarTotalDryVolume: number;
+
+  mortarTotalDryVolumeUnit: VolumeUnit;
 
   /* Cement */
 
   cementVolume: number;
+
+  cementVolumeUnit: VolumeUnit;
 
   cementWeight: number;
 
@@ -200,6 +218,8 @@ export type BrickCalculationResult = {
   /* Sand */
 
   sandVolume: number;
+
+  sandVolumeUnit: VolumeUnit;
 
   /* Cost */
 
