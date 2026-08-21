@@ -1,8 +1,13 @@
 "use client";
 
-import type { LengthUnit, WallType } from "../types";
-import { LENGTH_UNITS } from "../units";
-import UnitSelect from "./UnitSelect";
+import type {
+  LengthUnit,
+  WallType,
+} from "../types";
+
+import {
+  LENGTH_UNIT_OPTIONS,
+} from "../data/brickOptions";
 
 type WallDetailsProps = {
   open: boolean;
@@ -52,6 +57,9 @@ export default function WallDetails({
   const inputClass =
     "h-12 min-w-0 flex-1 bg-transparent px-3 text-base text-slate-900 outline-none";
 
+  const selectClass =
+    "h-12 border-l border-slate-200 bg-white px-3 text-sm font-semibold text-blue-700 outline-none";
+
   const labelClass =
     "mb-1.5 block text-sm font-semibold text-slate-700";
 
@@ -71,11 +79,11 @@ export default function WallDetails({
         <div className="min-w-0">
 
           <h2 className="text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">
-            Wall Details
+            Wall Dimensions
           </h2>
 
           <p className="mt-1 text-sm leading-6 text-slate-500">
-            Set wall type, length, height and quantity.
+            Enter the size and type of wall.
           </p>
 
         </div>
@@ -89,6 +97,7 @@ export default function WallDetails({
         >
           {open ? "−" : "+"}
         </span>
+
       </button>
 
       {/* =====================================================
@@ -102,22 +111,20 @@ export default function WallDetails({
               WALL TYPE
           ================================================= */}
 
-          <div className="mb-6">
+          <div className="mb-5">
 
             <label className={labelClass}>
-              Type of Wall
+              Wall Type
             </label>
 
             <div className="grid grid-cols-2 gap-3">
-
-              {/* Single */}
 
               <button
                 type="button"
                 onClick={() =>
                   setWallType("single")
                 }
-                className={`rounded-2xl border p-4 text-left transition ${
+                className={`rounded-xl border p-4 text-left transition ${
                   wallType === "single"
                     ? "border-blue-500 bg-blue-50 ring-2 ring-blue-100"
                     : "border-slate-200 bg-white hover:border-slate-300"
@@ -126,17 +133,23 @@ export default function WallDetails({
 
                 <div className="flex items-center justify-between">
 
-                  <span className="font-semibold text-slate-900">
-                    Single
+                  <span className="text-sm font-bold text-slate-900">
+                    Single Wall
                   </span>
 
                   <span
-                    className={`h-4 w-4 rounded-full border-2 ${
+                    className={`flex h-5 w-5 items-center justify-center rounded-full border ${
                       wallType === "single"
-                        ? "border-blue-600 bg-blue-600"
+                        ? "border-blue-600 bg-blue-600 text-white"
                         : "border-slate-300"
                     }`}
-                  />
+                  >
+                    {wallType === "single" && (
+                      <span className="text-xs">
+                        ✓
+                      </span>
+                    )}
+                  </span>
 
                 </div>
 
@@ -146,14 +159,12 @@ export default function WallDetails({
 
               </button>
 
-              {/* Double */}
-
               <button
                 type="button"
                 onClick={() =>
                   setWallType("double")
                 }
-                className={`rounded-2xl border p-4 text-left transition ${
+                className={`rounded-xl border p-4 text-left transition ${
                   wallType === "double"
                     ? "border-blue-500 bg-blue-50 ring-2 ring-blue-100"
                     : "border-slate-200 bg-white hover:border-slate-300"
@@ -162,17 +173,23 @@ export default function WallDetails({
 
                 <div className="flex items-center justify-between">
 
-                  <span className="font-semibold text-slate-900">
-                    Double
+                  <span className="text-sm font-bold text-slate-900">
+                    Double Wall
                   </span>
 
                   <span
-                    className={`h-4 w-4 rounded-full border-2 ${
+                    className={`flex h-5 w-5 items-center justify-center rounded-full border ${
                       wallType === "double"
-                        ? "border-blue-600 bg-blue-600"
+                        ? "border-blue-600 bg-blue-600 text-white"
                         : "border-slate-300"
                     }`}
-                  />
+                  >
+                    {wallType === "double" && (
+                      <span className="text-xs">
+                        ✓
+                      </span>
+                    )}
+                  </span>
 
                 </div>
 
@@ -213,16 +230,27 @@ export default function WallDetails({
                 className={inputClass}
               />
 
-              <UnitSelect
+              <select
                 value={wallLengthUnit}
-                onChange={(value) =>
+                onChange={(event) =>
                   setWallLengthUnit(
-                    value as LengthUnit
+                    event.target.value as LengthUnit
                   )
                 }
-                options={LENGTH_UNITS}
-                ariaLabel="Wall length unit"
-              />
+                className={selectClass}
+                aria-label="Wall length unit"
+              >
+                {LENGTH_UNIT_OPTIONS.map(
+                  (option) => (
+                    <option
+                      key={option.value}
+                      value={option.value}
+                    >
+                      {option.value}
+                    </option>
+                  )
+                )}
+              </select>
 
             </div>
 
@@ -255,16 +283,27 @@ export default function WallDetails({
                 className={inputClass}
               />
 
-              <UnitSelect
+              <select
                 value={wallHeightUnit}
-                onChange={(value) =>
+                onChange={(event) =>
                   setWallHeightUnit(
-                    value as LengthUnit
+                    event.target.value as LengthUnit
                   )
                 }
-                options={LENGTH_UNITS}
-                ariaLabel="Wall height unit"
-              />
+                className={selectClass}
+                aria-label="Wall height unit"
+              >
+                {LENGTH_UNIT_OPTIONS.map(
+                  (option) => (
+                    <option
+                      key={option.value}
+                      value={option.value}
+                    >
+                      {option.value}
+                    </option>
+                  )
+                )}
+              </select>
 
             </div>
 
@@ -308,11 +347,12 @@ export default function WallDetails({
               INFO
           ================================================= */}
 
-          <div className="mt-5 rounded-xl bg-blue-50 px-4 py-3">
+          <div className="mt-5 rounded-xl bg-slate-50 px-4 py-3">
 
-            <p className="text-xs leading-5 text-blue-800">
-              Wall dimensions are converted automatically
-              when you change the unit.
+            <p className="text-xs leading-5 text-slate-600">
+              Wall area is calculated from length × height ×
+              quantity. Door and window openings can be
+              deducted in the next section.
             </p>
 
           </div>
