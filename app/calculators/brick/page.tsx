@@ -13,7 +13,13 @@ import type {
   BrickCalculatorState,
 } from "./types";
 
-import { calculateBrick } from "./utils/calculations";
+import {
+  BRICK_DEFAULTS,
+} from "./data/brickOptions";
+
+import {
+  calculateBrick,
+} from "./utils/calculations";
 
 export default function BrickCalculator() {
   /* =====================================================
@@ -28,98 +34,12 @@ export default function BrickCalculator() {
   ===================================================== */
 
   const [state, setState] =
-    useState<BrickCalculatorState>({
-      /* -------------------------------------------------
-         WALL
-      ------------------------------------------------- */
-
-      wallType: "single",
-
-      wallLength: "",
-      wallHeight: "",
-
-      wallLengthUnit: "ft",
-      wallHeightUnit: "ft",
-
-      quantity: "1",
-
-      /* -------------------------------------------------
-         DOOR
-      ------------------------------------------------- */
-
-      doorQuantity: "0",
-
-      doorWidth: "3",
-      doorHeight: "7",
-
-      doorWidthUnit: "ft",
-      doorHeightUnit: "ft",
-
-      /* -------------------------------------------------
-         WINDOW
-      ------------------------------------------------- */
-
-      windowQuantity: "0",
-
-      windowWidth: "3",
-      windowHeight: "4",
-
-      windowWidthUnit: "ft",
-      windowHeightUnit: "ft",
-
-      /* -------------------------------------------------
-         BRICK
-      ------------------------------------------------- */
-
-      brickLength: "8",
-      brickHeight: "2.25",
-      brickWidth: "3.625",
-
-      brickUnit: "in",
-
-      /* -------------------------------------------------
-         MORTAR
-      ------------------------------------------------- */
-
-      mortarJoint: "0.375",
-
-      mortarRatio: "1:6",
-
-      includeMortar: true,
-
-      mortarWetToDryRatio: "1.33",
-
-      mortarWaste: "10",
-
-      /* -------------------------------------------------
-         CEMENT
-      ------------------------------------------------- */
-
-      cementDensity: "1440",
-
-      cementBagSize: "50",
-
-      /* -------------------------------------------------
-         COST
-      ------------------------------------------------- */
-
-      currency: "USD",
-
-      pricePerBrick: "0.85",
-
-      cementPrice: "8",
-
-      sandPrice: "35",
-
-      /* -------------------------------------------------
-         BRICK WASTE
-      ------------------------------------------------- */
-
-      waste: "10",
-    });
+    useState<BrickCalculatorState>(
+      BRICK_DEFAULTS
+    );
 
   /* =====================================================
-     CALCULATE RESULT
+     CALCULATION
   ===================================================== */
 
   const result = useMemo(() => {
@@ -154,7 +74,7 @@ export default function BrickCalculator() {
         />
 
         {/* =================================================
-            MAIN CONTENT
+            MAIN CALCULATOR
         ================================================= */}
 
         <div className="mx-auto mt-6 max-w-3xl">
@@ -179,7 +99,7 @@ export default function BrickCalculator() {
           />
 
           {/* =================================================
-              INPUT SECTIONS
+              CALCULATOR SECTIONS
           ================================================= */}
 
           <div className="mt-6">
@@ -211,7 +131,7 @@ export default function BrickCalculator() {
           </div>
 
           {/* =================================================
-              CALCULATION NOTE
+              TIPS
           ================================================= */}
 
           <section className="mt-6 rounded-2xl border border-blue-100 bg-blue-50 p-5">
@@ -243,7 +163,7 @@ export default function BrickCalculator() {
               </li>
 
               <li>
-                Brick sizes vary by country,
+                Brick sizes can vary by region,
                 manufacturer and construction method.
               </li>
 
@@ -255,13 +175,13 @@ export default function BrickCalculator() {
               DISCLAIMER
           ================================================= */}
 
-          <p className="mt-6 px-2 text-center text-xs leading-5 text-slate-500">
+          <p className="mt-6 px-2 pb-6 text-center text-xs leading-5 text-slate-500">
 
             This brick calculator provides an estimate
-            for planning purposes. Actual quantities may
-            vary depending on brick size, mortar joint,
-            wall construction, openings, waste and site
-            conditions.
+            for planning purposes only. Actual quantities
+            may vary depending on brick dimensions,
+            mortar joint thickness, openings, wall
+            construction method, waste and site conditions.
 
           </p>
 
