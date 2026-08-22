@@ -19,13 +19,18 @@ const unitLabels: Record<Unit, string> = {
 };
 
 const shapes = [
-  "Rectangle",
+  "Known Area",
+  "Room",
+  "Wall with Window",
+  "Cathedral Wall",
   "Square",
-  "Circle",
+  "Rectangle",
   "Rectangle Border",
+  "Circle",
   "Circle Border",
   "Annulus",
   "Triangle",
+  "Triangle 1/2 b×h",
   "Trapezoid",
 ];
 
@@ -34,17 +39,25 @@ export default function SquareFootageCalculator() {
 
   const [length, setLength] = useState("");
   const [width, setWidth] = useState("");
+  const [height, setHeight] = useState("");
   const [quantity, setQuantity] = useState("1");
+
   const [unit, setUnit] = useState<Unit>("feet");
 
   const [borderWidth, setBorderWidth] = useState("");
-  const [radius, setRadius] = useState("");
+
   const [sideA, setSideA] = useState("");
   const [sideB, setSideB] = useState("");
   const [sideC, setSideC] = useState("");
 
+  const [windowWidth, setWindowWidth] = useState("");
+  const [windowHeight, setWindowHeight] = useState("");
+  const [windowQuantity, setWindowQuantity] = useState("1");
+
   const [waste, setWaste] = useState("0");
   const [price, setPrice] = useState("");
+
+  const [knownArea, setKnownArea] = useState("");
 
   const [result, setResult] = useState<{
     squareFeet: number;
@@ -66,57 +79,120 @@ export default function SquareFootageCalculator() {
 
     let areaSqFt = 0;
 
+    /* Known Area */
+    if (shape === "Known Area") {
+      areaSqFt = number(knownArea) * factor * factor * qty;
+    }
+
+    /* Rectangle */
     if (shape === "Rectangle") {
-      areaSqFt =
-        number(length) *
-        factor *
-        number(width) *
-        factor *
-        qty;
+      const l = number(length) * factor;
+      const w = number(width) * factor;
+
+      areaSqFt = l * w * qty;
     }
 
+    /* Room */
+    if (shape === "Room") {
+      const l = number(length) * factor;
+      const w = number(width) * factor;
+
+      areaSqFt = l * w * qty;
+    }
+
+    /* Square */
     if (shape === "Square") {
+      const side = number(length) * factor;
+
+      areaSqFt = side * side * qty;
+    }
+
+    /* Wall */
+    if (shape === "Wall with Window") {
+      const wallW = number(length) * factor;
+      const wallH = number(height) * factor;
+
+      const totalWallArea = wallW * wallH * qty;
+
+      const winW = number(windowWidth) * factor;
+      const winH = number(windowHeight) * factor;
+      const winQty = Math.max(number(windowQuantity), 1);
+
+      const windowArea = winW * winH * winQty;
+
+      areaSqFt = Math.max(totalWallArea - windowArea, 0);
+    }
+
+    /* Cathedral Wall */
+    if (shape === "Cathedral Wall") {
+      const wallW = number(width) * factor;
+      const wallH = number(height) * factor;
+      const peakH = number(sideA) * factor;
+
+      const rectangleArea = wallW * wallH;
+
+      const triangleArea = (wallW * peakH) / 2;
+
       areaSqFt =
-        number(length) *
-        factor *
-        number(length) *
-        factor *
-        qty;
+        (rectangleArea + triangleArea) * qty;
     }
 
-    if (shape === "Circle") {
-      const diameterFt = number(length) * factor;
-      const radiusFt = diameterFt / 2;
-
-      areaSqFt = Math.PI * radiusFt * radiusFt * qty;
-    }
-
+    /* Rectangle Border */
     if (shape === "Rectangle Border") {
-      const lengthFt = number(length) * factor;
-      const widthFt = number(width) * factor;
-      const borderFt = number(borderWidth) * factor;
+      const l = number(length) * factor;
+      const w = number(width) * factor;
+      const border = number(borderWidth) * factor;
 
-      const outerArea = lengthFt * widthFt;
-      const innerLength = Math.max(lengthFt - borderFt * 2, 0);
-      const innerWidth = Math.max(widthFt - borderFt * 2, 0);
-      const innerArea = innerLength * innerWidth;
+      const outerArea = l * w;
 
-      areaSqFt = (outerArea - innerArea) * qty;
-    }
+      const innerL = Math.max(l - border * 2, 0);
+      const innerW = Math.max(w - border * 2, 0);
 
-    if (shape === "Circle Border" || shape === "Annulus") {
-      const outerDiameterFt = number(length) * factor;
-      const borderFt = number(borderWidth) * factor;
-
-      const outerRadius = outerDiameterFt / 2;
-      const innerRadius = Math.max(outerRadius - borderFt, 0);
+      const innerArea = innerL * innerW;
 
       areaSqFt =
-        (Math.PI * outerRadius * outerRadius -
-          Math.PI * innerRadius * innerRadius) *
+        Math.max(outerArea - innerArea, 0) * qty;
+    }
+
+    /* Circle */
+    if (shape === "Circle") {
+      const diameter = number(length) * factor;
+      const radius = diameter / 2;
+
+      areaSqFt =
+        Math.PI * radius * radius * qty;
+    }
+
+    /* Circle Border / Annulus */
+    if (
+      shape === "Circle Border" ||
+      shape === "Annulus"
+    ) {
+      const outerDiameter =
+        number(length) * factor;
+
+      const border =
+        number(borderWidth) * factor;
+
+      const outerRadius = outerDiameter / 2;
+
+      const innerRadius = Math.max(
+        outerRadius - border,
+        0
+      );
+
+      const outerArea =
+        Math.PI * outerRadius * outerRadius;
+
+      const innerArea =
+        Math.PI * innerRadius * innerRadius;
+
+      areaSqFt =
+        Math.max(outerArea - innerArea, 0) *
         qty;
     }
 
+    /* Triangle – 3 sides */
     if (shape === "Triangle") {
       const a = number(sideA) * factor;
       const b = number(sideB) * factor;
@@ -124,18 +200,41 @@ export default function SquareFootageCalculator() {
 
       const semi = (a + b + c) / 2;
 
-      if (a > 0 && b > 0 && c > 0 && semi > a && semi > b && semi > c) {
+      if (
+        a > 0 &&
+        b > 0 &&
+        c > 0 &&
+        semi > a &&
+        semi > b &&
+        semi > c
+      ) {
         areaSqFt =
-          Math.sqrt(semi * (semi - a) * (semi - b) * (semi - c)) * qty;
+          Math.sqrt(
+            semi *
+              (semi - a) *
+              (semi - b) *
+              (semi - c)
+          ) * qty;
       }
     }
 
+    /* Triangle 1/2 b × h */
+    if (shape === "Triangle 1/2 b×h") {
+      const base = number(sideA) * factor;
+      const h = number(height) * factor;
+
+      areaSqFt =
+        (base * h) / 2 * qty;
+    }
+
+    /* Trapezoid */
     if (shape === "Trapezoid") {
       const a = number(sideA) * factor;
       const b = number(sideB) * factor;
-      const height = number(sideC) * factor;
+      const h = number(height) * factor;
 
-      areaSqFt = ((a + b) / 2) * height * qty;
+      areaSqFt =
+        ((a + b) / 2) * h * qty;
     }
 
     if (!areaSqFt || areaSqFt < 0) {
@@ -143,16 +242,27 @@ export default function SquareFootageCalculator() {
       return;
     }
 
-    const wastePercent = Math.max(number(waste), 0);
+    /* Waste */
+    const wastePercent =
+      Math.max(number(waste), 0);
 
     const finalArea =
-      areaSqFt * (1 + wastePercent / 100);
+      areaSqFt *
+      (1 + wastePercent / 100);
 
     const squareFeet = finalArea;
-    const squareInches = squareFeet * 144;
-    const squareYards = squareFeet / 9;
-    const squareMeters = squareFeet * 0.09290304;
-    const acres = squareFeet / 43560;
+
+    const squareInches =
+      squareFeet * 144;
+
+    const squareYards =
+      squareFeet / 9;
+
+    const squareMeters =
+      squareFeet * 0.09290304;
+
+    const acres =
+      squareFeet / 43560;
 
     const cost =
       price.trim() !== ""
@@ -172,20 +282,31 @@ export default function SquareFootageCalculator() {
   const clearCalculator = () => {
     setLength("");
     setWidth("");
+    setHeight("");
     setQuantity("1");
+
     setUnit("feet");
+
     setBorderWidth("");
-    setRadius("");
+
     setSideA("");
     setSideB("");
     setSideC("");
+
+    setWindowWidth("");
+    setWindowHeight("");
+    setWindowQuantity("1");
+
     setWaste("0");
     setPrice("");
+
+    setKnownArea("");
+
     setResult(null);
   };
 
   const inputClass =
-    "h-12 w-full rounded-lg border border-slate-300 bg-white px-3 text-base text-slate-900 outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100";
+    "h-11 w-full rounded-md border border-slate-300 bg-white px-3 text-base text-slate-900 outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100";
 
   const labelClass =
     "mb-1.5 block text-sm font-medium text-slate-700";
@@ -194,27 +315,27 @@ export default function SquareFootageCalculator() {
     <main className="min-h-screen bg-slate-50 px-4 py-6 sm:px-6">
       <div className="mx-auto max-w-2xl">
 
-        {/* Header */}
-        <div className="mb-5">
-          <div className="mb-2 text-sm text-blue-600">
-            Calculators / Construction / Area
-          </div>
-
-          <h1 className="text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
-            Square Footage Calculator
-          </h1>
-
-          <p className="mt-3 text-base leading-7 text-slate-600">
-            Calculate square feet, square inches, square yards,
-            square meters and acres for construction projects.
-          </p>
+        {/* Breadcrumb */}
+        <div className="mb-2 text-sm text-blue-700">
+          Calculators / Construction / Area
         </div>
 
-        {/* Calculator */}
-        <section className="overflow-hidden rounded-xl border border-slate-300 bg-white shadow-sm">
+        {/* Title */}
+        <h1 className="text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
+          Square Footage Calculator
+        </h1>
 
-          {/* Calculator Header */}
-          <div className="border-b border-slate-200 bg-blue-700 px-4 py-3 text-center text-lg font-bold text-white">
+        <p className="mt-3 text-base leading-7 text-slate-600">
+          Calculate square feet, square inches,
+          square yards, square meters and acres
+          for construction projects.
+        </p>
+
+        {/* Calculator */}
+        <section className="mt-6 overflow-hidden rounded-xl border border-slate-300 bg-white shadow-sm">
+
+          {/* Calculator Title */}
+          <div className="bg-blue-700 px-4 py-3 text-center text-lg font-bold text-white">
             Square Footage Calculator
           </div>
 
@@ -235,162 +356,230 @@ export default function SquareFootageCalculator() {
                 className={inputClass}
               >
                 {shapes.map((item) => (
-                  <option key={item} value={item}>
+                  <option
+                    key={item}
+                    value={item}
+                  >
                     {item}
                   </option>
                 ))}
               </select>
             </div>
 
-            {/* Rectangle */}
+            {/* Known Area */}
+            {shape === "Known Area" && (
+              <Field
+                label="Area"
+                value={knownArea}
+                onChange={setKnownArea}
+                unit={unit}
+                setUnit={setUnit}
+                inputClass={inputClass}
+                labelClass={labelClass}
+              />
+            )}
+
+            {/* Rectangle / Room */}
             {(shape === "Rectangle" ||
-              shape === "Rectangle Border") && (
+              shape === "Room") && (
               <div className="space-y-4">
 
-                <div>
-                  <label className={labelClass}>
-                    Length
-                  </label>
+                <Field
+                  label="Length"
+                  value={length}
+                  onChange={setLength}
+                  unit={unit}
+                  setUnit={setUnit}
+                  inputClass={inputClass}
+                  labelClass={labelClass}
+                />
 
-                  <div className="grid grid-cols-[1fr_130px] gap-2">
-                    <input
-                      type="number"
-                      inputMode="decimal"
-                      min="0"
-                      value={length}
-                      onChange={(e) => setLength(e.target.value)}
-                      placeholder="0"
-                      className={inputClass}
-                    />
+                <Field
+                  label="Width"
+                  value={width}
+                  onChange={setWidth}
+                  unit={unit}
+                  setUnit={setUnit}
+                  inputClass={inputClass}
+                  labelClass={labelClass}
+                />
 
-                    <select
-                      value={unit}
-                      onChange={(e) =>
-                        setUnit(e.target.value as Unit)
-                      }
-                      className={inputClass}
-                    >
-                      {Object.entries(unitLabels).map(
-                        ([value, label]) => (
-                          <option key={value} value={value}>
-                            {label}
-                          </option>
-                        )
-                      )}
-                    </select>
-                  </div>
-                </div>
-
-                <div>
-                  <label className={labelClass}>
-                    Width
-                  </label>
-
-                  <input
-                    type="number"
-                    inputMode="decimal"
-                    min="0"
-                    value={width}
-                    onChange={(e) => setWidth(e.target.value)}
-                    placeholder="0"
-                    className={inputClass}
-                  />
-                </div>
-
-                {shape === "Rectangle Border" && (
-                  <div>
-                    <label className={labelClass}>
-                      Border Width
-                    </label>
-
-                    <input
-                      type="number"
-                      inputMode="decimal"
-                      min="0"
-                      value={borderWidth}
-                      onChange={(e) =>
-                        setBorderWidth(e.target.value)
-                      }
-                      placeholder="0"
-                      className={inputClass}
-                    />
-                  </div>
-                )}
               </div>
             )}
 
             {/* Square */}
             {shape === "Square" && (
-              <div>
-                <label className={labelClass}>
-                  Side Length
-                </label>
+              <Field
+                label="Side Length"
+                value={length}
+                onChange={setLength}
+                unit={unit}
+                setUnit={setUnit}
+                inputClass={inputClass}
+                labelClass={labelClass}
+              />
+            )}
 
-                <div className="grid grid-cols-[1fr_130px] gap-2">
-                  <input
-                    type="number"
-                    inputMode="decimal"
-                    min="0"
-                    value={length}
-                    onChange={(e) => setLength(e.target.value)}
-                    placeholder="0"
-                    className={inputClass}
-                  />
+            {/* Wall with Window */}
+            {shape === "Wall with Window" && (
+              <div className="space-y-4">
 
-                  <select
-                    value={unit}
-                    onChange={(e) =>
-                      setUnit(e.target.value as Unit)
-                    }
-                    className={inputClass}
-                  >
-                    {Object.entries(unitLabels).map(
-                      ([value, label]) => (
-                        <option key={value} value={value}>
-                          {label}
-                        </option>
-                      )
-                    )}
-                  </select>
+                <Field
+                  label="Wall Width"
+                  value={length}
+                  onChange={setLength}
+                  unit={unit}
+                  setUnit={setUnit}
+                  inputClass={inputClass}
+                  labelClass={labelClass}
+                />
+
+                <Field
+                  label="Wall Height"
+                  value={height}
+                  onChange={setHeight}
+                  unit={unit}
+                  setUnit={setUnit}
+                  inputClass={inputClass}
+                  labelClass={labelClass}
+                />
+
+                <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+
+                  <h3 className="mb-3 font-semibold text-slate-800">
+                    Window
+                  </h3>
+
+                  <div className="space-y-4">
+
+                    <Field
+                      label="Window Width"
+                      value={windowWidth}
+                      onChange={setWindowWidth}
+                      unit={unit}
+                      setUnit={setUnit}
+                      inputClass={inputClass}
+                      labelClass={labelClass}
+                    />
+
+                    <Field
+                      label="Window Height"
+                      value={windowHeight}
+                      onChange={setWindowHeight}
+                      unit={unit}
+                      setUnit={setUnit}
+                      inputClass={inputClass}
+                      labelClass={labelClass}
+                    />
+
+                    <div>
+                      <label className={labelClass}>
+                        Window Quantity
+                      </label>
+
+                      <input
+                        type="number"
+                        min="1"
+                        value={windowQuantity}
+                        onChange={(e) =>
+                          setWindowQuantity(
+                            e.target.value
+                          )
+                        }
+                        className={inputClass}
+                      />
+                    </div>
+
+                  </div>
                 </div>
+              </div>
+            )}
+
+            {/* Cathedral Wall */}
+            {shape === "Cathedral Wall" && (
+              <div className="space-y-4">
+
+                <Field
+                  label="Wall Width"
+                  value={width}
+                  onChange={setWidth}
+                  unit={unit}
+                  setUnit={setUnit}
+                  inputClass={inputClass}
+                  labelClass={labelClass}
+                />
+
+                <Field
+                  label="Wall Height"
+                  value={height}
+                  onChange={setHeight}
+                  unit={unit}
+                  setUnit={setUnit}
+                  inputClass={inputClass}
+                  labelClass={labelClass}
+                />
+
+                <Field
+                  label="Triangle Height"
+                  value={sideA}
+                  onChange={setSideA}
+                  unit={unit}
+                  setUnit={setUnit}
+                  inputClass={inputClass}
+                  labelClass={labelClass}
+                />
+
+              </div>
+            )}
+
+            {/* Rectangle Border */}
+            {shape === "Rectangle Border" && (
+              <div className="space-y-4">
+
+                <Field
+                  label="Length"
+                  value={length}
+                  onChange={setLength}
+                  unit={unit}
+                  setUnit={setUnit}
+                  inputClass={inputClass}
+                  labelClass={labelClass}
+                />
+
+                <Field
+                  label="Width"
+                  value={width}
+                  onChange={setWidth}
+                  unit={unit}
+                  setUnit={setUnit}
+                  inputClass={inputClass}
+                  labelClass={labelClass}
+                />
+
+                <Field
+                  label="Border Width"
+                  value={borderWidth}
+                  onChange={setBorderWidth}
+                  unit={unit}
+                  setUnit={setUnit}
+                  inputClass={inputClass}
+                  labelClass={labelClass}
+                />
+
               </div>
             )}
 
             {/* Circle */}
             {shape === "Circle" && (
-              <div>
-                <label className={labelClass}>
-                  Diameter
-                </label>
-
-                <div className="grid grid-cols-[1fr_130px] gap-2">
-                  <input
-                    type="number"
-                    inputMode="decimal"
-                    min="0"
-                    value={length}
-                    onChange={(e) => setLength(e.target.value)}
-                    placeholder="0"
-                    className={inputClass}
-                  />
-
-                  <select
-                    value={unit}
-                    onChange={(e) =>
-                      setUnit(e.target.value as Unit)
-                    }
-                    className={inputClass}
-                  >
-                    {Object.entries(unitLabels).map(
-                      ([value, label]) => (
-                        <option key={value} value={value}>
-                          {label}
-                        </option>
-                      )
-                    )}
-                  </select>
-                </div>
-              </div>
+              <Field
+                label="Diameter"
+                value={length}
+                onChange={setLength}
+                unit={unit}
+                setUnit={setUnit}
+                inputClass={inputClass}
+                labelClass={labelClass}
+              />
             )}
 
             {/* Circle Border / Annulus */}
@@ -398,39 +587,26 @@ export default function SquareFootageCalculator() {
               shape === "Annulus") && (
               <div className="space-y-4">
 
-                <div>
-                  <label className={labelClass}>
-                    Outer Diameter
-                  </label>
+                <Field
+                  label="Outer Diameter"
+                  value={length}
+                  onChange={setLength}
+                  unit={unit}
+                  setUnit={setUnit}
+                  inputClass={inputClass}
+                  labelClass={labelClass}
+                />
 
-                  <input
-                    type="number"
-                    inputMode="decimal"
-                    min="0"
-                    value={length}
-                    onChange={(e) => setLength(e.target.value)}
-                    placeholder="0"
-                    className={inputClass}
-                  />
-                </div>
+                <Field
+                  label="Border Width"
+                  value={borderWidth}
+                  onChange={setBorderWidth}
+                  unit={unit}
+                  setUnit={setUnit}
+                  inputClass={inputClass}
+                  labelClass={labelClass}
+                />
 
-                <div>
-                  <label className={labelClass}>
-                    Border Width
-                  </label>
-
-                  <input
-                    type="number"
-                    inputMode="decimal"
-                    min="0"
-                    value={borderWidth}
-                    onChange={(e) =>
-                      setBorderWidth(e.target.value)
-                    }
-                    placeholder="0"
-                    className={inputClass}
-                  />
-                </div>
               </div>
             )}
 
@@ -438,53 +614,63 @@ export default function SquareFootageCalculator() {
             {shape === "Triangle" && (
               <div className="space-y-4">
 
-                <div>
-                  <label className={labelClass}>
-                    Side A
-                  </label>
+                <Field
+                  label="Side A"
+                  value={sideA}
+                  onChange={setSideA}
+                  unit={unit}
+                  setUnit={setUnit}
+                  inputClass={inputClass}
+                  labelClass={labelClass}
+                />
 
-                  <input
-                    type="number"
-                    inputMode="decimal"
-                    min="0"
-                    value={sideA}
-                    onChange={(e) => setSideA(e.target.value)}
-                    placeholder="0"
-                    className={inputClass}
-                  />
-                </div>
+                <Field
+                  label="Side B"
+                  value={sideB}
+                  onChange={setSideB}
+                  unit={unit}
+                  setUnit={setUnit}
+                  inputClass={inputClass}
+                  labelClass={labelClass}
+                />
 
-                <div>
-                  <label className={labelClass}>
-                    Side B
-                  </label>
+                <Field
+                  label="Side C"
+                  value={sideC}
+                  onChange={setSideC}
+                  unit={unit}
+                  setUnit={setUnit}
+                  inputClass={inputClass}
+                  labelClass={labelClass}
+                />
 
-                  <input
-                    type="number"
-                    inputMode="decimal"
-                    min="0"
-                    value={sideB}
-                    onChange={(e) => setSideB(e.target.value)}
-                    placeholder="0"
-                    className={inputClass}
-                  />
-                </div>
+              </div>
+            )}
 
-                <div>
-                  <label className={labelClass}>
-                    Side C
-                  </label>
+            {/* Triangle 1/2 b×h */}
+            {shape === "Triangle 1/2 b×h" && (
+              <div className="space-y-4">
 
-                  <input
-                    type="number"
-                    inputMode="decimal"
-                    min="0"
-                    value={sideC}
-                    onChange={(e) => setSideC(e.target.value)}
-                    placeholder="0"
-                    className={inputClass}
-                  />
-                </div>
+                <Field
+                  label="Base"
+                  value={sideA}
+                  onChange={setSideA}
+                  unit={unit}
+                  setUnit={setUnit}
+                  inputClass={inputClass}
+                  labelClass={labelClass}
+                />
+
+                <Field
+                  label="Height"
+                  value={height}
+                  onChange={setHeight}
+                  unit={unit}
+                  setUnit={setUnit}
+                  inputClass={inputClass}
+                  labelClass={labelClass}
+                />
+
               </div>
             )}
 
@@ -492,53 +678,36 @@ export default function SquareFootageCalculator() {
             {shape === "Trapezoid" && (
               <div className="space-y-4">
 
-                <div>
-                  <label className={labelClass}>
-                    Base A
-                  </label>
+                <Field
+                  label="Base A"
+                  value={sideA}
+                  onChange={setSideA}
+                  unit={unit}
+                  setUnit={setUnit}
+                  inputClass={inputClass}
+                  labelClass={labelClass}
+                />
 
-                  <input
-                    type="number"
-                    inputMode="decimal"
-                    min="0"
-                    value={sideA}
-                    onChange={(e) => setSideA(e.target.value)}
-                    placeholder="0"
-                    className={inputClass}
-                  />
-                </div>
+                <Field
+                  label="Base B"
+                  value={sideB}
+                  onChange={setSideB}
+                  unit={unit}
+                  setUnit={setUnit}
+                  inputClass={inputClass}
+                  labelClass={labelClass}
+                />
 
-                <div>
-                  <label className={labelClass}>
-                    Base B
-                  </label>
+                <Field
+                  label="Height"
+                  value={height}
+                  onChange={setHeight}
+                  unit={unit}
+                  setUnit={setUnit}
+                  inputClass={inputClass}
+                  labelClass={labelClass}
+                />
 
-                  <input
-                    type="number"
-                    inputMode="decimal"
-                    min="0"
-                    value={sideB}
-                    onChange={(e) => setSideB(e.target.value)}
-                    placeholder="0"
-                    className={inputClass}
-                  />
-                </div>
-
-                <div>
-                  <label className={labelClass}>
-                    Height
-                  </label>
-
-                  <input
-                    type="number"
-                    inputMode="decimal"
-                    min="0"
-                    value={sideC}
-                    onChange={(e) => setSideC(e.target.value)}
-                    placeholder="0"
-                    className={inputClass}
-                  />
-                </div>
               </div>
             )}
 
@@ -550,69 +719,75 @@ export default function SquareFootageCalculator() {
 
               <input
                 type="number"
-                inputMode="numeric"
                 min="1"
                 value={quantity}
-                onChange={(e) => setQuantity(e.target.value)}
+                onChange={(e) =>
+                  setQuantity(e.target.value)
+                }
                 className={inputClass}
               />
             </div>
 
             {/* Waste */}
-            <fieldset className="mt-6 rounded-lg border border-slate-300 p-4">
+            <fieldset className="mt-5 rounded-lg border border-slate-300 p-4">
               <legend className="px-2 text-sm font-medium text-slate-500">
                 Optional Material Waste
               </legend>
 
               <div className="flex items-center gap-3">
+
                 <span className="text-sm text-slate-600">
                   Add an extra
                 </span>
 
                 <input
                   type="number"
-                  inputMode="decimal"
                   min="0"
                   value={waste}
-                  onChange={(e) => setWaste(e.target.value)}
-                  className="h-11 w-24 rounded-lg border border-slate-300 px-3 text-center outline-none focus:border-blue-600"
+                  onChange={(e) =>
+                    setWaste(e.target.value)
+                  }
+                  className="h-10 w-24 rounded-md border border-slate-300 px-3 text-center outline-none focus:border-blue-600"
                 />
 
                 <span className="text-sm text-slate-600">
                   %
                 </span>
+
               </div>
             </fieldset>
 
-            {/* Price */}
+            {/* Cost */}
             <fieldset className="mt-4 rounded-lg border border-slate-300 p-4">
               <legend className="px-2 text-sm font-medium text-slate-500">
                 Optional Material Cost
               </legend>
 
-              <div className="grid grid-cols-[90px_1fr] gap-2">
-                <div className="flex h-11 items-center rounded-lg border border-slate-300 bg-slate-50 px-3 text-sm text-slate-600">
-                  $ / ft²
-                </div>
+              <div>
+                <label className={labelClass}>
+                  Price per square foot ($)
+                </label>
 
                 <input
                   type="number"
-                  inputMode="decimal"
                   min="0"
                   value={price}
-                  onChange={(e) => setPrice(e.target.value)}
-                  placeholder="Price per square foot"
-                  className="h-11 rounded-lg border border-slate-300 px-3 outline-none focus:border-blue-600"
+                  onChange={(e) =>
+                    setPrice(e.target.value)
+                  }
+                  placeholder="0"
+                  className={inputClass}
                 />
               </div>
             </fieldset>
 
             {/* Buttons */}
-            <div className="mt-6 flex gap-3">
+            <div className="mt-6 grid grid-cols-2 gap-3">
+
               <button
                 type="button"
                 onClick={calculate}
-                className="flex-1 rounded-lg bg-blue-700 px-5 py-3 text-base font-bold text-white transition hover:bg-blue-800 active:scale-[0.99]"
+                className="rounded-md bg-blue-700 px-5 py-3 font-bold text-white hover:bg-blue-800"
               >
                 Calculate
               </button>
@@ -620,10 +795,11 @@ export default function SquareFootageCalculator() {
               <button
                 type="button"
                 onClick={clearCalculator}
-                className="rounded-lg bg-slate-200 px-6 py-3 text-base font-semibold text-slate-700 transition hover:bg-slate-300"
+                className="rounded-md bg-slate-200 px-5 py-3 font-semibold text-slate-700 hover:bg-slate-300"
               >
                 Clear
               </button>
+
             </div>
 
             {/* Answer */}
@@ -634,7 +810,7 @@ export default function SquareFootageCalculator() {
               </h2>
 
               {result ? (
-                <div className="space-y-3 text-sm">
+                <div className="space-y-3">
 
                   <ResultRow
                     label="Square Feet"
@@ -674,20 +850,22 @@ export default function SquareFootageCalculator() {
                   Enter your measurements and click Calculate.
                 </p>
               )}
+
             </div>
 
           </div>
         </section>
 
-        {/* Explanation */}
-        <section className="mt-8 rounded-xl border border-slate-200 bg-white p-5">
+        {/* Simple Explanation */}
+        <section className="mt-6 rounded-xl border border-slate-200 bg-white p-5">
+
           <h2 className="text-xl font-bold text-slate-900">
             How to Calculate Square Footage
           </h2>
 
           <p className="mt-3 text-sm leading-6 text-slate-600">
-            For a rectangular area, multiply the length by the width.
-            Make sure both measurements use the same unit.
+            For a rectangular area, multiply the
+            length by the width.
           </p>
 
           <div className="mt-4 rounded-lg bg-slate-50 p-4 text-center font-semibold text-slate-800">
@@ -695,16 +873,81 @@ export default function SquareFootageCalculator() {
           </div>
 
           <p className="mt-4 text-sm leading-6 text-slate-600">
-            Use the Quantity field when you have multiple areas with
-            the same dimensions. You can also add a material waste
-            percentage when estimating construction materials.
+            For irregular areas, select the appropriate
+            shape above and enter the required measurements.
           </p>
+
         </section>
 
       </div>
     </main>
   );
 }
+
+/* Input Field */
+
+function Field({
+  label,
+  value,
+  onChange,
+  unit,
+  setUnit,
+  inputClass,
+  labelClass,
+}: {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  unit: Unit;
+  setUnit: (unit: Unit) => void;
+  inputClass: string;
+  labelClass: string;
+}) {
+  return (
+    <div>
+      <label className={labelClass}>
+        {label}
+      </label>
+
+      <div className="grid grid-cols-[1fr_120px] gap-2">
+
+        <input
+          type="number"
+          inputMode="decimal"
+          min="0"
+          value={value}
+          onChange={(e) =>
+            onChange(e.target.value)
+          }
+          placeholder="0"
+          className={inputClass}
+        />
+
+        <select
+          value={unit}
+          onChange={(e) =>
+            setUnit(e.target.value as Unit)
+          }
+          className={inputClass}
+        >
+          {Object.entries(unitLabels).map(
+            ([value, label]) => (
+              <option
+                key={value}
+                value={value}
+              >
+                {label}
+              </option>
+            )
+          )}
+        </select>
+
+      </div>
+    </div>
+  );
+}
+
+/* Result */
 
 function ResultRow({
   label,
