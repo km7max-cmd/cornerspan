@@ -82,6 +82,12 @@ const calculators: Calculator[] = [
     category: "Earthwork",
   },
   {
+    name: "Square Footage Calculator",
+    icon: "📐",
+    category: "General",
+    href: "/calculators/square-footage",
+  },
+  {
     name: "Area Calculator",
     icon: "📏",
     category: "General",
