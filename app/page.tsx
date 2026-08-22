@@ -1,6 +1,5 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-
 import Hero from "../components/Hero";
 import HowItWorks from "../components/HowItWorks";
 import Stats from "../components/Stats";
