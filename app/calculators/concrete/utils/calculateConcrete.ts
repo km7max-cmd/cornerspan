@@ -230,9 +230,7 @@ export function calculateConcrete(
     cementVolume * 1440;
 
   const cementBags =
-    Math.ceil(
-      cementWeight / 50
-    );
+    cementWeight / 50;
 
   // --------------------------------------------------
   // Water

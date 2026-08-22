@@ -8,6 +8,7 @@ import Features from "../components/Features";
 import CTA from "../components/CTA";
 import CalculatorGuides from "../components/CalculatorGuides";
 import PopularCalculators from "../components/PopularCalculators";
+import { liveCalculators } from "../lib/calculators";
 
 export const metadata: Metadata = {
   title:
@@ -53,44 +54,11 @@ export const metadata: Metadata = {
   },
 };
 
-const calculators = [
-  {
-    title: "Concrete Calculator",
-    description:
-      "Calculate concrete volume and estimate cement, sand, aggregate and material requirements.",
-    href: "/calculators/concrete",
-  },
-  {
-    title: "Brick Calculator",
-    description:
-      "Estimate the number of bricks required for a wall based on its dimensions.",
-    href: "/calculators/brick",
-  },
-  {
-    title: "Steel Weight Calculator",
-    description:
-      "Calculate the approximate weight of steel bars using diameter and length.",
-    href: "/calculators/steel",
-  },
-  {
-    title: "Paint Calculator",
-    description:
-      "Estimate paint quantity based on surface area and coverage.",
-    href: "/calculators/paint",
-  },
-  {
-    title: "Tile Calculator",
-    description:
-      "Calculate the number of tiles required for floors and walls.",
-    href: "/calculators/tile",
-  },
-  {
-    title: "Roofing Calculator",
-    description:
-      "Estimate roof area and the quantity of roofing materials required.",
-    href: "/calculators/roofing",
-  },
-];
+const calculators = liveCalculators.map((calculator) => ({
+  title: calculator.title,
+  description: calculator.description,
+  href: calculator.href,
+}));
 
 const faqs = [
   {
@@ -276,10 +244,10 @@ export default function Home() {
               </p>
 
               <p className="mt-4 text-sm leading-7 text-slate-600 sm:text-base">
-                Use the available tools for concrete, bricks, steel, paint,
-                tiles and roofing. Each calculator is designed for a specific
-                type of construction calculation and includes the relevant
-                inputs and results.
+                Use the available tools for concrete, masonry, paving, roofing,
+                interior finishing and site materials. Each calculator is
+                designed for a specific construction estimate and includes the
+                relevant inputs and results.
               </p>
 
             </div>

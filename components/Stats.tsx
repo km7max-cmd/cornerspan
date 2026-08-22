@@ -1,7 +1,9 @@
+import { liveCalculators } from "../lib/calculators";
+
 export default function Stats() {
   const stats = [
     {
-      value: "100+",
+      value: `${liveCalculators.length}`,
       label: "Calculators",
     },
     {

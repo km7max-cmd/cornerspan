@@ -1411,8 +1411,8 @@ Currency        : ${currency}`;
               }
 
               hasMaterialPrices={
-                cementPrice.trim() !== "" &&
-                sandPrice.trim() !== "" &&
+                cementPrice.trim() !== "" ||
+                sandPrice.trim() !== "" ||
                 aggregatePrice.trim() !== ""
               }
 

@@ -223,8 +223,8 @@ export default function ResultCard({
               </p>
 
               <p className="mt-1 text-sm leading-6 text-amber-700">
-                Enter local cement, sand, and aggregate prices
-                above to calculate the total material cost.
+                Enter at least one material price above to
+                estimate partial or total material cost.
               </p>
 
             </div>

@@ -1076,17 +1076,18 @@ export default function CalculatorForm({
         <div className="mb-5">
 
           <h2 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
-            Choose a concrete form
+            Choose a reference form
           </h2>
 
           <p className="mt-1 text-sm leading-6 text-slate-500 sm:text-base">
-            Choose the type of concrete work.
+            This selector updates the reference diagram only. Volume is
+            calculated from the Length × Width × Depth inputs below.
           </p>
 
         </div>
 
         <label className={labelClass}>
-          Concrete form
+          Reference form
         </label>
 
         <select
@@ -1095,7 +1096,7 @@ export default function CalculatorForm({
             setConcreteForm(e.target.value)
           }
           className={inputClass}
-          aria-label="Concrete form"
+          aria-label="Reference form"
         >
           <option value="Slab">
             Slab

@@ -416,7 +416,7 @@ export function calculateBrick(
         1,
         safeNumber(
           state.mortarWetToDryRatio,
-          1.52
+          1.33
         )
       );
 
@@ -504,9 +504,9 @@ export function calculateBrick(
         )
       );
 
-    cementBags =
-      cementWeight /
-      bagSize;
+    cementBags = Math.ceil(
+      cementWeight / bagSize
+    );
 
     /* -----------------------------------------------------
        SAND

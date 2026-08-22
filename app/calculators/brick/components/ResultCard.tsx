@@ -264,7 +264,7 @@ export default function ResultCard({
               <span className="font-semibold text-slate-900">
                 {formatNumber(
                   result.cementBags,
-                  1
+                  0
                 )}
               </span>
 
