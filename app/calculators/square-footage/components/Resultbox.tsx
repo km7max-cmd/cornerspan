@@ -15,7 +15,6 @@ export default function ResultBox({
 
       {result ? (
         <div className="space-y-3 text-sm">
-
           <ResultRow
             label="Square Feet"
             value={`${result.squareFeet.toFixed(2)} ft²`}
@@ -47,7 +46,6 @@ export default function ResultBox({
               value={`$${result.cost.toFixed(2)}`}
             />
           )}
-
         </div>
       ) : (
         <p className="text-sm text-slate-500">
@@ -67,13 +65,9 @@ function ResultRow({
 }) {
   return (
     <div className="flex items-center justify-between border-b border-slate-200 pb-2 last:border-0">
-      <span className="text-slate-600">
-        {label}
-      </span>
+      <span className="text-slate-600">{label}</span>
 
-      <strong className="text-slate-950">
-        {value}
-      </strong>
+      <strong className="text-slate-950">{value}</strong>
     </div>
   );
 }
