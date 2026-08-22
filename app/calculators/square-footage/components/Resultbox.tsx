@@ -4,6 +4,7 @@ type ResultBoxProps = {
   result: CalculationResult | null;
 };
 
+
 export default function ResultBox({
   result,
 }: ResultBoxProps) {
