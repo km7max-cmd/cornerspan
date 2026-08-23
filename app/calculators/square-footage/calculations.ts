@@ -1,5 +1,5 @@
 import type {
-  CalculatorError,
+  CalculationError,
   CalculatorInputs,
   CalculationResult,
 } from "./types";
@@ -9,15 +9,14 @@ function number(value: string): number {
   return Number.isFinite(parsed) ? parsed : 0;
 }
 
-function measurement(feet: string, inches: string): number {
-  return number(feet) + number(inches) / 12;
-}
-
-function positiveMeasurement(
+function measurement(
   feet: string,
   inches: string
 ): number {
-  return measurement(feet, inches);
+  return (
+    number(feet) +
+    number(inches) / 12
+  );
 }
 
 function round(value: number): number {
@@ -27,66 +26,80 @@ function round(value: number): number {
 export function calculateSquareFootage(
   input: CalculatorInputs
 ):
-  | { result: CalculationResult; error: null }
-  | { result: null; error: CalculatorError } {
-  const quantity = Math.max(1, number(input.quantity) || 1);
-  const wastePercent = Math.max(0, number(input.waste));
+  | {
+      result: CalculationResult;
+      error: null;
+    }
+  | {
+      result: null;
+      error: CalculationError;
+    } {
+  const quantity =
+    Math.max(
+      1,
+      number(input.quantity) || 1
+    );
 
-  let area = 0;
+  const wastePercent =
+    Math.max(0, number(input.waste));
 
-  const length = positiveMeasurement(
+  const length = measurement(
     input.lengthFeet,
     input.lengthInches
   );
 
-  const width = positiveMeasurement(
+  const width = measurement(
     input.widthFeet,
     input.widthInches
   );
 
-  const height = positiveMeasurement(
+  const height = measurement(
     input.heightFeet,
     input.heightInches
   );
 
-  const borderWidth = positiveMeasurement(
+  const borderWidth = measurement(
     input.borderFeet,
     input.borderInches
   );
 
-  const sideA = positiveMeasurement(
+  const sideA = measurement(
     input.sideAFeet,
     input.sideAInches
   );
 
-  const sideB = positiveMeasurement(
+  const sideB = measurement(
     input.sideBFeet,
     input.sideBInches
   );
 
-  const sideC = positiveMeasurement(
+  const sideC = measurement(
     input.sideCFeet,
     input.sideCInches
   );
 
-  const windowWidth = positiveMeasurement(
+  const windowWidth = measurement(
     input.windowWidthFeet,
     input.windowWidthInches
   );
 
-  const windowHeight = positiveMeasurement(
+  const windowHeight = measurement(
     input.windowHeightFeet,
     input.windowHeightInches
   );
 
-  const windowQuantity = Math.max(
-    1,
-    number(input.windowQuantity) || 1
-  );
+  const windowQuantity =
+    Math.max(
+      1,
+      number(input.windowQuantity) || 1
+    );
+
+  let area = 0;
 
   switch (input.shape) {
     case "Known Area": {
-      const knownArea = number(input.knownArea);
+      const knownArea =
+        number(input.knownArea);
 
       if (knownArea <= 0) {
         return {
@@ -99,26 +112,51 @@ export function calculateSquareFootage(
       break;
     }
 
-    case "Room": {
+    case "Room":
+    case "Rectangle": {
       if (length <= 0) {
-        return { result: null, error: "Length" };
+        return {
+          result: null,
+          error: "Length",
+        };
       }
 
       if (width <= 0) {
-        return { result: null, error: "Width" };
+        return {
+          result: null,
+          error: "Width",
+        };
       }
 
       area = length * width;
       break;
     }
 
+    case "Square": {
+      if (length <= 0) {
+        return {
+          result: null,
+          error: "Length",
+        };
+      }
+
+      area = length * length;
+      break;
+    }
+
     case "Wall with Window": {
       if (length <= 0) {
-        return { result: null, error: "Length" };
+        return {
+          result: null,
+          error: "Length",
+        };
       }
 
       if (height <= 0) {
-        return { result: null, error: "Height" };
+        return {
+          result: null,
+          error: "Height",
+        };
       }
 
       if (windowWidth <= 0) {
@@ -135,74 +173,70 @@ export function calculateSquareFootage(
         };
       }
 
-      const wallArea = length * height;
+      const wallArea =
+        length * height;
 
-      const totalWindowArea =
+      const windowsArea =
         windowWidth *
         windowHeight *
         windowQuantity;
 
-      area = Math.max(0, wallArea - totalWindowArea);
+      area = Math.max(
+        0,
+        wallArea - windowsArea
+      );
+
       break;
     }
 
     case "Cathedral Wall": {
       if (length <= 0) {
-        return { result: null, error: "Length" };
+        return {
+          result: null,
+          error: "Length",
+        };
       }
 
       if (height <= 0) {
-        return { result: null, error: "Height" };
+        return {
+          result: null,
+          error: "Height",
+        };
       }
 
       if (width <= 0) {
-        return { result: null, error: "Width" };
+        return {
+          result: null,
+          error: "Width",
+        };
       }
 
-      /*
-       * Cathedral wall:
-       * rectangular wall + triangular upper section
-       *
-       * Rectangle = length × height
-       * Triangle  = 1/2 × length × width
-       */
-      const rectangleArea = length * height;
+      const rectangleArea =
+        length * height;
+
       const triangleArea =
         0.5 * length * width;
 
-      area = rectangleArea + triangleArea;
-      break;
-    }
+      area =
+        rectangleArea +
+        triangleArea;
 
-    case "Square": {
-      if (length <= 0) {
-        return { result: null, error: "Length" };
-      }
-
-      area = length * length;
-      break;
-    }
-
-    case "Rectangle": {
-      if (length <= 0) {
-        return { result: null, error: "Length" };
-      }
-
-      if (width <= 0) {
-        return { result: null, error: "Width" };
-      }
-
-      area = length * width;
       break;
     }
 
     case "Rectangle Border": {
       if (length <= 0) {
-        return { result: null, error: "Length" };
+        return {
+          result: null,
+          error: "Length",
+        };
       }
 
       if (width <= 0) {
-        return { result: null, error: "Width" };
+        return {
+          result: null,
+          error: "Width",
+        };
       }
 
       if (borderWidth <= 0) {
@@ -218,38 +252,52 @@ export function calculateSquareFootage(
       const innerWidth =
         width - 2 * borderWidth;
 
-      if (innerLength <= 0 || innerWidth <= 0) {
+      if (
+        innerLength <= 0 ||
+        innerWidth <= 0
+      ) {
         return {
           result: null,
           error: "Border Width",
         };
       }
 
-      const outerArea = length * width;
+      const outerArea =
+        length * width;
+
       const innerArea =
         innerLength * innerWidth;
 
-      area = outerArea - innerArea;
+      area =
+        outerArea - innerArea;
+
       break;
     }
 
     case "Circle": {
       if (length <= 0) {
-        return { result: null, error: "Length" };
+        return {
+          result: null,
+          error: "Length",
+        };
       }
 
-      /*
-       * Length = diameter
-       */
       const radius = length / 2;
 
-      area = Math.PI * radius * radius;
+      area =
+        Math.PI *
+        radius *
+        radius;
+
       break;
     }
 
     case "Circle Border": {
       if (length <= 0) {
-        return { result: null, error: "Length" };
+        return {
+          result: null,
+          error: "Length",
+        };
       }
 
       if (borderWidth <= 0) {
@@ -259,11 +307,9 @@ export function calculateSquareFootage(
         };
       }
 
-      /*
-       * Length = outer diameter
-       * Border Width = border thickness
-       */
-      const outerRadius = length / 2;
+      const outerRadius =
+        length / 2;
+
       const innerRadius =
         outerRadius - borderWidth;
 
@@ -276,23 +322,29 @@ export function calculateSquareFootage(
 
       area =
         Math.PI *
-        (outerRadius * outerRadius -
-          innerRadius * innerRadius);
+        (
+          outerRadius *
+            outerRadius -
+          innerRadius *
+            innerRadius
+        );
 
       break;
     }
 
     case "Annulus": {
-      /*
-       * Length = outer diameter
-       * Width = inner diameter
-       */
       if (length <= 0) {
-        return { result: null, error: "Length" };
+        return {
+          result: null,
+          error: "Length",
+        };
       }
 
       if (width <= 0) {
-        return { result: null, error: "Width" };
+        return {
+          result: null,
+          error: "Width",
+        };
       }
 
       if (width >= length) {
@@ -302,33 +354,46 @@ export function calculateSquareFootage(
         };
       }
 
-      const outerRadius = length / 2;
-      const innerRadius = width / 2;
+      const outerRadius =
+        length / 2;
+
+      const innerRadius =
+        width / 2;
 
       area =
         Math.PI *
-        (outerRadius * outerRadius -
-          innerRadius * innerRadius);
+        (
+          outerRadius *
+            outerRadius -
+          innerRadius *
+            innerRadius
+        );
 
       break;
     }
 
     case "Triangle": {
       if (sideA <= 0) {
-        return { result: null, error: "Side A" };
+        return {
+          result: null,
+          error: "Side A",
+        };
       }
 
       if (sideB <= 0) {
-        return { result: null, error: "Side B" };
+        return {
+          result: null,
+          error: "Side B",
+        };
       }
 
       if (sideC <= 0) {
-        return { result: null, error: "Side C" };
+        return {
+          result: null,
+          error: "Side C",
+        };
       }
 
-      /*
-       * Heron's formula
-       */
       if (
         sideA + sideB <= sideC ||
         sideA + sideC <= sideB ||
@@ -343,14 +408,14 @@ export function calculateSquareFootage(
       const s =
         (sideA + sideB + sideC) / 2;
 
-      const heron =
+      const value =
         s *
         (s - sideA) *
         (s - sideB) *
         (s - sideC);
 
       area = Math.sqrt(
-        Math.max(0, heron)
+        Math.max(0, value)
       );
 
       break;
@@ -358,11 +423,17 @@ export function calculateSquareFootage(
 
     case "Triangle 1/2 b×h": {
       if (length <= 0) {
-        return { result: null, error: "Length" };
+        return {
+          result: null,
+          error: "Length",
+        };
       }
 
       if (height <= 0) {
-        return { result: null, error: "Height" };
+        return {
+          result: null,
+          error: "Height",
+        };
       }
 
       area =
@@ -374,21 +445,25 @@ export function calculateSquareFootage(
     }
 
     case "Trapezoid": {
-      /*
-       * Length = first parallel side
-       * Width  = second parallel side
-       * Height = distance between them
-       */
       if (length <= 0) {
-        return { result: null, error: "Length" };
+        return {
+          result: null,
+          error: "Length",
+        };
       }
 
       if (width <= 0) {
-        return { result: null, error: "Width" };
+        return {
+          result: null,
+          error: "Width",
+        };
       }
 
       if (height <= 0) {
-        return { result: null, error: "Height" };
+        return {
+          result: null,
+          error: "Height",
+        };
       }
 
       area =
@@ -398,20 +473,19 @@ export function calculateSquareFootage(
       break;
     }
 
-    default:
+    default: {
       return {
         result: null,
         error: "Length",
       };
+    }
   }
 
   area *= quantity;
 
-  /*
-   * Add material waste
-   */
   const areaWithWaste =
-    area * (1 + wastePercent / 100);
+    area *
+    (1 + wastePercent / 100);
 
   const squareFeet =
     Math.max(0, areaWithWaste);
@@ -428,7 +502,8 @@ export function calculateSquareFootage(
   const acres =
     squareFeet / 43560;
 
-  const price = number(input.price);
+  const price =
+    number(input.price);
 
   const cost =
     price > 0
@@ -437,16 +512,27 @@ export function calculateSquareFootage(
 
   return {
     result: {
-      squareFeet: round(squareFeet),
-      squareInches: round(squareInches),
-      squareYards: round(squareYards),
-      squareMeters: round(squareMeters),
-      acres: round(acres),
+      squareFeet:
+        round(squareFeet),
+
+      squareInches:
+        round(squareInches),
+
+      squareYards:
+        round(squareYards),
+
+      squareMeters:
+        round(squareMeters),
+
+      acres:
+        round(acres),
+
       cost:
         cost === null
           ? null
           : round(cost),
     },
+
     error: null,
   };
 }
