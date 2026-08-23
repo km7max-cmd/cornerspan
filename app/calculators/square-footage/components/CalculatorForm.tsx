@@ -474,8 +474,9 @@ export default function CalculatorForm() {
             <>
               <div className="relative">
                 <input
-                  type="number"
-                  inputMode="decimal"
+                  <input
+  type="text"
+  inputMode="decimal"
                   min="0"
                   step="any"
                   value={String(values[feetKey] ?? "")}
@@ -570,10 +571,8 @@ export default function CalculatorForm() {
         </div>
 
         <input
-          type="number"
-          inputMode="decimal"
-          min="0"
-          step="any"
+  type="text"
+  inputMode="decimal"
           value={String(values[key] ?? "")}
           onChange={(e) =>
             update(key, e.target.value)
@@ -1033,10 +1032,9 @@ export default function CalculatorForm() {
               </span>
 
               <input
-                type="number"
-                min="0"
-                step="any"
-                value={values.waste}
+  type="text"
+  inputMode="decimal"
+  value={values.waste}
                 onChange={(e) =>
                   update(
                     "waste",
@@ -1091,10 +1089,9 @@ export default function CalculatorForm() {
                 </label>
 
                 <input
-                  type="number"
-                  min="0"
-                  step="any"
-                  value={values.price}
+  type="text"
+  inputMode="decimal"
+  value={values.price}
                   onChange={(e) =>
                     update(
                       "price",
