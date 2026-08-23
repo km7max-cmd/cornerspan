@@ -3,94 +3,111 @@ import type {
   CalculationResult,
 } from "../types";
 
-
 type ResultBoxProps = {
   result: CalculationResult | null;
-  error?: CalculationError;
+  error: CalculationError;
 };
+
+const errorMessages: Record<
+  Exclude<CalculationError, null>,
+  string
+> = {
+  Length: "Please enter a valid Length.",
+  Width: "Please enter a valid Width.",
+  Height: "Please enter a valid Height.",
+  "Border Width":
+    "Please enter a valid Border Width.",
+  "Side A": "Please enter a valid Side A.",
+  "Side B": "Please enter a valid Side B.",
+  "Side C": "Please enter a valid Side C.",
+  "Window Width":
+    "Please enter a valid Window Width.",
+  "Window Height":
+    "Please enter a valid Window Height.",
+  Area: "Please enter a valid Area.",
+};
+
+function format(value: number): string {
+  return value.toLocaleString("en-US", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+}
 
 export default function ResultBox({
   result,
   error,
 }: ResultBoxProps) {
   return (
-    <div className="rounded-xl border border-slate-300 bg-slate-50 p-5 sm:p-6">
-      <h2 className="mb-5 text-xl font-bold text-slate-900">
-        Answer
-      </h2>
-
-      {error ? (
-        <p className="text-base font-medium text-red-700">
-          Please enter a valid {error}.
-        </p>
-      ) : result ? (
-        <div className="space-y-0">
-          <ResultRow
-            label="Square Feet"
-            value={`${result.squareFeet.toFixed(2)} ft²`}
-          />
-
-          <ResultRow
-            label="Square Inches"
-            value={`${result.squareInches.toFixed(2)} in²`}
-          />
-
-          <ResultRow
-            label="Square Yards"
-            value={`${result.squareYards.toFixed(2)} yd²`}
-          />
-
-          <ResultRow
-            label="Square Meters"
-            value={`${result.squareMeters.toFixed(2)} m²`}
-          />
-
-          <ResultRow
-            label="Acres"
-            value={result.acres.toFixed(4)}
-          />
-
-          {result.cost !== null && (
-            <ResultRow
-              label="Estimated Cost"
-              value={`$${result.cost.toFixed(2)}`}
-              last
-            />
-          )}
+    <div className="mt-4 border border-slate-400 bg-white">
+      {error && (
+        <div className="border-b border-red-300 bg-red-50 px-3 py-2 text-sm text-red-700">
+          {errorMessages[error]}
         </div>
-      ) : (
-        <p className="text-base text-slate-500">
-          Enter your measurements and click Calculate.
-        </p>
       )}
-    </div>
-  );
-}
 
-function ResultRow({
-  label,
-  value,
-  last = false,
-}: {
-  label: string;
-  value: string;
-  last?: boolean;
-}) {
-  return (
-    <div
-      className={`flex items-center justify-between gap-4 py-3 ${
-        last
-          ? ""
-          : "border-b border-slate-200"
-      }`}
-    >
-      <span className="text-sm text-slate-600 sm:text-base">
-        {label}
-      </span>
+      <div className="px-3 py-2">
+        <div className="mb-3 font-bold text-slate-900">
+          Answer:
+        </div>
 
-      <strong className="text-sm font-bold text-slate-950 sm:text-base">
-        {value}
-      </strong>
+        {!result ? (
+          <div className="space-y-5 text-sm text-slate-700">
+            <div>Square Feet =</div>
+            <div>Square Inches =</div>
+            <div>Square Yards =</div>
+            <div>Square Meters =</div>
+            <div>Acres =</div>
+            <div>Cost =</div>
+          </div>
+        ) : (
+          <div className="space-y-4 text-sm">
+            <div className="flex justify-between gap-4">
+              <span>Square Feet =</span>
+              <strong>
+                {format(result.squareFeet)} ft²
+              </strong>
+            </div>
+
+            <div className="flex justify-between gap-4">
+              <span>Square Inches =</span>
+              <strong>
+                {format(result.squareInches)} in²
+              </strong>
+            </div>
+
+            <div className="flex justify-between gap-4">
+              <span>Square Yards =</span>
+              <strong>
+                {format(result.squareYards)} yd²
+              </strong>
+            </div>
+
+            <div className="flex justify-between gap-4">
+              <span>Square Meters =</span>
+              <strong>
+                {format(result.squareMeters)} m²
+              </strong>
+            </div>
+
+            <div className="flex justify-between gap-4">
+              <span>Acres =</span>
+              <strong>
+                {result.acres.toFixed(4)}
+              </strong>
+            </div>
+
+            <div className="flex justify-between gap-4 border-t border-slate-200 pt-3">
+              <span>Cost =</span>
+              <strong>
+                {result.cost === null
+                  ? "—"
+                  : `$${format(result.cost)}`}
+              </strong>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
