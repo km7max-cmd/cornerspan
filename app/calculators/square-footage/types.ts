@@ -1,8 +1,8 @@
 export type Unit =
   | "feet"
   | "inches"
-  | "meters"
-  | "yards";
+  | "yards"
+  | "meters";
 
 export type Shape =
   | "Known Area"
@@ -23,40 +23,42 @@ export type CalculatorInputs = {
   shape: Shape;
 
   length: string;
-  lengthUnit: Unit;
+  lengthInches: string;
 
   width: string;
-  widthUnit: Unit;
+  widthInches: string;
 
   height: string;
-  heightUnit: Unit;
+  heightInches: string;
 
   quantity: string;
 
+  unit: Unit;
+
   borderWidth: string;
-  borderWidthUnit: Unit;
+  borderWidthInches: string;
 
   sideA: string;
-  sideAUnit: Unit;
+  sideAInches: string;
 
   sideB: string;
-  sideBUnit: Unit;
+  sideBInches: string;
 
   sideC: string;
-  sideCUnit: Unit;
+  sideCInches: string;
 
   windowWidth: string;
-  windowWidthUnit: Unit;
+  windowWidthInches: string;
 
   windowHeight: string;
-  windowHeightUnit: Unit;
+  windowHeightInches: string;
 
   windowQuantity: string;
 
   knownArea: string;
-  knownAreaUnit: Unit;
 
   waste: string;
+
   price: string;
 };
 
