@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import ShapeDiagram from "./ShapeDiagram";
 import type {
   CalculatorInputs,
   CalculationError,
@@ -28,28 +27,10 @@ type AreaPriceUnit =
   | "square yards"
   | "square meters";
 
-type Currency =
-  | "USD"
-  | "EUR"
-  | "GBP"
-  | "INR"
-  | "CAD"
-  | "AUD"
-  | "NZD"
-  | "SGD"
-  | "HKD"
-  | "CNY"
-  | "JPY"
-  | "KRW"
-  | "CHF"
-  | "SEK"
-  | "NOK"
-  | "DKK"
-  | "AED"
-  | "SAR"
-  | "ZAR"
-  | "BRL"
-  | "MXN";
+type Currency = {
+  code: string;
+  symbol: string;
+};
 
 const units: Unit[] = [
   "ft & in",
@@ -63,116 +44,28 @@ const units: Unit[] = [
   "km",
 ];
 
-const currencies: {
-  value: Currency;
-  label: string;
-  symbol: string;
-}[] = [
-  {
-    value: "USD",
-    label: "USD - US Dollar",
-    symbol: "$",
-  },
-  {
-    value: "EUR",
-    label: "EUR - Euro",
-    symbol: "€",
-  },
-  {
-    value: "GBP",
-    label: "GBP - British Pound",
-    symbol: "£",
-  },
-  {
-    value: "INR",
-    label: "INR - Indian Rupee",
-    symbol: "₹",
-  },
-  {
-    value: "CAD",
-    label: "CAD - Canadian Dollar",
-    symbol: "C$",
-  },
-  {
-    value: "AUD",
-    label: "AUD - Australian Dollar",
-    symbol: "A$",
-  },
-  {
-    value: "NZD",
-    label: "NZD - New Zealand Dollar",
-    symbol: "NZ$",
-  },
-  {
-    value: "SGD",
-    label: "SGD - Singapore Dollar",
-    symbol: "S$",
-  },
-  {
-    value: "HKD",
-    label: "HKD - Hong Kong Dollar",
-    symbol: "HK$",
-  },
-  {
-    value: "CNY",
-    label: "CNY - Chinese Yuan",
-    symbol: "¥",
-  },
-  {
-    value: "JPY",
-    label: "JPY - Japanese Yen",
-    symbol: "¥",
-  },
-  {
-    value: "KRW",
-    label: "KRW - South Korean Won",
-    symbol: "₩",
-  },
-  {
-    value: "CHF",
-    label: "CHF - Swiss Franc",
-    symbol: "CHF",
-  },
-  {
-    value: "SEK",
-    label: "SEK - Swedish Krona",
-    symbol: "kr",
-  },
-  {
-    value: "NOK",
-    label: "NOK - Norwegian Krone",
-    symbol: "kr",
-  },
-  {
-    value: "DKK",
-    label: "DKK - Danish Krone",
-    symbol: "kr",
-  },
-  {
-    value: "AED",
-    label: "AED - UAE Dirham",
-    symbol: "د.إ",
-  },
-  {
-    value: "SAR",
-    label: "SAR - Saudi Riyal",
-    symbol: "﷼",
-  },
-  {
-    value: "ZAR",
-    label: "ZAR - South African Rand",
-    symbol: "R",
-  },
-  {
-    value: "BRL",
-    label: "BRL - Brazilian Real",
-    symbol: "R$",
-  },
-  {
-    value: "MXN",
-    label: "MXN - Mexican Peso",
-    symbol: "$",
-  },
+const currencies: Currency[] = [
+  { code: "USD", symbol: "$" },
+  { code: "EUR", symbol: "€" },
+  { code: "GBP", symbol: "£" },
+  { code: "INR", symbol: "₹" },
+  { code: "CNY", symbol: "¥" },
+  { code: "JPY", symbol: "¥" },
+  { code: "RUB", symbol: "₽" },
+  { code: "KRW", symbol: "₩" },
+  { code: "AUD", symbol: "A$" },
+  { code: "CAD", symbol: "C$" },
+  { code: "NZD", symbol: "NZ$" },
+  { code: "CHF", symbol: "CHF" },
+  { code: "BRL", symbol: "R$" },
+  { code: "ZAR", symbol: "R" },
+  { code: "AED", symbol: "د.إ" },
+  { code: "SAR", symbol: "﷼" },
+  { code: "SGD", symbol: "S$" },
+  { code: "HKD", symbol: "HK$" },
+  { code: "MXN", symbol: "MX$" },
+  { code: "THB", symbol: "฿" },
+  { code: "TRY", symbol: "₺" },
 ];
 
 const shapes: Shape[] = [
@@ -258,10 +151,7 @@ function selectClass() {
 function getFeetAndInches(
   value: string,
   unit: Unit
-): {
-  feet: string;
-  inches: string;
-} {
+): { feet: string; inches: string } {
   const n = Number(value);
 
   if (!Number.isFinite(n)) {
@@ -328,136 +218,9 @@ function getFeetAndInches(
   }
 }
 
-type MeasurementFieldProps = {
-  label: string;
-  feetKey: keyof CalculatorInputs;
-  inchesKey: keyof CalculatorInputs;
-  unit: Unit;
-  setUnit: (unit: Unit) => void;
-  values: CalculatorInputs;
-  update: (
-    key: keyof CalculatorInputs,
-    value: string
-  ) => void;
-};
-
-function MeasurementField({
-  label,
-  feetKey,
-  inchesKey,
-  unit,
-  setUnit,
-  values,
-  update,
-}: MeasurementFieldProps) {
-  return (
-    <div className="mb-3">
-      <div className="mb-1 text-sm font-semibold text-slate-800">
-        {label} =
-      </div>
-
-      <div className="grid grid-cols-[1fr_1fr_112px] gap-2">
-        {unit === "ft & in" ? (
-          <>
-            <div className="relative">
-              <input
-                type="number"
-                inputMode="decimal"
-                min="0"
-                step="any"
-                value={String(
-                  values[feetKey] ?? ""
-                )}
-                onChange={(e) =>
-                  update(
-                    feetKey,
-                    e.target.value
-                  )
-                }
-                className={inputClass()}
-                aria-label={`${label} feet`}
-              />
-
-              <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-xs text-slate-500">
-                ft
-              </span>
-            </div>
-
-            <div className="relative">
-              <input
-                type="number"
-                inputMode="decimal"
-                min="0"
-                step="any"
-                value={String(
-                  values[inchesKey] ?? ""
-                )}
-                onChange={(e) =>
-                  update(
-                    inchesKey,
-                    e.target.value
-                  )
-                }
-                className={inputClass()}
-                aria-label={`${label} inches`}
-              />
-
-              <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-xs text-slate-500">
-                in
-              </span>
-            </div>
-          </>
-        ) : (
-          <div className="col-span-2">
-            <input
-              type="number"
-              inputMode="decimal"
-              min="0"
-              step="any"
-              value={String(
-                values[feetKey] ?? ""
-              )}
-              onChange={(e) =>
-                update(
-                  feetKey,
-                  e.target.value
-                )
-              }
-              className={inputClass()}
-              aria-label={label}
-            />
-          </div>
-        )}
-
-        <select
-          value={unit}
-          onChange={(e) =>
-            setUnit(
-              e.target.value as Unit
-            )
-          }
-          className={selectClass()}
-          aria-label={`${label} unit`}
-        >
-          {units.map((item) => (
-            <option
-              key={item}
-              value={item}
-            >
-              {item}
-            </option>
-          ))}
-        </select>
-      </div>
-    </div>
-  );
-}
-
 export default function CalculatorForm() {
   const [values, setValues] =
-    useState<CalculatorInputs>(
-      initialValues
-    );
+    useState<CalculatorInputs>(initialValues);
 
   const [lengthUnit, setLengthUnit] =
     useState<Unit>("ft & in");
@@ -480,28 +243,20 @@ export default function CalculatorForm() {
   const [sideCUnit, setSideCUnit] =
     useState<Unit>("ft & in");
 
-  const [
-    windowWidthUnit,
-    setWindowWidthUnit,
-  ] = useState<Unit>("ft & in");
+  const [windowWidthUnit, setWindowWidthUnit] =
+    useState<Unit>("ft & in");
 
-  const [
-    windowHeightUnit,
-    setWindowHeightUnit,
-  ] = useState<Unit>("ft & in");
+  const [windowHeightUnit, setWindowHeightUnit] =
+    useState<Unit>("ft & in");
 
   const [priceUnit, setPriceUnit] =
-    useState<AreaPriceUnit>(
-      "square feet"
-    );
+    useState<AreaPriceUnit>("square feet");
 
   const [currency, setCurrency] =
-    useState<Currency>("USD");
+    useState<string>("USD");
 
   const [result, setResult] =
-    useState<CalculationResult | null>(
-      null
-    );
+    useState<CalculationResult | null>(null);
 
   const [error, setError] =
     useState<CalculationError>(null);
@@ -549,28 +304,23 @@ export default function CalculatorForm() {
   } {
     if (unit === "ft & in") {
       return {
-        feet: String(
-          values[feetKey] ?? ""
-        ),
-        inches: String(
-          values[inchesKey] ?? ""
-        ),
+        feet: String(values[feetKey] ?? ""),
+        inches: String(values[inchesKey] ?? ""),
       };
     }
 
-    return getFeetAndInches(
+    const converted = getFeetAndInches(
       String(values[feetKey] ?? ""),
       unit
     );
+
+    return converted;
   }
 
   function areaPricePerSquareFoot(): string {
     const price = Number(values.price);
 
-    if (
-      !Number.isFinite(price) ||
-      price <= 0
-    ) {
+    if (!Number.isFinite(price) || price <= 0) {
       return "";
     }
 
@@ -646,44 +396,38 @@ export default function CalculatorForm() {
       windowHeightUnit
     );
 
-    const normalizedValues: CalculatorInputs =
-      {
-        ...values,
+    const normalizedValues: CalculatorInputs = {
+      ...values,
 
-        lengthFeet: length.feet,
-        lengthInches: length.inches,
+      lengthFeet: length.feet,
+      lengthInches: length.inches,
 
-        widthFeet: width.feet,
-        widthInches: width.inches,
+      widthFeet: width.feet,
+      widthInches: width.inches,
 
-        heightFeet: height.feet,
-        heightInches: height.inches,
+      heightFeet: height.feet,
+      heightInches: height.inches,
 
-        borderFeet: border.feet,
-        borderInches: border.inches,
+      borderFeet: border.feet,
+      borderInches: border.inches,
 
-        sideAFeet: sideA.feet,
-        sideAInches: sideA.inches,
+      sideAFeet: sideA.feet,
+      sideAInches: sideA.inches,
 
-        sideBFeet: sideB.feet,
-        sideBInches: sideB.inches,
+      sideBFeet: sideB.feet,
+      sideBInches: sideB.inches,
 
-        sideCFeet: sideC.feet,
-        sideCInches: sideC.inches,
+      sideCFeet: sideC.feet,
+      sideCInches: sideC.inches,
 
-        windowWidthFeet:
-          windowWidth.feet,
-        windowWidthInches:
-          windowWidth.inches,
+      windowWidthFeet: windowWidth.feet,
+      windowWidthInches: windowWidth.inches,
 
-        windowHeightFeet:
-          windowHeight.feet,
-        windowHeightInches:
-          windowHeight.inches,
+      windowHeightFeet: windowHeight.feet,
+      windowHeightInches: windowHeight.inches,
 
-        price:
-          areaPricePerSquareFoot(),
-      };
+      price: areaPricePerSquareFoot(),
+    };
 
     const calculated =
       calculateSquareFootage(
@@ -696,15 +440,121 @@ export default function CalculatorForm() {
     if (calculated.result) {
       setTimeout(() => {
         document
-          .getElementById(
-            "calculator-answer"
-          )
+          .getElementById("calculator-answer")
           ?.scrollIntoView({
             behavior: "smooth",
             block: "nearest",
           });
       }, 50);
     }
+  }
+
+  function MeasurementField({
+    label,
+    feetKey,
+    inchesKey,
+    unit,
+    setUnit,
+  }: {
+    label: string;
+    feetKey: keyof CalculatorInputs;
+    inchesKey: keyof CalculatorInputs;
+    unit: Unit;
+    setUnit: (unit: Unit) => void;
+  }) {
+    return (
+      <div className="mb-3">
+        <div className="mb-1 text-sm font-semibold text-slate-800">
+          {label} =
+        </div>
+
+        <div className="grid grid-cols-[1fr_1fr_112px] gap-2">
+          {unit === "ft & in" ? (
+            <>
+              <div className="relative">
+                <input
+                  type="number"
+                  inputMode="decimal"
+                  min="0"
+                  step="any"
+                  value={String(values[feetKey] ?? "")}
+                  onChange={(e) =>
+                    update(
+                      feetKey,
+                      e.target.value
+                    )
+                  }
+                  className={inputClass()}
+                  aria-label={`${label} feet`}
+                />
+
+                <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-xs text-slate-500">
+                  ft
+                </span>
+              </div>
+
+              <div className="relative">
+                <input
+                  type="number"
+                  inputMode="decimal"
+                  min="0"
+                  step="any"
+                  value={String(values[inchesKey] ?? "")}
+                  onChange={(e) =>
+                    update(
+                      inchesKey,
+                      e.target.value
+                    )
+                  }
+                  className={inputClass()}
+                  aria-label={`${label} inches`}
+                />
+
+                <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-xs text-slate-500">
+                  in
+                </span>
+              </div>
+            </>
+          ) : (
+            <div className="col-span-2">
+              <input
+                type="number"
+                inputMode="decimal"
+                min="0"
+                step="any"
+                value={String(values[feetKey] ?? "")}
+                onChange={(e) =>
+                  update(
+                    feetKey,
+                    e.target.value
+                  )
+                }
+                className={inputClass()}
+                aria-label={label}
+              />
+            </div>
+          )}
+
+          <select
+            value={unit}
+            onChange={(e) =>
+              setUnit(e.target.value as Unit)
+            }
+            className={selectClass()}
+            aria-label={`${label} unit`}
+          >
+            {units.map((item) => (
+              <option
+                key={item}
+                value={item}
+              >
+                {item}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+    );
   }
 
   function simpleInput(
@@ -723,14 +573,9 @@ export default function CalculatorForm() {
           inputMode="decimal"
           min="0"
           step="any"
-          value={String(
-            values[key] ?? ""
-          )}
+          value={String(values[key] ?? "")}
           onChange={(e) =>
-            update(
-              key,
-              e.target.value
-            )
+            update(key, e.target.value)
           }
           placeholder={placeholder}
           className={inputClass()}
@@ -804,11 +649,12 @@ export default function CalculatorForm() {
             </select>
           </div>
 
-          <ShapeDiagram shape={values.shape} />
+          <div className="mb-4 text-center text-sm font-semibold text-blue-700 underline">
+            {shapeImageName()} Image
+          </div>
 
           {/* Known Area */}
-          {values.shape ===
-            "Known Area" && (
+          {values.shape === "Known Area" && (
             <>
               {simpleInput(
                 "Known Area (square feet)",
@@ -831,8 +677,6 @@ export default function CalculatorForm() {
                 inchesKey="lengthInches"
                 unit={lengthUnit}
                 setUnit={setLengthUnit}
-                values={values}
-                update={update}
               />
 
               <MeasurementField
@@ -841,8 +685,6 @@ export default function CalculatorForm() {
                 inchesKey="widthInches"
                 unit={widthUnit}
                 setUnit={setWidthUnit}
-                values={values}
-                update={update}
               />
 
               {simpleInput(
@@ -853,8 +695,7 @@ export default function CalculatorForm() {
           )}
 
           {/* Rectangle */}
-          {values.shape ===
-            "Rectangle" && (
+          {values.shape === "Rectangle" && (
             <>
               <MeasurementField
                 label="Length"
@@ -862,8 +703,6 @@ export default function CalculatorForm() {
                 inchesKey="lengthInches"
                 unit={lengthUnit}
                 setUnit={setLengthUnit}
-                values={values}
-                update={update}
               />
 
               <MeasurementField
@@ -872,8 +711,6 @@ export default function CalculatorForm() {
                 inchesKey="widthInches"
                 unit={widthUnit}
                 setUnit={setWidthUnit}
-                values={values}
-                update={update}
               />
 
               {simpleInput(
@@ -892,8 +729,6 @@ export default function CalculatorForm() {
                 inchesKey="lengthInches"
                 unit={lengthUnit}
                 setUnit={setLengthUnit}
-                values={values}
-                update={update}
               />
 
               {simpleInput(
@@ -913,8 +748,6 @@ export default function CalculatorForm() {
                 inchesKey="widthInches"
                 unit={widthUnit}
                 setUnit={setWidthUnit}
-                values={values}
-                update={update}
               />
 
               <MeasurementField
@@ -923,8 +756,6 @@ export default function CalculatorForm() {
                 inchesKey="heightInches"
                 unit={heightUnit}
                 setUnit={setHeightUnit}
-                values={values}
-                update={update}
               />
 
               <MeasurementField
@@ -933,8 +764,6 @@ export default function CalculatorForm() {
                 inchesKey="windowWidthInches"
                 unit={windowWidthUnit}
                 setUnit={setWindowWidthUnit}
-                values={values}
-                update={update}
               />
 
               <MeasurementField
@@ -943,8 +772,6 @@ export default function CalculatorForm() {
                 inchesKey="windowHeightInches"
                 unit={windowHeightUnit}
                 setUnit={setWindowHeightUnit}
-                values={values}
-                update={update}
               />
 
               {simpleInput(
@@ -969,8 +796,6 @@ export default function CalculatorForm() {
                 inchesKey="widthInches"
                 unit={widthUnit}
                 setUnit={setWidthUnit}
-                values={values}
-                update={update}
               />
 
               <MeasurementField
@@ -979,8 +804,6 @@ export default function CalculatorForm() {
                 inchesKey="heightInches"
                 unit={heightUnit}
                 setUnit={setHeightUnit}
-                values={values}
-                update={update}
               />
 
               <MeasurementField
@@ -989,8 +812,6 @@ export default function CalculatorForm() {
                 inchesKey="sideAInches"
                 unit={sideAUnit}
                 setUnit={setSideAUnit}
-                values={values}
-                update={update}
               />
 
               {simpleInput(
@@ -1010,8 +831,6 @@ export default function CalculatorForm() {
                 inchesKey="lengthInches"
                 unit={lengthUnit}
                 setUnit={setLengthUnit}
-                values={values}
-                update={update}
               />
 
               <MeasurementField
@@ -1020,8 +839,6 @@ export default function CalculatorForm() {
                 inchesKey="widthInches"
                 unit={widthUnit}
                 setUnit={setWidthUnit}
-                values={values}
-                update={update}
               />
 
               <MeasurementField
@@ -1030,8 +847,6 @@ export default function CalculatorForm() {
                 inchesKey="borderInches"
                 unit={borderUnit}
                 setUnit={setBorderUnit}
-                values={values}
-                update={update}
               />
 
               {simpleInput(
@@ -1050,8 +865,6 @@ export default function CalculatorForm() {
                 inchesKey="lengthInches"
                 unit={lengthUnit}
                 setUnit={setLengthUnit}
-                values={values}
-                update={update}
               />
 
               {simpleInput(
@@ -1071,8 +884,6 @@ export default function CalculatorForm() {
                 inchesKey="lengthInches"
                 unit={lengthUnit}
                 setUnit={setLengthUnit}
-                values={values}
-                update={update}
               />
 
               <MeasurementField
@@ -1081,8 +892,6 @@ export default function CalculatorForm() {
                 inchesKey="borderInches"
                 unit={borderUnit}
                 setUnit={setBorderUnit}
-                values={values}
-                update={update}
               />
 
               {simpleInput(
@@ -1093,8 +902,7 @@ export default function CalculatorForm() {
           )}
 
           {/* Annulus */}
-          {values.shape ===
-            "Annulus" && (
+          {values.shape === "Annulus" && (
             <>
               <MeasurementField
                 label="Outer Diameter"
@@ -1102,8 +910,6 @@ export default function CalculatorForm() {
                 inchesKey="lengthInches"
                 unit={lengthUnit}
                 setUnit={setLengthUnit}
-                values={values}
-                update={update}
               />
 
               <MeasurementField
@@ -1112,8 +918,6 @@ export default function CalculatorForm() {
                 inchesKey="widthInches"
                 unit={widthUnit}
                 setUnit={setWidthUnit}
-                values={values}
-                update={update}
               />
 
               {simpleInput(
@@ -1124,8 +928,7 @@ export default function CalculatorForm() {
           )}
 
           {/* Triangle */}
-          {values.shape ===
-            "Triangle" && (
+          {values.shape === "Triangle" && (
             <>
               <MeasurementField
                 label="Side A"
@@ -1133,8 +936,6 @@ export default function CalculatorForm() {
                 inchesKey="sideAInches"
                 unit={sideAUnit}
                 setUnit={setSideAUnit}
-                values={values}
-                update={update}
               />
 
               <MeasurementField
@@ -1143,8 +944,6 @@ export default function CalculatorForm() {
                 inchesKey="sideBInches"
                 unit={sideBUnit}
                 setUnit={setSideBUnit}
-                values={values}
-                update={update}
               />
 
               <MeasurementField
@@ -1153,8 +952,6 @@ export default function CalculatorForm() {
                 inchesKey="sideCInches"
                 unit={sideCUnit}
                 setUnit={setSideCUnit}
-                values={values}
-                update={update}
               />
 
               {simpleInput(
@@ -1174,8 +971,6 @@ export default function CalculatorForm() {
                 inchesKey="lengthInches"
                 unit={lengthUnit}
                 setUnit={setLengthUnit}
-                values={values}
-                update={update}
               />
 
               <MeasurementField
@@ -1184,8 +979,6 @@ export default function CalculatorForm() {
                 inchesKey="heightInches"
                 unit={heightUnit}
                 setUnit={setHeightUnit}
-                values={values}
-                update={update}
               />
 
               {simpleInput(
@@ -1196,8 +989,7 @@ export default function CalculatorForm() {
           )}
 
           {/* Trapezoid */}
-          {values.shape ===
-            "Trapezoid" && (
+          {values.shape === "Trapezoid" && (
             <>
               <MeasurementField
                 label="Side A"
@@ -1205,8 +997,6 @@ export default function CalculatorForm() {
                 inchesKey="sideAInches"
                 unit={sideAUnit}
                 setUnit={setSideAUnit}
-                values={values}
-                update={update}
               />
 
               <MeasurementField
@@ -1215,8 +1005,6 @@ export default function CalculatorForm() {
                 inchesKey="sideBInches"
                 unit={sideBUnit}
                 setUnit={setSideBUnit}
-                values={values}
-                update={update}
               />
 
               <MeasurementField
@@ -1225,8 +1013,6 @@ export default function CalculatorForm() {
                 inchesKey="heightInches"
                 unit={heightUnit}
                 setUnit={setHeightUnit}
-                values={values}
-                update={update}
               />
 
               {simpleInput(
@@ -1273,7 +1059,7 @@ export default function CalculatorForm() {
               optional material cost
             </legend>
 
-            <div className="grid grid-cols-[55px_1fr_90px] items-end gap-2">
+            <div className="grid grid-cols-[82px_1fr_90px] items-end gap-2">
               {/* Currency */}
               <div>
                 <label className="mb-1 block text-xs text-slate-600">
@@ -1283,24 +1069,19 @@ export default function CalculatorForm() {
                 <select
                   value={currency}
                   onChange={(e) =>
-                    setCurrency(
-                      e.target.value as Currency
-                    )
+                    setCurrency(e.target.value)
                   }
-                  className={selectClass()}
+                  className="h-9 w-[82px] border border-slate-500 bg-white px-2 text-sm text-slate-900 outline-none focus:border-blue-700 focus:ring-1 focus:ring-blue-700"
                   aria-label="Currency"
                 >
-                  {currencies.map(
-                    (item) => (
-                      <option
-                        key={item.value}
-                        value={item.value}
-                      >
-                        {item.symbol}{" "}
-                        {item.value}
-                      </option>
-                    )
-                  )}
+                  {currencies.map((item) => (
+                    <option
+                      key={item.code}
+                      value={item.code}
+                    >
+                      {item.symbol}
+                    </option>
+                  ))}
                 </select>
               </div>
 
@@ -1335,8 +1116,7 @@ export default function CalculatorForm() {
                   value={priceUnit}
                   onChange={(e) =>
                     setPriceUnit(
-                      e.target
-                        .value as AreaPriceUnit
+                      e.target.value as AreaPriceUnit
                     )
                   }
                   className={selectClass()}
@@ -1397,10 +1177,9 @@ export default function CalculatorForm() {
         </h2>
 
         <p className="mb-3">
-          Calculate the square footage,
-          square inches, square yards, square
-          meters and acres for your
-          construction project.
+          Calculate the square footage, square
+          inches, square yards, square meters and
+          acres for your construction project.
         </p>
 
         <div className="border border-slate-300 bg-white p-3">
@@ -1410,13 +1189,12 @@ export default function CalculatorForm() {
             <li>Select your shape.</li>
 
             <li>
-              Enter your measurements and
-              units.
+              Enter your measurements and units.
             </li>
 
             <li>
-              Enter quantity if you have
-              multiple identical areas.
+              Enter quantity if you have multiple
+              identical areas.
             </li>
 
             <li>
@@ -1428,8 +1206,7 @@ export default function CalculatorForm() {
             </li>
 
             <li>
-              Click Calculate to see the
-              results.
+              Click Calculate to see the results.
             </li>
           </ol>
         </div>
@@ -1447,8 +1224,7 @@ export default function CalculatorForm() {
             {values.shape === "Room" &&
               "Area = Length × Width"}
 
-            {values.shape ===
-              "Known Area" &&
+            {values.shape === "Known Area" &&
               "Area = Known Square Feet"}
 
             {values.shape ===
@@ -1470,20 +1246,17 @@ export default function CalculatorForm() {
               "Circle Border" &&
               "Area = Outer Circle − Inner Circle"}
 
-            {values.shape ===
-              "Annulus" &&
+            {values.shape === "Annulus" &&
               "Area = Outer Circle − Inner Circle"}
 
-            {values.shape ===
-              "Triangle" &&
+            {values.shape === "Triangle" &&
               "Heron's Formula"}
 
             {values.shape ===
               "Triangle 1/2 b×h" &&
               "Area = ½ × Base × Height"}
 
-            {values.shape ===
-              "Trapezoid" &&
+            {values.shape === "Trapezoid" &&
               "Area = ½ × (Side A + Side B) × Height"}
           </p>
         </div>
