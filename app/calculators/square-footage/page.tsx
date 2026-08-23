@@ -5,6 +5,7 @@ const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ||
   "https://www.cornerspan.com";
 
+
 export const metadata: Metadata = {
   title: "Square Footage Calculator | Sq Ft, Sq M, Sq Yards & Acres",
   description:
