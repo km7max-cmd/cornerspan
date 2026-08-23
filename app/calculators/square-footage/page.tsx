@@ -163,6 +163,11 @@ export default function SquareFootagePage() {
         <div className="mt-6">
           <CalculatorForm />
         </div>
+        
+        {/* Related Calculators */}
+<div className="mt-3">
+  <RelatedCalculators currentSlug="square-footage" />
+</div>
 
         {/* How to Calculate */}
         <section className="mt-6 rounded-xl border border-slate-200 bg-white p-5">
@@ -327,9 +332,6 @@ export default function SquareFootagePage() {
           </p>
 
         </section>
-
-      {/* Related Calculators */}
-<RelatedCalculators currentSlug="square-footage" />
 
         {/* FAQ */}
         <section className="mt-6 rounded-xl border border-slate-200 bg-white p-5">
