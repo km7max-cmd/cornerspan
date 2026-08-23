@@ -3,6 +3,7 @@ import type {
   CalculationResult,
 } from "../types";
 
+
 type ResultBoxProps = {
   result: CalculationResult | null;
   error?: CalculationError;
