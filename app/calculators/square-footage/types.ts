@@ -1,9 +1,3 @@
-export type Unit =
-  | "feet"
-  | "inches"
-  | "yards"
-  | "meters";
-
 export type Shape =
   | "Known Area"
   | "Room"
@@ -22,35 +16,33 @@ export type Shape =
 export type CalculatorInputs = {
   shape: Shape;
 
-  length: string;
+  lengthFeet: string;
   lengthInches: string;
 
-  width: string;
+  widthFeet: string;
   widthInches: string;
 
-  height: string;
+  heightFeet: string;
   heightInches: string;
 
   quantity: string;
 
-  unit: Unit;
+  borderFeet: string;
+  borderInches: string;
 
-  borderWidth: string;
-  borderWidthInches: string;
-
-  sideA: string;
+  sideAFeet: string;
   sideAInches: string;
 
-  sideB: string;
+  sideBFeet: string;
   sideBInches: string;
 
-  sideC: string;
+  sideCFeet: string;
   sideCInches: string;
 
-  windowWidth: string;
+  windowWidthFeet: string;
   windowWidthInches: string;
 
-  windowHeight: string;
+  windowHeightFeet: string;
   windowHeightInches: string;
 
   windowQuantity: string;
@@ -58,7 +50,6 @@ export type CalculatorInputs = {
   knownArea: string;
 
   waste: string;
-
   price: string;
 };
 
@@ -70,3 +61,16 @@ export type CalculationResult = {
   acres: number;
   cost: number | null;
 };
+
+export type CalculationError =
+  | "Length"
+  | "Width"
+  | "Height"
+  | "Border Width"
+  | "Side A"
+  | "Side B"
+  | "Side C"
+  | "Window Width"
+  | "Window Height"
+  | "Area"
+  | null;
