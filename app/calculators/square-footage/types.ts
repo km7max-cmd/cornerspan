@@ -23,24 +23,38 @@ export type CalculatorInputs = {
   shape: Shape;
 
   length: string;
+  lengthUnit: Unit;
+
   width: string;
+  widthUnit: Unit;
+
   height: string;
+  heightUnit: Unit;
 
   quantity: string;
 
-  unit: Unit;
-
   borderWidth: string;
+  borderWidthUnit: Unit;
 
   sideA: string;
+  sideAUnit: Unit;
+
   sideB: string;
+  sideBUnit: Unit;
+
   sideC: string;
+  sideCUnit: Unit;
 
   windowWidth: string;
+  windowWidthUnit: Unit;
+
   windowHeight: string;
+  windowHeightUnit: Unit;
+
   windowQuantity: string;
 
   knownArea: string;
+  knownAreaUnit: Unit;
 
   waste: string;
   price: string;
