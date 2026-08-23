@@ -189,6 +189,122 @@ function getFeetAndInches(
   }
 }
 
+/*
+ * IMPORTANT:
+ * MeasurementField is intentionally OUTSIDE CalculatorForm.
+ *
+ * Previously it was declared inside CalculatorForm.
+ * Every keystroke caused CalculatorForm to re-render,
+ * which created a new MeasurementField component.
+ *
+ * React then unmounted/remounted the input and the
+ * mobile keyboard disappeared after the first digit.
+ */
+type MeasurementFieldProps = {
+  label: string;
+  feetKey: keyof CalculatorInputs;
+  inchesKey: keyof CalculatorInputs;
+  unit: Unit;
+  setUnit: (unit: Unit) => void;
+  values: CalculatorInputs;
+  update: (
+    key: keyof CalculatorInputs,
+    value: string
+  ) => void;
+};
+
+function MeasurementField({
+  label,
+  feetKey,
+  inchesKey,
+  unit,
+  setUnit,
+  values,
+  update,
+}: MeasurementFieldProps) {
+  return (
+    <div className="mb-3">
+      <div className="mb-1 text-sm font-semibold text-slate-800">
+        {label} =
+      </div>
+
+      <div className="grid grid-cols-[1fr_1fr_112px] gap-2">
+        {unit === "ft & in" ? (
+          <>
+            <div className="relative">
+              <input
+                type="number"
+                inputMode="decimal"
+                min="0"
+                step="any"
+                value={String(values[feetKey] ?? "")}
+                onChange={(e) =>
+                  update(feetKey, e.target.value)
+                }
+                className={inputClass()}
+                aria-label={`${label} feet`}
+              />
+
+              <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-xs text-slate-500">
+                ft
+              </span>
+            </div>
+
+            <div className="relative">
+              <input
+                type="number"
+                inputMode="decimal"
+                min="0"
+                step="any"
+                value={String(values[inchesKey] ?? "")}
+                onChange={(e) =>
+                  update(inchesKey, e.target.value)
+                }
+                className={inputClass()}
+                aria-label={`${label} inches`}
+              />
+
+              <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-xs text-slate-500">
+                in
+              </span>
+            </div>
+          </>
+        ) : (
+          <div className="col-span-2">
+            <input
+              type="number"
+              inputMode="decimal"
+              min="0"
+              step="any"
+              value={String(values[feetKey] ?? "")}
+              onChange={(e) =>
+                update(feetKey, e.target.value)
+              }
+              className={inputClass()}
+              aria-label={label}
+            />
+          </div>
+        )}
+
+        <select
+          value={unit}
+          onChange={(e) =>
+            setUnit(e.target.value as Unit)
+          }
+          className={selectClass()}
+          aria-label={`${label} unit`}
+        >
+          {units.map((item) => (
+            <option key={item} value={item}>
+              {item}
+            </option>
+          ))}
+        </select>
+      </div>
+    </div>
+  );
+}
+
 export default function CalculatorForm() {
   const [values, setValues] =
     useState<CalculatorInputs>(initialValues);
@@ -417,114 +533,6 @@ export default function CalculatorForm() {
     }
   }
 
-  function MeasurementField({
-    label,
-    feetKey,
-    inchesKey,
-    unit,
-    setUnit,
-  }: {
-    label: string;
-    feetKey: keyof CalculatorInputs;
-    inchesKey: keyof CalculatorInputs;
-    unit: Unit;
-    setUnit: (unit: Unit) => void;
-  }) {
-    return (
-      <div className="mb-3">
-        <div className="mb-1 text-sm font-semibold text-slate-800">
-          {label} =
-        </div>
-
-        <div className="grid grid-cols-[1fr_1fr_112px] gap-2">
-          {unit === "ft & in" ? (
-            <>
-              <div className="relative">
-                <input
-                  type="number"
-                  inputMode="decimal"
-                  min="0"
-                  step="any"
-                  value={String(values[feetKey] ?? "")}
-                  onChange={(e) =>
-                    update(
-                      feetKey,
-                      e.target.value
-                    )
-                  }
-                  className={inputClass()}
-                  aria-label={`${label} feet`}
-                />
-
-                <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-xs text-slate-500">
-                  ft
-                </span>
-              </div>
-
-              <div className="relative">
-                <input
-                  type="number"
-                  inputMode="decimal"
-                  min="0"
-                  step="any"
-                  value={String(values[inchesKey] ?? "")}
-                  onChange={(e) =>
-                    update(
-                      inchesKey,
-                      e.target.value
-                    )
-                  }
-                  className={inputClass()}
-                  aria-label={`${label} inches`}
-                />
-
-                <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-xs text-slate-500">
-                  in
-                </span>
-              </div>
-            </>
-          ) : (
-            <div className="col-span-2">
-              <input
-                type="number"
-                inputMode="decimal"
-                min="0"
-                step="any"
-                value={String(values[feetKey] ?? "")}
-                onChange={(e) =>
-                  update(
-                    feetKey,
-                    e.target.value
-                  )
-                }
-                className={inputClass()}
-                aria-label={label}
-              />
-            </div>
-          )}
-
-          <select
-            value={unit}
-            onChange={(e) =>
-              setUnit(e.target.value as Unit)
-            }
-            className={selectClass()}
-            aria-label={`${label} unit`}
-          >
-            {units.map((item) => (
-              <option
-                key={item}
-                value={item}
-              >
-                {item}
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
-    );
-  }
-
   function simpleInput(
     label: string,
     key: keyof CalculatorInputs,
@@ -645,6 +653,8 @@ export default function CalculatorForm() {
                 inchesKey="lengthInches"
                 unit={lengthUnit}
                 setUnit={setLengthUnit}
+                values={values}
+                update={update}
               />
 
               <MeasurementField
@@ -653,6 +663,8 @@ export default function CalculatorForm() {
                 inchesKey="widthInches"
                 unit={widthUnit}
                 setUnit={setWidthUnit}
+                values={values}
+                update={update}
               />
 
               {simpleInput(
@@ -671,6 +683,8 @@ export default function CalculatorForm() {
                 inchesKey="lengthInches"
                 unit={lengthUnit}
                 setUnit={setLengthUnit}
+                values={values}
+                update={update}
               />
 
               <MeasurementField
@@ -679,6 +693,8 @@ export default function CalculatorForm() {
                 inchesKey="widthInches"
                 unit={widthUnit}
                 setUnit={setWidthUnit}
+                values={values}
+                update={update}
               />
 
               {simpleInput(
@@ -697,6 +713,8 @@ export default function CalculatorForm() {
                 inchesKey="lengthInches"
                 unit={lengthUnit}
                 setUnit={setLengthUnit}
+                values={values}
+                update={update}
               />
 
               {simpleInput(
@@ -716,6 +734,8 @@ export default function CalculatorForm() {
                 inchesKey="widthInches"
                 unit={widthUnit}
                 setUnit={setWidthUnit}
+                values={values}
+                update={update}
               />
 
               <MeasurementField
@@ -724,6 +744,8 @@ export default function CalculatorForm() {
                 inchesKey="heightInches"
                 unit={heightUnit}
                 setUnit={setHeightUnit}
+                values={values}
+                update={update}
               />
 
               <MeasurementField
@@ -732,6 +754,8 @@ export default function CalculatorForm() {
                 inchesKey="windowWidthInches"
                 unit={windowWidthUnit}
                 setUnit={setWindowWidthUnit}
+                values={values}
+                update={update}
               />
 
               <MeasurementField
@@ -740,6 +764,8 @@ export default function CalculatorForm() {
                 inchesKey="windowHeightInches"
                 unit={windowHeightUnit}
                 setUnit={setWindowHeightUnit}
+                values={values}
+                update={update}
               />
 
               {simpleInput(
@@ -764,6 +790,8 @@ export default function CalculatorForm() {
                 inchesKey="widthInches"
                 unit={widthUnit}
                 setUnit={setWidthUnit}
+                values={values}
+                update={update}
               />
 
               <MeasurementField
@@ -772,6 +800,8 @@ export default function CalculatorForm() {
                 inchesKey="heightInches"
                 unit={heightUnit}
                 setUnit={setHeightUnit}
+                values={values}
+                update={update}
               />
 
               <MeasurementField
@@ -780,6 +810,8 @@ export default function CalculatorForm() {
                 inchesKey="sideAInches"
                 unit={sideAUnit}
                 setUnit={setSideAUnit}
+                values={values}
+                update={update}
               />
 
               {simpleInput(
@@ -799,6 +831,8 @@ export default function CalculatorForm() {
                 inchesKey="lengthInches"
                 unit={lengthUnit}
                 setUnit={setLengthUnit}
+                values={values}
+                update={update}
               />
 
               <MeasurementField
@@ -807,6 +841,8 @@ export default function CalculatorForm() {
                 inchesKey="widthInches"
                 unit={widthUnit}
                 setUnit={setWidthUnit}
+                values={values}
+                update={update}
               />
 
               <MeasurementField
@@ -815,6 +851,8 @@ export default function CalculatorForm() {
                 inchesKey="borderInches"
                 unit={borderUnit}
                 setUnit={setBorderUnit}
+                values={values}
+                update={update}
               />
 
               {simpleInput(
@@ -833,6 +871,8 @@ export default function CalculatorForm() {
                 inchesKey="lengthInches"
                 unit={lengthUnit}
                 setUnit={setLengthUnit}
+                values={values}
+                update={update}
               />
 
               {simpleInput(
@@ -852,6 +892,8 @@ export default function CalculatorForm() {
                 inchesKey="lengthInches"
                 unit={lengthUnit}
                 setUnit={setLengthUnit}
+                values={values}
+                update={update}
               />
 
               <MeasurementField
@@ -860,6 +902,8 @@ export default function CalculatorForm() {
                 inchesKey="borderInches"
                 unit={borderUnit}
                 setUnit={setBorderUnit}
+                values={values}
+                update={update}
               />
 
               {simpleInput(
@@ -878,6 +922,8 @@ export default function CalculatorForm() {
                 inchesKey="lengthInches"
                 unit={lengthUnit}
                 setUnit={setLengthUnit}
+                values={values}
+                update={update}
               />
 
               <MeasurementField
@@ -886,6 +932,8 @@ export default function CalculatorForm() {
                 inchesKey="widthInches"
                 unit={widthUnit}
                 setUnit={setWidthUnit}
+                values={values}
+                update={update}
               />
 
               {simpleInput(
@@ -904,6 +952,8 @@ export default function CalculatorForm() {
                 inchesKey="sideAInches"
                 unit={sideAUnit}
                 setUnit={setSideAUnit}
+                values={values}
+                update={update}
               />
 
               <MeasurementField
@@ -912,6 +962,8 @@ export default function CalculatorForm() {
                 inchesKey="sideBInches"
                 unit={sideBUnit}
                 setUnit={setSideBUnit}
+                values={values}
+                update={update}
               />
 
               <MeasurementField
@@ -920,6 +972,8 @@ export default function CalculatorForm() {
                 inchesKey="sideCInches"
                 unit={sideCUnit}
                 setUnit={setSideCUnit}
+                values={values}
+                update={update}
               />
 
               {simpleInput(
@@ -939,6 +993,8 @@ export default function CalculatorForm() {
                 inchesKey="lengthInches"
                 unit={lengthUnit}
                 setUnit={setLengthUnit}
+                values={values}
+                update={update}
               />
 
               <MeasurementField
@@ -947,6 +1003,8 @@ export default function CalculatorForm() {
                 inchesKey="heightInches"
                 unit={heightUnit}
                 setUnit={setHeightUnit}
+                values={values}
+                update={update}
               />
 
               {simpleInput(
@@ -965,6 +1023,8 @@ export default function CalculatorForm() {
                 inchesKey="sideAInches"
                 unit={sideAUnit}
                 setUnit={setSideAUnit}
+                values={values}
+                update={update}
               />
 
               <MeasurementField
@@ -973,6 +1033,8 @@ export default function CalculatorForm() {
                 inchesKey="sideBInches"
                 unit={sideBUnit}
                 setUnit={setSideBUnit}
+                values={values}
+                update={update}
               />
 
               <MeasurementField
@@ -981,6 +1043,8 @@ export default function CalculatorForm() {
                 inchesKey="heightInches"
                 unit={heightUnit}
                 setUnit={setHeightUnit}
+                values={values}
+                update={update}
               />
 
               {simpleInput(
