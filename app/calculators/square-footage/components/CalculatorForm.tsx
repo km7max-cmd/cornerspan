@@ -5,15 +5,13 @@ import { useState } from "react";
 import InputField from "./InputField";
 import ResultBox from "./ResultBox";
 
-import {
-  calculateSquareFootage,
-} from "../calculations";
+import { calculateSquareFootage } from "../calculations";
 
 import type {
+  CalculationError,
   CalculationResult,
   CalculatorInputs,
   Shape,
-  Unit,
 } from "../types";
 
 const shapes: Shape[] = [
@@ -35,35 +33,33 @@ const shapes: Shape[] = [
 const initialInputs: CalculatorInputs = {
   shape: "Rectangle",
 
-  length: "",
+  lengthFeet: "",
   lengthInches: "",
 
-  width: "",
+  widthFeet: "",
   widthInches: "",
 
-  height: "",
+  heightFeet: "",
   heightInches: "",
 
   quantity: "1",
 
-  unit: "feet",
+  borderFeet: "",
+  borderInches: "",
 
-  borderWidth: "",
-  borderWidthInches: "",
-
-  sideA: "",
+  sideAFeet: "",
   sideAInches: "",
 
-  sideB: "",
+  sideBFeet: "",
   sideBInches: "",
 
-  sideC: "",
+  sideCFeet: "",
   sideCInches: "",
 
-  windowWidth: "",
+  windowWidthFeet: "",
   windowWidthInches: "",
 
-  windowHeight: "",
+  windowHeightFeet: "",
   windowHeightInches: "",
 
   windowQuantity: "1",
@@ -71,7 +67,6 @@ const initialInputs: CalculatorInputs = {
   knownArea: "",
 
   waste: "0",
-
   price: "",
 };
 
@@ -87,13 +82,13 @@ export default function CalculatorForm() {
     );
 
   const [error, setError] =
-    useState("");
+    useState<CalculationError>(null);
 
   const inputClass =
-    "h-11 w-full rounded-md border border-slate-300 bg-white px-3 text-base text-slate-900 outline-none transition focus:border-blue-600 focus:ring-2 focus:ring-blue-100";
+    "h-12 w-full rounded-lg border border-slate-300 bg-white px-4 text-base text-slate-900 outline-none transition focus:border-blue-600 focus:ring-2 focus:ring-blue-100";
 
   const labelClass =
-    "mb-1.5 block text-sm font-medium text-slate-700";
+    "mb-2 block text-base font-medium text-slate-700";
 
   const update = <
     K extends keyof CalculatorInputs
@@ -107,28 +102,15 @@ export default function CalculatorForm() {
     }));
 
     setResult(null);
-    setError("");
-  };
-
-  const setUnit = (unit: Unit) => {
-    update("unit", unit);
+    setError(null);
   };
 
   const calculate = () => {
-    setError("");
-    setResult(null);
-
     const calculation =
       calculateSquareFootage(inputs);
 
-    if (!calculation) {
-      setError(
-        "Please enter valid measurements for the selected shape."
-      );
-      return;
-    }
-
-    setResult(calculation);
+    setResult(calculation.result);
+    setError(calculation.error);
   };
 
   const clear = () => {
@@ -137,19 +119,21 @@ export default function CalculatorForm() {
     });
 
     setResult(null);
-    setError("");
+    setError(null);
   };
 
   return (
-    <section className="overflow-hidden rounded-xl border border-slate-300 bg-white shadow-sm">
+    <section className="overflow-hidden rounded-2xl border border-slate-300 bg-white shadow-sm">
+
       {/* Header */}
-      <div className="bg-blue-700 px-4 py-4 text-center text-lg font-bold text-white sm:text-xl">
+      <div className="bg-blue-700 px-4 py-4 text-center text-xl font-bold text-white sm:text-2xl">
         Square Footage Calculator
       </div>
 
-      <div className="p-4 sm:p-6">
+      <div className="space-y-6 p-5 sm:p-7">
+
         {/* Shape */}
-        <div className="mb-5">
+        <div>
           <label className={labelClass}>
             Area or Shape
           </label>
@@ -176,40 +160,44 @@ export default function CalculatorForm() {
         </div>
 
         {/* Known Area */}
-        {inputs.shape ===
-          "Known Area" && (
-          <InputField
-            label="Area"
-            value={inputs.knownArea}
-            onChange={(value) =>
-              update(
-                "knownArea",
-                value
-              )
-            }
-            unit={inputs.unit}
-            setUnit={setUnit}
-          />
+        {inputs.shape === "Known Area" && (
+          <div>
+            <label className={labelClass}>
+              Area (Square Feet)
+            </label>
+
+            <input
+              type="number"
+              min="0"
+              step="any"
+              inputMode="decimal"
+              value={inputs.knownArea}
+              onChange={(e) =>
+                update(
+                  "knownArea",
+                  e.target.value
+                )
+              }
+              placeholder="0"
+              className={inputClass}
+            />
+          </div>
         )}
 
         {/* Rectangle / Room */}
-        {(inputs.shape ===
-          "Rectangle" ||
+        {(inputs.shape === "Rectangle" ||
           inputs.shape === "Room") && (
-          <div className="space-y-4">
+          <div className="space-y-6">
+
             <InputField
               label="Length"
-              value={inputs.length}
-              onChange={(value) =>
+              feetValue={inputs.lengthFeet}
+              inchesValue={inputs.lengthInches}
+              onFeetChange={(value) =>
                 update(
-                  "length",
+                  "lengthFeet",
                   value
                 )
-              }
-              unit={inputs.unit}
-              setUnit={setUnit}
-              inchesValue={
-                inputs.lengthInches
               }
               onInchesChange={(value) =>
                 update(
@@ -217,21 +205,18 @@ export default function CalculatorForm() {
                   value
                 )
               }
+              helperText="Enter feet and additional inches if needed."
             />
 
             <InputField
               label="Width"
-              value={inputs.width}
-              onChange={(value) =>
+              feetValue={inputs.widthFeet}
+              inchesValue={inputs.widthInches}
+              onFeetChange={(value) =>
                 update(
-                  "width",
+                  "widthFeet",
                   value
                 )
-              }
-              unit={inputs.unit}
-              setUnit={setUnit}
-              inchesValue={
-                inputs.widthInches
               }
               onInchesChange={(value) =>
                 update(
@@ -239,7 +224,9 @@ export default function CalculatorForm() {
                   value
                 )
               }
+              helperText="Enter feet and additional inches if needed."
             />
+
           </div>
         )}
 
@@ -247,17 +234,13 @@ export default function CalculatorForm() {
         {inputs.shape === "Square" && (
           <InputField
             label="Side Length"
-            value={inputs.length}
-            onChange={(value) =>
+            feetValue={inputs.lengthFeet}
+            inchesValue={inputs.lengthInches}
+            onFeetChange={(value) =>
               update(
-                "length",
+                "lengthFeet",
                 value
               )
-            }
-            unit={inputs.unit}
-            setUnit={setUnit}
-            inchesValue={
-              inputs.lengthInches
             }
             onInchesChange={(value) =>
               update(
@@ -269,22 +252,18 @@ export default function CalculatorForm() {
         )}
 
         {/* Wall with Window */}
-        {inputs.shape ===
-          "Wall with Window" && (
-          <div className="space-y-4">
+        {inputs.shape === "Wall with Window" && (
+          <div className="space-y-6">
+
             <InputField
               label="Wall Width"
-              value={inputs.length}
-              onChange={(value) =>
+              feetValue={inputs.lengthFeet}
+              inchesValue={inputs.lengthInches}
+              onFeetChange={(value) =>
                 update(
-                  "length",
+                  "lengthFeet",
                   value
                 )
-              }
-              unit={inputs.unit}
-              setUnit={setUnit}
-              inchesValue={
-                inputs.lengthInches
               }
               onInchesChange={(value) =>
                 update(
@@ -296,17 +275,13 @@ export default function CalculatorForm() {
 
             <InputField
               label="Wall Height"
-              value={inputs.height}
-              onChange={(value) =>
+              feetValue={inputs.heightFeet}
+              inchesValue={inputs.heightInches}
+              onFeetChange={(value) =>
                 update(
-                  "height",
+                  "heightFeet",
                   value
                 )
-              }
-              unit={inputs.unit}
-              setUnit={setUnit}
-              inchesValue={
-                inputs.heightInches
               }
               onInchesChange={(value) =>
                 update(
@@ -316,31 +291,29 @@ export default function CalculatorForm() {
               }
             />
 
-            <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
-              <h3 className="mb-4 font-semibold text-slate-800">
+            <div className="rounded-xl border border-slate-200 bg-slate-50 p-5">
+
+              <h3 className="mb-5 text-lg font-semibold text-slate-800">
                 Window
               </h3>
 
-              <div className="space-y-4">
+              <div className="space-y-5">
+
                 <InputField
                   label="Window Width"
-                  value={
-                    inputs.windowWidth
+                  feetValue={
+                    inputs.windowWidthFeet
                   }
-                  onChange={(value) =>
-                    update(
-                      "windowWidth",
-                      value
-                    )
-                  }
-                  unit={inputs.unit}
-                  setUnit={setUnit}
                   inchesValue={
                     inputs.windowWidthInches
                   }
-                  onInchesChange={(
-                    value
-                  ) =>
+                  onFeetChange={(value) =>
+                    update(
+                      "windowWidthFeet",
+                      value
+                    )
+                  }
+                  onInchesChange={(value) =>
                     update(
                       "windowWidthInches",
                       value
@@ -350,23 +323,19 @@ export default function CalculatorForm() {
 
                 <InputField
                   label="Window Height"
-                  value={
-                    inputs.windowHeight
+                  feetValue={
+                    inputs.windowHeightFeet
                   }
-                  onChange={(value) =>
-                    update(
-                      "windowHeight",
-                      value
-                    )
-                  }
-                  unit={inputs.unit}
-                  setUnit={setUnit}
                   inchesValue={
                     inputs.windowHeightInches
                   }
-                  onInchesChange={(
-                    value
-                  ) =>
+                  onFeetChange={(value) =>
+                    update(
+                      "windowHeightFeet",
+                      value
+                    )
+                  }
+                  onInchesChange={(value) =>
                     update(
                       "windowHeightInches",
                       value
@@ -375,17 +344,15 @@ export default function CalculatorForm() {
                 />
 
                 <div>
-                  <label
-                    className={
-                      labelClass
-                    }
-                  >
+                  <label className={labelClass}>
                     Window Quantity
                   </label>
 
                   <input
                     type="number"
                     min="1"
+                    step="1"
+                    inputMode="numeric"
                     value={
                       inputs.windowQuantity
                     }
@@ -395,33 +362,28 @@ export default function CalculatorForm() {
                         e.target.value
                       )
                     }
-                    className={
-                      inputClass
-                    }
+                    className={inputClass}
                   />
                 </div>
+
               </div>
             </div>
           </div>
         )}
 
         {/* Cathedral Wall */}
-        {inputs.shape ===
-          "Cathedral Wall" && (
-          <div className="space-y-4">
+        {inputs.shape === "Cathedral Wall" && (
+          <div className="space-y-6">
+
             <InputField
               label="Wall Width"
-              value={inputs.width}
-              onChange={(value) =>
+              feetValue={inputs.widthFeet}
+              inchesValue={inputs.widthInches}
+              onFeetChange={(value) =>
                 update(
-                  "width",
+                  "widthFeet",
                   value
                 )
-              }
-              unit={inputs.unit}
-              setUnit={setUnit}
-              inchesValue={
-                inputs.widthInches
               }
               onInchesChange={(value) =>
                 update(
@@ -433,17 +395,13 @@ export default function CalculatorForm() {
 
             <InputField
               label="Wall Height"
-              value={inputs.height}
-              onChange={(value) =>
+              feetValue={inputs.heightFeet}
+              inchesValue={inputs.heightInches}
+              onFeetChange={(value) =>
                 update(
-                  "height",
+                  "heightFeet",
                   value
                 )
-              }
-              unit={inputs.unit}
-              setUnit={setUnit}
-              inchesValue={
-                inputs.heightInches
               }
               onInchesChange={(value) =>
                 update(
@@ -455,17 +413,13 @@ export default function CalculatorForm() {
 
             <InputField
               label="Triangle Height"
-              value={inputs.sideA}
-              onChange={(value) =>
+              feetValue={inputs.sideAFeet}
+              inchesValue={inputs.sideAInches}
+              onFeetChange={(value) =>
                 update(
-                  "sideA",
+                  "sideAFeet",
                   value
                 )
-              }
-              unit={inputs.unit}
-              setUnit={setUnit}
-              inchesValue={
-                inputs.sideAInches
               }
               onInchesChange={(value) =>
                 update(
@@ -474,26 +428,23 @@ export default function CalculatorForm() {
                 )
               }
             />
+
           </div>
         )}
 
         {/* Rectangle Border */}
-        {inputs.shape ===
-          "Rectangle Border" && (
-          <div className="space-y-4">
+        {inputs.shape === "Rectangle Border" && (
+          <div className="space-y-6">
+
             <InputField
               label="Length"
-              value={inputs.length}
-              onChange={(value) =>
+              feetValue={inputs.lengthFeet}
+              inchesValue={inputs.lengthInches}
+              onFeetChange={(value) =>
                 update(
-                  "length",
+                  "lengthFeet",
                   value
                 )
-              }
-              unit={inputs.unit}
-              setUnit={setUnit}
-              inchesValue={
-                inputs.lengthInches
               }
               onInchesChange={(value) =>
                 update(
@@ -505,17 +456,13 @@ export default function CalculatorForm() {
 
             <InputField
               label="Width"
-              value={inputs.width}
-              onChange={(value) =>
+              feetValue={inputs.widthFeet}
+              inchesValue={inputs.widthInches}
+              onFeetChange={(value) =>
                 update(
-                  "width",
+                  "widthFeet",
                   value
                 )
-              }
-              unit={inputs.unit}
-              setUnit={setUnit}
-              inchesValue={
-                inputs.widthInches
               }
               onInchesChange={(value) =>
                 update(
@@ -527,27 +474,22 @@ export default function CalculatorForm() {
 
             <InputField
               label="Border Width"
-              value={
-                inputs.borderWidth
-              }
-              onChange={(value) =>
+              feetValue={inputs.borderFeet}
+              inchesValue={inputs.borderInches}
+              onFeetChange={(value) =>
                 update(
-                  "borderWidth",
+                  "borderFeet",
                   value
                 )
               }
-              unit={inputs.unit}
-              setUnit={setUnit}
-              inchesValue={
-                inputs.borderWidthInches
-              }
               onInchesChange={(value) =>
                 update(
-                  "borderWidthInches",
+                  "borderInches",
                   value
                 )
               }
             />
+
           </div>
         )}
 
@@ -555,17 +497,13 @@ export default function CalculatorForm() {
         {inputs.shape === "Circle" && (
           <InputField
             label="Diameter"
-            value={inputs.length}
-            onChange={(value) =>
+            feetValue={inputs.lengthFeet}
+            inchesValue={inputs.lengthInches}
+            onFeetChange={(value) =>
               update(
-                "length",
+                "lengthFeet",
                 value
               )
-            }
-            unit={inputs.unit}
-            setUnit={setUnit}
-            inchesValue={
-              inputs.lengthInches
             }
             onInchesChange={(value) =>
               update(
@@ -577,24 +515,19 @@ export default function CalculatorForm() {
         )}
 
         {/* Circle Border / Annulus */}
-        {(inputs.shape ===
-          "Circle Border" ||
-          inputs.shape ===
-            "Annulus") && (
-          <div className="space-y-4">
+        {(inputs.shape === "Circle Border" ||
+          inputs.shape === "Annulus") && (
+          <div className="space-y-6">
+
             <InputField
               label="Outer Diameter"
-              value={inputs.length}
-              onChange={(value) =>
+              feetValue={inputs.lengthFeet}
+              inchesValue={inputs.lengthInches}
+              onFeetChange={(value) =>
                 update(
-                  "length",
+                  "lengthFeet",
                   value
                 )
-              }
-              unit={inputs.unit}
-              setUnit={setUnit}
-              inchesValue={
-                inputs.lengthInches
               }
               onInchesChange={(value) =>
                 update(
@@ -606,47 +539,38 @@ export default function CalculatorForm() {
 
             <InputField
               label="Border Width"
-              value={
-                inputs.borderWidth
-              }
-              onChange={(value) =>
+              feetValue={inputs.borderFeet}
+              inchesValue={inputs.borderInches}
+              onFeetChange={(value) =>
                 update(
-                  "borderWidth",
+                  "borderFeet",
                   value
                 )
               }
-              unit={inputs.unit}
-              setUnit={setUnit}
-              inchesValue={
-                inputs.borderWidthInches
-              }
               onInchesChange={(value) =>
                 update(
-                  "borderWidthInches",
+                  "borderInches",
                   value
                 )
               }
             />
+
           </div>
         )}
 
         {/* Triangle */}
-        {inputs.shape ===
-          "Triangle" && (
-          <div className="space-y-4">
+        {inputs.shape === "Triangle" && (
+          <div className="space-y-6">
+
             <InputField
               label="Side A"
-              value={inputs.sideA}
-              onChange={(value) =>
+              feetValue={inputs.sideAFeet}
+              inchesValue={inputs.sideAInches}
+              onFeetChange={(value) =>
                 update(
-                  "sideA",
+                  "sideAFeet",
                   value
                 )
-              }
-              unit={inputs.unit}
-              setUnit={setUnit}
-              inchesValue={
-                inputs.sideAInches
               }
               onInchesChange={(value) =>
                 update(
@@ -658,17 +582,13 @@ export default function CalculatorForm() {
 
             <InputField
               label="Side B"
-              value={inputs.sideB}
-              onChange={(value) =>
+              feetValue={inputs.sideBFeet}
+              inchesValue={inputs.sideBInches}
+              onFeetChange={(value) =>
                 update(
-                  "sideB",
+                  "sideBFeet",
                   value
                 )
-              }
-              unit={inputs.unit}
-              setUnit={setUnit}
-              inchesValue={
-                inputs.sideBInches
               }
               onInchesChange={(value) =>
                 update(
@@ -680,17 +600,13 @@ export default function CalculatorForm() {
 
             <InputField
               label="Side C"
-              value={inputs.sideC}
-              onChange={(value) =>
+              feetValue={inputs.sideCFeet}
+              inchesValue={inputs.sideCInches}
+              onFeetChange={(value) =>
                 update(
-                  "sideC",
+                  "sideCFeet",
                   value
                 )
-              }
-              unit={inputs.unit}
-              setUnit={setUnit}
-              inchesValue={
-                inputs.sideCInches
               }
               onInchesChange={(value) =>
                 update(
@@ -699,26 +615,23 @@ export default function CalculatorForm() {
                 )
               }
             />
+
           </div>
         )}
 
         {/* Triangle 1/2 b×h */}
-        {inputs.shape ===
-          "Triangle 1/2 b×h" && (
-          <div className="space-y-4">
+        {inputs.shape === "Triangle 1/2 b×h" && (
+          <div className="space-y-6">
+
             <InputField
               label="Base"
-              value={inputs.sideA}
-              onChange={(value) =>
+              feetValue={inputs.sideAFeet}
+              inchesValue={inputs.sideAInches}
+              onFeetChange={(value) =>
                 update(
-                  "sideA",
+                  "sideAFeet",
                   value
                 )
-              }
-              unit={inputs.unit}
-              setUnit={setUnit}
-              inchesValue={
-                inputs.sideAInches
               }
               onInchesChange={(value) =>
                 update(
@@ -730,17 +643,13 @@ export default function CalculatorForm() {
 
             <InputField
               label="Height"
-              value={inputs.height}
-              onChange={(value) =>
+              feetValue={inputs.heightFeet}
+              inchesValue={inputs.heightInches}
+              onFeetChange={(value) =>
                 update(
-                  "height",
+                  "heightFeet",
                   value
                 )
-              }
-              unit={inputs.unit}
-              setUnit={setUnit}
-              inchesValue={
-                inputs.heightInches
               }
               onInchesChange={(value) =>
                 update(
@@ -749,26 +658,23 @@ export default function CalculatorForm() {
                 )
               }
             />
+
           </div>
         )}
 
         {/* Trapezoid */}
-        {inputs.shape ===
-          "Trapezoid" && (
-          <div className="space-y-4">
+        {inputs.shape === "Trapezoid" && (
+          <div className="space-y-6">
+
             <InputField
               label="Base A"
-              value={inputs.sideA}
-              onChange={(value) =>
+              feetValue={inputs.sideAFeet}
+              inchesValue={inputs.sideAInches}
+              onFeetChange={(value) =>
                 update(
-                  "sideA",
+                  "sideAFeet",
                   value
                 )
-              }
-              unit={inputs.unit}
-              setUnit={setUnit}
-              inchesValue={
-                inputs.sideAInches
               }
               onInchesChange={(value) =>
                 update(
@@ -780,17 +686,13 @@ export default function CalculatorForm() {
 
             <InputField
               label="Base B"
-              value={inputs.sideB}
-              onChange={(value) =>
+              feetValue={inputs.sideBFeet}
+              inchesValue={inputs.sideBInches}
+              onFeetChange={(value) =>
                 update(
-                  "sideB",
+                  "sideBFeet",
                   value
                 )
-              }
-              unit={inputs.unit}
-              setUnit={setUnit}
-              inchesValue={
-                inputs.sideBInches
               }
               onInchesChange={(value) =>
                 update(
@@ -802,17 +704,13 @@ export default function CalculatorForm() {
 
             <InputField
               label="Height"
-              value={inputs.height}
-              onChange={(value) =>
+              feetValue={inputs.heightFeet}
+              inchesValue={inputs.heightInches}
+              onFeetChange={(value) =>
                 update(
-                  "height",
+                  "heightFeet",
                   value
                 )
-              }
-              unit={inputs.unit}
-              setUnit={setUnit}
-              inchesValue={
-                inputs.heightInches
               }
               onInchesChange={(value) =>
                 update(
@@ -821,11 +719,12 @@ export default function CalculatorForm() {
                 )
               }
             />
+
           </div>
         )}
 
         {/* Quantity */}
-        <div className="mt-5">
+        <div>
           <label className={labelClass}>
             Quantity
           </label>
@@ -833,6 +732,8 @@ export default function CalculatorForm() {
           <input
             type="number"
             min="1"
+            step="1"
+            inputMode="numeric"
             value={inputs.quantity}
             onChange={(e) =>
               update(
@@ -845,20 +746,23 @@ export default function CalculatorForm() {
         </div>
 
         {/* Waste */}
-        <fieldset className="mt-5 rounded-xl border border-slate-300 p-4">
-          <legend className="px-2 text-sm font-medium text-slate-500">
+        <fieldset className="rounded-xl border border-slate-300 p-5">
+
+          <legend className="px-2 text-base font-medium text-slate-500">
             Optional Material Waste
           </legend>
 
           <div className="flex items-center gap-3">
-            <span className="text-sm text-slate-600">
+
+            <span className="text-base text-slate-600">
               Add an extra
             </span>
 
             <input
               type="number"
               min="0"
-              step="0.1"
+              step="any"
+              inputMode="decimal"
               value={inputs.waste}
               onChange={(e) =>
                 update(
@@ -866,18 +770,20 @@ export default function CalculatorForm() {
                   e.target.value
                 )
               }
-              className="h-10 w-24 rounded-md border border-slate-300 px-3 text-center outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
+              className="h-12 w-28 rounded-lg border border-slate-300 bg-white px-3 text-center text-lg outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
             />
 
-            <span className="text-sm text-slate-600">
+            <span className="text-base text-slate-600">
               %
             </span>
+
           </div>
         </fieldset>
 
         {/* Price */}
-        <fieldset className="mt-4 rounded-xl border border-slate-300 p-4">
-          <legend className="px-2 text-sm font-medium text-slate-500">
+        <fieldset className="rounded-xl border border-slate-300 p-5">
+
+          <legend className="px-2 text-base font-medium text-slate-500">
             Optional Material Cost
           </legend>
 
@@ -888,7 +794,8 @@ export default function CalculatorForm() {
           <input
             type="number"
             min="0"
-            step="0.01"
+            step="any"
+            inputMode="decimal"
             value={inputs.price}
             onChange={(e) =>
               update(
@@ -899,14 +806,22 @@ export default function CalculatorForm() {
             placeholder="0"
             className={inputClass}
           />
+
         </fieldset>
 
+        {/* Error / Result */}
+        <ResultBox
+          result={result}
+          error={error}
+        />
+
         {/* Buttons */}
-        <div className="mt-6 grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-3">
+
           <button
             type="button"
             onClick={calculate}
-            className="rounded-lg bg-blue-700 px-5 py-3 font-bold text-white transition hover:bg-blue-800 active:scale-[0.99]"
+            className="rounded-lg bg-blue-700 px-5 py-3.5 text-base font-bold text-white transition hover:bg-blue-800 active:scale-[0.99]"
           >
             Calculate
           </button>
@@ -914,17 +829,13 @@ export default function CalculatorForm() {
           <button
             type="button"
             onClick={clear}
-            className="rounded-lg bg-slate-200 px-5 py-3 font-semibold text-slate-700 transition hover:bg-slate-300 active:scale-[0.99]"
+            className="rounded-lg bg-slate-200 px-5 py-3.5 text-base font-semibold text-slate-700 transition hover:bg-slate-300 active:scale-[0.99]"
           >
             Clear
           </button>
+
         </div>
 
-        {/* Result */}
-        <ResultBox
-          result={result}
-          error={error}
-        />
       </div>
     </section>
   );
