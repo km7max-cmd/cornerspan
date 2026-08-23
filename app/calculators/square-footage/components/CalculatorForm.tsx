@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
+
 import type {
   CalculatorInputs,
   CalculationError,
   CalculationResult,
   Shape,
 } from "../types";
+
 import { calculateSquareFootage } from "../calculations";
 import ResultBox from "./ResultBox";
 import ShapeDiagram from "./ShapeDiagram";
@@ -152,7 +154,10 @@ function selectClass() {
 function getFeetAndInches(
   value: string,
   unit: Unit
-): { feet: string; inches: string } {
+): {
+  feet: string;
+  inches: string;
+} {
   const n = Number(value);
 
   if (!Number.isFinite(n)) {
@@ -310,12 +315,10 @@ export default function CalculatorForm() {
       };
     }
 
-    const converted = getFeetAndInches(
+    return getFeetAndInches(
       String(values[feetKey] ?? ""),
       unit
     );
-
-    return converted;
   }
 
   function areaPricePerSquareFoot(): string {
@@ -474,12 +477,11 @@ export default function CalculatorForm() {
             <>
               <div className="relative">
                 <input
-                  <input
-  type="text"
-  inputMode="decimal"
-                  min="0"
-                  step="any"
-                  value={String(values[feetKey] ?? "")}
+                  type="text"
+                  inputMode="decimal"
+                  value={String(
+                    values[feetKey] ?? ""
+                  )}
                   onChange={(e) =>
                     update(
                       feetKey,
@@ -497,11 +499,11 @@ export default function CalculatorForm() {
 
               <div className="relative">
                 <input
-                  type="number"
+                  type="text"
                   inputMode="decimal"
-                  min="0"
-                  step="any"
-                  value={String(values[inchesKey] ?? "")}
+                  value={String(
+                    values[inchesKey] ?? ""
+                  )}
                   onChange={(e) =>
                     update(
                       inchesKey,
@@ -520,11 +522,11 @@ export default function CalculatorForm() {
           ) : (
             <div className="col-span-2">
               <input
-                type="number"
+                type="text"
                 inputMode="decimal"
-                min="0"
-                step="any"
-                value={String(values[feetKey] ?? "")}
+                value={String(
+                  values[feetKey] ?? ""
+                )}
                 onChange={(e) =>
                   update(
                     feetKey,
@@ -540,7 +542,9 @@ export default function CalculatorForm() {
           <select
             value={unit}
             onChange={(e) =>
-              setUnit(e.target.value as Unit)
+              setUnit(
+                e.target.value as Unit
+              )
             }
             className={selectClass()}
             aria-label={`${label} unit`}
@@ -571,48 +575,22 @@ export default function CalculatorForm() {
         </div>
 
         <input
-  type="text"
-  inputMode="decimal"
-          value={String(values[key] ?? "")}
+          type="text"
+          inputMode="decimal"
+          value={String(
+            values[key] ?? ""
+          )}
           onChange={(e) =>
-            update(key, e.target.value)
+            update(
+              key,
+              e.target.value
+            )
           }
           placeholder={placeholder}
           className={inputClass()}
         />
       </div>
     );
-  }
-
-  function shapeImageName(): string {
-    switch (values.shape) {
-      case "Known Area":
-        return "Known Area";
-
-      case "Wall with Window":
-        return "Wall Minus Window";
-
-      case "Cathedral Wall":
-        return "Cathedral Wall";
-
-      case "Rectangle Border":
-        return "Rectangle Border";
-
-      case "Circle Border":
-        return "Circle Border";
-
-      case "Annulus":
-        return "Annulus";
-
-      case "Triangle":
-        return "Triangle";
-
-      case "Triangle 1/2 b×h":
-        return "Triangle Base × Height";
-
-      default:
-        return values.shape;
-    }
   }
 
   return (
@@ -623,6 +601,7 @@ export default function CalculatorForm() {
         </div>
 
         <div className="p-3 sm:p-4">
+
           {/* Shape */}
           <div className="mb-3 text-center">
             <label className="mr-2 text-sm font-semibold text-slate-800">
@@ -649,7 +628,10 @@ export default function CalculatorForm() {
             </select>
           </div>
 
-          <ShapeDiagram shape={values.shape} />
+          {/* Shape Image */}
+          <ShapeDiagram
+            shape={values.shape}
+          />
 
           {/* Known Area */}
           {values.shape === "Known Area" && (
@@ -737,8 +719,7 @@ export default function CalculatorForm() {
           )}
 
           {/* Wall with Window */}
-          {values.shape ===
-            "Wall with Window" && (
+          {values.shape === "Wall with Window" && (
             <>
               <MeasurementField
                 label="Wall Width"
@@ -785,8 +766,7 @@ export default function CalculatorForm() {
           )}
 
           {/* Cathedral Wall */}
-          {values.shape ===
-            "Cathedral Wall" && (
+          {values.shape === "Cathedral Wall" && (
             <>
               <MeasurementField
                 label="Wall Width"
@@ -820,8 +800,7 @@ export default function CalculatorForm() {
           )}
 
           {/* Rectangle Border */}
-          {values.shape ===
-            "Rectangle Border" && (
+          {values.shape === "Rectangle Border" && (
             <>
               <MeasurementField
                 label="Inner Length"
@@ -873,8 +852,7 @@ export default function CalculatorForm() {
           )}
 
           {/* Circle Border */}
-          {values.shape ===
-            "Circle Border" && (
+          {values.shape === "Circle Border" && (
             <>
               <MeasurementField
                 label="Inner Diameter"
@@ -959,9 +937,8 @@ export default function CalculatorForm() {
             </>
           )}
 
-          {/* Triangle Base Height */}
-          {values.shape ===
-            "Triangle 1/2 b×h" && (
+          {/* Triangle 1/2 b×h */}
+          {values.shape === "Triangle 1/2 b×h" && (
             <>
               <MeasurementField
                 label="Base"
@@ -1032,9 +1009,9 @@ export default function CalculatorForm() {
               </span>
 
               <input
-  type="text"
-  inputMode="decimal"
-  value={values.waste}
+                type="text"
+                inputMode="decimal"
+                value={values.waste}
                 onChange={(e) =>
                   update(
                     "waste",
@@ -1057,6 +1034,7 @@ export default function CalculatorForm() {
             </legend>
 
             <div className="grid grid-cols-[82px_1fr_90px] items-end gap-2">
+
               {/* Currency */}
               <div>
                 <label className="mb-1 block text-xs text-slate-600">
@@ -1066,7 +1044,9 @@ export default function CalculatorForm() {
                 <select
                   value={currency}
                   onChange={(e) =>
-                    setCurrency(e.target.value)
+                    setCurrency(
+                      e.target.value
+                    )
                   }
                   className="h-9 w-[82px] border border-slate-500 bg-white px-2 text-sm text-slate-900 outline-none focus:border-blue-700 focus:ring-1 focus:ring-blue-700"
                   aria-label="Currency"
@@ -1089,9 +1069,9 @@ export default function CalculatorForm() {
                 </label>
 
                 <input
-  type="text"
-  inputMode="decimal"
-  value={values.price}
+                  type="text"
+                  inputMode="decimal"
+                  value={values.price}
                   onChange={(e) =>
                     update(
                       "price",
@@ -1223,23 +1203,19 @@ export default function CalculatorForm() {
             {values.shape === "Known Area" &&
               "Area = Known Square Feet"}
 
-            {values.shape ===
-              "Rectangle Border" &&
+            {values.shape === "Rectangle Border" &&
               "Area = Outer Rectangle − Inner Rectangle"}
 
-            {values.shape ===
-              "Wall with Window" &&
+            {values.shape === "Wall with Window" &&
               "Area = Wall Area − Window Area"}
 
-            {values.shape ===
-              "Cathedral Wall" &&
+            {values.shape === "Cathedral Wall" &&
               "Area = Width × (Height 1 + Height 2) ÷ 2"}
 
             {values.shape === "Circle" &&
               "Area = π × (Diameter ÷ 2)²"}
 
-            {values.shape ===
-              "Circle Border" &&
+            {values.shape === "Circle Border" &&
               "Area = Outer Circle − Inner Circle"}
 
             {values.shape === "Annulus" &&
@@ -1248,8 +1224,7 @@ export default function CalculatorForm() {
             {values.shape === "Triangle" &&
               "Heron's Formula"}
 
-            {values.shape ===
-              "Triangle 1/2 b×h" &&
+            {values.shape === "Triangle 1/2 b×h" &&
               "Area = ½ × Base × Height"}
 
             {values.shape === "Trapezoid" &&
