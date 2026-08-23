@@ -61,6 +61,8 @@ export default function CalculatorForm() {
   const [result, setResult] =
     useState<CalculationResult | null>(null);
 
+  const [error, setError] = useState("");
+
   const inputClass =
     "h-11 w-full rounded-md border border-slate-300 bg-white px-3 text-base text-slate-900 outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100";
 
@@ -77,18 +79,204 @@ export default function CalculatorForm() {
     }));
 
     setResult(null);
+    setError("");
+  };
+
+  const required = (
+    value: string,
+    label: string
+  ) => {
+    if (!value.trim() || Number(value) <= 0) {
+      setError(`Please enter a valid ${label}.`);
+      return false;
+    }
+
+    return true;
   };
 
   const calculate = () => {
+    setError("");
+    setResult(null);
+
+    switch (inputs.shape) {
+      case "Rectangle":
+      case "Room":
+        if (
+          !required(inputs.length, "Length") ||
+          !required(inputs.width, "Width")
+        ) {
+          return;
+        }
+        break;
+
+      case "Square":
+      case "Circle":
+        if (
+          !required(inputs.length, "measurement")
+        ) {
+          return;
+        }
+        break;
+
+      case "Known Area":
+        if (
+          !required(inputs.knownArea, "Area")
+        ) {
+          return;
+        }
+        break;
+
+      case "Wall with Window":
+        if (
+          !required(
+            inputs.length,
+            "Wall Width"
+          ) ||
+          !required(
+            inputs.height,
+            "Wall Height"
+          ) ||
+          !required(
+            inputs.windowWidth,
+            "Window Width"
+          ) ||
+          !required(
+            inputs.windowHeight,
+            "Window Height"
+          )
+        ) {
+          return;
+        }
+        break;
+
+      case "Cathedral Wall":
+        if (
+          !required(
+            inputs.width,
+            "Wall Width"
+          ) ||
+          !required(
+            inputs.height,
+            "Wall Height"
+          ) ||
+          !required(
+            inputs.sideA,
+            "Triangle Height"
+          )
+        ) {
+          return;
+        }
+        break;
+
+      case "Rectangle Border":
+        if (
+          !required(
+            inputs.length,
+            "Length"
+          ) ||
+          !required(
+            inputs.width,
+            "Width"
+          ) ||
+          !required(
+            inputs.borderWidth,
+            "Border Width"
+          )
+        ) {
+          return;
+        }
+        break;
+
+      case "Circle Border":
+      case "Annulus":
+        if (
+          !required(
+            inputs.length,
+            "Outer Diameter"
+          ) ||
+          !required(
+            inputs.borderWidth,
+            "Border Width"
+          )
+        ) {
+          return;
+        }
+        break;
+
+      case "Triangle":
+        if (
+          !required(
+            inputs.sideA,
+            "Side A"
+          ) ||
+          !required(
+            inputs.sideB,
+            "Side B"
+          ) ||
+          !required(
+            inputs.sideC,
+            "Side C"
+          )
+        ) {
+          return;
+        }
+        break;
+
+      case "Triangle 1/2 b×h":
+        if (
+          !required(
+            inputs.sideA,
+            "Base"
+          ) ||
+          !required(
+            inputs.height,
+            "Height"
+          )
+        ) {
+          return;
+        }
+        break;
+
+      case "Trapezoid":
+        if (
+          !required(
+            inputs.sideA,
+            "Base A"
+          ) ||
+          !required(
+            inputs.sideB,
+            "Base B"
+          ) ||
+          !required(
+            inputs.height,
+            "Height"
+          )
+        ) {
+          return;
+        }
+        break;
+    }
+
     const calculation =
       calculateSquareFootage(inputs);
+
+    if (!calculation) {
+      setError(
+        "Please check your measurements and enter valid values."
+      );
+      return;
+    }
 
     setResult(calculation);
   };
 
   const clear = () => {
-    setInputs(initialInputs);
+    setInputs({
+      ...initialInputs,
+    });
+
     setResult(null);
+    setError("");
   };
 
   const setUnit = (unit: Unit) => {
@@ -138,7 +326,10 @@ export default function CalculatorForm() {
             label="Area"
             value={inputs.knownArea}
             onChange={(value) =>
-              update("knownArea", value)
+              update(
+                "knownArea",
+                value
+              )
             }
             unit={inputs.unit}
             setUnit={setUnit}
@@ -154,7 +345,10 @@ export default function CalculatorForm() {
               label="Length"
               value={inputs.length}
               onChange={(value) =>
-                update("length", value)
+                update(
+                  "length",
+                  value
+                )
               }
               unit={inputs.unit}
               setUnit={setUnit}
@@ -164,7 +358,10 @@ export default function CalculatorForm() {
               label="Width"
               value={inputs.width}
               onChange={(value) =>
-                update("width", value)
+                update(
+                  "width",
+                  value
+                )
               }
               unit={inputs.unit}
               setUnit={setUnit}
@@ -179,7 +376,10 @@ export default function CalculatorForm() {
             label="Side Length"
             value={inputs.length}
             onChange={(value) =>
-              update("length", value)
+              update(
+                "length",
+                value
+              )
             }
             unit={inputs.unit}
             setUnit={setUnit}
@@ -194,7 +394,10 @@ export default function CalculatorForm() {
               label="Wall Width"
               value={inputs.length}
               onChange={(value) =>
-                update("length", value)
+                update(
+                  "length",
+                  value
+                )
               }
               unit={inputs.unit}
               setUnit={setUnit}
@@ -204,7 +407,10 @@ export default function CalculatorForm() {
               label="Wall Height"
               value={inputs.height}
               onChange={(value) =>
-                update("height", value)
+                update(
+                  "height",
+                  value
+                )
               }
               unit={inputs.unit}
               setUnit={setUnit}
@@ -220,7 +426,9 @@ export default function CalculatorForm() {
 
                 <InputField
                   label="Window Width"
-                  value={inputs.windowWidth}
+                  value={
+                    inputs.windowWidth
+                  }
                   onChange={(value) =>
                     update(
                       "windowWidth",
@@ -233,7 +441,9 @@ export default function CalculatorForm() {
 
                 <InputField
                   label="Window Height"
-                  value={inputs.windowHeight}
+                  value={
+                    inputs.windowHeight
+                  }
                   onChange={(value) =>
                     update(
                       "windowHeight",
@@ -252,7 +462,9 @@ export default function CalculatorForm() {
                   <input
                     type="number"
                     min="1"
-                    value={inputs.windowQuantity}
+                    value={
+                      inputs.windowQuantity
+                    }
                     onChange={(e) =>
                       update(
                         "windowQuantity",
@@ -276,7 +488,10 @@ export default function CalculatorForm() {
               label="Wall Width"
               value={inputs.width}
               onChange={(value) =>
-                update("width", value)
+                update(
+                  "width",
+                  value
+                )
               }
               unit={inputs.unit}
               setUnit={setUnit}
@@ -286,7 +501,10 @@ export default function CalculatorForm() {
               label="Wall Height"
               value={inputs.height}
               onChange={(value) =>
-                update("height", value)
+                update(
+                  "height",
+                  value
+                )
               }
               unit={inputs.unit}
               setUnit={setUnit}
@@ -296,7 +514,10 @@ export default function CalculatorForm() {
               label="Triangle Height"
               value={inputs.sideA}
               onChange={(value) =>
-                update("sideA", value)
+                update(
+                  "sideA",
+                  value
+                )
               }
               unit={inputs.unit}
               setUnit={setUnit}
@@ -313,7 +534,10 @@ export default function CalculatorForm() {
               label="Length"
               value={inputs.length}
               onChange={(value) =>
-                update("length", value)
+                update(
+                  "length",
+                  value
+                )
               }
               unit={inputs.unit}
               setUnit={setUnit}
@@ -323,7 +547,10 @@ export default function CalculatorForm() {
               label="Width"
               value={inputs.width}
               onChange={(value) =>
-                update("width", value)
+                update(
+                  "width",
+                  value
+                )
               }
               unit={inputs.unit}
               setUnit={setUnit}
@@ -331,7 +558,9 @@ export default function CalculatorForm() {
 
             <InputField
               label="Border Width"
-              value={inputs.borderWidth}
+              value={
+                inputs.borderWidth
+              }
               onChange={(value) =>
                 update(
                   "borderWidth",
@@ -351,7 +580,10 @@ export default function CalculatorForm() {
             label="Diameter"
             value={inputs.length}
             onChange={(value) =>
-              update("length", value)
+              update(
+                "length",
+                value
+              )
             }
             unit={inputs.unit}
             setUnit={setUnit}
@@ -359,15 +591,20 @@ export default function CalculatorForm() {
         )}
 
         {/* Circle Border / Annulus */}
-        {(inputs.shape === "Circle Border" ||
-          inputs.shape === "Annulus") && (
+        {(inputs.shape ===
+          "Circle Border" ||
+          inputs.shape ===
+            "Annulus") && (
           <div className="space-y-4">
 
             <InputField
               label="Outer Diameter"
               value={inputs.length}
               onChange={(value) =>
-                update("length", value)
+                update(
+                  "length",
+                  value
+                )
               }
               unit={inputs.unit}
               setUnit={setUnit}
@@ -375,7 +612,9 @@ export default function CalculatorForm() {
 
             <InputField
               label="Border Width"
-              value={inputs.borderWidth}
+              value={
+                inputs.borderWidth
+              }
               onChange={(value) =>
                 update(
                   "borderWidth",
@@ -397,7 +636,10 @@ export default function CalculatorForm() {
               label="Side A"
               value={inputs.sideA}
               onChange={(value) =>
-                update("sideA", value)
+                update(
+                  "sideA",
+                  value
+                )
               }
               unit={inputs.unit}
               setUnit={setUnit}
@@ -407,7 +649,10 @@ export default function CalculatorForm() {
               label="Side B"
               value={inputs.sideB}
               onChange={(value) =>
-                update("sideB", value)
+                update(
+                  "sideB",
+                  value
+                )
               }
               unit={inputs.unit}
               setUnit={setUnit}
@@ -417,7 +662,10 @@ export default function CalculatorForm() {
               label="Side C"
               value={inputs.sideC}
               onChange={(value) =>
-                update("sideC", value)
+                update(
+                  "sideC",
+                  value
+                )
               }
               unit={inputs.unit}
               setUnit={setUnit}
@@ -427,14 +675,18 @@ export default function CalculatorForm() {
         )}
 
         {/* Triangle 1/2 b×h */}
-        {inputs.shape === "Triangle 1/2 b×h" && (
+        {inputs.shape ===
+          "Triangle 1/2 b×h" && (
           <div className="space-y-4">
 
             <InputField
               label="Base"
               value={inputs.sideA}
               onChange={(value) =>
-                update("sideA", value)
+                update(
+                  "sideA",
+                  value
+                )
               }
               unit={inputs.unit}
               setUnit={setUnit}
@@ -444,7 +696,10 @@ export default function CalculatorForm() {
               label="Height"
               value={inputs.height}
               onChange={(value) =>
-                update("height", value)
+                update(
+                  "height",
+                  value
+                )
               }
               unit={inputs.unit}
               setUnit={setUnit}
@@ -461,7 +716,10 @@ export default function CalculatorForm() {
               label="Base A"
               value={inputs.sideA}
               onChange={(value) =>
-                update("sideA", value)
+                update(
+                  "sideA",
+                  value
+                )
               }
               unit={inputs.unit}
               setUnit={setUnit}
@@ -471,7 +729,10 @@ export default function CalculatorForm() {
               label="Base B"
               value={inputs.sideB}
               onChange={(value) =>
-                update("sideB", value)
+                update(
+                  "sideB",
+                  value
+                )
               }
               unit={inputs.unit}
               setUnit={setUnit}
@@ -481,7 +742,10 @@ export default function CalculatorForm() {
               label="Height"
               value={inputs.height}
               onChange={(value) =>
-                update("height", value)
+                update(
+                  "height",
+                  value
+                )
               }
               unit={inputs.unit}
               setUnit={setUnit}
@@ -569,6 +833,13 @@ export default function CalculatorForm() {
           />
 
         </fieldset>
+
+        {/* Error */}
+        {error && (
+          <div className="mt-5 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
+            {error}
+          </div>
+        )}
 
         {/* Buttons */}
         <div className="mt-6 grid grid-cols-2 gap-3">
