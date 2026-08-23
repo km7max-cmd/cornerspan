@@ -140,11 +140,6 @@ export default function CalculatorForm() {
     setError("");
   };
 
-  const feetInchesProps = {
-    unit: inputs.unit,
-    setUnit,
-  };
-
   return (
     <section className="overflow-hidden rounded-xl border border-slate-300 bg-white shadow-sm">
       {/* Header */}
@@ -211,18 +206,17 @@ export default function CalculatorForm() {
                   value
                 )
               }
+              unit={inputs.unit}
+              setUnit={setUnit}
               inchesValue={
                 inputs.lengthInches
               }
-              onInchesChange={(
-                value
-              ) =>
+              onInchesChange={(value) =>
                 update(
                   "lengthInches",
                   value
                 )
               }
-              {...feetInchesProps}
             />
 
             <InputField
@@ -234,18 +228,17 @@ export default function CalculatorForm() {
                   value
                 )
               }
+              unit={inputs.unit}
+              setUnit={setUnit}
               inchesValue={
                 inputs.widthInches
               }
-              onInchesChange={(
-                value
-              ) =>
+              onInchesChange={(value) =>
                 update(
                   "widthInches",
                   value
                 )
               }
-              {...feetInchesProps}
             />
           </div>
         )}
@@ -261,6 +254,8 @@ export default function CalculatorForm() {
                 value
               )
             }
+            unit={inputs.unit}
+            setUnit={setUnit}
             inchesValue={
               inputs.lengthInches
             }
@@ -270,7 +265,6 @@ export default function CalculatorForm() {
                 value
               )
             }
-            {...feetInchesProps}
           />
         )}
 
@@ -287,6 +281,8 @@ export default function CalculatorForm() {
                   value
                 )
               }
+              unit={inputs.unit}
+              setUnit={setUnit}
               inchesValue={
                 inputs.lengthInches
               }
@@ -296,7 +292,6 @@ export default function CalculatorForm() {
                   value
                 )
               }
-              {...feetInchesProps}
             />
 
             <InputField
@@ -308,6 +303,8 @@ export default function CalculatorForm() {
                   value
                 )
               }
+              unit={inputs.unit}
+              setUnit={setUnit}
               inchesValue={
                 inputs.heightInches
               }
@@ -317,7 +314,6 @@ export default function CalculatorForm() {
                   value
                 )
               }
-              {...feetInchesProps}
             />
 
             <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
@@ -337,6 +333,8 @@ export default function CalculatorForm() {
                       value
                     )
                   }
+                  unit={inputs.unit}
+                  setUnit={setUnit}
                   inchesValue={
                     inputs.windowWidthInches
                   }
@@ -348,7 +346,6 @@ export default function CalculatorForm() {
                       value
                     )
                   }
-                  {...feetInchesProps}
                 />
 
                 <InputField
@@ -362,6 +359,8 @@ export default function CalculatorForm() {
                       value
                     )
                   }
+                  unit={inputs.unit}
+                  setUnit={setUnit}
                   inchesValue={
                     inputs.windowHeightInches
                   }
@@ -373,7 +372,6 @@ export default function CalculatorForm() {
                       value
                     )
                   }
-                  {...feetInchesProps}
                 />
 
                 <div>
@@ -420,6 +418,8 @@ export default function CalculatorForm() {
                   value
                 )
               }
+              unit={inputs.unit}
+              setUnit={setUnit}
               inchesValue={
                 inputs.widthInches
               }
@@ -429,7 +429,6 @@ export default function CalculatorForm() {
                   value
                 )
               }
-              {...feetInchesProps}
             />
 
             <InputField
@@ -441,6 +440,8 @@ export default function CalculatorForm() {
                   value
                 )
               }
+              unit={inputs.unit}
+              setUnit={setUnit}
               inchesValue={
                 inputs.heightInches
               }
@@ -450,7 +451,6 @@ export default function CalculatorForm() {
                   value
                 )
               }
-              {...feetInchesProps}
             />
 
             <InputField
@@ -462,6 +462,8 @@ export default function CalculatorForm() {
                   value
                 )
               }
+              unit={inputs.unit}
+              setUnit={setUnit}
               inchesValue={
                 inputs.sideAInches
               }
@@ -471,7 +473,6 @@ export default function CalculatorForm() {
                   value
                 )
               }
-              {...feetInchesProps}
             />
           </div>
         )}
@@ -489,6 +490,8 @@ export default function CalculatorForm() {
                   value
                 )
               }
+              unit={inputs.unit}
+              setUnit={setUnit}
               inchesValue={
                 inputs.lengthInches
               }
@@ -498,7 +501,6 @@ export default function CalculatorForm() {
                   value
                 )
               }
-              {...feetInchesProps}
             />
 
             <InputField
@@ -510,6 +512,8 @@ export default function CalculatorForm() {
                   value
                 )
               }
+              unit={inputs.unit}
+              setUnit={setUnit}
               inchesValue={
                 inputs.widthInches
               }
@@ -519,7 +523,6 @@ export default function CalculatorForm() {
                   value
                 )
               }
-              {...feetInchesProps}
             />
 
             <InputField
@@ -533,6 +536,8 @@ export default function CalculatorForm() {
                   value
                 )
               }
+              unit={inputs.unit}
+              setUnit={setUnit}
               inchesValue={
                 inputs.borderWidthInches
               }
@@ -542,7 +547,6 @@ export default function CalculatorForm() {
                   value
                 )
               }
-              {...feetInchesProps}
             />
           </div>
         )}
@@ -558,6 +562,8 @@ export default function CalculatorForm() {
                 value
               )
             }
+            unit={inputs.unit}
+            setUnit={setUnit}
             inchesValue={
               inputs.lengthInches
             }
@@ -567,7 +573,6 @@ export default function CalculatorForm() {
                 value
               )
             }
-            {...feetInchesProps}
           />
         )}
 
@@ -586,6 +591,8 @@ export default function CalculatorForm() {
                   value
                 )
               }
+              unit={inputs.unit}
+              setUnit={setUnit}
               inchesValue={
                 inputs.lengthInches
               }
@@ -595,7 +602,6 @@ export default function CalculatorForm() {
                   value
                 )
               }
-              {...feetInchesProps}
             />
 
             <InputField
@@ -609,6 +615,8 @@ export default function CalculatorForm() {
                   value
                 )
               }
+              unit={inputs.unit}
+              setUnit={setUnit}
               inchesValue={
                 inputs.borderWidthInches
               }
@@ -618,7 +626,6 @@ export default function CalculatorForm() {
                   value
                 )
               }
-              {...feetInchesProps}
             />
           </div>
         )}
@@ -636,6 +643,8 @@ export default function CalculatorForm() {
                   value
                 )
               }
+              unit={inputs.unit}
+              setUnit={setUnit}
               inchesValue={
                 inputs.sideAInches
               }
@@ -645,7 +654,6 @@ export default function CalculatorForm() {
                   value
                 )
               }
-              {...feetInchesProps}
             />
 
             <InputField
@@ -657,6 +665,8 @@ export default function CalculatorForm() {
                   value
                 )
               }
+              unit={inputs.unit}
+              setUnit={setUnit}
               inchesValue={
                 inputs.sideBInches
               }
@@ -666,7 +676,6 @@ export default function CalculatorForm() {
                   value
                 )
               }
-              {...feetInchesProps}
             />
 
             <InputField
@@ -678,6 +687,8 @@ export default function CalculatorForm() {
                   value
                 )
               }
+              unit={inputs.unit}
+              setUnit={setUnit}
               inchesValue={
                 inputs.sideCInches
               }
@@ -687,7 +698,6 @@ export default function CalculatorForm() {
                   value
                 )
               }
-              {...feetInchesProps}
             />
           </div>
         )}
@@ -705,6 +715,8 @@ export default function CalculatorForm() {
                   value
                 )
               }
+              unit={inputs.unit}
+              setUnit={setUnit}
               inchesValue={
                 inputs.sideAInches
               }
@@ -714,7 +726,6 @@ export default function CalculatorForm() {
                   value
                 )
               }
-              {...feetInchesProps}
             />
 
             <InputField
@@ -726,6 +737,8 @@ export default function CalculatorForm() {
                   value
                 )
               }
+              unit={inputs.unit}
+              setUnit={setUnit}
               inchesValue={
                 inputs.heightInches
               }
@@ -735,7 +748,6 @@ export default function CalculatorForm() {
                   value
                 )
               }
-              {...feetInchesProps}
             />
           </div>
         )}
@@ -753,6 +765,8 @@ export default function CalculatorForm() {
                   value
                 )
               }
+              unit={inputs.unit}
+              setUnit={setUnit}
               inchesValue={
                 inputs.sideAInches
               }
@@ -762,7 +776,6 @@ export default function CalculatorForm() {
                   value
                 )
               }
-              {...feetInchesProps}
             />
 
             <InputField
@@ -774,6 +787,8 @@ export default function CalculatorForm() {
                   value
                 )
               }
+              unit={inputs.unit}
+              setUnit={setUnit}
               inchesValue={
                 inputs.sideBInches
               }
@@ -783,7 +798,6 @@ export default function CalculatorForm() {
                   value
                 )
               }
-              {...feetInchesProps}
             />
 
             <InputField
@@ -795,6 +809,8 @@ export default function CalculatorForm() {
                   value
                 )
               }
+              unit={inputs.unit}
+              setUnit={setUnit}
               inchesValue={
                 inputs.heightInches
               }
@@ -804,7 +820,6 @@ export default function CalculatorForm() {
                   value
                 )
               }
-              {...feetInchesProps}
             />
           </div>
         )}
@@ -886,16 +901,6 @@ export default function CalculatorForm() {
           />
         </fieldset>
 
-        {/* Error */}
-        {error && (
-          <div className="mt-4">
-            <ResultBox
-              result={null}
-              error={error}
-            />
-          </div>
-        )}
-
         {/* Buttons */}
         <div className="mt-6 grid grid-cols-2 gap-3">
           <button
@@ -918,6 +923,7 @@ export default function CalculatorForm() {
         {/* Result */}
         <ResultBox
           result={result}
+          error={error}
         />
       </div>
     </section>
