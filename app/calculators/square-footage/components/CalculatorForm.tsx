@@ -9,6 +9,7 @@ import type {
 } from "../types";
 import { calculateSquareFootage } from "../calculations";
 import ResultBox from "./ResultBox";
+import ShapeDiagram from "./ShapeDiagram";
 
 type Unit =
   | "ft & in"
@@ -649,9 +650,7 @@ export default function CalculatorForm() {
             </select>
           </div>
 
-          <div className="mb-4 text-center text-sm font-semibold text-blue-700 underline">
-            {shapeImageName()} Image
-          </div>
+          <ShapeDiagram shape={values.shape} />
 
           {/* Known Area */}
           {values.shape === "Known Area" && (
