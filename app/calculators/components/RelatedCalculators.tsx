@@ -207,7 +207,7 @@ export default function RelatedCalculators({
   }
 
   return (
-    <section className="mt-8 rounded-3xl border border-slate-100 bg-white px-5 py-7 shadow-[0_8px_30px_rgba(15,23,42,0.08)] sm:px-8 sm:py-8">
+    <section className="mt-3 rounded-3xl border border-slate-100 bg-white px-5 py-7 shadow-[0_8px_30px_rgba(15,23,42,0.08)] sm:px-8 sm:py-8">
       <h2 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
         Related Construction Calculators
       </h2>
