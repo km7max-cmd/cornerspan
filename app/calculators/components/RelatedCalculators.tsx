@@ -36,7 +36,14 @@ const calculatorInfo: Record<string, CalculatorInfo> = {
   "square-footage": {
     slug: "square-footage",
     name: "Square Footage Calculator",
-    keywords: ["area", "square", "room", "wall", "floor", "construction"],
+    keywords: [
+      "area",
+      "square",
+      "room",
+      "wall",
+      "floor",
+      "construction",
+    ],
   },
 
   steel: {
@@ -49,6 +56,12 @@ const calculatorInfo: Record<string, CalculatorInfo> = {
     slug: "tile",
     name: "Tile Calculator",
     keywords: ["tile", "floor", "area", "room", "material"],
+  },
+
+  roofing: {
+    slug: "roofing",
+    name: "Roofing Calculator",
+    keywords: ["roofing", "roof", "area", "construction", "material"],
   },
 };
 
@@ -132,15 +145,15 @@ function relevanceScore(
   }
 
   if (
-    candidate.keywords.includes("area") &&
-    current.keywords.includes("area")
+    current.keywords.includes("area") &&
+    candidate.keywords.includes("area")
   ) {
     score += 3;
   }
 
   if (
-    candidate.keywords.includes("construction") &&
-    current.keywords.includes("construction")
+    current.keywords.includes("construction") &&
+    candidate.keywords.includes("construction")
   ) {
     score += 2;
   }
@@ -159,8 +172,7 @@ export default function RelatedCalculators({
     calculators.find(
       (calculator) =>
         calculator.slug === currentSlug
-    ) ??
-    calculatorInfo[currentSlug];
+    ) ?? calculatorInfo[currentSlug];
 
   if (!current) {
     return null;
@@ -188,47 +200,43 @@ export default function RelatedCalculators({
         b.calculator.name
       );
     })
-    .slice(0, 6);
+    .slice(0, 5);
 
   if (related.length === 0) {
     return null;
   }
 
   return (
-    <section className="mt-6 rounded-xl border border-slate-200 bg-white p-5">
-      <h2 className="text-xl font-bold text-slate-900">
-        Related Calculators
+    <section className="mt-8 rounded-3xl border border-slate-100 bg-white px-5 py-7 shadow-[0_8px_30px_rgba(15,23,42,0.08)] sm:px-8 sm:py-8">
+      <h2 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+        Related Construction Calculators
       </h2>
 
-      <p className="mt-2 text-sm leading-6 text-slate-600">
-        Explore related construction and measurement
-        calculators that may help with your project.
+      <p className="mt-3 max-w-2xl text-base leading-7 text-slate-600 sm:text-lg">
+        Explore other calculators for common
+        construction material and quantity estimates.
       </p>
 
-      <nav
-        aria-label="Related calculators"
-        className="mt-4 grid gap-3 sm:grid-cols-2"
-      >
-        {related.map(
-          ({ calculator }) => (
-            <Link
-              key={calculator.slug}
-              href={`/calculators/${calculator.slug}`}
-              className="rounded-lg border border-slate-200 bg-slate-50 p-4 transition hover:border-blue-500 hover:bg-blue-50"
-            >
-              <h3 className="font-semibold text-slate-900">
-                {calculator.name}
-              </h3>
+      <div className="mt-6 border-t border-slate-200">
+        {related.map(({ calculator }) => (
+          <Link
+            key={calculator.slug}
+            href={`/calculators/${calculator.slug}`}
+            className="group flex min-h-[76px] items-center justify-between border-b border-slate-200 py-4 text-left transition-colors hover:bg-slate-50"
+          >
+            <span className="text-lg font-medium text-blue-700 group-hover:text-blue-800 sm:text-xl">
+              {calculator.name}
+            </span>
 
-              <p className="mt-1 text-sm text-slate-600">
-                Calculate and estimate
-                measurements for your
-                construction project.
-              </p>
-            </Link>
-          )
-        )}
-      </nav>
+            <span
+              aria-hidden="true"
+              className="ml-4 text-2xl font-normal text-blue-700 transition-transform duration-200 group-hover:translate-x-1"
+            >
+              →
+            </span>
+          </Link>
+        ))}
+      </div>
     </section>
   );
 }
