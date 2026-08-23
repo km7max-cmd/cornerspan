@@ -27,6 +27,29 @@ type AreaPriceUnit =
   | "square yards"
   | "square meters";
 
+type Currency =
+  | "USD"
+  | "EUR"
+  | "GBP"
+  | "INR"
+  | "CAD"
+  | "AUD"
+  | "NZD"
+  | "SGD"
+  | "HKD"
+  | "CNY"
+  | "JPY"
+  | "KRW"
+  | "CHF"
+  | "SEK"
+  | "NOK"
+  | "DKK"
+  | "AED"
+  | "SAR"
+  | "ZAR"
+  | "BRL"
+  | "MXN";
+
 const units: Unit[] = [
   "ft & in",
   "in",
@@ -37,6 +60,118 @@ const units: Unit[] = [
   "cm",
   "m",
   "km",
+];
+
+const currencies: {
+  value: Currency;
+  label: string;
+  symbol: string;
+}[] = [
+  {
+    value: "USD",
+    label: "USD - US Dollar",
+    symbol: "$",
+  },
+  {
+    value: "EUR",
+    label: "EUR - Euro",
+    symbol: "€",
+  },
+  {
+    value: "GBP",
+    label: "GBP - British Pound",
+    symbol: "£",
+  },
+  {
+    value: "INR",
+    label: "INR - Indian Rupee",
+    symbol: "₹",
+  },
+  {
+    value: "CAD",
+    label: "CAD - Canadian Dollar",
+    symbol: "C$",
+  },
+  {
+    value: "AUD",
+    label: "AUD - Australian Dollar",
+    symbol: "A$",
+  },
+  {
+    value: "NZD",
+    label: "NZD - New Zealand Dollar",
+    symbol: "NZ$",
+  },
+  {
+    value: "SGD",
+    label: "SGD - Singapore Dollar",
+    symbol: "S$",
+  },
+  {
+    value: "HKD",
+    label: "HKD - Hong Kong Dollar",
+    symbol: "HK$",
+  },
+  {
+    value: "CNY",
+    label: "CNY - Chinese Yuan",
+    symbol: "¥",
+  },
+  {
+    value: "JPY",
+    label: "JPY - Japanese Yen",
+    symbol: "¥",
+  },
+  {
+    value: "KRW",
+    label: "KRW - South Korean Won",
+    symbol: "₩",
+  },
+  {
+    value: "CHF",
+    label: "CHF - Swiss Franc",
+    symbol: "CHF",
+  },
+  {
+    value: "SEK",
+    label: "SEK - Swedish Krona",
+    symbol: "kr",
+  },
+  {
+    value: "NOK",
+    label: "NOK - Norwegian Krone",
+    symbol: "kr",
+  },
+  {
+    value: "DKK",
+    label: "DKK - Danish Krone",
+    symbol: "kr",
+  },
+  {
+    value: "AED",
+    label: "AED - UAE Dirham",
+    symbol: "د.إ",
+  },
+  {
+    value: "SAR",
+    label: "SAR - Saudi Riyal",
+    symbol: "﷼",
+  },
+  {
+    value: "ZAR",
+    label: "ZAR - South African Rand",
+    symbol: "R",
+  },
+  {
+    value: "BRL",
+    label: "BRL - Brazilian Real",
+    symbol: "R$",
+  },
+  {
+    value: "MXN",
+    label: "MXN - Mexican Peso",
+    symbol: "$",
+  },
 ];
 
 const shapes: Shape[] = [
@@ -122,7 +257,10 @@ function selectClass() {
 function getFeetAndInches(
   value: string,
   unit: Unit
-): { feet: string; inches: string } {
+): {
+  feet: string;
+  inches: string;
+} {
   const n = Number(value);
 
   if (!Number.isFinite(n)) {
@@ -189,17 +327,6 @@ function getFeetAndInches(
   }
 }
 
-/*
- * IMPORTANT:
- * MeasurementField is intentionally OUTSIDE CalculatorForm.
- *
- * Previously it was declared inside CalculatorForm.
- * Every keystroke caused CalculatorForm to re-render,
- * which created a new MeasurementField component.
- *
- * React then unmounted/remounted the input and the
- * mobile keyboard disappeared after the first digit.
- */
 type MeasurementFieldProps = {
   label: string;
   feetKey: keyof CalculatorInputs;
@@ -237,9 +364,14 @@ function MeasurementField({
                 inputMode="decimal"
                 min="0"
                 step="any"
-                value={String(values[feetKey] ?? "")}
+                value={String(
+                  values[feetKey] ?? ""
+                )}
                 onChange={(e) =>
-                  update(feetKey, e.target.value)
+                  update(
+                    feetKey,
+                    e.target.value
+                  )
                 }
                 className={inputClass()}
                 aria-label={`${label} feet`}
@@ -256,9 +388,14 @@ function MeasurementField({
                 inputMode="decimal"
                 min="0"
                 step="any"
-                value={String(values[inchesKey] ?? "")}
+                value={String(
+                  values[inchesKey] ?? ""
+                )}
                 onChange={(e) =>
-                  update(inchesKey, e.target.value)
+                  update(
+                    inchesKey,
+                    e.target.value
+                  )
                 }
                 className={inputClass()}
                 aria-label={`${label} inches`}
@@ -276,9 +413,14 @@ function MeasurementField({
               inputMode="decimal"
               min="0"
               step="any"
-              value={String(values[feetKey] ?? "")}
+              value={String(
+                values[feetKey] ?? ""
+              )}
               onChange={(e) =>
-                update(feetKey, e.target.value)
+                update(
+                  feetKey,
+                  e.target.value
+                )
               }
               className={inputClass()}
               aria-label={label}
@@ -289,13 +431,18 @@ function MeasurementField({
         <select
           value={unit}
           onChange={(e) =>
-            setUnit(e.target.value as Unit)
+            setUnit(
+              e.target.value as Unit
+            )
           }
           className={selectClass()}
           aria-label={`${label} unit`}
         >
           {units.map((item) => (
-            <option key={item} value={item}>
+            <option
+              key={item}
+              value={item}
+            >
               {item}
             </option>
           ))}
@@ -307,7 +454,9 @@ function MeasurementField({
 
 export default function CalculatorForm() {
   const [values, setValues] =
-    useState<CalculatorInputs>(initialValues);
+    useState<CalculatorInputs>(
+      initialValues
+    );
 
   const [lengthUnit, setLengthUnit] =
     useState<Unit>("ft & in");
@@ -330,17 +479,28 @@ export default function CalculatorForm() {
   const [sideCUnit, setSideCUnit] =
     useState<Unit>("ft & in");
 
-  const [windowWidthUnit, setWindowWidthUnit] =
-    useState<Unit>("ft & in");
+  const [
+    windowWidthUnit,
+    setWindowWidthUnit,
+  ] = useState<Unit>("ft & in");
 
-  const [windowHeightUnit, setWindowHeightUnit] =
-    useState<Unit>("ft & in");
+  const [
+    windowHeightUnit,
+    setWindowHeightUnit,
+  ] = useState<Unit>("ft & in");
 
   const [priceUnit, setPriceUnit] =
-    useState<AreaPriceUnit>("square feet");
+    useState<AreaPriceUnit>(
+      "square feet"
+    );
+
+  const [currency, setCurrency] =
+    useState<Currency>("USD");
 
   const [result, setResult] =
-    useState<CalculationResult | null>(null);
+    useState<CalculationResult | null>(
+      null
+    );
 
   const [error, setError] =
     useState<CalculationError>(null);
@@ -388,23 +548,28 @@ export default function CalculatorForm() {
   } {
     if (unit === "ft & in") {
       return {
-        feet: String(values[feetKey] ?? ""),
-        inches: String(values[inchesKey] ?? ""),
+        feet: String(
+          values[feetKey] ?? ""
+        ),
+        inches: String(
+          values[inchesKey] ?? ""
+        ),
       };
     }
 
-    const converted = getFeetAndInches(
+    return getFeetAndInches(
       String(values[feetKey] ?? ""),
       unit
     );
-
-    return converted;
   }
 
   function areaPricePerSquareFoot(): string {
     const price = Number(values.price);
 
-    if (!Number.isFinite(price) || price <= 0) {
+    if (
+      !Number.isFinite(price) ||
+      price <= 0
+    ) {
       return "";
     }
 
@@ -480,38 +645,44 @@ export default function CalculatorForm() {
       windowHeightUnit
     );
 
-    const normalizedValues: CalculatorInputs = {
-      ...values,
+    const normalizedValues: CalculatorInputs =
+      {
+        ...values,
 
-      lengthFeet: length.feet,
-      lengthInches: length.inches,
+        lengthFeet: length.feet,
+        lengthInches: length.inches,
 
-      widthFeet: width.feet,
-      widthInches: width.inches,
+        widthFeet: width.feet,
+        widthInches: width.inches,
 
-      heightFeet: height.feet,
-      heightInches: height.inches,
+        heightFeet: height.feet,
+        heightInches: height.inches,
 
-      borderFeet: border.feet,
-      borderInches: border.inches,
+        borderFeet: border.feet,
+        borderInches: border.inches,
 
-      sideAFeet: sideA.feet,
-      sideAInches: sideA.inches,
+        sideAFeet: sideA.feet,
+        sideAInches: sideA.inches,
 
-      sideBFeet: sideB.feet,
-      sideBInches: sideB.inches,
+        sideBFeet: sideB.feet,
+        sideBInches: sideB.inches,
 
-      sideCFeet: sideC.feet,
-      sideCInches: sideC.inches,
+        sideCFeet: sideC.feet,
+        sideCInches: sideC.inches,
 
-      windowWidthFeet: windowWidth.feet,
-      windowWidthInches: windowWidth.inches,
+        windowWidthFeet:
+          windowWidth.feet,
+        windowWidthInches:
+          windowWidth.inches,
 
-      windowHeightFeet: windowHeight.feet,
-      windowHeightInches: windowHeight.inches,
+        windowHeightFeet:
+          windowHeight.feet,
+        windowHeightInches:
+          windowHeight.inches,
 
-      price: areaPricePerSquareFoot(),
-    };
+        price:
+          areaPricePerSquareFoot(),
+      };
 
     const calculated =
       calculateSquareFootage(
@@ -524,7 +695,9 @@ export default function CalculatorForm() {
     if (calculated.result) {
       setTimeout(() => {
         document
-          .getElementById("calculator-answer")
+          .getElementById(
+            "calculator-answer"
+          )
           ?.scrollIntoView({
             behavior: "smooth",
             block: "nearest",
@@ -549,9 +722,14 @@ export default function CalculatorForm() {
           inputMode="decimal"
           min="0"
           step="any"
-          value={String(values[key] ?? "")}
+          value={String(
+            values[key] ?? ""
+          )}
           onChange={(e) =>
-            update(key, e.target.value)
+            update(
+              key,
+              e.target.value
+            )
           }
           placeholder={placeholder}
           className={inputClass()}
@@ -630,7 +808,8 @@ export default function CalculatorForm() {
           </div>
 
           {/* Known Area */}
-          {values.shape === "Known Area" && (
+          {values.shape ===
+            "Known Area" && (
             <>
               {simpleInput(
                 "Known Area (square feet)",
@@ -675,7 +854,8 @@ export default function CalculatorForm() {
           )}
 
           {/* Rectangle */}
-          {values.shape === "Rectangle" && (
+          {values.shape ===
+            "Rectangle" && (
             <>
               <MeasurementField
                 label="Length"
@@ -914,7 +1094,8 @@ export default function CalculatorForm() {
           )}
 
           {/* Annulus */}
-          {values.shape === "Annulus" && (
+          {values.shape ===
+            "Annulus" && (
             <>
               <MeasurementField
                 label="Outer Diameter"
@@ -944,7 +1125,8 @@ export default function CalculatorForm() {
           )}
 
           {/* Triangle */}
-          {values.shape === "Triangle" && (
+          {values.shape ===
+            "Triangle" && (
             <>
               <MeasurementField
                 label="Side A"
@@ -1015,7 +1197,8 @@ export default function CalculatorForm() {
           )}
 
           {/* Trapezoid */}
-          {values.shape === "Trapezoid" && (
+          {values.shape ===
+            "Trapezoid" && (
             <>
               <MeasurementField
                 label="Side A"
@@ -1092,19 +1275,37 @@ export default function CalculatorForm() {
             </legend>
 
             <div className="grid grid-cols-[55px_1fr_90px] items-end gap-2">
+              {/* Currency */}
               <div>
                 <label className="mb-1 block text-xs text-slate-600">
                   currency
                 </label>
 
                 <select
+                  value={currency}
+                  onChange={(e) =>
+                    setCurrency(
+                      e.target.value as Currency
+                    )
+                  }
                   className={selectClass()}
-                  defaultValue="$"
+                  aria-label="Currency"
                 >
-                  <option>$</option>
+                  {currencies.map(
+                    (item) => (
+                      <option
+                        key={item.value}
+                        value={item.value}
+                      >
+                        {item.symbol}{" "}
+                        {item.value}
+                      </option>
+                    )
+                  )}
                 </select>
               </div>
 
+              {/* Price */}
               <div>
                 <label className="mb-1 block text-xs text-slate-600">
                   price
@@ -1125,6 +1326,7 @@ export default function CalculatorForm() {
                 />
               </div>
 
+              {/* Square Unit */}
               <div>
                 <label className="mb-1 block text-xs text-slate-600">
                   square unit
@@ -1134,7 +1336,8 @@ export default function CalculatorForm() {
                   value={priceUnit}
                   onChange={(e) =>
                     setPriceUnit(
-                      e.target.value as AreaPriceUnit
+                      e.target
+                        .value as AreaPriceUnit
                     )
                   }
                   className={selectClass()}
@@ -1142,12 +1345,15 @@ export default function CalculatorForm() {
                   <option value="square feet">
                     sq ft
                   </option>
+
                   <option value="square inches">
                     sq in
                   </option>
+
                   <option value="square yards">
                     sq yd
                   </option>
+
                   <option value="square meters">
                     sq m
                   </option>
@@ -1192,9 +1398,10 @@ export default function CalculatorForm() {
         </h2>
 
         <p className="mb-3">
-          Calculate the square footage, square
-          inches, square yards, square meters and
-          acres for your construction project.
+          Calculate the square footage,
+          square inches, square yards, square
+          meters and acres for your
+          construction project.
         </p>
 
         <div className="border border-slate-300 bg-white p-3">
@@ -1202,21 +1409,28 @@ export default function CalculatorForm() {
 
           <ol className="mt-2 list-decimal space-y-1 pl-5">
             <li>Select your shape.</li>
+
             <li>
-              Enter your measurements and units.
+              Enter your measurements and
+              units.
             </li>
+
             <li>
-              Enter quantity if you have multiple
-              identical areas.
+              Enter quantity if you have
+              multiple identical areas.
             </li>
+
             <li>
               Add optional material waste.
             </li>
+
             <li>
               Add optional material cost.
             </li>
+
             <li>
-              Click Calculate to see the results.
+              Click Calculate to see the
+              results.
             </li>
           </ol>
         </div>
@@ -1234,7 +1448,8 @@ export default function CalculatorForm() {
             {values.shape === "Room" &&
               "Area = Length × Width"}
 
-            {values.shape === "Known Area" &&
+            {values.shape ===
+              "Known Area" &&
               "Area = Known Square Feet"}
 
             {values.shape ===
@@ -1256,17 +1471,20 @@ export default function CalculatorForm() {
               "Circle Border" &&
               "Area = Outer Circle − Inner Circle"}
 
-            {values.shape === "Annulus" &&
+            {values.shape ===
+              "Annulus" &&
               "Area = Outer Circle − Inner Circle"}
 
-            {values.shape === "Triangle" &&
+            {values.shape ===
+              "Triangle" &&
               "Heron's Formula"}
 
             {values.shape ===
               "Triangle 1/2 b×h" &&
               "Area = ½ × Base × Height"}
 
-            {values.shape === "Trapezoid" &&
+            {values.shape ===
+              "Trapezoid" &&
               "Area = ½ × (Side A + Side B) × Height"}
           </p>
         </div>
