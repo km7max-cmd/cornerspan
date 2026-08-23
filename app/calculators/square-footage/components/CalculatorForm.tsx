@@ -4,7 +4,6 @@ import { useState } from "react";
 import InputField from "./InputField";
 import ResultBox from "./ResultBox";
 import { calculateSquareFootage } from "../calculations";
-
 import type {
   CalculationResult,
   CalculatorInputs,
@@ -30,43 +29,20 @@ const shapes: Shape[] = [
 
 const initialInputs: CalculatorInputs = {
   shape: "Rectangle",
-
   length: "",
-  lengthUnit: "feet",
-
   width: "",
-  widthUnit: "feet",
-
   height: "",
-  heightUnit: "feet",
-
   quantity: "1",
-
+  unit: "feet",
   borderWidth: "",
-  borderWidthUnit: "feet",
-
   sideA: "",
-  sideAUnit: "feet",
-
   sideB: "",
-  sideBUnit: "feet",
-
   sideC: "",
-  sideCUnit: "feet",
-
   windowWidth: "",
-  windowWidthUnit: "feet",
-
   windowHeight: "",
-  windowHeightUnit: "feet",
-
   windowQuantity: "1",
-
   knownArea: "",
-  knownAreaUnit: "feet",
-
   waste: "0",
-
   price: "",
 };
 
@@ -77,8 +53,7 @@ export default function CalculatorForm() {
   const [result, setResult] =
     useState<CalculationResult | null>(null);
 
-  const [error, setError] =
-    useState("");
+  const [error, setError] = useState("");
 
   const inputClass =
     "h-11 w-full rounded-md border border-slate-300 bg-white px-3 text-base text-slate-900 outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100";
@@ -99,114 +74,208 @@ export default function CalculatorForm() {
     setError("");
   };
 
+  const setUnit = (unit: Unit) => {
+    update("unit", unit);
+  };
+
+  const isPositive = (value: string) => {
+    const number = Number(value);
+    return Number.isFinite(number) && number > 0;
+  };
+
+  const validate = (): string => {
+    const shape = inputs.shape;
+
+    if (!isPositive(inputs.quantity)) {
+      return "Please enter a valid Quantity.";
+    }
+
+    if (shape === "Known Area") {
+      if (!isPositive(inputs.knownArea)) {
+        return "Please enter a valid Area.";
+      }
+    }
+
+    if (
+      shape === "Rectangle" ||
+      shape === "Room"
+    ) {
+      if (!isPositive(inputs.length)) {
+        return "Please enter a valid Length.";
+      }
+
+      if (!isPositive(inputs.width)) {
+        return "Please enter a valid Width.";
+      }
+    }
+
+    if (shape === "Square") {
+      if (!isPositive(inputs.length)) {
+        return "Please enter a valid Side Length.";
+      }
+    }
+
+    if (shape === "Wall with Window") {
+      if (!isPositive(inputs.length)) {
+        return "Please enter a valid Wall Width.";
+      }
+
+      if (!isPositive(inputs.height)) {
+        return "Please enter a valid Wall Height.";
+      }
+
+      if (!isPositive(inputs.windowWidth)) {
+        return "Please enter a valid Window Width.";
+      }
+
+      if (!isPositive(inputs.windowHeight)) {
+        return "Please enter a valid Window Height.";
+      }
+
+      if (!isPositive(inputs.windowQuantity)) {
+        return "Please enter a valid Window Quantity.";
+      }
+    }
+
+    if (shape === "Cathedral Wall") {
+      if (!isPositive(inputs.width)) {
+        return "Please enter a valid Wall Width.";
+      }
+
+      if (!isPositive(inputs.height)) {
+        return "Please enter a valid Wall Height.";
+      }
+
+      if (!isPositive(inputs.sideA)) {
+        return "Please enter a valid Triangle Height.";
+      }
+    }
+
+    if (shape === "Rectangle Border") {
+      if (!isPositive(inputs.length)) {
+        return "Please enter a valid Length.";
+      }
+
+      if (!isPositive(inputs.width)) {
+        return "Please enter a valid Width.";
+      }
+
+      if (!isPositive(inputs.borderWidth)) {
+        return "Please enter a valid Border Width.";
+      }
+
+      const length = Number(inputs.length);
+      const width = Number(inputs.width);
+      const border = Number(inputs.borderWidth);
+
+      if (border * 2 >= length || border * 2 >= width) {
+        return "Border Width is too large for this rectangle.";
+      }
+    }
+
+    if (shape === "Circle") {
+      if (!isPositive(inputs.length)) {
+        return "Please enter a valid Diameter.";
+      }
+    }
+
+    if (
+      shape === "Circle Border" ||
+      shape === "Annulus"
+    ) {
+      if (!isPositive(inputs.length)) {
+        return "Please enter a valid Outer Diameter.";
+      }
+
+      if (!isPositive(inputs.borderWidth)) {
+        return "Please enter a valid Border Width.";
+      }
+
+      const diameter = Number(inputs.length);
+      const border = Number(inputs.borderWidth);
+
+      if (border * 2 >= diameter) {
+        return "Border Width is too large for this circle.";
+      }
+    }
+
+    if (shape === "Triangle") {
+      if (!isPositive(inputs.sideA)) {
+        return "Please enter a valid Side A.";
+      }
+
+      if (!isPositive(inputs.sideB)) {
+        return "Please enter a valid Side B.";
+      }
+
+      if (!isPositive(inputs.sideC)) {
+        return "Please enter a valid Side C.";
+      }
+
+      const a = Number(inputs.sideA);
+      const b = Number(inputs.sideB);
+      const c = Number(inputs.sideC);
+
+      if (
+        a + b <= c ||
+        a + c <= b ||
+        b + c <= a
+      ) {
+        return "These three sides cannot form a valid triangle.";
+      }
+    }
+
+    if (shape === "Triangle 1/2 b×h") {
+      if (!isPositive(inputs.sideA)) {
+        return "Please enter a valid Base.";
+      }
+
+      if (!isPositive(inputs.height)) {
+        return "Please enter a valid Height.";
+      }
+    }
+
+    if (shape === "Trapezoid") {
+      if (!isPositive(inputs.sideA)) {
+        return "Please enter a valid Base A.";
+      }
+
+      if (!isPositive(inputs.sideB)) {
+        return "Please enter a valid Base B.";
+      }
+
+      if (!isPositive(inputs.height)) {
+        return "Please enter a valid Height.";
+      }
+    }
+
+    if (inputs.waste.trim() !== "") {
+      const waste = Number(inputs.waste);
+
+      if (!Number.isFinite(waste) || waste < 0) {
+        return "Please enter a valid Waste percentage.";
+      }
+    }
+
+    if (inputs.price.trim() !== "") {
+      const price = Number(inputs.price);
+
+      if (!Number.isFinite(price) || price < 0) {
+        return "Please enter a valid Material Cost.";
+      }
+    }
+
+    return "";
+  };
+
   const calculate = () => {
     setError("");
+    setResult(null);
 
-    const requiredFields: Record<string, string> = {};
+    const validationError = validate();
 
-    if (
-      inputs.shape === "Rectangle" ||
-      inputs.shape === "Room"
-    ) {
-      requiredFields.length = inputs.length;
-      requiredFields.width = inputs.width;
-    }
-
-    if (inputs.shape === "Square") {
-      requiredFields.length = inputs.length;
-    }
-
-    if (inputs.shape === "Circle") {
-      requiredFields.length = inputs.length;
-    }
-
-    if (
-      inputs.shape === "Rectangle Border"
-    ) {
-      requiredFields.length = inputs.length;
-      requiredFields.width = inputs.width;
-      requiredFields.borderWidth =
-        inputs.borderWidth;
-    }
-
-    if (
-      inputs.shape === "Circle Border" ||
-      inputs.shape === "Annulus"
-    ) {
-      requiredFields.length = inputs.length;
-      requiredFields.borderWidth =
-        inputs.borderWidth;
-    }
-
-    if (
-      inputs.shape === "Wall with Window"
-    ) {
-      requiredFields.length = inputs.length;
-      requiredFields.height = inputs.height;
-      requiredFields.windowWidth =
-        inputs.windowWidth;
-      requiredFields.windowHeight =
-        inputs.windowHeight;
-    }
-
-    if (
-      inputs.shape === "Cathedral Wall"
-    ) {
-      requiredFields.width = inputs.width;
-      requiredFields.height = inputs.height;
-      requiredFields.sideA = inputs.sideA;
-    }
-
-    if (inputs.shape === "Triangle") {
-      requiredFields.sideA = inputs.sideA;
-      requiredFields.sideB = inputs.sideB;
-      requiredFields.sideC = inputs.sideC;
-    }
-
-    if (
-      inputs.shape ===
-      "Triangle 1/2 b×h"
-    ) {
-      requiredFields.sideA = inputs.sideA;
-      requiredFields.height =
-        inputs.height;
-    }
-
-    if (inputs.shape === "Trapezoid") {
-      requiredFields.sideA = inputs.sideA;
-      requiredFields.sideB = inputs.sideB;
-      requiredFields.height =
-        inputs.height;
-    }
-
-    if (inputs.shape === "Known Area") {
-      requiredFields.knownArea =
-        inputs.knownArea;
-    }
-
-    const emptyField = Object.entries(
-      requiredFields
-    ).find(
-      ([, value]) =>
-        value.trim() === ""
-    );
-
-    if (emptyField) {
-      const fieldName =
-        emptyField[0]
-          .replace(
-            /([A-Z])/g,
-            " $1"
-          )
-          .replace(/^./, (char) =>
-            char.toUpperCase()
-          );
-
-      setError(
-        `Please enter a valid ${fieldName}.`
-      );
-
-      setResult(null);
+    if (validationError) {
+      setError(validationError);
       return;
     }
 
@@ -215,9 +284,8 @@ export default function CalculatorForm() {
 
     if (!calculation) {
       setError(
-        "Please enter valid measurements."
+        "Unable to calculate this area. Please check your measurements."
       );
-      setResult(null);
       return;
     }
 
@@ -225,7 +293,10 @@ export default function CalculatorForm() {
   };
 
   const clear = () => {
-    setInputs(initialInputs);
+    setInputs({
+      ...initialInputs,
+    });
+
     setResult(null);
     setError("");
   };
@@ -234,7 +305,7 @@ export default function CalculatorForm() {
     <section className="overflow-hidden rounded-xl border border-slate-300 bg-white shadow-sm">
 
       {/* Header */}
-      <div className="bg-blue-700 px-4 py-3 text-center text-lg font-bold text-white">
+      <div className="bg-blue-700 px-4 py-3 text-center text-lg font-bold text-white sm:text-xl">
         Square Footage Calculator
       </div>
 
@@ -268,32 +339,20 @@ export default function CalculatorForm() {
         </div>
 
         {/* Known Area */}
-        {inputs.shape ===
-          "Known Area" && (
+        {inputs.shape === "Known Area" && (
           <InputField
             label="Area"
             value={inputs.knownArea}
             onChange={(value) =>
-              update(
-                "knownArea",
-                value
-              )
+              update("knownArea", value)
             }
-            unit={
-              inputs.knownAreaUnit
-            }
-            setUnit={(unit) =>
-              update(
-                "knownAreaUnit",
-                unit
-              )
-            }
+            unit={inputs.unit}
+            setUnit={setUnit}
           />
         )}
 
         {/* Rectangle / Room */}
-        {(inputs.shape ===
-          "Rectangle" ||
+        {(inputs.shape === "Rectangle" ||
           inputs.shape === "Room") && (
           <div className="space-y-4">
 
@@ -301,112 +360,60 @@ export default function CalculatorForm() {
               label="Length"
               value={inputs.length}
               onChange={(value) =>
-                update(
-                  "length",
-                  value
-                )
+                update("length", value)
               }
-              unit={
-                inputs.lengthUnit
-              }
-              setUnit={(unit) =>
-                update(
-                  "lengthUnit",
-                  unit
-                )
-              }
+              unit={inputs.unit}
+              setUnit={setUnit}
             />
 
             <InputField
               label="Width"
               value={inputs.width}
               onChange={(value) =>
-                update(
-                  "width",
-                  value
-                )
+                update("width", value)
               }
-              unit={
-                inputs.widthUnit
-              }
-              setUnit={(unit) =>
-                update(
-                  "widthUnit",
-                  unit
-                )
-              }
+              unit={inputs.unit}
+              setUnit={setUnit}
             />
 
           </div>
         )}
 
         {/* Square */}
-        {inputs.shape ===
-          "Square" && (
+        {inputs.shape === "Square" && (
           <InputField
             label="Side Length"
             value={inputs.length}
             onChange={(value) =>
-              update(
-                "length",
-                value
-              )
+              update("length", value)
             }
-            unit={
-              inputs.lengthUnit
-            }
-            setUnit={(unit) =>
-              update(
-                "lengthUnit",
-                unit
-              )
-            }
+            unit={inputs.unit}
+            setUnit={setUnit}
           />
         )}
 
         {/* Wall with Window */}
-        {inputs.shape ===
-          "Wall with Window" && (
+        {inputs.shape === "Wall with Window" && (
           <div className="space-y-4">
 
             <InputField
               label="Wall Width"
               value={inputs.length}
               onChange={(value) =>
-                update(
-                  "length",
-                  value
-                )
+                update("length", value)
               }
-              unit={
-                inputs.lengthUnit
-              }
-              setUnit={(unit) =>
-                update(
-                  "lengthUnit",
-                  unit
-                )
-              }
+              unit={inputs.unit}
+              setUnit={setUnit}
             />
 
             <InputField
               label="Wall Height"
               value={inputs.height}
               onChange={(value) =>
-                update(
-                  "height",
-                  value
-                )
+                update("height", value)
               }
-              unit={
-                inputs.heightUnit
-              }
-              setUnit={(unit) =>
-                update(
-                  "heightUnit",
-                  unit
-                )
-              }
+              unit={inputs.unit}
+              setUnit={setUnit}
             />
 
             <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
@@ -419,72 +426,47 @@ export default function CalculatorForm() {
 
                 <InputField
                   label="Window Width"
-                  value={
-                    inputs.windowWidth
-                  }
+                  value={inputs.windowWidth}
                   onChange={(value) =>
                     update(
                       "windowWidth",
                       value
                     )
                   }
-                  unit={
-                    inputs.windowWidthUnit
-                  }
-                  setUnit={(unit) =>
-                    update(
-                      "windowWidthUnit",
-                      unit
-                    )
-                  }
+                  unit={inputs.unit}
+                  setUnit={setUnit}
                 />
 
                 <InputField
                   label="Window Height"
-                  value={
-                    inputs.windowHeight
-                  }
+                  value={inputs.windowHeight}
                   onChange={(value) =>
                     update(
                       "windowHeight",
                       value
                     )
                   }
-                  unit={
-                    inputs.windowHeightUnit
-                  }
-                  setUnit={(unit) =>
-                    update(
-                      "windowHeightUnit",
-                      unit
-                    )
-                  }
+                  unit={inputs.unit}
+                  setUnit={setUnit}
                 />
 
                 <div>
-                  <label
-                    className={
-                      labelClass
-                    }
-                  >
+                  <label className={labelClass}>
                     Window Quantity
                   </label>
 
                   <input
                     type="number"
                     min="1"
-                    value={
-                      inputs.windowQuantity
-                    }
+                    inputMode="numeric"
+                    value={inputs.windowQuantity}
                     onChange={(e) =>
                       update(
                         "windowQuantity",
                         e.target.value
                       )
                     }
-                    className={
-                      inputClass
-                    }
+                    className={inputClass}
                   />
                 </div>
 
@@ -494,398 +476,222 @@ export default function CalculatorForm() {
         )}
 
         {/* Cathedral Wall */}
-        {inputs.shape ===
-          "Cathedral Wall" && (
+        {inputs.shape === "Cathedral Wall" && (
           <div className="space-y-4">
 
             <InputField
               label="Wall Width"
               value={inputs.width}
               onChange={(value) =>
-                update(
-                  "width",
-                  value
-                )
+                update("width", value)
               }
-              unit={
-                inputs.widthUnit
-              }
-              setUnit={(unit) =>
-                update(
-                  "widthUnit",
-                  unit
-                )
-              }
+              unit={inputs.unit}
+              setUnit={setUnit}
             />
 
             <InputField
               label="Wall Height"
               value={inputs.height}
               onChange={(value) =>
-                update(
-                  "height",
-                  value
-                )
+                update("height", value)
               }
-              unit={
-                inputs.heightUnit
-              }
-              setUnit={(unit) =>
-                update(
-                  "heightUnit",
-                  unit
-                )
-              }
+              unit={inputs.unit}
+              setUnit={setUnit}
             />
 
             <InputField
               label="Triangle Height"
               value={inputs.sideA}
               onChange={(value) =>
-                update(
-                  "sideA",
-                  value
-                )
+                update("sideA", value)
               }
-              unit={
-                inputs.sideAUnit
-              }
-              setUnit={(unit) =>
-                update(
-                  "sideAUnit",
-                  unit
-                )
-              }
+              unit={inputs.unit}
+              setUnit={setUnit}
             />
 
           </div>
         )}
 
         {/* Rectangle Border */}
-        {inputs.shape ===
-          "Rectangle Border" && (
+        {inputs.shape === "Rectangle Border" && (
           <div className="space-y-4">
 
             <InputField
               label="Length"
               value={inputs.length}
               onChange={(value) =>
-                update(
-                  "length",
-                  value
-                )
+                update("length", value)
               }
-              unit={
-                inputs.lengthUnit
-              }
-              setUnit={(unit) =>
-                update(
-                  "lengthUnit",
-                  unit
-                )
-              }
+              unit={inputs.unit}
+              setUnit={setUnit}
             />
 
             <InputField
               label="Width"
               value={inputs.width}
               onChange={(value) =>
-                update(
-                  "width",
-                  value
-                )
+                update("width", value)
               }
-              unit={
-                inputs.widthUnit
-              }
-              setUnit={(unit) =>
-                update(
-                  "widthUnit",
-                  unit
-                )
-              }
+              unit={inputs.unit}
+              setUnit={setUnit}
             />
 
             <InputField
               label="Border Width"
-              value={
-                inputs.borderWidth
-              }
+              value={inputs.borderWidth}
               onChange={(value) =>
                 update(
                   "borderWidth",
                   value
                 )
               }
-              unit={
-                inputs.borderWidthUnit
-              }
-              setUnit={(unit) =>
-                update(
-                  "borderWidthUnit",
-                  unit
-                )
-              }
+              unit={inputs.unit}
+              setUnit={setUnit}
             />
 
           </div>
         )}
 
         {/* Circle */}
-        {inputs.shape ===
-          "Circle" && (
+        {inputs.shape === "Circle" && (
           <InputField
             label="Diameter"
             value={inputs.length}
             onChange={(value) =>
-              update(
-                "length",
-                value
-              )
+              update("length", value)
             }
-            unit={
-              inputs.lengthUnit
-            }
-            setUnit={(unit) =>
-              update(
-                "lengthUnit",
-                unit
-              )
-            }
+            unit={inputs.unit}
+            setUnit={setUnit}
           />
         )}
 
         {/* Circle Border / Annulus */}
-        {(inputs.shape ===
-          "Circle Border" ||
-          inputs.shape ===
-            "Annulus") && (
+        {(inputs.shape === "Circle Border" ||
+          inputs.shape === "Annulus") && (
           <div className="space-y-4">
 
             <InputField
               label="Outer Diameter"
               value={inputs.length}
               onChange={(value) =>
-                update(
-                  "length",
-                  value
-                )
+                update("length", value)
               }
-              unit={
-                inputs.lengthUnit
-              }
-              setUnit={(unit) =>
-                update(
-                  "lengthUnit",
-                  unit
-                )
-              }
+              unit={inputs.unit}
+              setUnit={setUnit}
             />
 
             <InputField
               label="Border Width"
-              value={
-                inputs.borderWidth
-              }
+              value={inputs.borderWidth}
               onChange={(value) =>
                 update(
                   "borderWidth",
                   value
                 )
               }
-              unit={
-                inputs.borderWidthUnit
-              }
-              setUnit={(unit) =>
-                update(
-                  "borderWidthUnit",
-                  unit
-                )
-              }
+              unit={inputs.unit}
+              setUnit={setUnit}
             />
 
           </div>
         )}
 
         {/* Triangle */}
-        {inputs.shape ===
-          "Triangle" && (
+        {inputs.shape === "Triangle" && (
           <div className="space-y-4">
 
             <InputField
               label="Side A"
               value={inputs.sideA}
               onChange={(value) =>
-                update(
-                  "sideA",
-                  value
-                )
+                update("sideA", value)
               }
-              unit={
-                inputs.sideAUnit
-              }
-              setUnit={(unit) =>
-                update(
-                  "sideAUnit",
-                  unit
-                )
-              }
+              unit={inputs.unit}
+              setUnit={setUnit}
             />
 
             <InputField
               label="Side B"
               value={inputs.sideB}
               onChange={(value) =>
-                update(
-                  "sideB",
-                  value
-                )
+                update("sideB", value)
               }
-              unit={
-                inputs.sideBUnit
-              }
-              setUnit={(unit) =>
-                update(
-                  "sideBUnit",
-                  unit
-                )
-              }
+              unit={inputs.unit}
+              setUnit={setUnit}
             />
 
             <InputField
               label="Side C"
               value={inputs.sideC}
               onChange={(value) =>
-                update(
-                  "sideC",
-                  value
-                )
+                update("sideC", value)
               }
-              unit={
-                inputs.sideCUnit
-              }
-              setUnit={(unit) =>
-                update(
-                  "sideCUnit",
-                  unit
-                )
-              }
+              unit={inputs.unit}
+              setUnit={setUnit}
             />
 
           </div>
         )}
 
         {/* Triangle 1/2 b×h */}
-        {inputs.shape ===
-          "Triangle 1/2 b×h" && (
+        {inputs.shape === "Triangle 1/2 b×h" && (
           <div className="space-y-4">
 
             <InputField
               label="Base"
               value={inputs.sideA}
               onChange={(value) =>
-                update(
-                  "sideA",
-                  value
-                )
+                update("sideA", value)
               }
-              unit={
-                inputs.sideAUnit
-              }
-              setUnit={(unit) =>
-                update(
-                  "sideAUnit",
-                  unit
-                )
-              }
+              unit={inputs.unit}
+              setUnit={setUnit}
             />
 
             <InputField
               label="Height"
               value={inputs.height}
               onChange={(value) =>
-                update(
-                  "height",
-                  value
-                )
+                update("height", value)
               }
-              unit={
-                inputs.heightUnit
-              }
-              setUnit={(unit) =>
-                update(
-                  "heightUnit",
-                  unit
-                )
-              }
+              unit={inputs.unit}
+              setUnit={setUnit}
             />
 
           </div>
         )}
 
         {/* Trapezoid */}
-        {inputs.shape ===
-          "Trapezoid" && (
+        {inputs.shape === "Trapezoid" && (
           <div className="space-y-4">
 
             <InputField
               label="Base A"
               value={inputs.sideA}
               onChange={(value) =>
-                update(
-                  "sideA",
-                  value
-                )
+                update("sideA", value)
               }
-              unit={
-                inputs.sideAUnit
-              }
-              setUnit={(unit) =>
-                update(
-                  "sideAUnit",
-                  unit
-                )
-              }
+              unit={inputs.unit}
+              setUnit={setUnit}
             />
 
             <InputField
               label="Base B"
               value={inputs.sideB}
               onChange={(value) =>
-                update(
-                  "sideB",
-                  value
-                )
+                update("sideB", value)
               }
-              unit={
-                inputs.sideBUnit
-              }
-              setUnit={(unit) =>
-                update(
-                  "sideBUnit",
-                  unit
-                )
-              }
+              unit={inputs.unit}
+              setUnit={setUnit}
             />
 
             <InputField
               label="Height"
               value={inputs.height}
               onChange={(value) =>
-                update(
-                  "height",
-                  value
-                )
+                update("height", value)
               }
-              unit={
-                inputs.heightUnit
-              }
-              setUnit={(unit) =>
-                update(
-                  "heightUnit",
-                  unit
-                )
-              }
+              unit={inputs.unit}
+              setUnit={setUnit}
             />
 
           </div>
@@ -900,9 +706,8 @@ export default function CalculatorForm() {
           <input
             type="number"
             min="1"
-            value={
-              inputs.quantity
-            }
+            inputMode="numeric"
+            value={inputs.quantity}
             onChange={(e) =>
               update(
                 "quantity",
@@ -929,6 +734,7 @@ export default function CalculatorForm() {
             <input
               type="number"
               min="0"
+              inputMode="decimal"
               value={inputs.waste}
               onChange={(e) =>
                 update(
@@ -960,6 +766,7 @@ export default function CalculatorForm() {
           <input
             type="number"
             min="0"
+            inputMode="decimal"
             value={inputs.price}
             onChange={(e) =>
               update(
@@ -975,7 +782,10 @@ export default function CalculatorForm() {
 
         {/* Error */}
         {error && (
-          <div className="mt-5 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
+          <div
+            role="alert"
+            className="mt-5 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700"
+          >
             {error}
           </div>
         )}
@@ -986,7 +796,7 @@ export default function CalculatorForm() {
           <button
             type="button"
             onClick={calculate}
-            className="rounded-md bg-blue-700 px-5 py-3 font-bold text-white hover:bg-blue-800"
+            className="rounded-md bg-blue-700 px-5 py-3 font-bold text-white transition hover:bg-blue-800 active:scale-[0.99]"
           >
             Calculate
           </button>
@@ -994,7 +804,7 @@ export default function CalculatorForm() {
           <button
             type="button"
             onClick={clear}
-            className="rounded-md bg-slate-200 px-5 py-3 font-semibold text-slate-700 hover:bg-slate-300"
+            className="rounded-md bg-slate-200 px-5 py-3 font-semibold text-slate-700 transition hover:bg-slate-300 active:scale-[0.99]"
           >
             Clear
           </button>
