@@ -13,15 +13,38 @@ export const unitToFeet: Record<Unit, number> = {
 
 function num(value: string): number {
   const n = Number(value);
+
   return Number.isFinite(n) ? n : 0;
 }
 
 function positiveQuantity(value: string): number {
-  return Math.max(num(value), 1);
+  const n = num(value);
+
+  return n > 0 ? n : 1;
 }
 
-function toFeet(value: string, unit: Unit): number {
-  return num(value) * unitToFeet[unit];
+/**
+ * Converts a linear measurement into feet.
+ *
+ * When unit = feet:
+ *   value = feet
+ *   extraInches = additional inches
+ *
+ * Example:
+ *   10 ft + 6 in = 10.5 ft
+ */
+function toFeet(
+  value: string,
+  unit: Unit,
+  extraInches = "0"
+): number {
+  const mainValue = num(value);
+
+  if (unit === "feet") {
+    return mainValue + num(extraInches) / 12;
+  }
+
+  return mainValue * unitToFeet[unit];
 }
 
 export function calculateSquareFootage(
@@ -29,28 +52,41 @@ export function calculateSquareFootage(
 ): CalculationResult | null {
   const {
     shape,
+    unit,
+
     length,
-    lengthUnit,
+    lengthInches,
+
     width,
-    widthUnit,
+    widthInches,
+
     height,
-    heightUnit,
+    heightInches,
+
     quantity,
+
     borderWidth,
-    borderWidthUnit,
+    borderWidthInches,
+
     sideA,
-    sideAUnit,
+    sideAInches,
+
     sideB,
-    sideBUnit,
+    sideBInches,
+
     sideC,
-    sideCUnit,
+    sideCInches,
+
     windowWidth,
-    windowWidthUnit,
+    windowWidthInches,
+
     windowHeight,
-    windowHeightUnit,
+    windowHeightInches,
+
     windowQuantity,
+
     knownArea,
-    knownAreaUnit,
+
     waste,
     price,
   } = inputs;
@@ -62,49 +98,123 @@ export function calculateSquareFootage(
   switch (shape) {
     case "Known Area": {
       const area = num(knownArea);
-      const factor = unitToFeet[knownAreaUnit];
 
-      areaSqFt = area * factor * factor * qty;
+      if (area <= 0) {
+        return null;
+      }
+
+      /**
+       * Known Area is interpreted according to selected unit.
+       *
+       * feet  -> square feet
+       * inches -> square inches
+       * yards -> square yards
+       * meters -> square meters
+       */
+      switch (unit) {
+        case "feet":
+          areaSqFt = area * qty;
+          break;
+
+        case "inches":
+          areaSqFt = (area / 144) * qty;
+          break;
+
+        case "yards":
+          areaSqFt = area * 9 * qty;
+          break;
+
+        case "meters":
+          areaSqFt = area * 10.7639104167 * qty;
+          break;
+      }
+
       break;
     }
 
     case "Rectangle":
     case "Room": {
-      const l = toFeet(length, lengthUnit);
-      const w = toFeet(width, widthUnit);
+      const l = toFeet(
+        length,
+        unit,
+        lengthInches
+      );
+
+      const w = toFeet(
+        width,
+        unit,
+        widthInches
+      );
+
+      if (l <= 0 || w <= 0) {
+        return null;
+      }
 
       areaSqFt = l * w * qty;
+
       break;
     }
 
     case "Square": {
-      const side = toFeet(length, lengthUnit);
+      const side = toFeet(
+        length,
+        unit,
+        lengthInches
+      );
+
+      if (side <= 0) {
+        return null;
+      }
 
       areaSqFt = side * side * qty;
+
       break;
     }
 
     case "Wall with Window": {
-      const wallWidth =
-        toFeet(length, lengthUnit);
+      const wallWidth = toFeet(
+        length,
+        unit,
+        lengthInches
+      );
 
-      const wallHeight =
-        toFeet(height, heightUnit);
+      const wallHeight = toFeet(
+        height,
+        unit,
+        heightInches
+      );
 
-      const grossWallArea =
-        wallWidth * wallHeight * qty;
+      const winWidth = toFeet(
+        windowWidth,
+        unit,
+        windowWidthInches
+      );
 
-      const winWidth =
-        toFeet(windowWidth, windowWidthUnit);
-
-      const winHeight =
-        toFeet(windowHeight, windowHeightUnit);
+      const winHeight = toFeet(
+        windowHeight,
+        unit,
+        windowHeightInches
+      );
 
       const winQty =
         positiveQuantity(windowQuantity);
 
+      if (
+        wallWidth <= 0 ||
+        wallHeight <= 0
+      ) {
+        return null;
+      }
+
+      const grossWallArea =
+        wallWidth *
+        wallHeight *
+        qty;
+
       const openingArea =
-        winWidth * winHeight * winQty;
+        winWidth *
+        winHeight *
+        winQty;
 
       areaSqFt = Math.max(
         grossWallArea - openingArea,
@@ -115,14 +225,31 @@ export function calculateSquareFootage(
     }
 
     case "Cathedral Wall": {
-      const wallWidth =
-        toFeet(width, widthUnit);
+      const wallWidth = toFeet(
+        width,
+        unit,
+        widthInches
+      );
 
-      const wallHeight =
-        toFeet(height, heightUnit);
+      const wallHeight = toFeet(
+        height,
+        unit,
+        heightInches
+      );
 
-      const triangleHeight =
-        toFeet(sideA, sideAUnit);
+      const triangleHeight = toFeet(
+        sideA,
+        unit,
+        sideAInches
+      );
+
+      if (
+        wallWidth <= 0 ||
+        wallHeight <= 0 ||
+        triangleHeight <= 0
+      ) {
+        return null;
+      }
 
       const rectangleArea =
         wallWidth * wallHeight;
@@ -131,24 +258,52 @@ export function calculateSquareFootage(
         (wallWidth * triangleHeight) / 2;
 
       areaSqFt =
-        (rectangleArea + triangleArea) * qty;
+        (rectangleArea + triangleArea) *
+        qty;
 
       break;
     }
 
     case "Rectangle Border": {
-      const l = toFeet(length, lengthUnit);
-      const w = toFeet(width, widthUnit);
-      const border =
-        toFeet(borderWidth, borderWidthUnit);
+      const l = toFeet(
+        length,
+        unit,
+        lengthInches
+      );
+
+      const w = toFeet(
+        width,
+        unit,
+        widthInches
+      );
+
+      const border = toFeet(
+        borderWidth,
+        unit,
+        borderWidthInches
+      );
+
+      if (
+        l <= 0 ||
+        w <= 0 ||
+        border <= 0
+      ) {
+        return null;
+      }
 
       const outerArea = l * w;
 
       const innerLength =
-        Math.max(l - border * 2, 0);
+        Math.max(
+          l - border * 2,
+          0
+        );
 
       const innerWidth =
-        Math.max(w - border * 2, 0);
+        Math.max(
+          w - border * 2,
+          0
+        );
 
       const innerArea =
         innerLength * innerWidth;
@@ -163,8 +318,15 @@ export function calculateSquareFootage(
     }
 
     case "Circle": {
-      const diameter =
-        toFeet(length, lengthUnit);
+      const diameter = toFeet(
+        length,
+        unit,
+        lengthInches
+      );
+
+      if (diameter <= 0) {
+        return null;
+      }
 
       const radius = diameter / 2;
 
@@ -179,11 +341,24 @@ export function calculateSquareFootage(
 
     case "Circle Border":
     case "Annulus": {
-      const outerDiameter =
-        toFeet(length, lengthUnit);
+      const outerDiameter = toFeet(
+        length,
+        unit,
+        lengthInches
+      );
 
-      const border =
-        toFeet(borderWidth, borderWidthUnit);
+      const border = toFeet(
+        borderWidth,
+        unit,
+        borderWidthInches
+      );
+
+      if (
+        outerDiameter <= 0 ||
+        border <= 0
+      ) {
+        return null;
+      }
 
       const outerRadius =
         outerDiameter / 2;
@@ -194,10 +369,19 @@ export function calculateSquareFootage(
           0
         );
 
+      const outerArea =
+        Math.PI *
+        outerRadius *
+        outerRadius;
+
+      const innerArea =
+        Math.PI *
+        innerRadius *
+        innerRadius;
+
       areaSqFt =
         Math.max(
-          Math.PI * outerRadius * outerRadius -
-            Math.PI * innerRadius * innerRadius,
+          outerArea - innerArea,
           0
         ) * qty;
 
@@ -205,66 +389,117 @@ export function calculateSquareFootage(
     }
 
     case "Triangle": {
-      const a = toFeet(sideA, sideAUnit);
-      const b = toFeet(sideB, sideBUnit);
-      const c = toFeet(sideC, sideCUnit);
+      const a = toFeet(
+        sideA,
+        unit,
+        sideAInches
+      );
 
-      const semi =
-        (a + b + c) / 2;
+      const b = toFeet(
+        sideB,
+        unit,
+        sideBInches
+      );
+
+      const c = toFeet(
+        sideC,
+        unit,
+        sideCInches
+      );
 
       if (
         a <= 0 ||
         b <= 0 ||
-        c <= 0 ||
-        semi <= a ||
-        semi <= b ||
-        semi <= c
+        c <= 0
+      ) {
+        return null;
+      }
+
+      const semiPerimeter =
+        (a + b + c) / 2;
+
+      if (
+        semiPerimeter <= a ||
+        semiPerimeter <= b ||
+        semiPerimeter <= c
       ) {
         return null;
       }
 
       areaSqFt =
         Math.sqrt(
-          semi *
-            (semi - a) *
-            (semi - b) *
-            (semi - c)
+          semiPerimeter *
+            (semiPerimeter - a) *
+            (semiPerimeter - b) *
+            (semiPerimeter - c)
         ) * qty;
 
       break;
     }
 
     case "Triangle 1/2 b×h": {
-      const base =
-        toFeet(sideA, sideAUnit);
+      const base = toFeet(
+        sideA,
+        unit,
+        sideAInches
+      );
 
-      const h =
-        toFeet(height, heightUnit);
+      const triangleHeight = toFeet(
+        height,
+        unit,
+        heightInches
+      );
+
+      if (
+        base <= 0 ||
+        triangleHeight <= 0
+      ) {
+        return null;
+      }
 
       areaSqFt =
-        (base * h) / 2 * qty;
+        (base * triangleHeight) /
+        2 *
+        qty;
 
       break;
     }
 
     case "Trapezoid": {
-      const baseA =
-        toFeet(sideA, sideAUnit);
+      const baseA = toFeet(
+        sideA,
+        unit,
+        sideAInches
+      );
 
-      const baseB =
-        toFeet(sideB, sideBUnit);
+      const baseB = toFeet(
+        sideB,
+        unit,
+        sideBInches
+      );
 
-      const h =
-        toFeet(height, heightUnit);
+      const trapezoidHeight =
+        toFeet(
+          height,
+          unit,
+          heightInches
+        );
+
+      if (
+        baseA <= 0 ||
+        baseB <= 0 ||
+        trapezoidHeight <= 0
+      ) {
+        return null;
+      }
 
       areaSqFt =
-        ((baseA + baseB) / 2) * h * qty;
+        ((baseA + baseB) / 2) *
+        trapezoidHeight *
+        qty;
 
       break;
     }
-
-    default:
-      return null;
   }
 
   if (
@@ -277,19 +512,37 @@ export function calculateSquareFootage(
   const wastePercent =
     Math.max(num(waste), 0);
 
-  const squareFeet =
+  const finalArea =
     areaSqFt *
     (1 + wastePercent / 100);
 
+  const squareFeet =
+    finalArea;
+
+  const squareInches =
+    squareFeet * 144;
+
+  const squareYards =
+    squareFeet / 9;
+
+  const squareMeters =
+    squareFeet *
+    0.09290304;
+
+  const acres =
+    squareFeet / 43560;
+
+  const cost =
+    price.trim() !== ""
+      ? squareFeet * num(price)
+      : null;
+
   return {
     squareFeet,
-    squareInches: squareFeet * 144,
-    squareYards: squareFeet / 9,
-    squareMeters: squareFeet * 0.09290304,
-    acres: squareFeet / 43560,
-    cost:
-      price.trim() !== ""
-        ? squareFeet * num(price)
-        : null,
+    squareInches,
+    squareYards,
+    squareMeters,
+    acres,
+    cost,
   };
 }
