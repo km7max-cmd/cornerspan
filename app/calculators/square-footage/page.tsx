@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import CalculatorForm from "./components/CalculatorForm";
-
+import RelatedCalculators from "../components/RelatedCalculators";
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ||
   "https://www.cornerspan.com";
@@ -328,38 +328,8 @@ export default function SquareFootagePage() {
 
         </section>
 
-        {/* Related Calculators */}
-        <section className="mt-6 rounded-xl border border-slate-200 bg-white p-5">
-
-          <h2 className="text-xl font-bold text-slate-900">
-            Related Calculators
-          </h2>
-
-          <p className="mt-2 text-sm leading-6 text-slate-600">
-            Explore more construction and measurement
-            calculators on CornerSpan.
-          </p>
-
-          <div className="mt-4">
-
-            <Link
-              href="/calculators"
-              className="block rounded-lg border border-slate-200 bg-slate-50 p-4 transition hover:border-blue-500 hover:bg-blue-50"
-            >
-              <h3 className="font-semibold text-slate-900">
-                Construction Calculators
-              </h3>
-
-              <p className="mt-1 text-sm text-slate-600">
-                Browse related calculators for
-                construction, measurements and
-                material calculations.
-              </p>
-            </Link>
-
-          </div>
-
-        </section>
+      {/* Related Calculators */}
+<RelatedCalculators currentSlug="square-footage" />
 
         {/* FAQ */}
         <section className="mt-6 rounded-xl border border-slate-200 bg-white p-5">
