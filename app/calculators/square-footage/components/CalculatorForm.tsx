@@ -2,13 +2,42 @@
 
 import { useState } from "react";
 import type {
+  CalculatorInputs,
   CalculationError,
   CalculationResult,
-  CalculatorInputs,
   Shape,
 } from "../types";
 import { calculateSquareFootage } from "../calculations";
 import ResultBox from "./ResultBox";
+
+type Unit =
+  | "ft & in"
+  | "in"
+  | "ft"
+  | "yd"
+  | "miles"
+  | "mm"
+  | "cm"
+  | "m"
+  | "km";
+
+type AreaPriceUnit =
+  | "square feet"
+  | "square inches"
+  | "square yards"
+  | "square meters";
+
+const units: Unit[] = [
+  "ft & in",
+  "in",
+  "ft",
+  "yd",
+  "miles",
+  "mm",
+  "cm",
+  "m",
+  "km",
+];
 
 const shapes: Shape[] = [
   "Known Area",
@@ -26,7 +55,7 @@ const shapes: Shape[] = [
   "Trapezoid",
 ];
 
-const initialInputs: CalculatorInputs = {
+const initialValues: CalculatorInputs = {
   shape: "Rectangle",
 
   lengthFeet: "",
@@ -66,9 +95,133 @@ const initialInputs: CalculatorInputs = {
   price: "",
 };
 
+function inputClass() {
+  return [
+    "h-9 w-full",
+    "border border-slate-500",
+    "bg-white px-2",
+    "text-sm text-slate-900",
+    "outline-none",
+    "focus:border-blue-700",
+    "focus:ring-1 focus:ring-blue-700",
+  ].join(" ");
+}
+
+function selectClass() {
+  return [
+    "h-9 w-full",
+    "border border-slate-500",
+    "bg-white px-2",
+    "text-sm text-slate-900",
+    "outline-none",
+    "focus:border-blue-700",
+    "focus:ring-1 focus:ring-blue-700",
+  ].join(" ");
+}
+
+function getFeetAndInches(
+  value: string,
+  unit: Unit
+): { feet: string; inches: string } {
+  const n = Number(value);
+
+  if (!Number.isFinite(n)) {
+    return {
+      feet: "",
+      inches: "",
+    };
+  }
+
+  switch (unit) {
+    case "in":
+      return {
+        feet: String(n / 12),
+        inches: "0",
+      };
+
+    case "ft":
+      return {
+        feet: String(n),
+        inches: "0",
+      };
+
+    case "yd":
+      return {
+        feet: String(n * 3),
+        inches: "0",
+      };
+
+    case "miles":
+      return {
+        feet: String(n * 5280),
+        inches: "0",
+      };
+
+    case "mm":
+      return {
+        feet: String(n / 304.8),
+        inches: "0",
+      };
+
+    case "cm":
+      return {
+        feet: String(n / 30.48),
+        inches: "0",
+      };
+
+    case "m":
+      return {
+        feet: String(n * 3.280839895),
+        inches: "0",
+      };
+
+    case "km":
+      return {
+        feet: String(n * 3280.839895),
+        inches: "0",
+      };
+
+    default:
+      return {
+        feet: "",
+        inches: "",
+      };
+  }
+}
+
 export default function CalculatorForm() {
-  const [inputs, setInputs] =
-    useState<CalculatorInputs>(initialInputs);
+  const [values, setValues] =
+    useState<CalculatorInputs>(initialValues);
+
+  const [lengthUnit, setLengthUnit] =
+    useState<Unit>("ft & in");
+
+  const [widthUnit, setWidthUnit] =
+    useState<Unit>("ft & in");
+
+  const [heightUnit, setHeightUnit] =
+    useState<Unit>("ft & in");
+
+  const [borderUnit, setBorderUnit] =
+    useState<Unit>("ft & in");
+
+  const [sideAUnit, setSideAUnit] =
+    useState<Unit>("ft & in");
+
+  const [sideBUnit, setSideBUnit] =
+    useState<Unit>("ft & in");
+
+  const [sideCUnit, setSideCUnit] =
+    useState<Unit>("ft & in");
+
+  const [windowWidthUnit, setWindowWidthUnit] =
+    useState<Unit>("ft & in");
+
+  const [windowHeightUnit, setWindowHeightUnit] =
+    useState<Unit>("ft & in");
+
+  const [priceUnit, setPriceUnit] =
+    useState<AreaPriceUnit>("square feet");
 
   const [result, setResult] =
     useState<CalculationResult | null>(null);
@@ -76,20 +229,21 @@ export default function CalculatorForm() {
   const [error, setError] =
     useState<CalculationError>(null);
 
-  function updateField(
-    field: keyof CalculatorInputs,
+  function update(
+    key: keyof CalculatorInputs,
     value: string
   ) {
-    setInputs((current) => ({
+    setValues((current) => ({
       ...current,
-      [field]: value,
+      [key]: value,
     }));
 
+    setResult(null);
     setError(null);
   }
 
   function changeShape(shape: Shape) {
-    setInputs((current) => ({
+    setValues((current) => ({
       ...current,
       shape,
     }));
@@ -98,674 +252,961 @@ export default function CalculatorForm() {
     setError(null);
   }
 
-  function calculate() {
-    const calculation =
-      calculateSquareFootage(inputs);
-
-    if (calculation.error) {
-      setResult(null);
-      setError(calculation.error);
-      return;
-    }
-
-    setError(null);
-    setResult(calculation.result);
-  }
-
   function clear() {
-    setInputs(initialInputs);
+    setValues({
+      ...initialValues,
+      shape: values.shape,
+    });
+
     setResult(null);
     setError(null);
   }
 
-  return (
-    <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-      {/* Header */}
-      <div className="bg-blue-700 px-5 py-5 text-center sm:px-6">
-        <h2 className="text-xl font-bold text-white sm:text-2xl">
-          Square Footage Calculator
-        </h2>
-      </div>
+  function normalized(
+    feetKey: keyof CalculatorInputs,
+    inchesKey: keyof CalculatorInputs,
+    unit: Unit
+  ): {
+    feet: string;
+    inches: string;
+  } {
+    if (unit === "ft & in") {
+      return {
+        feet: String(values[feetKey] ?? ""),
+        inches: String(values[inchesKey] ?? ""),
+      };
+    }
 
-      {/* Form */}
-      <div className="space-y-6 p-5 sm:p-7">
-        {/* Shape */}
-        <div>
-          <label className="mb-2 block text-base font-medium text-slate-700">
-            Area or Shape
-          </label>
+    const converted = getFeetAndInches(
+      String(values[feetKey] ?? ""),
+      unit
+    );
+
+    return converted;
+  }
+
+  function areaPricePerSquareFoot(): string {
+    const price = Number(values.price);
+
+    if (!Number.isFinite(price) || price <= 0) {
+      return "";
+    }
+
+    switch (priceUnit) {
+      case "square inches":
+        return String(price * 144);
+
+      case "square yards":
+        return String(price / 9);
+
+      case "square meters":
+        return String(
+          price / 10.7639104167
+        );
+
+      default:
+        return String(price);
+    }
+  }
+
+  function calculate() {
+    const length = normalized(
+      "lengthFeet",
+      "lengthInches",
+      lengthUnit
+    );
+
+    const width = normalized(
+      "widthFeet",
+      "widthInches",
+      widthUnit
+    );
+
+    const height = normalized(
+      "heightFeet",
+      "heightInches",
+      heightUnit
+    );
+
+    const border = normalized(
+      "borderFeet",
+      "borderInches",
+      borderUnit
+    );
+
+    const sideA = normalized(
+      "sideAFeet",
+      "sideAInches",
+      sideAUnit
+    );
+
+    const sideB = normalized(
+      "sideBFeet",
+      "sideBInches",
+      sideBUnit
+    );
+
+    const sideC = normalized(
+      "sideCFeet",
+      "sideCInches",
+      sideCUnit
+    );
+
+    const windowWidth = normalized(
+      "windowWidthFeet",
+      "windowWidthInches",
+      windowWidthUnit
+    );
+
+    const windowHeight = normalized(
+      "windowHeightFeet",
+      "windowHeightInches",
+      windowHeightUnit
+    );
+
+    const normalizedValues: CalculatorInputs = {
+      ...values,
+
+      lengthFeet: length.feet,
+      lengthInches: length.inches,
+
+      widthFeet: width.feet,
+      widthInches: width.inches,
+
+      heightFeet: height.feet,
+      heightInches: height.inches,
+
+      borderFeet: border.feet,
+      borderInches: border.inches,
+
+      sideAFeet: sideA.feet,
+      sideAInches: sideA.inches,
+
+      sideBFeet: sideB.feet,
+      sideBInches: sideB.inches,
+
+      sideCFeet: sideC.feet,
+      sideCInches: sideC.inches,
+
+      windowWidthFeet: windowWidth.feet,
+      windowWidthInches: windowWidth.inches,
+
+      windowHeightFeet: windowHeight.feet,
+      windowHeightInches: windowHeight.inches,
+
+      price: areaPricePerSquareFoot(),
+    };
+
+    const calculated =
+      calculateSquareFootage(
+        normalizedValues
+      );
+
+    setResult(calculated.result);
+    setError(calculated.error);
+
+    if (calculated.result) {
+      setTimeout(() => {
+        document
+          .getElementById("calculator-answer")
+          ?.scrollIntoView({
+            behavior: "smooth",
+            block: "nearest",
+          });
+      }, 50);
+    }
+  }
+
+  function MeasurementField({
+    label,
+    feetKey,
+    inchesKey,
+    unit,
+    setUnit,
+  }: {
+    label: string;
+    feetKey: keyof CalculatorInputs;
+    inchesKey: keyof CalculatorInputs;
+    unit: Unit;
+    setUnit: (unit: Unit) => void;
+  }) {
+    return (
+      <div className="mb-3">
+        <div className="mb-1 text-sm font-semibold text-slate-800">
+          {label} =
+        </div>
+
+        <div className="grid grid-cols-[1fr_1fr_112px] gap-2">
+          {unit === "ft & in" ? (
+            <>
+              <div className="relative">
+                <input
+                  type="number"
+                  inputMode="decimal"
+                  min="0"
+                  step="any"
+                  value={String(values[feetKey] ?? "")}
+                  onChange={(e) =>
+                    update(
+                      feetKey,
+                      e.target.value
+                    )
+                  }
+                  className={inputClass()}
+                  aria-label={`${label} feet`}
+                />
+
+                <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-xs text-slate-500">
+                  ft
+                </span>
+              </div>
+
+              <div className="relative">
+                <input
+                  type="number"
+                  inputMode="decimal"
+                  min="0"
+                  step="any"
+                  value={String(values[inchesKey] ?? "")}
+                  onChange={(e) =>
+                    update(
+                      inchesKey,
+                      e.target.value
+                    )
+                  }
+                  className={inputClass()}
+                  aria-label={`${label} inches`}
+                />
+
+                <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-xs text-slate-500">
+                  in
+                </span>
+              </div>
+            </>
+          ) : (
+            <div className="col-span-2">
+              <input
+                type="number"
+                inputMode="decimal"
+                min="0"
+                step="any"
+                value={String(values[feetKey] ?? "")}
+                onChange={(e) =>
+                  update(
+                    feetKey,
+                    e.target.value
+                  )
+                }
+                className={inputClass()}
+                aria-label={label}
+              />
+            </div>
+          )}
 
           <select
-            value={inputs.shape}
+            value={unit}
             onChange={(e) =>
-              changeShape(e.target.value as Shape)
+              setUnit(e.target.value as Unit)
             }
-            className={selectClass}
+            className={selectClass()}
+            aria-label={`${label} unit`}
           >
-            {shapes.map((shape) => (
-              <option key={shape} value={shape}>
-                {shape}
+            {units.map((item) => (
+              <option
+                key={item}
+                value={item}
+              >
+                {item}
               </option>
             ))}
           </select>
         </div>
+      </div>
+    );
+  }
 
-        {/* Known Area */}
-        {inputs.shape === "Known Area" && (
-          <Field
-            label="Known Area (square feet)"
-            value={inputs.knownArea}
-            onChange={(value) =>
-              updateField("knownArea", value)
-            }
-            placeholder="0"
-            inputMode="decimal"
-          />
-        )}
+  function simpleInput(
+    label: string,
+    key: keyof CalculatorInputs,
+    placeholder = ""
+  ) {
+    return (
+      <div className="mb-3">
+        <div className="mb-1 text-sm font-semibold text-slate-800">
+          {label} =
+        </div>
 
-        {/* Rectangle / Room */}
-        {(inputs.shape === "Rectangle" ||
-          inputs.shape === "Room") && (
-          <>
-            <MeasurementField
-              label="Length"
-              feet={inputs.lengthFeet}
-              inches={inputs.lengthInches}
-              onFeetChange={(value) =>
-                updateField("lengthFeet", value)
-              }
-              onInchesChange={(value) =>
-                updateField("lengthInches", value)
-              }
-            />
-
-            <MeasurementField
-              label="Width"
-              feet={inputs.widthFeet}
-              inches={inputs.widthInches}
-              onFeetChange={(value) =>
-                updateField("widthFeet", value)
-              }
-              onInchesChange={(value) =>
-                updateField("widthInches", value)
-              }
-            />
-          </>
-        )}
-
-        {/* Square */}
-        {inputs.shape === "Square" && (
-          <MeasurementField
-            label="Side Length"
-            feet={inputs.lengthFeet}
-            inches={inputs.lengthInches}
-            onFeetChange={(value) =>
-              updateField("lengthFeet", value)
-            }
-            onInchesChange={(value) =>
-              updateField("lengthInches", value)
-            }
-          />
-        )}
-
-        {/* Rectangle Border */}
-        {inputs.shape === "Rectangle Border" && (
-          <>
-            <MeasurementField
-              label="Length"
-              feet={inputs.lengthFeet}
-              inches={inputs.lengthInches}
-              onFeetChange={(value) =>
-                updateField("lengthFeet", value)
-              }
-              onInchesChange={(value) =>
-                updateField("lengthInches", value)
-              }
-            />
-
-            <MeasurementField
-              label="Width"
-              feet={inputs.widthFeet}
-              inches={inputs.widthInches}
-              onFeetChange={(value) =>
-                updateField("widthFeet", value)
-              }
-              onInchesChange={(value) =>
-                updateField("widthInches", value)
-              }
-            />
-
-            <MeasurementField
-              label="Border Width"
-              feet={inputs.borderFeet}
-              inches={inputs.borderInches}
-              onFeetChange={(value) =>
-                updateField("borderFeet", value)
-              }
-              onInchesChange={(value) =>
-                updateField("borderInches", value)
-              }
-            />
-          </>
-        )}
-
-        {/* Circle */}
-        {inputs.shape === "Circle" && (
-          <MeasurementField
-            label="Diameter"
-            feet={inputs.lengthFeet}
-            inches={inputs.lengthInches}
-            onFeetChange={(value) =>
-              updateField("lengthFeet", value)
-            }
-            onInchesChange={(value) =>
-              updateField("lengthInches", value)
-            }
-          />
-        )}
-
-        {/* Circle Border */}
-        {inputs.shape === "Circle Border" && (
-          <>
-            <MeasurementField
-              label="Outer Diameter"
-              feet={inputs.lengthFeet}
-              inches={inputs.lengthInches}
-              onFeetChange={(value) =>
-                updateField("lengthFeet", value)
-              }
-              onInchesChange={(value) =>
-                updateField("lengthInches", value)
-              }
-            />
-
-            <MeasurementField
-              label="Border Width"
-              feet={inputs.borderFeet}
-              inches={inputs.borderInches}
-              onFeetChange={(value) =>
-                updateField("borderFeet", value)
-              }
-              onInchesChange={(value) =>
-                updateField("borderInches", value)
-              }
-            />
-          </>
-        )}
-
-        {/* Annulus */}
-        {inputs.shape === "Annulus" && (
-          <>
-            <MeasurementField
-              label="Outer Diameter"
-              feet={inputs.lengthFeet}
-              inches={inputs.lengthInches}
-              onFeetChange={(value) =>
-                updateField("lengthFeet", value)
-              }
-              onInchesChange={(value) =>
-                updateField("lengthInches", value)
-              }
-            />
-
-            <MeasurementField
-              label="Inner Diameter"
-              feet={inputs.widthFeet}
-              inches={inputs.widthInches}
-              onFeetChange={(value) =>
-                updateField("widthFeet", value)
-              }
-              onInchesChange={(value) =>
-                updateField("widthInches", value)
-              }
-            />
-          </>
-        )}
-
-        {/* Wall with Window */}
-        {inputs.shape === "Wall with Window" && (
-          <>
-            <MeasurementField
-              label="Wall Length"
-              feet={inputs.lengthFeet}
-              inches={inputs.lengthInches}
-              onFeetChange={(value) =>
-                updateField("lengthFeet", value)
-              }
-              onInchesChange={(value) =>
-                updateField("lengthInches", value)
-              }
-            />
-
-            <MeasurementField
-              label="Wall Height"
-              feet={inputs.heightFeet}
-              inches={inputs.heightInches}
-              onFeetChange={(value) =>
-                updateField("heightFeet", value)
-              }
-              onInchesChange={(value) =>
-                updateField("heightInches", value)
-              }
-            />
-
-            <MeasurementField
-              label="Window Width"
-              feet={inputs.windowWidthFeet}
-              inches={inputs.windowWidthInches}
-              onFeetChange={(value) =>
-                updateField(
-                  "windowWidthFeet",
-                  value
-                )
-              }
-              onInchesChange={(value) =>
-                updateField(
-                  "windowWidthInches",
-                  value
-                )
-              }
-            />
-
-            <MeasurementField
-              label="Window Height"
-              feet={inputs.windowHeightFeet}
-              inches={inputs.windowHeightInches}
-              onFeetChange={(value) =>
-                updateField(
-                  "windowHeightFeet",
-                  value
-                )
-              }
-              onInchesChange={(value) =>
-                updateField(
-                  "windowHeightInches",
-                  value
-                )
-              }
-            />
-
-            <Field
-              label="Window Quantity"
-              value={inputs.windowQuantity}
-              onChange={(value) =>
-                updateField(
-                  "windowQuantity",
-                  value
-                )
-              }
-              placeholder="1"
-              inputMode="numeric"
-            />
-          </>
-        )}
-
-        {/* Cathedral Wall */}
-        {inputs.shape === "Cathedral Wall" && (
-          <>
-            <MeasurementField
-              label="Wall Length"
-              feet={inputs.lengthFeet}
-              inches={inputs.lengthInches}
-              onFeetChange={(value) =>
-                updateField("lengthFeet", value)
-              }
-              onInchesChange={(value) =>
-                updateField("lengthInches", value)
-              }
-            />
-
-            <MeasurementField
-              label="Wall Height"
-              feet={inputs.heightFeet}
-              inches={inputs.heightInches}
-              onFeetChange={(value) =>
-                updateField("heightFeet", value)
-              }
-              onInchesChange={(value) =>
-                updateField("heightInches", value)
-              }
-            />
-
-            <MeasurementField
-              label="Gable Height"
-              feet={inputs.widthFeet}
-              inches={inputs.widthInches}
-              onFeetChange={(value) =>
-                updateField("widthFeet", value)
-              }
-              onInchesChange={(value) =>
-                updateField("widthInches", value)
-              }
-            />
-          </>
-        )}
-
-        {/* Triangle */}
-        {inputs.shape === "Triangle" && (
-          <>
-            <MeasurementField
-              label="Side A"
-              feet={inputs.sideAFeet}
-              inches={inputs.sideAInches}
-              onFeetChange={(value) =>
-                updateField("sideAFeet", value)
-              }
-              onInchesChange={(value) =>
-                updateField("sideAInches", value)
-              }
-            />
-
-            <MeasurementField
-              label="Side B"
-              feet={inputs.sideBFeet}
-              inches={inputs.sideBInches}
-              onFeetChange={(value) =>
-                updateField("sideBFeet", value)
-              }
-              onInchesChange={(value) =>
-                updateField("sideBInches", value)
-              }
-            />
-
-            <MeasurementField
-              label="Side C"
-              feet={inputs.sideCFeet}
-              inches={inputs.sideCInches}
-              onFeetChange={(value) =>
-                updateField("sideCFeet", value)
-              }
-              onInchesChange={(value) =>
-                updateField("sideCInches", value)
-              }
-            />
-          </>
-        )}
-
-        {/* Triangle 1/2 b×h */}
-        {inputs.shape === "Triangle 1/2 b×h" && (
-          <>
-            <MeasurementField
-              label="Base"
-              feet={inputs.lengthFeet}
-              inches={inputs.lengthInches}
-              onFeetChange={(value) =>
-                updateField("lengthFeet", value)
-              }
-              onInchesChange={(value) =>
-                updateField("lengthInches", value)
-              }
-            />
-
-            <MeasurementField
-              label="Height"
-              feet={inputs.heightFeet}
-              inches={inputs.heightInches}
-              onFeetChange={(value) =>
-                updateField("heightFeet", value)
-              }
-              onInchesChange={(value) =>
-                updateField("heightInches", value)
-              }
-            />
-          </>
-        )}
-
-        {/* Trapezoid */}
-        {inputs.shape === "Trapezoid" && (
-          <>
-            <MeasurementField
-              label="Base A"
-              feet={inputs.lengthFeet}
-              inches={inputs.lengthInches}
-              onFeetChange={(value) =>
-                updateField("lengthFeet", value)
-              }
-              onInchesChange={(value) =>
-                updateField("lengthInches", value)
-              }
-            />
-
-            <MeasurementField
-              label="Base B"
-              feet={inputs.widthFeet}
-              inches={inputs.widthInches}
-              onFeetChange={(value) =>
-                updateField("widthFeet", value)
-              }
-              onInchesChange={(value) =>
-                updateField("widthInches", value)
-              }
-            />
-
-            <MeasurementField
-              label="Height"
-              feet={inputs.heightFeet}
-              inches={inputs.heightInches}
-              onFeetChange={(value) =>
-                updateField("heightFeet", value)
-              }
-              onInchesChange={(value) =>
-                updateField("heightInches", value)
-              }
-            />
-          </>
-        )}
-
-        {/* Quantity */}
-        <Field
-          label="Quantity"
-          value={inputs.quantity}
-          onChange={(value) =>
-            updateField("quantity", value)
+        <input
+          type="number"
+          inputMode="decimal"
+          min="0"
+          step="any"
+          value={String(values[key] ?? "")}
+          onChange={(e) =>
+            update(key, e.target.value)
           }
-          placeholder="1"
-          inputMode="numeric"
+          placeholder={placeholder}
+          className={inputClass()}
         />
+      </div>
+    );
+  }
 
-        {/* Waste */}
-        <fieldset className="rounded-xl border border-slate-300 px-4 pb-5 pt-2">
-          <legend className="px-2 text-base font-medium text-slate-500">
-            Optional Material Waste
-          </legend>
+  function shapeImageName(): string {
+    switch (values.shape) {
+      case "Known Area":
+        return "Known Area";
 
-          <div className="flex items-center justify-center gap-3 pt-3 sm:justify-start">
-            <span className="text-base text-slate-600">
-              Add an extra
-            </span>
+      case "Wall with Window":
+        return "Wall Minus Window";
 
-            <input
-              type="number"
-              min="0"
-              inputMode="decimal"
-              value={inputs.waste}
+      case "Cathedral Wall":
+        return "Cathedral Wall";
+
+      case "Rectangle Border":
+        return "Rectangle Border";
+
+      case "Circle Border":
+        return "Circle Border";
+
+      case "Annulus":
+        return "Annulus";
+
+      case "Triangle":
+        return "Triangle";
+
+      case "Triangle 1/2 b×h":
+        return "Triangle Base × Height";
+
+      default:
+        return values.shape;
+    }
+  }
+
+  return (
+    <div className="mx-auto w-full max-w-3xl">
+      <div className="border border-slate-400 bg-slate-100 p-2">
+        <div className="border border-blue-800 bg-blue-700 px-3 py-2 text-center text-lg font-bold text-white">
+          Square Footage Calculator
+        </div>
+
+        <div className="p-3 sm:p-4">
+          {/* Shape */}
+          <div className="mb-3 text-center">
+            <label className="mr-2 text-sm font-semibold text-slate-800">
+              Area or Shape:
+            </label>
+
+            <select
+              value={values.shape}
               onChange={(e) =>
-                updateField(
-                  "waste",
-                  e.target.value
+                changeShape(
+                  e.target.value as Shape
                 )
               }
-              className="h-12 w-32 rounded-lg border border-slate-300 bg-white px-4 text-center text-lg text-slate-900 outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
+              className="h-9 border border-slate-500 bg-white px-2 text-sm"
+            >
+              {shapes.map((shape) => (
+                <option
+                  key={shape}
+                  value={shape}
+                >
+                  {shape}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="mb-4 text-center text-sm font-semibold text-blue-700 underline">
+            {shapeImageName()} Image
+          </div>
+
+          {/* Known Area */}
+          {values.shape === "Known Area" && (
+            <>
+              {simpleInput(
+                "Known Area (square feet)",
+                "knownArea"
+              )}
+
+              {simpleInput(
+                "Quantity",
+                "quantity"
+              )}
+            </>
+          )}
+
+          {/* Room */}
+          {values.shape === "Room" && (
+            <>
+              <MeasurementField
+                label="Length"
+                feetKey="lengthFeet"
+                inchesKey="lengthInches"
+                unit={lengthUnit}
+                setUnit={setLengthUnit}
+              />
+
+              <MeasurementField
+                label="Width"
+                feetKey="widthFeet"
+                inchesKey="widthInches"
+                unit={widthUnit}
+                setUnit={setWidthUnit}
+              />
+
+              {simpleInput(
+                "Quantity",
+                "quantity"
+              )}
+            </>
+          )}
+
+          {/* Rectangle */}
+          {values.shape === "Rectangle" && (
+            <>
+              <MeasurementField
+                label="Length"
+                feetKey="lengthFeet"
+                inchesKey="lengthInches"
+                unit={lengthUnit}
+                setUnit={setLengthUnit}
+              />
+
+              <MeasurementField
+                label="Width"
+                feetKey="widthFeet"
+                inchesKey="widthInches"
+                unit={widthUnit}
+                setUnit={setWidthUnit}
+              />
+
+              {simpleInput(
+                "Quantity",
+                "quantity"
+              )}
+            </>
+          )}
+
+          {/* Square */}
+          {values.shape === "Square" && (
+            <>
+              <MeasurementField
+                label="Side Length"
+                feetKey="lengthFeet"
+                inchesKey="lengthInches"
+                unit={lengthUnit}
+                setUnit={setLengthUnit}
+              />
+
+              {simpleInput(
+                "Quantity",
+                "quantity"
+              )}
+            </>
+          )}
+
+          {/* Wall with Window */}
+          {values.shape ===
+            "Wall with Window" && (
+            <>
+              <MeasurementField
+                label="Wall Width"
+                feetKey="widthFeet"
+                inchesKey="widthInches"
+                unit={widthUnit}
+                setUnit={setWidthUnit}
+              />
+
+              <MeasurementField
+                label="Wall Height"
+                feetKey="heightFeet"
+                inchesKey="heightInches"
+                unit={heightUnit}
+                setUnit={setHeightUnit}
+              />
+
+              <MeasurementField
+                label="Window Width"
+                feetKey="windowWidthFeet"
+                inchesKey="windowWidthInches"
+                unit={windowWidthUnit}
+                setUnit={setWindowWidthUnit}
+              />
+
+              <MeasurementField
+                label="Window Height"
+                feetKey="windowHeightFeet"
+                inchesKey="windowHeightInches"
+                unit={windowHeightUnit}
+                setUnit={setWindowHeightUnit}
+              />
+
+              {simpleInput(
+                "Window Quantity",
+                "windowQuantity"
+              )}
+
+              {simpleInput(
+                "Quantity",
+                "quantity"
+              )}
+            </>
+          )}
+
+          {/* Cathedral Wall */}
+          {values.shape ===
+            "Cathedral Wall" && (
+            <>
+              <MeasurementField
+                label="Wall Width"
+                feetKey="widthFeet"
+                inchesKey="widthInches"
+                unit={widthUnit}
+                setUnit={setWidthUnit}
+              />
+
+              <MeasurementField
+                label="Height 1"
+                feetKey="heightFeet"
+                inchesKey="heightInches"
+                unit={heightUnit}
+                setUnit={setHeightUnit}
+              />
+
+              <MeasurementField
+                label="Height 2"
+                feetKey="sideAFeet"
+                inchesKey="sideAInches"
+                unit={sideAUnit}
+                setUnit={setSideAUnit}
+              />
+
+              {simpleInput(
+                "Quantity",
+                "quantity"
+              )}
+            </>
+          )}
+
+          {/* Rectangle Border */}
+          {values.shape ===
+            "Rectangle Border" && (
+            <>
+              <MeasurementField
+                label="Inner Length"
+                feetKey="lengthFeet"
+                inchesKey="lengthInches"
+                unit={lengthUnit}
+                setUnit={setLengthUnit}
+              />
+
+              <MeasurementField
+                label="Inner Width"
+                feetKey="widthFeet"
+                inchesKey="widthInches"
+                unit={widthUnit}
+                setUnit={setWidthUnit}
+              />
+
+              <MeasurementField
+                label="Border Width"
+                feetKey="borderFeet"
+                inchesKey="borderInches"
+                unit={borderUnit}
+                setUnit={setBorderUnit}
+              />
+
+              {simpleInput(
+                "Quantity",
+                "quantity"
+              )}
+            </>
+          )}
+
+          {/* Circle */}
+          {values.shape === "Circle" && (
+            <>
+              <MeasurementField
+                label="Diameter"
+                feetKey="lengthFeet"
+                inchesKey="lengthInches"
+                unit={lengthUnit}
+                setUnit={setLengthUnit}
+              />
+
+              {simpleInput(
+                "Quantity",
+                "quantity"
+              )}
+            </>
+          )}
+
+          {/* Circle Border */}
+          {values.shape ===
+            "Circle Border" && (
+            <>
+              <MeasurementField
+                label="Inner Diameter"
+                feetKey="lengthFeet"
+                inchesKey="lengthInches"
+                unit={lengthUnit}
+                setUnit={setLengthUnit}
+              />
+
+              <MeasurementField
+                label="Border Width"
+                feetKey="borderFeet"
+                inchesKey="borderInches"
+                unit={borderUnit}
+                setUnit={setBorderUnit}
+              />
+
+              {simpleInput(
+                "Quantity",
+                "quantity"
+              )}
+            </>
+          )}
+
+          {/* Annulus */}
+          {values.shape === "Annulus" && (
+            <>
+              <MeasurementField
+                label="Outer Diameter"
+                feetKey="lengthFeet"
+                inchesKey="lengthInches"
+                unit={lengthUnit}
+                setUnit={setLengthUnit}
+              />
+
+              <MeasurementField
+                label="Inner Diameter"
+                feetKey="widthFeet"
+                inchesKey="widthInches"
+                unit={widthUnit}
+                setUnit={setWidthUnit}
+              />
+
+              {simpleInput(
+                "Quantity",
+                "quantity"
+              )}
+            </>
+          )}
+
+          {/* Triangle */}
+          {values.shape === "Triangle" && (
+            <>
+              <MeasurementField
+                label="Side A"
+                feetKey="sideAFeet"
+                inchesKey="sideAInches"
+                unit={sideAUnit}
+                setUnit={setSideAUnit}
+              />
+
+              <MeasurementField
+                label="Side B"
+                feetKey="sideBFeet"
+                inchesKey="sideBInches"
+                unit={sideBUnit}
+                setUnit={setSideBUnit}
+              />
+
+              <MeasurementField
+                label="Side C"
+                feetKey="sideCFeet"
+                inchesKey="sideCInches"
+                unit={sideCUnit}
+                setUnit={setSideCUnit}
+              />
+
+              {simpleInput(
+                "Quantity",
+                "quantity"
+              )}
+            </>
+          )}
+
+          {/* Triangle Base Height */}
+          {values.shape ===
+            "Triangle 1/2 b×h" && (
+            <>
+              <MeasurementField
+                label="Base"
+                feetKey="lengthFeet"
+                inchesKey="lengthInches"
+                unit={lengthUnit}
+                setUnit={setLengthUnit}
+              />
+
+              <MeasurementField
+                label="Height"
+                feetKey="heightFeet"
+                inchesKey="heightInches"
+                unit={heightUnit}
+                setUnit={setHeightUnit}
+              />
+
+              {simpleInput(
+                "Quantity",
+                "quantity"
+              )}
+            </>
+          )}
+
+          {/* Trapezoid */}
+          {values.shape === "Trapezoid" && (
+            <>
+              <MeasurementField
+                label="Side A"
+                feetKey="sideAFeet"
+                inchesKey="sideAInches"
+                unit={sideAUnit}
+                setUnit={setSideAUnit}
+              />
+
+              <MeasurementField
+                label="Side B"
+                feetKey="sideBFeet"
+                inchesKey="sideBInches"
+                unit={sideBUnit}
+                setUnit={setSideBUnit}
+              />
+
+              <MeasurementField
+                label="Height"
+                feetKey="heightFeet"
+                inchesKey="heightInches"
+                unit={heightUnit}
+                setUnit={setHeightUnit}
+              />
+
+              {simpleInput(
+                "Quantity",
+                "quantity"
+              )}
+            </>
+          )}
+
+          {/* Waste */}
+          <fieldset className="mt-4 border border-slate-400 px-3 pb-3 pt-1">
+            <legend className="px-1 text-sm italic text-slate-600">
+              optional material waste factor
+            </legend>
+
+            <div className="flex items-center justify-center gap-2">
+              <span className="text-sm italic text-slate-600">
+                Add an extra
+              </span>
+
+              <input
+                type="number"
+                min="0"
+                step="any"
+                value={values.waste}
+                onChange={(e) =>
+                  update(
+                    "waste",
+                    e.target.value
+                  )
+                }
+                className="h-9 w-20 border border-slate-500 bg-white px-2 text-center text-sm"
+              />
+
+              <span className="text-sm text-slate-600">
+                %
+              </span>
+            </div>
+          </fieldset>
+
+          {/* Cost */}
+          <fieldset className="mt-4 border border-slate-400 px-3 pb-3 pt-1">
+            <legend className="px-1 text-sm italic text-slate-600">
+              optional material cost
+            </legend>
+
+            <div className="grid grid-cols-[55px_1fr_90px] items-end gap-2">
+              <div>
+                <label className="mb-1 block text-xs text-slate-600">
+                  currency
+                </label>
+
+                <select
+                  className={selectClass()}
+                  defaultValue="$"
+                >
+                  <option>$</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="mb-1 block text-xs text-slate-600">
+                  price
+                </label>
+
+                <input
+                  type="number"
+                  min="0"
+                  step="any"
+                  value={values.price}
+                  onChange={(e) =>
+                    update(
+                      "price",
+                      e.target.value
+                    )
+                  }
+                  className={inputClass()}
+                />
+              </div>
+
+              <div>
+                <label className="mb-1 block text-xs text-slate-600">
+                  square unit
+                </label>
+
+                <select
+                  value={priceUnit}
+                  onChange={(e) =>
+                    setPriceUnit(
+                      e.target.value as AreaPriceUnit
+                    )
+                  }
+                  className={selectClass()}
+                >
+                  <option value="square feet">
+                    sq ft
+                  </option>
+                  <option value="square inches">
+                    sq in
+                  </option>
+                  <option value="square yards">
+                    sq yd
+                  </option>
+                  <option value="square meters">
+                    sq m
+                  </option>
+                </select>
+              </div>
+            </div>
+          </fieldset>
+
+          {/* Buttons */}
+          <div className="mt-4 grid grid-cols-2 gap-3">
+            <button
+              type="button"
+              onClick={clear}
+              className="h-9 border border-slate-500 bg-white px-4 text-sm font-semibold text-slate-800 hover:bg-slate-50"
+            >
+              Clear
+            </button>
+
+            <button
+              type="button"
+              onClick={calculate}
+              className="h-9 border border-slate-700 bg-slate-200 px-4 text-sm font-semibold text-slate-900 hover:bg-slate-300"
+            >
+              Calculate
+            </button>
+          </div>
+
+          {/* Result */}
+          <div id="calculator-answer">
+            <ResultBox
+              result={result}
+              error={error}
             />
-
-            <span className="text-base text-slate-600">
-              %
-            </span>
           </div>
-        </fieldset>
-
-        {/* Material Cost */}
-        <fieldset className="rounded-xl border border-slate-300 px-4 pb-5 pt-2">
-          <legend className="px-2 text-base font-medium text-slate-500">
-            Optional Material Cost
-          </legend>
-
-          <div className="pt-3">
-            <Field
-              label="Price per square foot ($)"
-              value={inputs.price}
-              onChange={(value) =>
-                updateField("price", value)
-              }
-              placeholder="0"
-              inputMode="decimal"
-            />
-          </div>
-        </fieldset>
-
-        {/* Error */}
-        {error && (
-          <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
-            Please enter a valid{" "}
-            {error === "Area"
-              ? "Area"
-              : error === "Border Width"
-                ? "Border Width"
-                : error}.
-          </div>
-        )}
-
-        {/* Buttons */}
-        <div className="grid grid-cols-2 gap-3 pt-1">
-          <button
-            type="button"
-            onClick={calculate}
-            className="h-12 rounded-lg bg-blue-700 px-5 text-base font-bold text-white transition hover:bg-blue-800 active:scale-[0.99]"
-          >
-            Calculate
-          </button>
-
-          <button
-            type="button"
-            onClick={clear}
-            className="h-12 rounded-lg bg-slate-200 px-5 text-base font-semibold text-slate-700 transition hover:bg-slate-300 active:scale-[0.99]"
-          >
-            Clear
-          </button>
         </div>
-
-        {/* Result */}
-        <ResultBox
-          result={result}
-          error={error}
-        />
       </div>
-    </section>
-  );
-}
 
-/* -----------------------------
-   Measurement Field
------------------------------ */
+      {/* Reference-style explanation */}
+      <div className="mt-4 text-sm text-slate-800">
+        <h2 className="mb-2 text-lg font-bold">
+          {values.shape} Area
+        </h2>
 
-function MeasurementField({
-  label,
-  feet,
-  inches,
-  onFeetChange,
-  onInchesChange,
-}: {
-  label: string;
-  feet: string;
-  inches: string;
-  onFeetChange: (value: string) => void;
-  onInchesChange: (value: string) => void;
-}) {
-  return (
-    <div>
-      <label className="mb-2 block text-base font-medium text-slate-700">
-        {label}
-      </label>
+        <p className="mb-3">
+          Calculate the square footage, square
+          inches, square yards, square meters and
+          acres for your construction project.
+        </p>
 
-      <div className="grid grid-cols-2 gap-3">
-        <div className="relative">
-          <input
-            type="number"
-            min="0"
-            inputMode="decimal"
-            value={feet}
-            onChange={(e) =>
-              onFeetChange(e.target.value)
-            }
-            placeholder="0"
-            className={measurementInputClass}
-          />
+        <div className="border border-slate-300 bg-white p-3">
+          <strong>Use the Calculator</strong>
 
-          <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-base text-slate-500">
-            ft
-          </span>
+          <ol className="mt-2 list-decimal space-y-1 pl-5">
+            <li>Select your shape.</li>
+            <li>
+              Enter your measurements and units.
+            </li>
+            <li>
+              Enter quantity if you have multiple
+              identical areas.
+            </li>
+            <li>
+              Add optional material waste.
+            </li>
+            <li>
+              Add optional material cost.
+            </li>
+            <li>
+              Click Calculate to see the results.
+            </li>
+          </ol>
         </div>
 
-        <div className="relative">
-          <input
-            type="number"
-            min="0"
-            max="11"
-            inputMode="decimal"
-            value={inches}
-            onChange={(e) =>
-              onInchesChange(e.target.value)
-            }
-            placeholder="0"
-            className={measurementInputClass}
-          />
+        <div className="mt-3 border border-slate-300 bg-white p-3">
+          <strong>Formula</strong>
 
-          <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-base text-slate-500">
-            in
-          </span>
+          <p className="mt-2">
+            {values.shape === "Square" &&
+              "Area = Side × Side"}
+
+            {values.shape === "Rectangle" &&
+              "Area = Length × Width"}
+
+            {values.shape === "Room" &&
+              "Area = Length × Width"}
+
+            {values.shape === "Known Area" &&
+              "Area = Known Square Feet"}
+
+            {values.shape ===
+              "Rectangle Border" &&
+              "Area = Outer Rectangle − Inner Rectangle"}
+
+            {values.shape ===
+              "Wall with Window" &&
+              "Area = Wall Area − Window Area"}
+
+            {values.shape ===
+              "Cathedral Wall" &&
+              "Area = Width × (Height 1 + Height 2) ÷ 2"}
+
+            {values.shape === "Circle" &&
+              "Area = π × (Diameter ÷ 2)²"}
+
+            {values.shape ===
+              "Circle Border" &&
+              "Area = Outer Circle − Inner Circle"}
+
+            {values.shape === "Annulus" &&
+              "Area = Outer Circle − Inner Circle"}
+
+            {values.shape === "Triangle" &&
+              "Heron's Formula"}
+
+            {values.shape ===
+              "Triangle 1/2 b×h" &&
+              "Area = ½ × Base × Height"}
+
+            {values.shape === "Trapezoid" &&
+              "Area = ½ × (Side A + Side B) × Height"}
+          </p>
         </div>
       </div>
     </div>
   );
 }
-
-/* -----------------------------
-   Normal Field
------------------------------ */
-
-function Field({
-  label,
-  value,
-  onChange,
-  placeholder,
-  inputMode = "decimal",
-}: {
-  label: string;
-  value: string;
-  onChange: (value: string) => void;
-  placeholder?: string;
-  inputMode?: "decimal" | "numeric";
-}) {
-  return (
-    <div>
-      <label className="mb-2 block text-base font-medium text-slate-700">
-        {label}
-      </label>
-
-      <input
-        type="number"
-        min="0"
-        inputMode={inputMode}
-        value={value}
-        onChange={(e) =>
-          onChange(e.target.value)
-        }
-        placeholder={placeholder ?? "0"}
-        className={inputClass}
-      />
-    </div>
-  );
-}
-
-/* -----------------------------
-   Classes
------------------------------ */
-
-const inputClass =
-  "h-12 w-full rounded-lg border border-slate-300 bg-white px-4 text-base text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-600 focus:ring-2 focus:ring-blue-100";
-
-const measurementInputClass =
-  "h-12 w-full rounded-lg border border-slate-300 bg-white px-4 pr-12 text-base text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-600 focus:ring-2 focus:ring-blue-100";
-
-const selectClass =
-  "h-12 w-full rounded-lg border border-slate-300 bg-white px-4 text-base text-slate-900 outline-none transition focus:border-blue-600 focus:ring-2 focus:ring-blue-100";
