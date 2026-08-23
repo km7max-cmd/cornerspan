@@ -63,7 +63,7 @@ const initialInputs: CalculatorInputs = {
   windowQuantity: "1",
 
   knownArea: "",
-  knownAreaUnit: "square-feet" as Unit,
+  knownAreaUnit: "feet",
 
   waste: "0",
 
