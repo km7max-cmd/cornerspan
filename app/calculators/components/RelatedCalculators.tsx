@@ -222,7 +222,7 @@ export default function RelatedCalculators({
           <Link
             key={calculator.slug}
             href={`/calculators/${calculator.slug}`}
-            className="group flex min-h-[76px] items-center justify-between border-b border-slate-200 py-4 text-left transition-colors hover:bg-slate-50"
+            className="group flex min-h-[54px] items-center justify-between border-b border-slate-200 py-2 text-left transition-colors hover:bg-slate-50"
           >
             <span className="text-lg font-medium text-blue-700 group-hover:text-blue-800 sm:text-xl">
               {calculator.name}
