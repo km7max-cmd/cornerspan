@@ -21,20 +21,25 @@ export async function generateMetadata({
   const { category } = await params;
 
   const posts = blogPosts.filter(
-    (post) => post.category.toLowerCase() === category.toLowerCase()
+    (post) =>
+      post.category.toLowerCase() === category.toLowerCase()
   );
 
   if (posts.length === 0) {
     return {};
   }
 
-  const name = posts[0].category;
+  const categoryName = posts[0].category;
 
   return {
-    title: `${name} Construction Guides | CornerSpan`,
-    description: `Read CornerSpan guides about ${name.toLowerCase()} construction calculations and material estimation.`,
+    title: `${categoryName} Construction Guides | CornerSpan`,
+    description: `Explore CornerSpan's ${categoryName.toLowerCase()} construction guides, calculation methods, and practical material estimation tips.`,
     alternates: {
       canonical: `/blog/category/${category.toLowerCase()}`,
+    },
+    robots: {
+      index: true,
+      follow: true,
     },
   };
 }
@@ -43,7 +48,8 @@ export default async function CategoryPage({ params }: Props) {
   const { category } = await params;
 
   const posts = blogPosts.filter(
-    (post) => post.category.toLowerCase() === category.toLowerCase()
+    (post) =>
+      post.category.toLowerCase() === category.toLowerCase()
   );
 
   if (posts.length === 0) {
@@ -76,34 +82,45 @@ export default async function CategoryPage({ params }: Props) {
           </nav>
 
           <p className="text-sm font-bold uppercase tracking-wide text-blue-600">
-            Construction Guides
+            Construction Category
           </p>
 
-          <h1 className="mt-2 text-3xl font-black text-slate-950 sm:text-5xl">
-            {categoryName} Guides
+          <h1 className="mt-2 text-3xl font-black tracking-tight text-slate-950 sm:text-5xl">
+            {categoryName} Construction Guides
           </h1>
 
           <p className="mt-4 max-w-2xl text-base leading-7 text-slate-600">
-            Construction calculation guides and practical information
-            related to {categoryName.toLowerCase()}.
+            Explore practical {categoryName.toLowerCase()} construction
+            guides, calculation methods, and material estimation
+            information from CornerSpan.
           </p>
         </div>
       </section>
 
       <section className="mx-auto max-w-6xl px-5 py-10 sm:px-6 sm:py-14">
+        <div className="mb-7">
+          <h2 className="text-2xl font-black text-slate-950 sm:text-3xl">
+            {categoryName} Guides
+          </h2>
+
+          <p className="mt-2 text-sm leading-6 text-slate-600 sm:text-base">
+            Read the available guides in this construction category.
+          </p>
+        </div>
+
         <div className="grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-3">
           {posts.map((post) => (
             <article
               key={post.slug}
-              className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
+              className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:-translate-y-1 hover:shadow-md sm:p-5"
             >
               <p className="text-xs font-bold uppercase tracking-wide text-blue-600">
                 {post.category}
               </p>
 
-              <h2 className="mt-2 text-base font-bold text-slate-950 sm:text-xl">
+              <h3 className="mt-2 text-base font-bold text-slate-950 sm:text-xl">
                 {post.title}
-              </h2>
+              </h3>
 
               <p className="mt-2 text-sm leading-6 text-slate-600">
                 {post.description}
