@@ -219,25 +219,23 @@ export default function Home() {
               </h2>
 
               <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500 sm:text-base">
-                Enter your measurements and get a practical estimate for
-                your construction project.
+                Choose a calculator for your construction project.
               </p>
             </div>
 
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-<div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-  {calculators.map((calculator) => (
-    <Link
-      key={calculator.href}
-      href={calculator.href}
-      className="rounded-xl border border-blue-100 bg-white px-4 py-4 shadow-sm transition hover:border-blue-300 hover:bg-blue-50 hover:shadow-md"
-    >
-      <h3 className="text-base font-bold text-blue-700 group-hover:text-blue-800">
-        {calculator.title}
-      </h3>
-    </Link>
-  ))}
-</div>
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {calculators.map((calculator) => (
+                <Link
+                  key={calculator.href}
+                  href={calculator.href}
+                  className="rounded-xl border border-blue-100 bg-white px-4 py-4 shadow-sm transition hover:border-blue-300 hover:bg-blue-50 hover:shadow-md"
+                >
+                  <h3 className="text-base font-bold text-blue-700">
+                    {calculator.title}
+                  </h3>
+                </Link>
+              ))}
+            </div>
 
           </div>
         </section>
@@ -297,6 +295,7 @@ export default function Home() {
                 <h3 className="font-bold text-slate-900">
                   Free to Use
                 </h3>
+
                 <p className="mt-2 text-sm leading-6 text-slate-600">
                   Use the available calculators directly in your browser.
                 </p>
@@ -306,6 +305,7 @@ export default function Home() {
                 <h3 className="font-bold text-slate-900">
                   Simple Inputs
                 </h3>
+
                 <p className="mt-2 text-sm leading-6 text-slate-600">
                   Enter only the measurements needed for each calculation.
                 </p>
@@ -315,6 +315,7 @@ export default function Home() {
                 <h3 className="font-bold text-slate-900">
                   Mobile Friendly
                 </h3>
+
                 <p className="mt-2 text-sm leading-6 text-slate-600">
                   Use the calculators on phones, tablets and computers.
                 </p>
@@ -324,6 +325,7 @@ export default function Home() {
                 <h3 className="font-bold text-slate-900">
                   Clear Results
                 </h3>
+
                 <p className="mt-2 text-sm leading-6 text-slate-600">
                   Results are presented in a simple format that is easy to
                   understand.
