@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import fs from "fs";
 import path from "path";
+import { blogPosts } from "../data/blog";
 
 const BASE_URL = "https://www.cornerspan.com";
 
@@ -21,7 +22,6 @@ function getRoutes(
   for (const entry of entries) {
     const name = entry.name;
 
-    // Ignore Next.js internal folders and files
     if (
       name.startsWith("_") ||
       name.startsWith(".") ||
@@ -33,12 +33,12 @@ function getRoutes(
     const fullPath = path.join(directory, name);
 
     if (entry.isDirectory()) {
-      // Ignore route groups such as (marketing)
       if (name.startsWith("(")) {
-        routes.push(
-          ...getRoutes(fullPath, currentRoute)
-        );
-      } else if (!name.startsWith("[") && !name.startsWith("@")) {
+        routes.push(...getRoutes(fullPath, currentRoute));
+      } else if (
+        !name.startsWith("[") &&
+        !name.startsWith("@")
+      ) {
         routes.push(
           ...getRoutes(
             fullPath,
@@ -62,14 +62,45 @@ function getRoutes(
 export default function sitemap(): MetadataRoute.Sitemap {
   const appDirectory = path.join(process.cwd(), "app");
 
-  const routes = getRoutes(appDirectory);
+  const staticRoutes = getRoutes(appDirectory);
 
-  const uniqueRoutes = [...new Set(routes)];
+  const postRoutes = blogPosts.map(
+    (post) => `/blog/${post.slug}`
+  );
+
+  const categoryRoutes = [
+    ...new Set(
+      blogPosts.map(
+        (post) => `/blog/category/${post.category.toLowerCase()}`
+      )
+    ),
+  ];
+
+  const tagRoutes = [
+    ...new Set(
+      blogPosts.flatMap((post) =>
+        post.tags.map(
+          (tag) => `/blog/tag/${tag.toLowerCase()}`
+        )
+      )
+    ),
+  ];
+
+  const allRoutes = [
+    ...staticRoutes,
+    ...postRoutes,
+    ...categoryRoutes,
+    ...tagRoutes,
+  ];
+
+  const uniqueRoutes = [...new Set(allRoutes)];
 
   return uniqueRoutes.map((route) => ({
     url: `${BASE_URL}${route === "/" ? "" : route}`,
     lastModified: new Date(),
-    changeFrequency: route === "/" ? "weekly" : "monthly",
-    priority: route === "/" ? 1 : 0.7,
+    changeFrequency:
+      route === "/" ? "weekly" : "monthly",
+    priority:
+      route === "/" ? 1 : 0.7,
   }));
 }
