@@ -260,12 +260,12 @@ export default function Home() {
 
             <div className="max-w-3xl">
 
-              <h1
+              <h2
                 id="construction-calculator-heading"
                 className="text-3xl font-black tracking-tight text-slate-900 sm:text-4xl"
               >
                 Free Construction Calculator
-              </h1>
+              </h2>
 
               <p className="mt-4 text-sm leading-7 text-slate-600 sm:text-base">
                 CornerSpan provides practical online calculators for common
