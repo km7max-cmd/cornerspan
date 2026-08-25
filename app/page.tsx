@@ -225,28 +225,19 @@ export default function Home() {
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-
-              {calculators.map((calculator) => (
-                <Link
-                  key={calculator.href}
-                  href={calculator.href}
-                  className="group rounded-2xl border border-slate-200 bg-white p-5 transition hover:-translate-y-0.5 hover:border-blue-200 hover:shadow-md"
-                >
-                  <h3 className="text-lg font-bold text-slate-900 group-hover:text-blue-600">
-                    {calculator.title}
-                  </h3>
-
-                  <p className="mt-2 text-sm leading-6 text-slate-600">
-                    {calculator.description}
-                  </p>
-
-                  <span className="mt-4 inline-block text-sm font-bold text-blue-600">
-                    Open calculator →
-                  </span>
-                </Link>
-              ))}
-
-            </div>
+<div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+  {calculators.map((calculator) => (
+    <Link
+      key={calculator.href}
+      href={calculator.href}
+      className="rounded-xl border border-blue-100 bg-white px-4 py-4 shadow-sm transition hover:border-blue-300 hover:bg-blue-50 hover:shadow-md"
+    >
+      <h3 className="text-base font-bold text-blue-700 group-hover:text-blue-800">
+        {calculator.title}
+      </h3>
+    </Link>
+  ))}
+</div>
 
           </div>
         </section>
