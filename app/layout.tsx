@@ -1,9 +1,12 @@
 import "./globals.css";
 import type { Metadata, Viewport } from "next";
+import Script from "next/script";
 
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import ThemeProvider from "./components/ThemeProvider";
+
+const GA_MEASUREMENT_ID = "G-F6Y04EJR2P";
 
 export const metadata: Metadata = {
   title: {
@@ -67,21 +70,28 @@ export default function RootLayout({
     <html lang="en">
       <body className="bg-[var(--background)] text-[var(--foreground)] antialiased">
 
+        {/* Google Analytics */}
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
+          strategy="afterInteractive"
+        />
+
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '${GA_MEASUREMENT_ID}');
+          `}
+        </Script>
+
         <ThemeProvider>
 
           <Header />
 
-          {/* 
-            Header is fixed and 76px tall.
-            Inner pages need top spacing so their
-            hero/content does not go underneath it.
-
-            Home page already has its own correct spacing,
-            so we don't apply padding here globally.
-          */}
           <main className="pt-[76px]">
-  {children}
-</main>
+            {children}
+          </main>
 
           <Footer />
 
