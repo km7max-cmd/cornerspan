@@ -236,10 +236,10 @@ export default function Home() {
                 </Link>
               ))}
             </div>
-            <div className="mt-6">
+            <div className="mt-8 flex justify-center">
   <Link
     href="/calculators"
-    className="text-sm font-bold text-blue-600 hover:underline"
+    className="rounded-lg bg-blue-600 px-6 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-blue-700"
   >
     More Calculators
   </Link>
