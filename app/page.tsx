@@ -236,7 +236,14 @@ export default function Home() {
                 </Link>
               ))}
             </div>
-
+            <div className="mt-6">
+  <Link
+    href="/calculators"
+    className="text-sm font-bold text-blue-600 hover:underline"
+  >
+    More Calculators
+  </Link>
+</div>
           </div>
         </section>
 
