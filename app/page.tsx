@@ -46,7 +46,8 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title:
-      "Construction Calculator – Free Online Construction Calculators | CornerSpan",
+      "Construction Calculators – Free Online Tools | CornerSpan",
+    
     description:
       "Free online construction calculators for construction quantities, materials and costs.",
   },
