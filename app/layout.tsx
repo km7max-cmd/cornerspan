@@ -34,14 +34,23 @@ export const metadata: Metadata = {
   publisher: "CornerSpan",
 
   openGraph: {
-    title: "CornerSpan",
-    description:
-      "Professional Construction Calculators for Contractors & Builders.",
-    type: "website",
-    locale: "en_US",
-    siteName: "CornerSpan",
-  },
+  title: "Construction Calculator – Free Online Tools | CornerSpan",
+  description:
+    "Free online construction calculators for concrete, bricks, steel, paint, tiles and roofing materials.",
+  type: "website",
+  locale: "en_US",
+  siteName: "CornerSpan",
+  images: [
+    {
+      url: "/og-image.png",
+      width: 1200,
+      height: 630,
+      alt: "CornerSpan Free Construction Calculators",
+    },
+  ],
+},
 
+  
   twitter: {
     card: "summary_large_image",
     title: "CornerSpan",
