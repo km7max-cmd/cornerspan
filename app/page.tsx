@@ -10,7 +10,7 @@ import PopularCalculators from "../components/PopularCalculators";
 
 export const metadata: Metadata = {
   title:
-    "Construction Calculator – Free Online Construction Calculators | CornerSpan",
+    "Construction Calculators – Free Online Tools | CornerSpan",
 
   description:
     "Use free online construction calculators to estimate concrete, bricks, steel, paint, tiles and roofing materials, quantities and costs.",
