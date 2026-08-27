@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     "Use free online construction calculators to estimate concrete, bricks, steel, paint, tiles and roofing materials, quantities and costs.",
 
   alternates: {
-    canonical: "/",
+    canonical: "https://www.cornerspan.com/",
   },
 
   robots: {
