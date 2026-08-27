@@ -290,6 +290,48 @@ export default function Home() {
           </div>
         </section>
 
+                {/* Construction Calculator Information */}
+        <section
+          aria-labelledby="construction-tools-heading"
+          className="bg-white px-5 py-12 sm:px-6 md:py-16"
+        >
+          <div className="mx-auto max-w-6xl">
+            <div className="max-w-3xl">
+              <h2
+                id="construction-tools-heading"
+                className="text-2xl font-black text-slate-900 sm:text-3xl"
+              >
+                Construction Tools for Material Estimation
+              </h2>
+
+              <p className="mt-4 text-sm leading-7 text-slate-600 sm:text-base">
+                Construction projects often require accurate estimates before
+                materials can be purchased or work can begin. CornerSpan
+                provides online tools that help calculate common construction
+                quantities using measurements such as length, width, height,
+                area and depth.
+              </p>
+
+              <p className="mt-4 text-sm leading-7 text-slate-600 sm:text-base">
+                Depending on the project, you can estimate concrete volume,
+                brick quantities, steel weight, paint requirements, tile
+                quantities and roofing materials. These calculators are
+                intended to make routine estimation faster and easier while
+                reducing the need for manual calculations.
+              </p>
+
+              <p className="mt-4 text-sm leading-7 text-slate-600 sm:text-base">
+                The results are estimates based on the information entered and
+                standard calculation methods. Actual material requirements may
+                vary because of wastage, material sizes, site conditions,
+                construction methods and project specifications. Always review
+                the calculated quantities before purchasing materials or
+                starting construction work.
+              </p>
+            </div>
+          </div>
+        </section>
+
         {/* Why CornerSpan */}
         <section
           aria-labelledby="why-cornerspan-heading"
