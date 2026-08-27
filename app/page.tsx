@@ -41,6 +41,13 @@ export const metadata: Metadata = {
     type: "website",
     url: "/",
     siteName: "CornerSpan",
+    
+    images: [
+  {
+    url: "/logo.png",
+    alt: "CornerSpan",
+  },
+],
   },
 
   twitter: {
