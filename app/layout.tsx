@@ -52,11 +52,12 @@ export const metadata: Metadata = {
 
   
   twitter: {
-    card: "summary_large_image",
-    title: "CornerSpan",
-    description:
-      "Professional Construction Calculators",
-  },
+  card: "summary_large_image",
+  title: "Construction Calculator – Free Online Tools | CornerSpan",
+  description:
+    "Free online construction calculators for concrete, bricks, steel, paint, tiles and roofing materials.",
+  images: ["/og-image.png"],
+},
 
   robots: {
     index: true,
