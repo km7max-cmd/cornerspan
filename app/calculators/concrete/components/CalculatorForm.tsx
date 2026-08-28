@@ -160,8 +160,6 @@ function ConcreteDiagram({
 
           {form === "Slab" && (
             <>
-              {/* slab body */}
-
               <polygon
                 points="145,180 430,130 500,165 215,220"
                 fill={concrete}
@@ -183,8 +181,6 @@ function ConcreteDiagram({
                 strokeWidth="3"
               />
 
-              {/* reinforcement lines */}
-
               <line
                 x1="190"
                 y1="183"
@@ -202,8 +198,6 @@ function ConcreteDiagram({
                 stroke="#7c8ea3"
                 strokeWidth="3"
               />
-
-              {/* length */}
 
               <line
                 x1="145"
@@ -227,8 +221,6 @@ function ConcreteDiagram({
                 Length
               </text>
 
-              {/* width */}
-
               <line
                 x1="125"
                 y1="180"
@@ -249,8 +241,6 @@ function ConcreteDiagram({
               >
                 Width
               </text>
-
-              {/* depth */}
 
               <line
                 x1="525"
@@ -281,8 +271,6 @@ function ConcreteDiagram({
 
           {form === "Wall" && (
             <>
-              {/* wall */}
-
               <rect
                 x="170"
                 y="80"
@@ -293,8 +281,6 @@ function ConcreteDiagram({
                 stroke={line}
                 strokeWidth="3"
               />
-
-              {/* block lines */}
 
               {[125, 165, 205].map((y) => (
                 <line
@@ -307,8 +293,6 @@ function ConcreteDiagram({
                   strokeWidth="2"
                 />
               ))}
-
-              {/* vertical joints */}
 
               {[220, 270, 320, 370, 420].map((x) => (
                 <line
@@ -334,8 +318,6 @@ function ConcreteDiagram({
                 />
               ))}
 
-              {/* length */}
-
               <line
                 x1="170"
                 y1="55"
@@ -357,8 +339,6 @@ function ConcreteDiagram({
               >
                 Length
               </text>
-
-              {/* height */}
 
               <line
                 x1="135"
@@ -382,8 +362,6 @@ function ConcreteDiagram({
               >
                 Height
               </text>
-
-              {/* thickness */}
 
               <line
                 x1="470"
@@ -415,8 +393,6 @@ function ConcreteDiagram({
 
           {form === "Footer" && (
             <>
-              {/* footing base */}
-
               <rect
                 x="130"
                 y="190"
@@ -427,8 +403,6 @@ function ConcreteDiagram({
                 stroke={line}
                 strokeWidth="3"
               />
-
-              {/* column / pedestal */}
 
               <rect
                 x="230"
@@ -441,8 +415,6 @@ function ConcreteDiagram({
                 strokeWidth="3"
               />
 
-              {/* ground */}
-
               <line
                 x1="90"
                 y1="255"
@@ -451,8 +423,6 @@ function ConcreteDiagram({
                 stroke="#94a3b8"
                 strokeWidth="3"
               />
-
-              {/* length */}
 
               <line
                 x1="130"
@@ -476,8 +446,6 @@ function ConcreteDiagram({
                 Length
               </text>
 
-              {/* width */}
-
               <line
                 x1="110"
                 y1="190"
@@ -500,8 +468,6 @@ function ConcreteDiagram({
               >
                 Depth
               </text>
-
-              {/* pedestal width */}
 
               <line
                 x1="230"
@@ -533,8 +499,6 @@ function ConcreteDiagram({
 
           {form === "Column" && (
             <>
-              {/* column */}
-
               <rect
                 x="235"
                 y="65"
@@ -545,8 +509,6 @@ function ConcreteDiagram({
                 stroke={line}
                 strokeWidth="3"
               />
-
-              {/* vertical reinforcement */}
 
               {[260, 295, 330].map((x) => (
                 <line
@@ -559,8 +521,6 @@ function ConcreteDiagram({
                   strokeWidth="3"
                 />
               ))}
-
-              {/* height */}
 
               <line
                 x1="200"
@@ -585,8 +545,6 @@ function ConcreteDiagram({
                 Height
               </text>
 
-              {/* width */}
-
               <line
                 x1="235"
                 y1="290"
@@ -608,8 +566,6 @@ function ConcreteDiagram({
               >
                 Width
               </text>
-
-              {/* depth */}
 
               <line
                 x1="380"
@@ -641,8 +597,6 @@ function ConcreteDiagram({
 
           {form === "Curbs, Gutter Barrier" && (
             <>
-              {/* road */}
-
               <rect
                 x="90"
                 y="235"
@@ -653,8 +607,6 @@ function ConcreteDiagram({
                 strokeWidth="2"
               />
 
-              {/* curb */}
-
               <path
                 d="M150 235 L150 155 L220 155 L220 175 L410 175 L410 235 Z"
                 fill={concrete}
@@ -662,16 +614,12 @@ function ConcreteDiagram({
                 strokeWidth="3"
               />
 
-              {/* gutter */}
-
               <path
                 d="M220 235 L220 205 L410 205 L410 235"
                 fill="#b8c4d2"
                 stroke={line}
                 strokeWidth="3"
               />
-
-              {/* length */}
 
               <line
                 x1="150"
@@ -695,8 +643,6 @@ function ConcreteDiagram({
                 Length
               </text>
 
-              {/* height */}
-
               <line
                 x1="120"
                 y1="155"
@@ -719,8 +665,6 @@ function ConcreteDiagram({
               >
                 Height
               </text>
-
-              {/* width */}
 
               <line
                 x1="420"
@@ -752,8 +696,6 @@ function ConcreteDiagram({
 
           {form === "Stairs" && (
             <>
-              {/* steps */}
-
               <path
                 d="
                   M130 250
@@ -774,8 +716,6 @@ function ConcreteDiagram({
                 stroke={line}
                 strokeWidth="3"
               />
-
-              {/* step highlight lines */}
 
               <line
                 x1="130"
@@ -822,8 +762,6 @@ function ConcreteDiagram({
                 strokeWidth="3"
               />
 
-              {/* total length */}
-
               <line
                 x1="130"
                 y1="285"
@@ -846,8 +784,6 @@ function ConcreteDiagram({
                 Length
               </text>
 
-              {/* width */}
-
               <line
                 x1="455"
                 y1="75"
@@ -869,8 +805,6 @@ function ConcreteDiagram({
               >
                 Width
               </text>
-
-              {/* height */}
 
               <line
                 x1="105"
@@ -906,6 +840,7 @@ function ConcreteDiagram({
           Enter Length × Width × Depth / Height
         </p>
       </div>
+
     </div>
   );
 }
@@ -1013,9 +948,7 @@ export default function CalculatorForm({
   ======================================================= */
 
   const getMixRatio = (): MixRatio => {
-
     switch (mixRatioType) {
-
       case "M10":
         return {
           cement: 1,
@@ -1129,193 +1062,300 @@ export default function CalculatorForm({
       </div>
 
       {/* =====================================================
-          CONCRETE DIMENSIONS
+          CONCRETE DIMENSIONS — CALCULATOR STYLE
       ===================================================== */}
 
-      <div className="p-5 sm:p-7">
+      <div className="border-b border-slate-100 bg-white p-5 sm:p-7">
 
-        <div className="mb-6">
+        {/* Header */}
 
-          <h2 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
-            Dimensions
-          </h2>
+        <div className="mb-5 flex items-end justify-between gap-4">
 
-          <p className="mt-1 text-sm leading-6 text-slate-500 sm:text-base">
-            Enter the dimensions of your concrete work.
-          </p>
+          <div>
+            <h2 className="text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">
+              Dimensions
+            </h2>
 
-        </div>
+            <p className="mt-1 text-sm leading-6 text-slate-500 sm:text-base">
+              Enter the size of your concrete work.
+            </p>
+          </div>
 
-        {/* Length */}
-
-        <div className="mb-4">
-
-          <label className={labelClass}>
-            Length
-          </label>
-
-          <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-white focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-100">
-
-            <input
-              type="number"
-              min="0"
-              step="any"
-              inputMode="decimal"
-              value={length}
-              onChange={(e) =>
-                setLength(e.target.value)
-              }
-              placeholder="Enter length"
-              className="h-12 min-w-0 flex-1 bg-transparent px-3 text-base text-slate-900 outline-none"
-            />
-
-            <select
-              value={lengthUnit}
-              onChange={(e) =>
-                setLengthUnit(
-                  e.target.value as Unit
-                )
-              }
-              className={unitSelectClass}
-              aria-label="Length unit"
-            >
-              {units.map((item) => (
-                <option
-                  key={item.value}
-                  value={item.value}
-                >
-                  {item.label}
-                </option>
-              ))}
-            </select>
-
+          <div className="hidden shrink-0 rounded-full bg-blue-50 px-3 py-1.5 text-xs font-bold text-blue-700 sm:block">
+            L × W × D
           </div>
 
         </div>
 
-        {/* Width */}
+        {/* Calculator Box */}
 
-        <div className="mb-4">
+        <div className="rounded-2xl border border-slate-200 bg-slate-50/70 p-4 sm:p-5">
 
-          <label className={labelClass}>
-            Width
-          </label>
+          {/* Length */}
 
-          <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-white focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-100">
+          <div className="mb-4">
 
-            <input
-              type="number"
-              min="0"
-              step="any"
-              inputMode="decimal"
-              value={width}
-              onChange={(e) =>
-                setWidth(e.target.value)
-              }
-              placeholder="Enter width"
-              className="h-12 min-w-0 flex-1 bg-transparent px-3 text-base text-slate-900 outline-none"
-            />
+            <label className="mb-1.5 flex items-center justify-between text-sm font-bold text-slate-700">
+              <span>Length</span>
 
-            <select
-              value={widthUnit}
-              onChange={(e) =>
-                setWidthUnit(
-                  e.target.value as Unit
-                )
-              }
-              className={unitSelectClass}
-              aria-label="Width unit"
-            >
-              {units.map((item) => (
-                <option
-                  key={item.value}
-                  value={item.value}
-                >
-                  {item.label}
-                </option>
-              ))}
-            </select>
+              <span className="text-xs font-bold text-slate-400">
+                L
+              </span>
+            </label>
 
-          </div>
+            <div className="flex h-14 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-100">
 
-        </div>
+              <input
+                type="number"
+                min="0"
+                step="any"
+                inputMode="decimal"
+                value={length}
+                onChange={(e) =>
+                  setLength(e.target.value)
+                }
+                placeholder="0"
+                className="min-w-0 flex-1 bg-transparent px-4 text-lg font-semibold text-slate-900 outline-none placeholder:text-slate-300"
+                aria-label="Length"
+              />
 
-        {/* Thickness / Height */}
+              <select
+                value={lengthUnit}
+                onChange={(e) =>
+                  setLengthUnit(
+                    e.target.value as Unit
+                  )
+                }
+                className="w-[82px] border-l border-slate-200 bg-slate-50 px-3 text-sm font-bold text-blue-700 outline-none"
+                aria-label="Length unit"
+              >
+                {units.map((item) => (
+                  <option
+                    key={item.value}
+                    value={item.value}
+                  >
+                    {item.label}
+                  </option>
+                ))}
+              </select>
 
-        <div className="mb-4">
-
-          <label className={labelClass}>
-            Thickness / Height
-          </label>
-
-          <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-white focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-100">
-
-            <input
-              type="number"
-              min="0"
-              step="any"
-              inputMode="decimal"
-              value={depth}
-              onChange={(e) =>
-                setDepth(e.target.value)
-              }
-              placeholder="Enter thickness"
-              className="h-12 min-w-0 flex-1 bg-transparent px-3 text-base text-slate-900 outline-none"
-            />
-
-            <select
-              value={depthUnit}
-              onChange={(e) =>
-                setDepthUnit(
-                  e.target.value as Unit
-                )
-              }
-              className={unitSelectClass}
-              aria-label="Thickness unit"
-            >
-              {units.map((item) => (
-                <option
-                  key={item.value}
-                  value={item.value}
-                >
-                  {item.label}
-                </option>
-              ))}
-            </select>
+            </div>
 
           </div>
 
-        </div>
+          {/* Width */}
 
-        {/* Quantity */}
+          <div className="mb-4">
 
-        <div>
+            <label className="mb-1.5 flex items-center justify-between text-sm font-bold text-slate-700">
+              <span>Width</span>
 
-          <label className={labelClass}>
-            Quantity
-          </label>
+              <span className="text-xs font-bold text-slate-400">
+                W
+              </span>
+            </label>
 
-          <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-white">
+            <div className="flex h-14 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-100">
 
-            <input
-              type="number"
-              min="1"
-              step="1"
-              inputMode="numeric"
-              value={quantity}
-              onChange={(e) =>
-                setQuantity(e.target.value)
-              }
-              className="h-12 min-w-0 flex-1 bg-transparent px-3 text-base text-slate-900 outline-none"
-            />
+              <input
+                type="number"
+                min="0"
+                step="any"
+                inputMode="decimal"
+                value={width}
+                onChange={(e) =>
+                  setWidth(e.target.value)
+                }
+                placeholder="0"
+                className="min-w-0 flex-1 bg-transparent px-4 text-lg font-semibold text-slate-900 outline-none placeholder:text-slate-300"
+                aria-label="Width"
+              />
 
-            <div className="flex h-12 items-center border-l border-slate-200 px-4 text-sm text-slate-500">
-              pieces
+              <select
+                value={widthUnit}
+                onChange={(e) =>
+                  setWidthUnit(
+                    e.target.value as Unit
+                  )
+                }
+                className="w-[82px] border-l border-slate-200 bg-slate-50 px-3 text-sm font-bold text-blue-700 outline-none"
+                aria-label="Width unit"
+              >
+                {units.map((item) => (
+                  <option
+                    key={item.value}
+                    value={item.value}
+                  >
+                    {item.label}
+                  </option>
+                ))}
+              </select>
+
+            </div>
+
+          </div>
+
+          {/* Thickness / Depth */}
+
+          <div className="mb-4">
+
+            <label className="mb-1.5 flex items-center justify-between text-sm font-bold text-slate-700">
+
+              <span>
+                {concreteForm === "Wall" ||
+                concreteForm === "Column"
+                  ? "Height / Depth"
+                  : "Thickness / Depth"}
+              </span>
+
+              <span className="text-xs font-bold text-slate-400">
+                D
+              </span>
+
+            </label>
+
+            <div className="flex h-14 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-100">
+
+              <input
+                type="number"
+                min="0"
+                step="any"
+                inputMode="decimal"
+                value={depth}
+                onChange={(e) =>
+                  setDepth(e.target.value)
+                }
+                placeholder="0"
+                className="min-w-0 flex-1 bg-transparent px-4 text-lg font-semibold text-slate-900 outline-none placeholder:text-slate-300"
+                aria-label="Thickness or depth"
+              />
+
+              <select
+                value={depthUnit}
+                onChange={(e) =>
+                  setDepthUnit(
+                    e.target.value as Unit
+                  )
+                }
+                className="w-[82px] border-l border-slate-200 bg-slate-50 px-3 text-sm font-bold text-blue-700 outline-none"
+                aria-label="Thickness or depth unit"
+              >
+                {units.map((item) => (
+                  <option
+                    key={item.value}
+                    value={item.value}
+                  >
+                    {item.label}
+                  </option>
+                ))}
+              </select>
+
+            </div>
+
+          </div>
+
+          {/* Quantity */}
+
+          <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
+
+            <div>
+
+              <p className="text-sm font-bold text-slate-800">
+                Quantity
+              </p>
+
+              <p className="mt-0.5 text-xs text-slate-400">
+                Number of identical sections
+              </p>
+
+            </div>
+
+            <div className="flex h-11 items-center overflow-hidden rounded-lg border border-slate-200 bg-white">
+
+              <button
+                type="button"
+                onClick={() => {
+                  const current =
+                    Number(quantity) || 1;
+
+                  setQuantity(
+                    String(
+                      Math.max(1, current - 1)
+                    )
+                  );
+                }}
+                className="flex h-full w-10 items-center justify-center text-lg font-bold text-slate-500 transition hover:bg-slate-50 hover:text-blue-600"
+                aria-label="Decrease quantity"
+              >
+                −
+              </button>
+
+              <input
+                type="number"
+                min="1"
+                step="1"
+                inputMode="numeric"
+                value={quantity}
+                onChange={(e) =>
+                  setQuantity(e.target.value)
+                }
+                className="h-full w-14 border-x border-slate-200 bg-white text-center text-base font-bold text-slate-900 outline-none"
+                aria-label="Quantity"
+              />
+
+              <button
+                type="button"
+                onClick={() => {
+                  const current =
+                    Number(quantity) || 1;
+
+                  setQuantity(
+                    String(current + 1)
+                  );
+                }}
+                className="flex h-full w-10 items-center justify-center text-lg font-bold text-slate-500 transition hover:bg-slate-50 hover:text-blue-600"
+                aria-label="Increase quantity"
+              >
+                +
+              </button>
+
             </div>
 
           </div>
 
         </div>
+
+        {/* Formula Hint */}
+
+        <div className="mt-4 flex items-center gap-3 rounded-xl bg-blue-50 px-4 py-3">
+
+          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white text-sm font-black text-blue-600 shadow-sm">
+            =
+          </span>
+
+          <p className="text-xs font-medium leading-5 text-blue-800 sm:text-sm">
+            Concrete volume = Length × Width × Thickness × Quantity
+          </p>
+
+        </div>
+
+        {/* Error */}
+
+        {error && (
+          <div className="mt-4 rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
+            {error}
+          </div>
+        )}
+
+        {/* Calculate */}
+
+        <button
+          type="button"
+          onClick={handleCalculate}
+          className="mt-5 flex h-14 w-full items-center justify-center rounded-xl bg-blue-600 px-5 text-base font-bold text-white shadow-md shadow-blue-600/20 transition hover:bg-blue-700 active:scale-[0.99] sm:text-lg"
+        >
+          Calculate Concrete
+        </button>
 
       </div>
 
@@ -1323,7 +1363,7 @@ export default function CalculatorForm({
           MATERIAL ESTIMATE
       ===================================================== */}
 
-      <div className="border-t border-slate-100 bg-slate-50/60 p-5 sm:p-7">
+      <div className="border-b border-slate-100 bg-slate-50/60 p-5 sm:p-7">
 
         <button
           type="button"
@@ -1805,34 +1845,6 @@ export default function CalculatorForm({
           estimates based on the selected mix ratio and should
           not replace a project-specific structural mix design.
         </p>
-
-      </div>
-
-      {/* =====================================================
-          ERROR
-      ===================================================== */}
-
-      {error && (
-
-        <div className="mx-5 mb-4 rounded-xl border border-red-100 bg-red-50 p-3 text-sm font-medium text-red-600 sm:mx-7">
-          {error}
-        </div>
-
-      )}
-
-      {/* =====================================================
-          CALCULATE
-      ===================================================== */}
-
-      <div className="border-t border-slate-100 p-5 sm:p-7">
-
-        <button
-          type="button"
-          onClick={handleCalculate}
-          className="h-13 w-full rounded-xl bg-blue-600 px-5 py-3 text-base font-semibold text-white shadow-sm transition hover:bg-blue-700 active:scale-[0.99] sm:text-lg"
-        >
-          Calculate Concrete
-        </button>
 
       </div>
 
