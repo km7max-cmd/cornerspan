@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import BrickCalculatorClient from "./BrickCalculatorClient";
 
-
 export const metadata: Metadata = {
-  title: "Brick Calculator – Bricks, Mortar & Cost | CornerSpan",
+  title: "Brick Calculator – Bricks, Mortar & Cost",
 
   description:
     "Calculate the number of bricks required for a wall, including mortar, openings, waste, and estimated material cost with this free brick calculator.",
