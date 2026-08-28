@@ -2,10 +2,14 @@ import type { Metadata } from "next";
 import ConcreteCalculator from "./ConcreteCalculator";
 
 export const metadata: Metadata = {
-  title: "Concrete Calculator | Volume, Cement, Sand & Aggregate",
+  title: "Concrete Calculator | CornerSpan",
 
   description:
-    "Free online concrete calculator to calculate concrete volume, cement bags, sand, aggregate, water and material cost. Supports multiple units and concrete mix ratios.",
+    "Free concrete calculator to estimate concrete volume, cement bags, sand, aggregate, water and material cost.",
+
+  alternates: {
+    canonical: "https://www.cornerspan.com/calculators/concrete",
+  },
 
   robots: {
     index: true,
@@ -20,23 +24,31 @@ export const metadata: Metadata = {
   },
 
   openGraph: {
-    title:
-      "Concrete Calculator | Volume, Cement, Sand & Aggregate",
+    title: "Concrete Calculator | CornerSpan",
 
     description:
-      "Calculate concrete volume, cement bags, sand, aggregate, water and material cost with this free online concrete calculator.",
+      "Free concrete calculator to estimate concrete volume, cement, sand, aggregate, water and material cost.",
 
     type: "website",
+    url: "https://www.cornerspan.com/calculators/concrete",
+    siteName: "CornerSpan",
+
+    images: [
+      {
+        url: "/og-image.png",
+        alt: "CornerSpan Concrete Calculator",
+      },
+    ],
   },
 
   twitter: {
     card: "summary_large_image",
-
-    title:
-      "Concrete Calculator | Volume, Cement, Sand & Aggregate",
+    title: "Concrete Calculator | CornerSpan",
 
     description:
-      "Free online concrete calculator for concrete volume, cement bags, sand, aggregate, water and material cost.",
+      "Free concrete calculator to estimate concrete volume, cement, sand, aggregate, water and material cost.",
+
+    images: ["/og-image.png"],
   },
 };
 
