@@ -10,7 +10,6 @@ import PopularCalculators from "../components/PopularCalculators";
 
 export const metadata: Metadata = {
   title:
-    
   "Free Construction Calculators | CornerSpan",
 
   description:
@@ -34,7 +33,6 @@ export const metadata: Metadata = {
 
   openGraph: {
     title:
-      
   "Free Construction Calculators | CornerSpan",
         
     description:
@@ -55,7 +53,6 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title:
-      
   "Free Construction Calculators | CornerSpan",
     
     description:
