@@ -60,7 +60,7 @@ export default function Page() {
 
     name: "Concrete Calculator",
 
-    url: "https://cornerspan.vercel.app/calculators/concrete",
+    url: "https://www.cornerspan.com/calculators/concrete",
 
     applicationCategory: "UtilitiesApplication",
 
