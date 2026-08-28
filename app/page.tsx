@@ -34,8 +34,9 @@ export const metadata: Metadata = {
 
   openGraph: {
     title:
-      "Construction Calculators – Free Online Tools | CornerSpan",
-
+      title:
+  "Free Construction Calculators | CornerSpan",
+        
     description:
       "Free online construction calculators for concrete, brick, steel, paint, tile and roofing calculations.",
 
