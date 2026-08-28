@@ -41,199 +41,365 @@ export default function ResultCard({
   const hasResult = volume > 0;
 
   return (
-    <section className="w-full rounded-3xl bg-white p-5 shadow-lg sm:p-7">
+    <section className="w-full overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
 
-      {/* Header */}
+      {/* =====================================================
+          HEADER
+      ===================================================== */}
 
-      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="border-b border-slate-100 px-5 py-5 sm:px-7">
 
-        <h2 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
-          Calculation Result
-        </h2>
+        <div className="flex items-center justify-between gap-4">
 
-        {hasResult && (
-          <div className="flex flex-wrap gap-2">
-
-            <button
-              type="button"
-              onClick={onCopy}
-              className="rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-blue-700"
-            >
-              Copy
-            </button>
-
-            <button
-              type="button"
-              onClick={onShare}
-              className="rounded-xl bg-green-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-green-700"
-            >
-              Share
-            </button>
-
-            <button
-              type="button"
-              onClick={onDownload}
-              className="rounded-xl bg-red-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-red-700"
-            >
-              PDF
-            </button>
-
-          </div>
-        )}
-
-      </div>
-
-      {/* No Result */}
-
-      {!hasResult ? (
-        <div className="rounded-2xl border border-slate-200 bg-slate-50 px-5 py-10 text-center">
-
-          <h3 className="text-lg font-semibold text-slate-800">
-            No Results Yet
-          </h3>
-
-          <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-slate-500">
-            Enter Length, Width and Depth to calculate concrete volume
-            and material requirements.
-          </p>
-
-        </div>
-      ) : (
-        <div className="space-y-4">
-
-          {/* Concrete Volume */}
-
-          <div className="rounded-2xl bg-blue-50 p-5 sm:p-6">
-
-            <p className="text-sm font-medium text-slate-500">
-              Concrete Volume
+          <div>
+            <p className="text-xs font-bold uppercase tracking-[0.16em] text-blue-600">
+              Concrete Calculator
             </p>
 
-            <h3 className="mt-1 text-3xl font-black text-blue-600 sm:text-4xl">
-              {volume.toFixed(2)} m³
-            </h3>
-
+            <h2 className="mt-1 text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">
+              Your Result
+            </h2>
           </div>
 
-          {/* Main Results */}
-
-          <div className="grid grid-cols-2 gap-4">
-
-            {/* Dry Volume */}
-
-            <div className="rounded-2xl bg-slate-50 p-4 sm:p-5">
-
-              <p className="text-sm text-slate-500">
-                Dry Volume
-              </p>
-
-              <h3 className="mt-2 text-xl font-bold text-slate-900 sm:text-2xl">
-                {dryVolume.toFixed(2)} m³
-              </h3>
-
+          {hasResult && (
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-green-50 text-lg">
+              ✓
             </div>
-
-            {/* Cement */}
-
-            <div className="rounded-2xl bg-slate-50 p-4 sm:p-5">
-
-              <p className="text-sm text-slate-500">
-                Cement
-              </p>
-
-              <h3 className="mt-2 text-xl font-bold text-slate-900 sm:text-2xl">
-                {cementBags} Bags
-              </h3>
-
-            </div>
-
-            {/* Sand */}
-
-            <div className="rounded-2xl bg-slate-50 p-4 sm:p-5">
-
-              <p className="text-sm text-slate-500">
-                Sand
-              </p>
-
-              <h3 className="mt-2 text-xl font-bold text-slate-900 sm:text-2xl">
-                {sand.toFixed(2)} m³
-              </h3>
-
-            </div>
-
-            {/* Aggregate */}
-
-            <div className="rounded-2xl bg-slate-50 p-4 sm:p-5">
-
-              <p className="text-sm text-slate-500">
-                Aggregate
-              </p>
-
-              <h3 className="mt-2 text-xl font-bold text-slate-900 sm:text-2xl">
-                {aggregate.toFixed(2)} m³
-              </h3>
-
-            </div>
-
-            {/* Water */}
-
-            <div className="rounded-2xl bg-slate-50 p-4 sm:p-5">
-
-              <p className="text-sm text-slate-500">
-                Water
-              </p>
-
-              <h3 className="mt-2 text-xl font-bold text-slate-900 sm:text-2xl">
-                {water.toFixed(0)} L
-              </h3>
-
-            </div>
-
-          </div>
-
-          {/* Material Cost */}
-
-          {hasMaterialPrices ? (
-
-            <div className="rounded-2xl bg-green-50 p-5 sm:p-6">
-
-              <p className="text-sm font-medium text-slate-500">
-                Total Material Cost
-              </p>
-
-              <h3 className="mt-1 text-2xl font-black text-green-700 sm:text-3xl">
-                {currencySymbol}
-                {totalCost.toLocaleString(
-                  undefined,
-                  {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                  }
-                )}
-              </h3>
-
-            </div>
-
-          ) : (
-
-            <div className="rounded-2xl border border-amber-200 bg-amber-50 p-5 sm:p-6">
-
-              <p className="text-sm font-semibold text-amber-800">
-                Material Cost
-              </p>
-
-              <p className="mt-1 text-sm leading-6 text-amber-700">
-                Enter local cement, sand, and aggregate prices
-                above to calculate the total material cost.
-              </p>
-
-            </div>
-
           )}
 
         </div>
+
+      </div>
+
+      {/* =====================================================
+          EMPTY STATE
+      ===================================================== */}
+
+      {!hasResult ? (
+
+        <div className="p-5 sm:p-7">
+
+          <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-5 py-12 text-center">
+
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-blue-50 text-2xl">
+              =
+            </div>
+
+            <h3 className="mt-4 text-lg font-bold text-slate-900">
+              Ready to Calculate
+            </h3>
+
+            <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-slate-500">
+              Enter your concrete dimensions and tap Calculate
+              to see the required concrete volume and materials.
+            </p>
+
+          </div>
+
+        </div>
+
+      ) : (
+
+        <div className="p-5 sm:p-7">
+
+          {/* =================================================
+              PRIMARY RESULT
+          ================================================= */}
+
+          <div className="rounded-2xl bg-blue-50 px-5 py-6 sm:px-6 sm:py-7">
+
+            <p className="text-sm font-semibold text-blue-700">
+              Concrete Volume
+            </p>
+
+            <div className="mt-2 flex items-baseline gap-2">
+
+              <span className="text-4xl font-black tracking-tight text-blue-700 sm:text-5xl">
+                {volume.toFixed(2)}
+              </span>
+
+              <span className="text-lg font-bold text-blue-600">
+                m³
+              </span>
+
+            </div>
+
+            <p className="mt-2 text-xs text-blue-600 sm:text-sm">
+              Required wet concrete volume
+            </p>
+
+          </div>
+
+          {/* =================================================
+              MATERIAL BREAKDOWN
+          ================================================= */}
+
+          <div className="mt-6">
+
+            <div className="mb-3 flex items-center justify-between">
+
+              <h3 className="text-base font-bold text-slate-900 sm:text-lg">
+                Material Estimate
+              </h3>
+
+              <span className="text-xs font-medium text-slate-400">
+                Estimated
+              </span>
+
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+
+              {/* Dry Volume */}
+
+              <ResultItem
+                label="Dry Volume"
+                value={dryVolume.toFixed(2)}
+                unit="m³"
+              />
+
+              {/* Cement */}
+
+              <ResultItem
+                label="Cement"
+                value={String(cementBags)}
+                unit="bags"
+              />
+
+              {/* Sand */}
+
+              <ResultItem
+                label="Sand"
+                value={sand.toFixed(2)}
+                unit="m³"
+              />
+
+              {/* Aggregate */}
+
+              <ResultItem
+                label="Aggregate"
+                value={aggregate.toFixed(2)}
+                unit="m³"
+              />
+
+              {/* Water */}
+
+              <div className="col-span-2">
+                <ResultItem
+                  label="Water"
+                  value={water.toFixed(0)}
+                  unit="L"
+                  wide
+                />
+              </div>
+
+            </div>
+
+          </div>
+
+          {/* =================================================
+              MATERIAL COST
+          ================================================= */}
+
+          <div className="mt-6">
+
+            {hasMaterialPrices ? (
+
+              <div className="rounded-2xl bg-green-50 px-5 py-5">
+
+                <div className="flex items-center justify-between gap-4">
+
+                  <div>
+                    <p className="text-sm font-semibold text-green-700">
+                      Total Material Cost
+                    </p>
+
+                    <p className="mt-1 text-xs text-green-600">
+                      Cement + sand + aggregate
+                    </p>
+                  </div>
+
+                  <div className="text-right">
+
+                    <p className="text-2xl font-black text-green-700 sm:text-3xl">
+                      {currencySymbol}
+                      {totalCost.toLocaleString(
+                        undefined,
+                        {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        }
+                      )}
+                    </p>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            ) : (
+
+              <div className="rounded-2xl border border-amber-200 bg-amber-50 px-5 py-5">
+
+                <div className="flex gap-3">
+
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white text-sm shadow-sm">
+                    $
+                  </div>
+
+                  <div>
+
+                    <p className="text-sm font-bold text-amber-900">
+                      Material Cost
+                    </p>
+
+                    <p className="mt-1 text-sm leading-6 text-amber-700">
+                      Enter cement, sand and aggregate prices
+                      to calculate the total material cost.
+                    </p>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            )}
+
+          </div>
+
+          {/* =================================================
+              ACTIONS
+          ================================================= */}
+
+          <div className="mt-6">
+
+            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">
+              Result Actions
+            </p>
+
+            <div className="grid grid-cols-3 gap-2">
+
+              <ActionButton
+                label="Copy"
+                icon="⧉"
+                onClick={onCopy}
+              />
+
+              <ActionButton
+                label="Share"
+                icon="↗"
+                onClick={onShare}
+              />
+
+              <ActionButton
+                label="PDF"
+                icon="↓"
+                onClick={onDownload}
+              />
+
+            </div>
+
+          </div>
+
+          {/* =================================================
+              DISCLAIMER
+          ================================================= */}
+
+          <p className="mt-5 text-xs leading-5 text-slate-400">
+            Material quantities are estimates and may vary based
+            on mix design, material properties and site conditions.
+          </p>
+
+        </div>
+
       )}
 
     </section>
+  );
+}
+
+
+/* =========================================================
+   RESULT ITEM
+========================================================= */
+
+type ResultItemProps = {
+  label: string;
+  value: string;
+  unit: string;
+  wide?: boolean;
+};
+
+function ResultItem({
+  label,
+  value,
+  unit,
+  wide = false,
+}: ResultItemProps) {
+  return (
+    <div
+      className={`rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 ${
+        wide ? "flex items-center justify-between gap-4" : ""
+      }`}
+    >
+
+      <div>
+
+        <p className="text-xs font-medium text-slate-500 sm:text-sm">
+          {label}
+        </p>
+
+        <div className="mt-1 flex items-baseline gap-1.5">
+
+          <span className="text-xl font-black text-slate-900 sm:text-2xl">
+            {value}
+          </span>
+
+          <span className="text-xs font-semibold text-slate-500 sm:text-sm">
+            {unit}
+          </span>
+
+        </div>
+
+      </div>
+
+    </div>
+  );
+}
+
+
+/* =========================================================
+   ACTION BUTTON
+========================================================= */
+
+type ActionButtonProps = {
+  label: string;
+  icon: string;
+  onClick: () => void;
+};
+
+function ActionButton({
+  label,
+  icon,
+  onClick,
+}: ActionButtonProps) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="flex min-h-[52px] flex-col items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-600 active:scale-[0.98]"
+    >
+
+      <span className="text-lg leading-none">
+        {icon}
+      </span>
+
+      <span className="mt-1 text-xs font-bold">
+        {label}
+      </span>
+
+    </button>
   );
 }
