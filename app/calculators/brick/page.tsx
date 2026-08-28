@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import BrickCalculatorClient from "./BrickCalculatorClient";
 
 export const metadata: Metadata = {
-  title:
-    "Brick Calculator – Bricks, Mortar & Cost Estimate | CornerSpan",
+  title: "Brick Calculator – Bricks, Mortar & Cost Estimate",
 
   description:
     "Calculate the number of bricks required for a wall, including mortar, openings, waste, and estimated material cost with this free brick calculator.",
@@ -25,7 +24,7 @@ export const metadata: Metadata = {
 
   openGraph: {
     title:
-      "Brick Calculator – Bricks, Mortar & Cost Estimate | CornerSpan",
+      "Brick Calculator – Bricks, Mortar & Cost Estimate",
 
     description:
       "Calculate bricks, mortar, openings, waste, and estimated material cost for your wall construction project.",
@@ -40,7 +39,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary",
     title:
-      "Brick Calculator – Bricks, Mortar & Cost Estimate | CornerSpan",
+      "Brick Calculator – Bricks, Mortar & Cost Estimate",
 
     description:
       "Free brick calculator for estimating bricks, mortar, waste, openings, and material cost.",
