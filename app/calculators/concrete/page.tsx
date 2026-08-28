@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import ConcreteCalculator from "./ConcreteCalculator";
 
 export const metadata: Metadata = {
-  title: "Concrete Calculator | CornerSpan",
+  title: "Concrete Calculator",
 
   description:
-    "Free concrete calculator to estimate concrete volume, cement bags, sand, aggregate, water and material cost.",
+    "Free concrete calculator to estimate concrete volume, cement bags, sand, aggregate, water, and material cost for construction projects.",
 
   alternates: {
     canonical: "https://www.cornerspan.com/calculators/concrete",
