@@ -6,107 +6,152 @@ const faqs = [
   {
     question: "How is concrete volume calculated?",
     answer:
-      "Concrete volume is calculated by multiplying Length × Width × Depth. The calculator converts the selected measurement units and provides the concrete volume in cubic meters.",
+      "Concrete volume is calculated by multiplying Length × Width × Depth. The calculator first converts the selected dimension units to meters and then calculates the volume in cubic meters.",
   },
   {
     question: "How do I calculate the amount of concrete I need?",
     answer:
-      "Enter the length, width, depth, and quantity of the concrete work. The calculator uses these measurements to estimate the total concrete volume required for your project.",
+      "Enter the length, width, depth or thickness, and quantity of the concrete work. The calculator uses these measurements to estimate the total concrete volume required.",
   },
   {
     question: "How many cement bags are needed for 1 m³ of concrete?",
     answer:
-      "The number of cement bags required for 1 m³ of concrete depends on the selected concrete mix ratio. This calculator calculates the estimated cement requirement based on the mix ratio you choose.",
+      "The number of cement bags depends on the selected concrete mix ratio. This calculator uses the selected mix ratio, a cement density of 1440 kg/m³, and a standard 50 kg cement bag to estimate the required bags.",
   },
   {
     question: "How much sand and aggregate are needed for concrete?",
     answer:
-      "Sand and aggregate quantities depend on the concrete volume and selected mix ratio. Enter your project dimensions and choose the required mix ratio to calculate the estimated quantities.",
+      "Sand and aggregate quantities depend on the concrete volume and selected mix ratio. The calculator applies the mix ratio to the estimated dry volume to calculate the required quantities.",
   },
   {
     question: "Can I calculate concrete using feet and inches?",
     answer:
-      "Yes. You can select the appropriate measurement unit for length, width, and depth. The calculator supports different dimension units and converts them for the calculation.",
+      "Yes. The calculator supports meters, feet, centimeters, millimeters, and inches. Each dimension can have its own unit, and all dimensions are converted to meters before calculating the volume.",
   },
   {
     question: "Can this concrete calculator calculate material cost?",
     answer:
-      "Yes. You can enter the current prices for cement, sand, and aggregate. The calculator uses the quantities and entered material prices to estimate the total material cost.",
+      "Yes. You can enter cement, sand, and aggregate prices and select the appropriate pricing unit. The calculator then estimates the total material cost using the calculated quantities.",
   },
   {
     question: "What is dry volume in a concrete calculation?",
     answer:
-      "Dry volume accounts for the additional material volume needed because of voids, bulking, and other factors when estimating concrete ingredients. The calculator applies its calculation method to estimate the required dry volume.",
+      "Dry volume is an estimation of the material volume needed before producing the final wet concrete. This calculator estimates dry volume by multiplying wet concrete volume by 1.54.",
+  },
+  {
+    question: "What concrete mix ratios are supported?",
+    answer:
+      "The calculator includes M10 (1:3:6), M15 (1:2:4), M20 (1:1.5:3), M25 (1:1:2), and a Custom Mix option.",
+  },
+  {
+    question: "How is water requirement calculated?",
+    answer:
+      "For estimation purposes, this calculator uses a water-cement ratio of 0.50. Water is therefore estimated by multiplying the calculated cement weight by 0.50.",
   },
   {
     question: "Is this concrete calculator free to use?",
     answer:
-      "Yes. The online concrete calculator is free to use and can be accessed from a phone, tablet, or computer without requiring an account.",
+      "Yes. CornerSpan's online concrete calculator is free to use on a phone, tablet, or computer. No account is required to perform a calculation.",
   },
 ];
 
 export default function FAQ() {
-  const [openIndex, setOpenIndex] = useState<number | null>(0);
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
     <section
-      className="mt-4 w-full overflow-hidden rounded-3xl bg-white shadow-lg"
+      className="w-full overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm"
       aria-labelledby="concrete-calculator-faq"
     >
-      {/* Header */}
-      <div className="border-b border-slate-100 px-5 py-4 sm:px-6">
+
+      {/* =====================================================
+          HEADER
+      ===================================================== */}
+
+      <div className="border-b border-slate-100 px-5 py-5 sm:px-7">
+
+        <p className="text-xs font-bold uppercase tracking-[0.16em] text-blue-600">
+          FAQ
+        </p>
+
         <h2
           id="concrete-calculator-faq"
-          className="text-xl font-bold tracking-tight text-slate-900 sm:text-2xl"
+          className="mt-1 text-2xl font-black tracking-tight text-slate-950 sm:text-3xl"
         >
-          Frequently Asked Questions About Concrete Calculations
+          Frequently Asked Questions
         </h2>
 
-        <p className="mt-1 text-sm leading-6 text-slate-500">
-          Common questions about concrete volume, cement bags, sand,
-          aggregate, mix ratios, and material cost.
+        <p className="mt-1 max-w-2xl text-sm leading-6 text-slate-500 sm:text-base">
+          Common questions about concrete volume, mix ratios, materials,
+          water requirements, and material cost.
         </p>
+
       </div>
 
-      {/* FAQ Items */}
-      {faqs.map((faq, index) => {
-        const isOpen = openIndex === index;
+      {/* =====================================================
+          FAQ ITEMS
+      ===================================================== */}
 
-        return (
-          <div
-            key={faq.question}
-            className="border-b border-slate-100 last:border-b-0"
-          >
-            <button
-              type="button"
-              onClick={() =>
-                setOpenIndex(isOpen ? null : index)
-              }
-              aria-expanded={isOpen}
-              className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left transition hover:bg-slate-50 sm:px-6"
+      <div>
+
+        {faqs.map((faq, index) => {
+
+          const isOpen = openIndex === index;
+
+          return (
+            <div
+              key={faq.question}
+              className="border-b border-slate-100 last:border-b-0"
             >
-              <span className="text-sm font-semibold leading-6 text-slate-900 sm:text-base">
-                {faq.question}
-              </span>
 
-              <span
-                aria-hidden="true"
-                className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-slate-100 text-lg font-semibold text-slate-700"
+              <button
+                type="button"
+                onClick={() =>
+                  setOpenIndex(
+                    isOpen ? null : index
+                  )
+                }
+                aria-expanded={isOpen}
+                className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left transition hover:bg-slate-50 sm:px-7 sm:py-5"
               >
-                {isOpen ? "−" : "+"}
-              </span>
-            </button>
 
-            {isOpen && (
-              <div className="px-5 pb-5 sm:px-6">
-                <p className="text-sm leading-6 text-slate-600 sm:text-base">
-                  {faq.answer}
-                </p>
-              </div>
-            )}
-          </div>
-        );
-      })}
+                <span className="text-sm font-bold leading-6 text-slate-900 sm:text-base">
+                  {faq.question}
+                </span>
+
+                <span
+                  aria-hidden="true"
+                  className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-lg font-semibold transition ${
+                    isOpen
+                      ? "bg-blue-600 text-white"
+                      : "bg-slate-100 text-slate-700"
+                  }`}
+                >
+                  {isOpen ? "−" : "+"}
+                </span>
+
+              </button>
+
+              {isOpen && (
+                <div className="px-5 pb-5 sm:px-7">
+
+                  <div className="rounded-2xl bg-slate-50 px-4 py-4 sm:px-5">
+
+                    <p className="text-sm leading-6 text-slate-600 sm:text-base">
+                      {faq.answer}
+                    </p>
+
+                  </div>
+
+                </div>
+              )}
+
+            </div>
+          );
+        })}
+
+      </div>
+
     </section>
   );
 }
