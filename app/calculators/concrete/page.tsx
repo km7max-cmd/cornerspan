@@ -103,7 +103,7 @@ export default function Page() {
         "@type": "ListItem",
         position: 1,
         name: "Home",
-        item: "https://cornerspan.vercel.app/",
+        item: "https://www.cornerspan.com/",
       },
 
       {
