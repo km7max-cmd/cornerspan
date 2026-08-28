@@ -13,6 +13,7 @@ export default function Formula() {
         type="button"
         onClick={() => setOpen(!open)}
         className="flex w-full items-center justify-between px-5 py-4 text-left sm:px-6"
+        aria-expanded={open}
       >
         <h2 className="text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">
           Formula
@@ -109,10 +110,7 @@ export default function Formula() {
               number="9"
               title="Cement Bags"
               description="One standard cement bag is treated as 50 kg."
-              formulas={[
-                "Cement Bags = Cement Weight ÷ 50",
-                "Final Bags = Round Up(Cement Weight ÷ 50)",
-              ]}
+              formula="Cement Bags Required = Round Up(Cement Weight ÷ 50)"
             />
 
             {/* 10 */}
@@ -126,8 +124,8 @@ export default function Formula() {
             {/* 11 */}
             <FormulaBox
               number="11"
-              title="Total Material Cost"
-              description="Total material cost is the sum of cement, sand and aggregate costs."
+              title="Material Cost"
+              description="Material cost is calculated from the required quantity and the entered unit price."
               formulas={[
                 "Cement Cost = Cement Quantity × Cement Price",
                 "Sand Cost = Sand Quantity × Sand Price",
@@ -140,12 +138,13 @@ export default function Formula() {
             <FormulaBox
               number="12"
               title="Sand & Aggregate Unit Conversion"
-              description="Material prices can be entered using different units. The calculator converts them to a cubic-meter basis when required."
+              description="Sand and aggregate quantities can be displayed in cubic meters, cubic yards, tonnes or US tons."
               formulas={[
                 "1 yd³ = 0.764554857 m³",
-                "Price / m³ = Price / yd³ ÷ 0.764554857",
-                "Price / m³ = Price / tonne × Density ÷ 1000",
-                "Price / m³ = Price / kg × Density",
+                "Quantity (yd³) = Volume (m³) × 1.30795062",
+                "Quantity (tonne) = Volume (m³) × Density ÷ 1000",
+                "Quantity (US ton) = Volume (m³) × Density ÷ 907.18474",
+                "Material Cost = Converted Quantity × Unit Price",
               ]}
             />
 
@@ -161,7 +160,7 @@ export default function Formula() {
             <FormulaBox
               number="14"
               title="Multiple Pieces"
-              description="If quantity is greater than one, all calculated material quantities are multiplied by the number of pieces."
+              description="When quantity is greater than one, the calculated requirements are multiplied by the number of pieces."
               formula="Total Requirement = Requirement per Piece × Quantity"
             />
 
@@ -190,10 +189,9 @@ export default function Formula() {
   );
 }
 
-
 /* =====================================================
    Reusable Formula Box
-   ===================================================== */
+===================================================== */
 
 type FormulaBoxProps = {
   number: string;
