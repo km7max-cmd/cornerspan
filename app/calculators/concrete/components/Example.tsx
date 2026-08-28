@@ -6,116 +6,146 @@ export default function Example() {
   const [open, setOpen] = useState(false);
 
   return (
-    <section className="mt-4 w-full overflow-hidden rounded-3xl bg-white shadow-lg">
+    <section className="w-full overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
 
       {/* Header */}
       <button
         type="button"
-        onClick={() => setOpen(!open)}
-        className="flex w-full items-center justify-between px-5 py-4 text-left sm:px-6"
+        onClick={() => setOpen((previous) => !previous)}
+        className="flex w-full items-center justify-between gap-4 px-5 py-5 text-left sm:px-7"
+        aria-expanded={open}
       >
-        <h2 className="text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">
-          Worked Concrete Calculation Example
-        </h2>
+        <div>
+          <p className="text-xs font-bold uppercase tracking-[0.16em] text-blue-600">
+            Example
+          </p>
 
-        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-slate-100 text-xl font-semibold text-slate-700">
+          <h2 className="mt-1 text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">
+            Worked Calculation
+          </h2>
+
+          <p className="mt-1 text-sm text-slate-500 sm:text-base">
+            See a complete concrete calculation step by step.
+          </p>
+        </div>
+
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-100 text-xl font-semibold text-slate-700">
           {open ? "−" : "+"}
         </span>
       </button>
 
-      {/* Content */}
       {open && (
-        <div className="border-t border-slate-100 px-5 py-5 sm:px-6">
+        <div className="border-t border-slate-100 px-5 py-5 sm:px-7 sm:py-7">
 
-          <p className="mb-5 text-sm leading-6 text-slate-600 sm:text-base">
-            The following example shows how concrete volume and material
-            quantities can be estimated for a rectangular slab using a
-            1:2:4 concrete mix ratio.
+          {/* Intro */}
+          <p className="text-sm leading-6 text-slate-600 sm:text-base">
+            This example uses a rectangular concrete slab with a 1 : 2 : 4
+            mix ratio. The same calculation method is used by the calculator.
           </p>
 
-          {/* Input Values */}
-          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:p-5">
+          {/* Input */}
+          <div className="mt-5 rounded-2xl bg-slate-50 p-4 sm:p-5">
 
-            <h3 className="text-base font-semibold text-slate-900 sm:text-lg">
+            <h3 className="text-base font-bold text-slate-900 sm:text-lg">
               Example Input
             </h3>
 
-            <div className="mt-3 grid grid-cols-1 gap-2 text-sm text-slate-700 sm:grid-cols-3">
+            <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
 
-              <div className="rounded-xl bg-white px-3 py-3">
-                Length = <strong>10 m</strong>
-              </div>
+              <InputItem
+                label="Length"
+                value="10 m"
+              />
 
-              <div className="rounded-xl bg-white px-3 py-3">
-                Width = <strong>5 m</strong>
-              </div>
+              <InputItem
+                label="Width"
+                value="5 m"
+              />
 
-              <div className="rounded-xl bg-white px-3 py-3">
-                Depth = <strong>0.15 m</strong>
-              </div>
+              <InputItem
+                label="Depth"
+                value="0.15 m"
+              />
 
             </div>
 
-            <div className="mt-3 rounded-xl bg-white px-3 py-3 text-sm text-slate-700">
-              Mix Ratio = <strong>1 : 2 : 4</strong>
+            <div className="mt-3">
+              <InputItem
+                label="Concrete Mix"
+                value="1 : 2 : 4"
+              />
             </div>
 
-            <div className="my-5 h-px bg-slate-200" />
+          </div>
 
-            {/* Steps */}
+          {/* Steps */}
+          <div className="mt-6">
+
+            <div className="mb-4 flex items-center justify-between">
+
+              <h3 className="text-base font-bold text-slate-900 sm:text-lg">
+                Calculation Steps
+              </h3>
+
+              <span className="text-xs font-medium text-slate-400">
+                9 steps
+              </span>
+
+            </div>
+
             <div className="space-y-3">
 
-              {/* Step 1 */}
               <ExampleStep
-                title="Step 1 – Concrete Volume"
+                number="1"
+                title="Concrete Volume"
                 formula="10 × 5 × 0.15 = 7.50 m³"
               />
 
-              {/* Step 2 */}
               <ExampleStep
-                title="Step 2 – Dry Volume"
+                number="2"
+                title="Dry Volume"
                 formula="7.50 × 1.54 = 11.55 m³"
               />
 
-              {/* Step 3 */}
               <ExampleStep
-                title="Step 3 – Total Mix Ratio"
+                number="3"
+                title="Total Mix Ratio"
                 formula="1 + 2 + 4 = 7"
               />
 
-              {/* Step 4 */}
               <ExampleStep
-                title="Step 4 – Cement Volume"
+                number="4"
+                title="Cement Volume"
                 formula="11.55 × (1 ÷ 7) = 1.65 m³"
               />
 
-              {/* Step 5 */}
               <ExampleStep
-                title="Step 5 – Cement Weight"
+                number="5"
+                title="Cement Weight"
                 formula="1.65 × 1440 = 2,376 kg"
               />
 
-              {/* Step 6 */}
               <ExampleStep
-                title="Step 6 – Cement Bags"
+                number="6"
+                title="Cement Bags"
                 formula="2,376 ÷ 50 = 47.52 → 48 bags"
               />
 
-              {/* Step 7 */}
               <ExampleStep
-                title="Step 7 – Sand Quantity"
+                number="7"
+                title="Sand Quantity"
                 formula="11.55 × (2 ÷ 7) = 3.30 m³"
               />
 
-              {/* Step 8 */}
               <ExampleStep
-                title="Step 8 – Aggregate Quantity"
+                number="8"
+                title="Aggregate Quantity"
                 formula="11.55 × (4 ÷ 7) = 6.60 m³"
               />
 
-              {/* Step 9 */}
               <ExampleStep
-                title="Step 9 – Water Requirement"
+                number="9"
+                title="Water Requirement"
                 formula="2,376 × 0.50 = 1,188 L"
               />
 
@@ -123,14 +153,28 @@ export default function Example() {
 
           </div>
 
-          {/* Result */}
-          <div className="mt-5 rounded-2xl border border-blue-100 bg-blue-50 p-4 sm:p-5">
+          {/* Final Result */}
+          <div className="mt-6 rounded-2xl bg-blue-50 p-5 sm:p-6">
 
-            <h3 className="text-base font-bold text-slate-900 sm:text-lg">
-              Estimated Result
-            </h3>
+            <div className="flex items-center justify-between gap-4">
 
-            <div className="mt-4 grid gap-2 sm:grid-cols-2">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-[0.12em] text-blue-600">
+                  Estimated Result
+                </p>
+
+                <h3 className="mt-1 text-xl font-black text-slate-950 sm:text-2xl">
+                  Material Requirements
+                </h3>
+              </div>
+
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white text-sm text-blue-600 shadow-sm">
+                ✓
+              </span>
+
+            </div>
+
+            <div className="mt-5 grid grid-cols-2 gap-3">
 
               <ResultItem
                 label="Concrete Volume"
@@ -167,13 +211,13 @@ export default function Example() {
           </div>
 
           {/* Note */}
-          <div className="mt-5 rounded-2xl border border-amber-200 bg-amber-50 p-4">
+          <div className="mt-5 rounded-2xl border border-amber-200 bg-amber-50 p-4 sm:p-5">
 
             <p className="text-sm leading-6 text-amber-800">
-              This is an example based on a 1:2:4 mix ratio and the
-              calculation method used by this calculator. Actual concrete
-              requirements can vary according to the specified mix design,
-              materials, moisture conditions and project requirements.
+              This example is for estimation and demonstrates the calculation
+              method used by this calculator. Actual concrete requirements
+              depend on the project-specific mix design, material properties,
+              moisture conditions and engineering requirements.
             </p>
 
           </div>
@@ -186,36 +230,81 @@ export default function Example() {
 }
 
 
-/* =====================================================
-   Example Step
-   ===================================================== */
+/* =========================================================
+   INPUT ITEM
+========================================================= */
 
-function ExampleStep({
-  title,
-  formula,
+function InputItem({
+  label,
+  value,
 }: {
-  title: string;
-  formula: string;
+  label: string;
+  value: string;
 }) {
   return (
-    <div className="rounded-2xl bg-white p-4">
+    <div className="rounded-xl border border-slate-200 bg-white px-4 py-3">
 
-      <h4 className="text-sm font-semibold text-slate-900 sm:text-base">
-        {title}
-      </h4>
+      <p className="text-xs font-medium text-slate-500">
+        {label}
+      </p>
 
-      <code className="mt-2 block overflow-x-auto rounded-xl bg-slate-50 px-3 py-2 text-sm font-medium text-blue-700">
-        {formula}
-      </code>
+      <p className="mt-1 text-base font-bold text-slate-900">
+        {value}
+      </p>
 
     </div>
   );
 }
 
 
-/* =====================================================
-   Result Item
-   ===================================================== */
+/* =========================================================
+   EXAMPLE STEP
+========================================================= */
+
+function ExampleStep({
+  number,
+  title,
+  formula,
+}: {
+  number: string;
+  title: string;
+  formula: string;
+}) {
+  return (
+    <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:p-5">
+
+      <div className="flex gap-3">
+
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-100 text-xs font-bold text-blue-700">
+          {number}
+        </div>
+
+        <div className="min-w-0 flex-1">
+
+          <h4 className="text-sm font-bold text-slate-900 sm:text-base">
+            {title}
+          </h4>
+
+          <div className="mt-2 overflow-hidden rounded-xl border border-slate-200 bg-white px-3 py-2.5">
+
+            <code className="block whitespace-normal break-words text-sm font-semibold leading-6 text-blue-700 sm:text-base">
+              {formula}
+            </code>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  );
+}
+
+
+/* =========================================================
+   RESULT ITEM
+========================================================= */
 
 function ResultItem({
   label,
@@ -225,13 +314,13 @@ function ResultItem({
   value: string;
 }) {
   return (
-    <div className="rounded-xl bg-white px-4 py-3">
+    <div className="rounded-xl border border-blue-100 bg-white px-4 py-3">
 
       <p className="text-xs font-medium text-slate-500">
         {label}
       </p>
 
-      <p className="mt-1 text-base font-bold text-slate-900">
+      <p className="mt-1 text-base font-black text-slate-900 sm:text-lg">
         {value}
       </p>
 
