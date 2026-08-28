@@ -1,194 +1,57 @@
-"use client";
+import type { Metadata } from "next";
+import BrickCalculatorClient from "./BrickCalculatorClient";
 
-import { useMemo, useState } from "react";
+export const metadata: Metadata = {
+  title:
+    "Brick Calculator – Bricks, Mortar & Cost Estimate | CornerSpan",
 
-import Breadcrumb from "../../../components/Breadcrumb";
-import CalculatorHero from "../../components/CalculatorHero";
+  description:
+    "Calculate the number of bricks required for a wall, including mortar, openings, waste, and estimated material cost with this free brick calculator.",
 
-import BrickDiagram from "./components/BrickDiagram";
-import CalculatorSections from "./components/CalculatorSections";
-import ResultCard from "./components/ResultCard";
+  keywords: [
+    "brick calculator",
+    "brick quantity calculator",
+    "bricks calculator",
+    "brick wall calculator",
+    "mortar calculator",
+    "brick cost calculator",
+    "construction calculator",
+  ],
 
-import type {
-  BrickCalculatorState,
-} from "./types";
+  alternates: {
+    canonical:
+      "https://www.cornerspan.com/calculators/brick",
+  },
 
-import {
-  BRICK_DEFAULTS,
-} from "./data/brickOptions";
+  openGraph: {
+    title:
+      "Brick Calculator – Bricks, Mortar & Cost Estimate | CornerSpan",
 
-import {
-  calculateBrick,
-} from "./utils/calculations";
+    description:
+      "Calculate bricks, mortar, openings, waste, and estimated material cost for your wall construction project.",
 
-export default function BrickCalculator() {
-  /* =====================================================
-     ACCORDION
-  ===================================================== */
+    url:
+      "https://www.cornerspan.com/calculators/brick",
 
-  const [openSection, setOpenSection] =
-    useState<string | null>("wall");
+    siteName: "CornerSpan",
+    type: "website",
+  },
 
-  /* =====================================================
-     CALCULATOR STATE
-  ===================================================== */
+  twitter: {
+    card: "summary",
+    title:
+      "Brick Calculator – Bricks, Mortar & Cost Estimate | CornerSpan",
 
-  const [state, setState] =
-    useState<BrickCalculatorState>(
-      BRICK_DEFAULTS
-    );
+    description:
+      "Free brick calculator for estimating bricks, mortar, waste, openings, and material cost.",
+  },
 
-  /* =====================================================
-     CALCULATION
-  ===================================================== */
+  robots: {
+    index: true,
+    follow: true,
+  },
+};
 
-  const result = useMemo(() => {
-    return calculateBrick(state);
-  }, [state]);
-
-  /* =====================================================
-     PAGE
-  ===================================================== */
-
-  return (
-    <main className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-slate-100">
-
-      <div className="mx-auto max-w-7xl px-5 py-6 sm:px-6 sm:py-10">
-
-        {/* =================================================
-            BREADCRUMB
-        ================================================= */}
-
-        <Breadcrumb
-          current="Brick Calculator"
-        />
-
-        {/* =================================================
-            HERO
-        ================================================= */}
-
-        <CalculatorHero
-          title="Brick"
-          highlight="Calculator"
-          description="Calculate the number of bricks required for a wall, including mortar joints, openings, waste and estimated material cost."
-        />
-
-        {/* =================================================
-            MAIN CALCULATOR
-        ================================================= */}
-
-        <div className="mx-auto mt-6 max-w-3xl">
-
-          {/* =================================================
-              BRICK DIAGRAM
-          ================================================= */}
-
-          <BrickDiagram
-            brickLength={
-              state.brickLength
-            }
-            brickHeight={
-              state.brickHeight
-            }
-            brickWidth={
-              state.brickWidth
-            }
-            mortarJoint={
-              state.mortarJoint
-            }
-          />
-
-          {/* =================================================
-              CALCULATOR SECTIONS
-          ================================================= */}
-
-          <div className="mt-6">
-
-            <CalculatorSections
-              state={state}
-              setState={setState}
-              openSection={openSection}
-              setOpenSection={
-                setOpenSection
-              }
-            />
-
-          </div>
-
-          {/* =================================================
-              RESULT
-          ================================================= */}
-
-          <div className="mt-6">
-
-            <ResultCard
-              result={result}
-              currency={
-                state.currency
-              }
-            />
-
-          </div>
-
-          {/* =================================================
-              TIPS
-          ================================================= */}
-
-          <section className="mt-6 rounded-2xl border border-blue-100 bg-blue-50 p-5">
-
-            <h2 className="text-lg font-bold text-slate-900">
-              Brick Calculator Tips
-            </h2>
-
-            <ul className="mt-3 list-disc space-y-2 pl-5 text-sm leading-6 text-slate-700">
-
-              <li>
-                Measure the wall length and height
-                accurately before calculating.
-              </li>
-
-              <li>
-                Door and window openings are deducted
-                from the total wall area.
-              </li>
-
-              <li>
-                Mortar joint thickness affects the
-                number of bricks required.
-              </li>
-
-              <li>
-                A 5–10% brick waste allowance is
-                commonly used for breakage and cutting.
-              </li>
-
-              <li>
-                Brick sizes can vary by region,
-                manufacturer and construction method.
-              </li>
-
-            </ul>
-
-          </section>
-
-          {/* =================================================
-              DISCLAIMER
-          ================================================= */}
-
-          <p className="mt-6 px-2 pb-6 text-center text-xs leading-5 text-slate-500">
-
-            This brick calculator provides an estimate
-            for planning purposes only. Actual quantities
-            may vary depending on brick dimensions,
-            mortar joint thickness, openings, wall
-            construction method, waste and site conditions.
-
-          </p>
-
-        </div>
-
-      </div>
-
-    </main>
-  );
+export default function BrickCalculatorPage() {
+  return <BrickCalculatorClient />;
 }
