@@ -110,7 +110,7 @@ export default function Page() {
         "@type": "ListItem",
         position: 2,
         name: "Calculators",
-        item: "https://cornerspan.vercel.app/calculators",
+        item: "https://www.cornerspan.com/calculators",
       },
 
       {
@@ -118,7 +118,7 @@ export default function Page() {
         position: 3,
         name: "Concrete Calculator",
         item:
-          "https://cornerspan.vercel.app/calculators/concrete",
+          "https://www.cornerspan.com/calculators/concrete",
       },
     ],
   };
