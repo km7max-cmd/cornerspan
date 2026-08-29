@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import BrickCalculatorClient from "./BrickCalculatorClient";
+import CalculatorStructuredData from "../../../components/CalculatorStructuredData";
 
 export const metadata: Metadata = {
   title: "Brick Calculator – Bricks, Mortar & Cost",
@@ -23,36 +24,40 @@ export const metadata: Metadata = {
   },
 
   openGraph: {
-  title: "Brick Calculator – Bricks, Mortar & Cost | CornerSpan",
+    title:
+      "Brick Calculator – Bricks, Mortar & Cost | CornerSpan",
 
-  description:
-    "Calculate bricks, mortar, openings, waste, and estimated material cost for your wall construction project.",
+    description:
+      "Calculate bricks, mortar, openings, waste, and estimated material cost for your wall construction project.",
 
-  url: "https://www.cornerspan.com/calculators/brick",
+    url:
+      "https://www.cornerspan.com/calculators/brick",
 
-  siteName: "CornerSpan",
-  type: "website",
+    siteName: "CornerSpan",
 
-  images: [
-    {
-      url: "/og-image.png",
-      width: 1200,
-      height: 630,
-      alt: "CornerSpan Brick Calculator",
-    },
-  ],
-},
+    type: "website",
+
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "CornerSpan Brick Calculator",
+      },
+    ],
+  },
 
   twitter: {
-  card: "summary_large_image",
+    card: "summary_large_image",
 
-  title: "Brick Calculator – Bricks, Mortar & Cost | CornerSpan",
+    title:
+      "Brick Calculator – Bricks, Mortar & Cost | CornerSpan",
 
-  description:
-    "Free brick calculator for estimating bricks, mortar, waste, openings, and material cost.",
+    description:
+      "Free brick calculator for estimating bricks, mortar, waste, openings, and material cost.",
 
-  images: ["/og-image.png"],
-},
+    images: ["/og-image.png"],
+  },
 
   robots: {
     index: true,
@@ -61,5 +66,15 @@ export const metadata: Metadata = {
 };
 
 export default function BrickCalculatorPage() {
-  return <BrickCalculatorClient />;
+  return (
+    <>
+      <CalculatorStructuredData
+        name="Brick Calculator"
+        url="https://www.cornerspan.com/calculators/brick"
+        description="Free online brick calculator for estimating bricks, mortar, openings, waste, and material cost for wall construction."
+      />
+
+      <BrickCalculatorClient />
+    </>
+  );
 }
