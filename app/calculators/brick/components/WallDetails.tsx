@@ -54,47 +54,49 @@ export default function WallDetails({
   quantity,
   setQuantity,
 }: WallDetailsProps) {
+  const fieldClass =
+    "flex h-12 overflow-hidden rounded-lg border border-slate-300 bg-white transition focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-100";
+
   const inputClass =
-    "h-12 min-w-0 flex-1 bg-transparent px-3 text-base text-slate-900 outline-none";
+    "min-w-0 flex-1 bg-transparent px-3 text-base font-medium text-slate-900 outline-none";
 
-  const selectClass =
-    "h-12 border-l border-slate-200 bg-white px-3 text-sm font-semibold text-blue-700 outline-none";
-
-  const labelClass =
-    "mb-1.5 block text-sm font-semibold text-slate-700";
+  const unitClass =
+    "border-l border-slate-200 bg-slate-50 px-3 text-sm font-semibold text-blue-700 outline-none";
 
   return (
-    <section className="border-b border-slate-100">
+    <section className="border-b border-slate-200">
 
       {/* =====================================================
-          HEADER
+          COMPACT HEADER
       ===================================================== */}
 
       <button
         type="button"
         onClick={onToggle}
         aria-expanded={open}
-        className="flex w-full items-center justify-between gap-4 px-5 py-5 text-left sm:px-7"
+        className="flex w-full items-center justify-between gap-3 px-4 py-4 text-left sm:px-5"
       >
-        <div className="min-w-0">
+        <div className="flex min-w-0 items-center gap-3">
 
-          <h2 className="text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">
-            Wall Dimensions
-          </h2>
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-lg">
+            📐
+          </span>
 
-          <p className="mt-1 text-sm leading-6 text-slate-500">
-            Enter the size and type of wall.
-          </p>
+          <div className="min-w-0">
+
+            <h2 className="text-lg font-bold text-slate-900">
+              Wall Dimensions
+            </h2>
+
+            <p className="mt-0.5 text-xs text-slate-500">
+              Length, height and wall type
+            </p>
+
+          </div>
 
         </div>
 
-        <span
-          className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-lg font-semibold transition ${
-            open
-              ? "bg-blue-600 text-white"
-              : "bg-slate-100 text-slate-600"
-          }`}
-        >
+        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-slate-100 text-lg font-semibold text-slate-600">
           {open ? "−" : "+"}
         </span>
 
@@ -105,58 +107,38 @@ export default function WallDetails({
       ===================================================== */}
 
       {open && (
-        <div className="border-t border-slate-100 bg-white p-5 sm:px-7 sm:py-6">
+        <div className="px-4 pb-5 sm:px-5">
 
           {/* =================================================
               WALL TYPE
           ================================================= */}
 
-          <div className="mb-5">
+          <div className="mb-4">
 
-            <label className={labelClass}>
-              Wall Type
-            </label>
+            <div className="mb-2 flex items-center justify-between">
+              <label className="text-sm font-semibold text-slate-700">
+                Wall Type
+              </label>
 
-            <div className="grid grid-cols-2 gap-3">
+              <span className="text-xs text-slate-400">
+                Construction
+              </span>
+            </div>
+
+            <div className="grid grid-cols-2 overflow-hidden rounded-lg border border-slate-300 bg-white">
 
               <button
                 type="button"
                 onClick={() =>
                   setWallType("single")
                 }
-                className={`rounded-xl border p-4 text-left transition ${
+                className={`h-11 px-3 text-sm font-semibold transition ${
                   wallType === "single"
-                    ? "border-blue-500 bg-blue-50 ring-2 ring-blue-100"
-                    : "border-slate-200 bg-white hover:border-slate-300"
+                    ? "bg-blue-600 text-white"
+                    : "bg-white text-slate-600 hover:bg-slate-50"
                 }`}
               >
-
-                <div className="flex items-center justify-between">
-
-                  <span className="text-sm font-bold text-slate-900">
-                    Single Wall
-                  </span>
-
-                  <span
-                    className={`flex h-5 w-5 items-center justify-center rounded-full border ${
-                      wallType === "single"
-                        ? "border-blue-600 bg-blue-600 text-white"
-                        : "border-slate-300"
-                    }`}
-                  >
-                    {wallType === "single" && (
-                      <span className="text-xs">
-                        ✓
-                      </span>
-                    )}
-                  </span>
-
-                </div>
-
-                <p className="mt-1 text-xs leading-5 text-slate-500">
-                  One brick layer
-                </p>
-
+                Single Wall
               </button>
 
               <button
@@ -164,39 +146,13 @@ export default function WallDetails({
                 onClick={() =>
                   setWallType("double")
                 }
-                className={`rounded-xl border p-4 text-left transition ${
+                className={`h-11 border-l border-slate-300 px-3 text-sm font-semibold transition ${
                   wallType === "double"
-                    ? "border-blue-500 bg-blue-50 ring-2 ring-blue-100"
-                    : "border-slate-200 bg-white hover:border-slate-300"
+                    ? "bg-blue-600 text-white"
+                    : "bg-white text-slate-600 hover:bg-slate-50"
                 }`}
               >
-
-                <div className="flex items-center justify-between">
-
-                  <span className="text-sm font-bold text-slate-900">
-                    Double Wall
-                  </span>
-
-                  <span
-                    className={`flex h-5 w-5 items-center justify-center rounded-full border ${
-                      wallType === "double"
-                        ? "border-blue-600 bg-blue-600 text-white"
-                        : "border-slate-300"
-                    }`}
-                  >
-                    {wallType === "double" && (
-                      <span className="text-xs">
-                        ✓
-                      </span>
-                    )}
-                  </span>
-
-                </div>
-
-                <p className="mt-1 text-xs leading-5 text-slate-500">
-                  Two brick layers
-                </p>
-
+                Double Wall
               </button>
 
             </div>
@@ -204,106 +160,112 @@ export default function WallDetails({
           </div>
 
           {/* =================================================
-              WALL LENGTH
+              DIMENSIONS
           ================================================= */}
 
-          <div className="mb-4">
+          <div className="grid gap-3 sm:grid-cols-2">
 
-            <label className={labelClass}>
-              Wall Length
-            </label>
+            {/* WALL LENGTH */}
 
-            <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-white transition focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-100">
+            <div>
 
-              <input
-                type="number"
-                min="0"
-                step="any"
-                inputMode="decimal"
-                value={wallLength}
-                onChange={(event) =>
-                  setWallLength(
-                    event.target.value
-                  )
-                }
-                placeholder="Enter wall length"
-                className={inputClass}
-              />
+              <label className="mb-1.5 block text-sm font-semibold text-slate-700">
+                Wall Length
+              </label>
 
-              <select
-                value={wallLengthUnit}
-                onChange={(event) =>
-                  setWallLengthUnit(
-                    event.target.value as LengthUnit
-                  )
-                }
-                className={selectClass}
-                aria-label="Wall length unit"
-              >
-                {LENGTH_UNIT_OPTIONS.map(
-                  (option) => (
-                    <option
-                      key={option.value}
-                      value={option.value}
-                    >
-                      {option.value}
-                    </option>
-                  )
-                )}
-              </select>
+              <div className={fieldClass}>
+
+                <input
+                  type="number"
+                  min="0"
+                  step="any"
+                  inputMode="decimal"
+                  value={wallLength}
+                  onChange={(event) =>
+                    setWallLength(
+                      event.target.value
+                    )
+                  }
+                  placeholder="0"
+                  className={inputClass}
+                  aria-label="Wall length"
+                />
+
+                <select
+                  value={wallLengthUnit}
+                  onChange={(event) =>
+                    setWallLengthUnit(
+                      event.target.value as LengthUnit
+                    )
+                  }
+                  className={unitClass}
+                  aria-label="Wall length unit"
+                >
+                  {LENGTH_UNIT_OPTIONS.map(
+                    (option) => (
+                      <option
+                        key={option.value}
+                        value={option.value}
+                      >
+                        {option.value}
+                      </option>
+                    )
+                  )}
+                </select>
+
+              </div>
 
             </div>
 
-          </div>
+            {/* WALL HEIGHT */}
 
-          {/* =================================================
-              WALL HEIGHT
-          ================================================= */}
+            <div>
 
-          <div className="mb-4">
+              <label className="mb-1.5 block text-sm font-semibold text-slate-700">
+                Wall Height
+              </label>
 
-            <label className={labelClass}>
-              Wall Height
-            </label>
+              <div className={fieldClass}>
 
-            <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-white transition focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-100">
+                <input
+                  type="number"
+                  min="0"
+                  step="any"
+                  inputMode="decimal"
+                  value={wallHeight}
+                  onChange={(event) =>
+                    setWallHeight(
+                      event.target.value
+                    )
+                  }
+                  placeholder="0"
+                  className={inputClass}
+                  aria-label="Wall height"
+                />
 
-              <input
-                type="number"
-                min="0"
-                step="any"
-                inputMode="decimal"
-                value={wallHeight}
-                onChange={(event) =>
-                  setWallHeight(
-                    event.target.value
-                  )
-                }
-                placeholder="Enter wall height"
-                className={inputClass}
-              />
+                <select
+                  value={wallHeightUnit}
+                  onChange={(event) =>
+                    setWallHeightUnit(
+                      event.target.value as LengthUnit
+                    )
+                  }
+                  className={unitClass}
+                  aria-label="Wall height unit"
+                >
+                  {LENGTH_UNIT_OPTIONS.map(
+                    (option) => (
+                      <option
+                        key={option.value}
+                        value={option.value}
+                      >
+                        {option.value}
+                      </option>
+                    )
+                  )}
+                </select>
 
-              <select
-                value={wallHeightUnit}
-                onChange={(event) =>
-                  setWallHeightUnit(
-                    event.target.value as LengthUnit
-                  )
-                }
-                className={selectClass}
-                aria-label="Wall height unit"
-              >
-                {LENGTH_UNIT_OPTIONS.map(
-                  (option) => (
-                    <option
-                      key={option.value}
-                      value={option.value}
-                    >
-                      {option.value}
-                    </option>
-                  )
-                )}
-              </select>
+              </div>
 
             </div>
 
@@ -313,13 +275,13 @@ export default function WallDetails({
               QUANTITY
           ================================================= */}
 
-          <div>
+          <div className="mt-3">
 
-            <label className={labelClass}>
-              Quantity
+            <label className="mb-1.5 block text-sm font-semibold text-slate-700">
+              Number of Walls
             </label>
 
-            <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-white transition focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-100">
+            <div className={fieldClass}>
 
               <input
                 type="number"
@@ -332,10 +294,12 @@ export default function WallDetails({
                     event.target.value
                   )
                 }
+                placeholder="1"
                 className={inputClass}
+                aria-label="Number of walls"
               />
 
-              <span className="flex h-12 items-center border-l border-slate-200 px-4 text-sm text-slate-500">
+              <span className="flex h-12 items-center border-l border-slate-200 bg-slate-50 px-4 text-sm font-semibold text-slate-500">
                 walls
               </span>
 
@@ -344,16 +308,24 @@ export default function WallDetails({
           </div>
 
           {/* =================================================
-              INFO
+              LIVE AREA PREVIEW
           ================================================= */}
 
-          <div className="mt-5 rounded-xl bg-slate-50 px-4 py-3">
+          <div className="mt-4 flex items-center justify-between rounded-lg bg-blue-50 px-4 py-3">
 
-            <p className="text-xs leading-5 text-slate-600">
-              Wall area is calculated from length × height ×
-              quantity. Door and window openings can be
-              deducted in the next section.
-            </p>
+            <div>
+              <p className="text-xs font-medium text-blue-700">
+                Wall area
+              </p>
+
+              <p className="mt-0.5 text-xs text-blue-600">
+                Length × Height × Quantity
+              </p>
+            </div>
+
+            <span className="text-sm font-bold text-blue-700">
+              Live
+            </span>
 
           </div>
 
