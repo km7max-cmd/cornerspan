@@ -57,13 +57,16 @@ export default function BrickDetails({
   setWaste,
 }: BrickDetailsProps) {
   const inputClass =
-    "h-12 min-w-0 flex-1 bg-transparent px-3 text-base text-slate-900 outline-none";
+    "h-12 min-w-0 flex-1 bg-transparent px-3 text-base font-medium text-slate-900 outline-none";
 
-  const selectClass =
-    "h-12 border-l border-slate-200 bg-white px-3 text-sm font-semibold text-blue-700 outline-none";
+  const unitClass =
+    "flex h-12 shrink-0 items-center border-l border-slate-200 bg-slate-50 px-3 text-sm font-semibold text-blue-700";
 
   const labelClass =
-    "mb-1.5 block text-sm font-semibold text-slate-700";
+    "mb-1.5 block text-sm font-medium text-slate-700";
+
+  const fieldClass =
+    "flex overflow-hidden rounded-xl border border-slate-200 bg-white transition focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-100";
 
   const applyBrickSize = (
     length: string,
@@ -97,7 +100,7 @@ export default function BrickDetails({
           </h2>
 
           <p className="mt-1 text-sm leading-6 text-slate-500">
-            Set brick dimensions, mortar joint and waste.
+            Brick size, mortar joint and waste
           </p>
 
         </div>
@@ -119,132 +122,223 @@ export default function BrickDetails({
       ===================================================== */}
 
       {open && (
-        <div className="border-t border-slate-100 bg-white p-5 sm:px-7 sm:py-6">
+        <div className="border-t border-slate-100 bg-white px-5 py-5 sm:px-7 sm:py-6">
 
           {/* =================================================
-              COMMON BRICK SIZES
+              BRICK SIZE
           ================================================= */}
 
-          <div className="mb-6">
+          <div className="mb-5">
 
             <label className={labelClass}>
-              Common Brick Size
+              Brick Size
             </label>
 
-            <div className="space-y-2">
+            <select
+              value={`${brickLength}-${brickHeight}-${brickWidth}-${brickUnit}`}
+              onChange={(event) => {
+                const selected =
+                  COMMON_BRICK_SIZES.find(
+                    (brick) =>
+                      `${brick.length}-${brick.height}-${brick.width}-${brick.unit}` ===
+                      event.target.value
+                  );
 
-              {COMMON_BRICK_SIZES.map(
-                (brick) => {
-                  const selected =
-                    brickLength ===
-                      brick.length &&
-                    brickHeight ===
-                      brick.height &&
-                    brickWidth ===
-                      brick.width &&
-                    brickUnit ===
-                      brick.unit;
-
-                  return (
-                    <button
-                      key={brick.name}
-                      type="button"
-                      onClick={() =>
-                        applyBrickSize(
-                          brick.length,
-                          brick.height,
-                          brick.width,
-                          brick.unit
-                        )
-                      }
-                      className={`flex w-full items-center justify-between rounded-xl border px-4 py-3 text-left transition ${
-                        selected
-                          ? "border-blue-500 bg-blue-50"
-                          : "border-slate-200 bg-white hover:border-slate-300"
-                      }`}
-                    >
-
-                      <div>
-
-                        <p className="text-sm font-semibold text-slate-900">
-                          {brick.name}
-                        </p>
-
-                        <p className="mt-0.5 text-xs text-slate-500">
-                          {brick.length} ×{" "}
-                          {brick.height} ×{" "}
-                          {brick.width}{" "}
-                          {brick.unit}
-                        </p>
-
-                      </div>
-
-                      <span
-                        className={`flex h-5 w-5 items-center justify-center rounded-full border ${
-                          selected
-                            ? "border-blue-600 bg-blue-600 text-white"
-                            : "border-slate-300 bg-white"
-                        }`}
-                      >
-                        {selected && (
-                          <span className="text-xs">
-                            ✓
-                          </span>
-                        )}
-                      </span>
-
-                    </button>
+                if (selected) {
+                  applyBrickSize(
+                    selected.length,
+                    selected.height,
+                    selected.width,
+                    selected.unit
                   );
                 }
-              )}
+              }}
+              className="
+                h-12
+                w-full
+                rounded-xl
+                border
+                border-slate-200
+                bg-white
+                px-3
+                text-base
+                font-semibold
+                text-blue-700
+                outline-none
+                transition
+                focus:border-blue-500
+                focus:ring-4
+                focus:ring-blue-100
+              "
+            >
+              {COMMON_BRICK_SIZES.map((brick) => (
+                <option
+                  key={brick.name}
+                  value={`${brick.length}-${brick.height}-${brick.width}-${brick.unit}`}
+                >
+                  {brick.name} ({brick.length} ×{" "}
+                  {brick.height} × {brick.width}{" "}
+                  {brick.unit})
+                </option>
+              ))}
+            </select>
+
+          </div>
+
+          {/* =================================================
+              LENGTH + HEIGHT
+          ================================================= */}
+
+          <div className="grid grid-cols-2 gap-3">
+
+            {/* Brick Length */}
+
+            <div>
+
+              <label className={labelClass}>
+                Length
+              </label>
+
+              <div className={fieldClass}>
+
+                <input
+                  type="number"
+                  min="0"
+                  step="any"
+                  inputMode="decimal"
+                  value={brickLength}
+                  onChange={(event) =>
+                    setBrickLength(
+                      event.target.value
+                    )
+                  }
+                  className={inputClass}
+                  aria-label="Brick length"
+                />
+
+                <span className={unitClass}>
+                  {brickUnit}
+                </span>
+
+              </div>
+
+            </div>
+
+            {/* Brick Height */}
+
+            <div>
+
+              <label className={labelClass}>
+                Height
+              </label>
+
+              <div className={fieldClass}>
+
+                <input
+                  type="number"
+                  min="0"
+                  step="any"
+                  inputMode="decimal"
+                  value={brickHeight}
+                  onChange={(event) =>
+                    setBrickHeight(
+                      event.target.value
+                    )
+                  }
+                  className={inputClass}
+                  aria-label="Brick height"
+                />
+
+                <span className={unitClass}>
+                  {brickUnit}
+                </span>
+
+              </div>
 
             </div>
 
           </div>
 
           {/* =================================================
-              BRICK LENGTH
+              WIDTH + MORTAR JOINT
           ================================================= */}
 
-          <div className="mb-4">
+          <div className="mt-4 grid grid-cols-2 gap-3">
 
-            <label className={labelClass}>
-              Brick Length
-            </label>
+            {/* Brick Width */}
 
-            <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-white transition focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-100">
+            <div>
 
-              <input
-                type="number"
-                min="0"
-                step="any"
-                inputMode="decimal"
-                value={brickLength}
-                onChange={(event) =>
-                  setBrickLength(
-                    event.target.value
-                  )
-                }
-                className={inputClass}
-              />
+              <label className={labelClass}>
+                Width
+              </label>
+
+              <div className={fieldClass}>
+
+                <input
+                  type="number"
+                  min="0"
+                  step="any"
+                  inputMode="decimal"
+                  value={brickWidth}
+                  onChange={(event) =>
+                    setBrickWidth(
+                      event.target.value
+                    )
+                  }
+                  className={inputClass}
+                  aria-label="Brick width"
+                />
+
+                <span className={unitClass}>
+                  {brickUnit}
+                </span>
+
+              </div>
+
+            </div>
+
+            {/* Mortar Joint */}
+
+            <div>
+
+              <label className={labelClass}>
+                Mortar Joint
+              </label>
 
               <select
-                value={brickUnit}
+                value={mortarJoint}
                 onChange={(event) =>
-                  setBrickUnit(
-                    event.target.value as LengthUnit
+                  setMortarJoint(
+                    event.target.value as MortarJoint
                   )
                 }
-                className={selectClass}
-                aria-label="Brick length unit"
+                className="
+                  h-12
+                  w-full
+                  rounded-xl
+                  border
+                  border-slate-200
+                  bg-white
+                  px-3
+                  text-base
+                  font-semibold
+                  text-blue-700
+                  outline-none
+                  transition
+                  focus:border-blue-500
+                  focus:ring-4
+                  focus:ring-blue-100
+                "
+                aria-label="Mortar joint"
               >
-                {LENGTH_UNIT_OPTIONS.map(
+                {MORTAR_JOINT_OPTIONS.map(
                   (option) => (
                     <option
                       key={option.value}
                       value={option.value}
                     >
-                      {option.value}
+                      {option.label}
                     </option>
                   )
                 )}
@@ -255,132 +349,16 @@ export default function BrickDetails({
           </div>
 
           {/* =================================================
-              BRICK HEIGHT
+              BRICK WASTE
           ================================================= */}
 
-          <div className="mb-4">
-
-            <label className={labelClass}>
-              Brick Height
-            </label>
-
-            <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-white transition focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-100">
-
-              <input
-                type="number"
-                min="0"
-                step="any"
-                inputMode="decimal"
-                value={brickHeight}
-                onChange={(event) =>
-                  setBrickHeight(
-                    event.target.value
-                  )
-                }
-                className={inputClass}
-              />
-
-              <span className="flex h-12 items-center border-l border-slate-200 px-4 text-sm font-semibold text-blue-700">
-                {brickUnit}
-              </span>
-
-            </div>
-
-          </div>
-
-          {/* =================================================
-              BRICK WIDTH
-          ================================================= */}
-
-          <div className="mb-5">
-
-            <label className={labelClass}>
-              Brick Width
-            </label>
-
-            <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-white transition focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-100">
-
-              <input
-                type="number"
-                min="0"
-                step="any"
-                inputMode="decimal"
-                value={brickWidth}
-                onChange={(event) =>
-                  setBrickWidth(
-                    event.target.value
-                  )
-                }
-                className={inputClass}
-              />
-
-              <span className="flex h-12 items-center border-l border-slate-200 px-4 text-sm font-semibold text-blue-700">
-                {brickUnit}
-              </span>
-
-            </div>
-
-          </div>
-
-          {/* =================================================
-              MORTAR JOINT
-          ================================================= */}
-
-          <div className="mb-5">
-
-            <label className={labelClass}>
-              Mortar Joint
-            </label>
-
-            <select
-              value={mortarJoint}
-              onChange={(event) =>
-                setMortarJoint(
-                  event.target.value as MortarJoint
-                )
-              }
-              className="
-                h-12
-                w-full
-                rounded-xl
-                border
-                border-slate-200
-                bg-white
-                px-3
-                text-base
-                text-slate-900
-                outline-none
-                transition
-                focus:border-blue-500
-                focus:ring-4
-                focus:ring-blue-100
-              "
-            >
-              {MORTAR_JOINT_OPTIONS.map(
-                (option) => (
-                  <option
-                    key={option.value}
-                    value={option.value}
-                  >
-                    {option.label}
-                  </option>
-                )
-              )}
-            </select>
-
-          </div>
-
-          {/* =================================================
-              WASTE
-          ================================================= */}
-
-          <div>
+          <div className="mt-4">
 
             <label className={labelClass}>
               Brick Waste
             </label>
 
-            <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-white transition focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-100">
+            <div className={fieldClass}>
 
               <input
                 type="number"
@@ -395,18 +373,47 @@ export default function BrickDetails({
                   )
                 }
                 className={inputClass}
+                aria-label="Brick waste percentage"
               />
 
-              <span className="flex h-12 items-center border-l border-slate-200 px-4 text-sm font-semibold text-slate-500">
+              <span className="flex h-12 shrink-0 items-center border-l border-slate-200 bg-slate-50 px-4 text-sm font-semibold text-slate-500">
                 %
               </span>
 
             </div>
 
-            <p className="mt-1.5 text-xs leading-5 text-slate-500">
-              A 5–10% allowance is commonly used for
-              breakage, cutting and site waste.
+            <p className="mt-1.5 text-xs text-slate-500">
+              Usually 5–10% for breakage and cutting.
             </p>
+
+          </div>
+
+          {/* =================================================
+              LIVE SIZE SUMMARY
+          ================================================= */}
+
+          <div className="mt-5 rounded-xl bg-blue-50 px-4 py-3">
+
+            <div className="flex items-center justify-between gap-3">
+
+              <div>
+                <p className="text-sm font-semibold text-blue-700">
+                  Brick dimensions
+                </p>
+
+                <p className="mt-0.5 text-xs text-blue-600">
+                  L × H × W
+                </p>
+              </div>
+
+              <p className="text-sm font-bold text-blue-700">
+                {brickLength || "0"} ×{" "}
+                {brickHeight || "0"} ×{" "}
+                {brickWidth || "0"}{" "}
+                {brickUnit}
+              </p>
+
+            </div>
 
           </div>
 
