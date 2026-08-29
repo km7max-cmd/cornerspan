@@ -3,73 +3,205 @@ import Link from "next/link";
 
 import CalculatorForm from "./components/CalculatorForm";
 import RelatedCalculators from "../components/RelatedCalculators";
-import CalculatorStructuredData from "../../../components/CalculatorStructuredData";
 
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ||
   "https://www.cornerspan.com";
 
+const pageUrl =
+  `${siteUrl}/calculators/square-footage`;
+
 export const metadata: Metadata = {
   title:
-    "Square Footage Calculator | Sq Ft, Sq Yards, Sq Meters & Acres",
+    "Square Footage Calculator | Sq Ft & Area",
 
   description:
-    "Free square footage calculator for rooms, walls, floors and construction projects. Calculate square feet, square inches, square yards, square meters and acres using feet and inches.",
+    "Free square footage calculator for rooms, walls, floors and construction projects. Calculate square feet, square yards, square meters and more.",
+
+  keywords: [
+    "square footage calculator",
+    "square feet calculator",
+    "sq ft calculator",
+    "square meter calculator",
+    "square yard calculator",
+    "area calculator",
+    "room area calculator",
+    "floor area calculator",
+    "wall area calculator",
+    "construction area calculator",
+  ],
 
   alternates: {
-    canonical:
-      `${siteUrl}/calculators/square-footage`,
-  },
-
-  openGraph: {
-    title:
-      "Square Footage Calculator | Sq Ft, Sq Yards, Sq Meters & Acres",
-
-    description:
-      "Calculate square footage for rooms, walls, floors and construction projects. Convert area between square feet, square yards, square meters and acres.",
-
-    url:
-      `${siteUrl}/calculators/square-footage`,
-
-    type: "website",
-  },
-
-  twitter: {
-    card: "summary",
-
-    title:
-      "Square Footage Calculator | Sq Ft, Sq Yards, Sq Meters & Acres",
-
-    description:
-      "Free square footage calculator for construction, rooms, walls and flooring.",
+    canonical: pageUrl,
   },
 
   robots: {
     index: true,
     follow: true,
+
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
   },
+
+  openGraph: {
+    title:
+      "Square Footage Calculator | Sq Ft & Area",
+
+    description:
+      "Free square footage calculator for rooms, walls, floors and construction projects. Calculate square feet, square yards, square meters and more.",
+
+    url: pageUrl,
+
+    siteName: "CornerSpan",
+
+    type: "website",
+
+    locale: "en_US",
+
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt:
+          "CornerSpan Square Footage Calculator",
+      },
+    ],
+  },
+
+  twitter: {
+    card: "summary_large_image",
+
+    title:
+      "Square Footage Calculator | Sq Ft & Area",
+
+    description:
+      "Free square footage calculator for rooms, walls, floors and construction projects.",
+
+    images: ["/og-image.png"],
+  },
+};
+
+const calculatorSchema = {
+  "@context": "https://schema.org",
+
+  "@type": "WebApplication",
+
+  name: "Square Footage Calculator",
+
+  url: pageUrl,
+
+  description:
+    "Free online square footage calculator for rooms, walls, floors and construction projects.",
+
+  applicationCategory:
+    "UtilitiesApplication",
+
+  operatingSystem: "Web",
+
+  browserRequirements:
+    "Requires a modern web browser with JavaScript enabled.",
+
+  isAccessibleForFree: true,
+
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "USD",
+  },
+
+  featureList: [
+    "Square feet calculation",
+    "Square inches calculation",
+    "Square yards calculation",
+    "Square meters calculation",
+    "Acres calculation",
+    "Room area calculation",
+    "Wall area calculation",
+    "Floor area calculation",
+    "Feet and inches measurements",
+    "Construction area calculations",
+  ],
+};
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+
+  "@type": "BreadcrumbList",
+
+  itemListElement: [
+    {
+      "@type": "ListItem",
+      position: 1,
+      name: "Home",
+      item: siteUrl,
+    },
+
+    {
+      "@type": "ListItem",
+      position: 2,
+      name: "Calculators",
+      item:
+        `${siteUrl}/calculators`,
+    },
+
+    {
+      "@type": "ListItem",
+      position: 3,
+      name: "Square Footage Calculator",
+      item: pageUrl,
+    },
+  ],
 };
 
 export default function SquareFootagePage() {
   return (
     <main className="min-h-screen bg-slate-50 px-4 py-6 sm:px-6">
 
-      {/* Structured Data */}
+      {/* =====================================================
+          STRUCTURED DATA
+      ===================================================== */}
 
-      <CalculatorStructuredData
-        name="Square Footage Calculator"
-        url={`${siteUrl}/calculators/square-footage`}
-        description="Free square footage calculator for rooms, walls, floors and construction projects."
+      {/* WebApplication Schema */}
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html:
+            JSON.stringify(calculatorSchema),
+        }}
       />
+
+      {/* Breadcrumb Schema */}
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html:
+            JSON.stringify(breadcrumbSchema),
+        }}
+      />
+
+      {/* =====================================================
+          PAGE CONTAINER
+      ===================================================== */}
 
       <div className="mx-auto max-w-2xl">
 
-        {/* Breadcrumb */}
+        {/* =================================================
+            BREADCRUMB
+        ================================================= */}
 
         <nav
           aria-label="Breadcrumb"
           className="mb-2 text-sm text-blue-700"
         >
+
           <Link
             href="/calculators"
             className="hover:underline"
@@ -84,9 +216,12 @@ export default function SquareFootagePage() {
           <span>
             Construction / Area
           </span>
+
         </nav>
 
-        {/* Page Title */}
+        {/* =================================================
+            PAGE TITLE
+        ================================================= */}
 
         <h1 className="text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
           Square Footage Calculator
@@ -99,7 +234,9 @@ export default function SquareFootagePage() {
           construction areas.
         </p>
 
-        {/* Calculator */}
+        {/* =================================================
+            CALCULATOR
+        ================================================= */}
 
         {/* LOCKED — DO NOT CHANGE */}
 
@@ -107,7 +244,9 @@ export default function SquareFootagePage() {
           <CalculatorForm />
         </div>
 
-        {/* Related Calculators */}
+        {/* =================================================
+            RELATED CALCULATORS
+        ================================================= */}
 
         <div className="mt-3">
           <RelatedCalculators
@@ -115,7 +254,9 @@ export default function SquareFootagePage() {
           />
         </div>
 
-        {/* How to Calculate */}
+        {/* =================================================
+            HOW TO CALCULATE
+        ================================================= */}
 
         <section className="mt-6 rounded-xl border border-slate-200 bg-white p-5">
 
@@ -149,7 +290,9 @@ export default function SquareFootagePage() {
 
         </section>
 
-        {/* Feet and Inches */}
+        {/* =================================================
+            FEET AND INCHES
+        ================================================= */}
 
         <section className="mt-6 rounded-xl border border-slate-200 bg-white p-5">
 
@@ -175,7 +318,9 @@ export default function SquareFootagePage() {
 
         </section>
 
-        {/* Unit Conversions */}
+        {/* =================================================
+            UNIT CONVERSIONS
+        ================================================= */}
 
         <section className="mt-6 rounded-xl border border-slate-200 bg-white p-5">
 
@@ -207,7 +352,9 @@ export default function SquareFootagePage() {
 
         </section>
 
-        {/* Common Uses */}
+        {/* =================================================
+            COMMON USES
+        ================================================= */}
 
         <section className="mt-6 rounded-xl border border-slate-200 bg-white p-5">
 
@@ -275,7 +422,9 @@ export default function SquareFootagePage() {
 
         </section>
 
-        {/* Material Waste */}
+        {/* =================================================
+            MATERIAL WASTE
+        ================================================= */}
 
         <section className="mt-6 rounded-xl border border-slate-200 bg-white p-5">
 
@@ -294,7 +443,9 @@ export default function SquareFootagePage() {
 
         </section>
 
-        {/* FAQ */}
+        {/* =================================================
+            FAQ
+        ================================================= */}
 
         <section className="mt-6 rounded-xl border border-slate-200 bg-white p-5">
 
@@ -303,6 +454,8 @@ export default function SquareFootagePage() {
           </h2>
 
           <div className="mt-4 space-y-5">
+
+            {/* FAQ 1 */}
 
             <div>
 
@@ -318,6 +471,8 @@ export default function SquareFootagePage() {
 
             </div>
 
+            {/* FAQ 2 */}
+
             <div>
 
               <h3 className="font-semibold text-slate-900">
@@ -329,6 +484,8 @@ export default function SquareFootagePage() {
               </p>
 
             </div>
+
+            {/* FAQ 3 */}
 
             <div>
 
@@ -344,6 +501,8 @@ export default function SquareFootagePage() {
 
             </div>
 
+            {/* FAQ 4 */}
+
             <div>
 
               <h3 className="font-semibold text-slate-900">
@@ -358,6 +517,8 @@ export default function SquareFootagePage() {
               </p>
 
             </div>
+
+            {/* FAQ 5 */}
 
             <div>
 
