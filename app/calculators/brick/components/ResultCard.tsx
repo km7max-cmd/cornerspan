@@ -39,113 +39,74 @@ export default function ResultCard({
     getCurrencySymbol(currency);
 
   return (
-    <section className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+    <section className="overflow-hidden rounded-2xl border border-blue-100 bg-white shadow-sm">
 
       {/* =====================================================
           HEADER
       ===================================================== */}
 
-      <div className="border-b border-slate-100 px-5 py-5 sm:px-7">
+      <div className="flex items-center justify-between gap-3 border-b border-slate-100 px-4 py-4 sm:px-5">
 
-        <h2 className="text-2xl font-bold tracking-tight text-slate-900">
-          Calculation Result
-        </h2>
+        <div>
 
-        <p className="mt-1 text-sm leading-6 text-slate-500">
-          Estimated brick and mortar requirements.
-        </p>
+          <h2 className="text-lg font-bold text-slate-900 sm:text-xl">
+            Results
+          </h2>
+
+          <p className="mt-0.5 text-xs text-slate-500 sm:text-sm">
+            Estimated materials required
+          </p>
+
+        </div>
+
+        <span className="rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700">
+          Live
+        </span>
 
       </div>
 
-      <div className="p-5 sm:p-7">
+      <div className="p-4 sm:p-5">
 
         {/* =================================================
-            NET WALL AREA
+            MAIN RESULTS
         ================================================= */}
 
-        <div className="rounded-2xl bg-blue-50 p-5">
+        <div className="grid grid-cols-2 gap-3">
 
-          <p className="text-sm font-medium text-slate-500">
-            Net Wall Area
-          </p>
+          {/* TOTAL BRICKS */}
 
-          <p className="mt-1 text-3xl font-bold text-blue-600">
-            {formatNumber(
-              result.netWallArea
-            )}{" "}
-            m²
-          </p>
+          <div className="rounded-xl bg-blue-600 p-4 text-white">
 
-          <p className="mt-1 text-xs text-slate-500">
-            After deducting doors and windows
-          </p>
-
-        </div>
-
-        {/* =================================================
-            BRICK RESULTS
-        ================================================= */}
-
-        <div className="mt-4 grid grid-cols-2 gap-3">
-
-          {/* Total Bricks */}
-
-          <div className="rounded-2xl bg-slate-50 p-4">
-
-            <p className="text-sm text-slate-500">
+            <p className="text-xs font-medium text-blue-100">
               Total Bricks
             </p>
 
-            <p className="mt-1 text-2xl font-bold text-slate-900">
+            <p className="mt-1 text-2xl font-bold tracking-tight sm:text-3xl">
               {result.totalBricks.toLocaleString()}
             </p>
 
-          </div>
-
-          {/* Bricks / sq ft */}
-
-          <div className="rounded-2xl bg-slate-50 p-4">
-
-            <p className="text-sm text-slate-500">
-              Bricks / sq ft
+            <p className="mt-1 text-xs text-blue-100">
+              Including waste
             </p>
 
-            <p className="mt-1 text-2xl font-bold text-slate-900">
+          </div>
+
+          {/* NET WALL AREA */}
+
+          <div className="rounded-xl bg-slate-50 p-4">
+
+            <p className="text-xs font-medium text-slate-500">
+              Net Wall Area
+            </p>
+
+            <p className="mt-1 text-2xl font-bold tracking-tight text-slate-900">
               {formatNumber(
-                result.bricksPerSqFt
+                result.netWallArea
               )}
             </p>
 
-          </div>
-
-          {/* Base Bricks */}
-
-          <div className="rounded-2xl bg-slate-50 p-4">
-
-            <p className="text-sm text-slate-500">
-              Base Bricks
-            </p>
-
-            <p className="mt-1 text-xl font-bold text-slate-900">
-              {Math.ceil(
-                result.baseBricks
-              ).toLocaleString()}
-            </p>
-
-          </div>
-
-          {/* Waste Bricks */}
-
-          <div className="rounded-2xl bg-slate-50 p-4">
-
-            <p className="text-sm text-slate-500">
-              Waste Bricks
-            </p>
-
-            <p className="mt-1 text-xl font-bold text-slate-900">
-              {Math.ceil(
-                result.wasteBricks
-              ).toLocaleString()}
+            <p className="mt-1 text-xs text-slate-500">
+              m² after openings
             </p>
 
           </div>
@@ -153,10 +114,68 @@ export default function ResultCard({
         </div>
 
         {/* =================================================
-            OPENINGS
+            BRICK BREAKDOWN
         ================================================= */}
 
-        <div className="mt-4 rounded-2xl border border-slate-200 p-4">
+        <div className="mt-3 rounded-xl border border-slate-200">
+
+          <div className="grid grid-cols-2 divide-x divide-slate-200">
+
+            <div className="p-3">
+
+              <p className="text-xs text-slate-500">
+                Base Bricks
+              </p>
+
+              <p className="mt-1 text-lg font-bold text-slate-900">
+                {Math.ceil(
+                  result.baseBricks
+                ).toLocaleString()}
+              </p>
+
+            </div>
+
+            <div className="p-3">
+
+              <p className="text-xs text-slate-500">
+                Waste Bricks
+              </p>
+
+              <p className="mt-1 text-lg font-bold text-slate-900">
+                {Math.ceil(
+                  result.wasteBricks
+                ).toLocaleString()}
+              </p>
+
+            </div>
+
+          </div>
+
+          <div className="border-t border-slate-200 px-3 py-2.5">
+
+            <div className="flex items-center justify-between gap-3">
+
+              <span className="text-xs text-slate-500">
+                Bricks / sq ft
+              </span>
+
+              <span className="text-sm font-semibold text-slate-900">
+                {formatNumber(
+                  result.bricksPerSqFt
+                )}
+              </span>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        {/* =================================================
+            WALL AREA
+        ================================================= */}
+
+        <div className="mt-3 rounded-xl bg-slate-50 px-4 py-3">
 
           <div className="flex items-center justify-between gap-4">
 
@@ -164,7 +183,7 @@ export default function ResultCard({
               Gross Wall Area
             </span>
 
-            <span className="font-semibold text-slate-900">
+            <span className="text-sm font-semibold text-slate-900">
               {formatNumber(
                 result.wallArea
               )}{" "}
@@ -173,15 +192,14 @@ export default function ResultCard({
 
           </div>
 
-          <div className="mt-3 flex items-center justify-between gap-4">
+          <div className="mt-2 flex items-center justify-between gap-4">
 
             <span className="text-sm text-slate-500">
               Door & Window Openings
             </span>
 
-            <span className="font-semibold text-slate-900">
-              −{" "}
-              {formatNumber(
+            <span className="text-sm font-semibold text-red-600">
+              − {formatNumber(
                 result.openingArea
               )}{" "}
               m²
@@ -195,88 +213,100 @@ export default function ResultCard({
             MORTAR
         ================================================= */}
 
-        <div className="mt-4 rounded-2xl border border-slate-200 p-4">
+        <div className="mt-3 rounded-xl border border-slate-200">
 
-          <div className="mb-3">
+          <div className="border-b border-slate-100 px-4 py-3">
 
-            <h3 className="font-bold text-slate-900">
-              Mortar Estimate
+            <h3 className="text-sm font-bold text-slate-900">
+              Mortar & Cement
             </h3>
 
           </div>
 
-          <div className="space-y-3">
+          <div className="grid grid-cols-2 divide-x divide-y divide-slate-200">
 
-            <div className="flex items-center justify-between gap-4">
+            {/* Wet Mortar */}
 
-              <span className="text-sm text-slate-500">
+            <div className="p-3">
+
+              <p className="text-xs text-slate-500">
                 Wet Mortar
-              </span>
+              </p>
 
-              <span className="font-semibold text-slate-900">
+              <p className="mt-1 text-sm font-semibold text-slate-900">
                 {formatNumber(
                   result.mortarWetVolume,
                   3
                 )}{" "}
                 m³
-              </span>
+              </p>
 
             </div>
 
-            <div className="flex items-center justify-between gap-4">
+            {/* Dry Mortar */}
 
-              <span className="text-sm text-slate-500">
+            <div className="p-3">
+
+              <p className="text-xs text-slate-500">
                 Dry Mortar
-              </span>
+              </p>
 
-              <span className="font-semibold text-slate-900">
+              <p className="mt-1 text-sm font-semibold text-slate-900">
                 {formatNumber(
                   result.mortarTotalDryVolume,
                   3
                 )}{" "}
                 m³
-              </span>
+              </p>
 
             </div>
 
-            <div className="flex items-center justify-between gap-4">
+            {/* Cement */}
 
-              <span className="text-sm text-slate-500">
+            <div className="p-3">
+
+              <p className="text-xs text-slate-500">
                 Cement
-              </span>
+              </p>
 
-              <span className="font-semibold text-slate-900">
+              <p className="mt-1 text-sm font-semibold text-slate-900">
                 {formatNumber(
                   result.cementWeight,
                   1
                 )}{" "}
                 kg
-              </span>
+              </p>
 
             </div>
 
-            <div className="flex items-center justify-between gap-4">
+            {/* Cement Bags */}
 
-              <span className="text-sm text-slate-500">
+            <div className="p-3">
+
+              <p className="text-xs text-slate-500">
                 Cement Bags
-              </span>
+              </p>
 
-              <span className="font-semibold text-slate-900">
+              <p className="mt-1 text-sm font-semibold text-slate-900">
                 {formatNumber(
                   result.cementBags,
                   1
                 )}
-              </span>
+              </p>
 
             </div>
 
-            <div className="flex items-center justify-between gap-4">
+          </div>
+
+          <div className="border-t border-slate-200 px-4 py-3">
+
+            <div className="flex items-center justify-between gap-3">
 
               <span className="text-sm text-slate-500">
                 Sand
               </span>
 
-              <span className="font-semibold text-slate-900">
+              <span className="text-sm font-semibold text-slate-900">
                 {formatNumber(
                   result.sandVolume,
                   3
@@ -294,20 +324,32 @@ export default function ResultCard({
             COST
         ================================================= */}
 
-        <div className="mt-4 rounded-2xl bg-green-50 p-5">
+        <div className="mt-3 rounded-xl bg-green-50 p-4">
 
-          <p className="text-sm font-medium text-slate-500">
-            Estimated Material Cost
-          </p>
+          <div className="flex items-center justify-between gap-4">
 
-          <p className="mt-1 text-3xl font-bold text-green-700">
-            {currencySymbol}
-            {formatNumber(
-              result.totalMaterialCost
-            )}
-          </p>
+            <div>
 
-          <div className="mt-4 space-y-2 border-t border-green-100 pt-3">
+              <p className="text-xs font-medium text-green-700">
+                Estimated Material Cost
+              </p>
+
+              <p className="mt-1 text-2xl font-bold tracking-tight text-green-700 sm:text-3xl">
+                {currencySymbol}
+                {formatNumber(
+                  result.totalMaterialCost
+                )}
+              </p>
+
+            </div>
+
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-lg">
+              💰
+            </span>
+
+          </div>
+
+          <div className="mt-3 border-t border-green-100 pt-3">
 
             <div className="flex items-center justify-between text-sm">
 
@@ -324,7 +366,7 @@ export default function ResultCard({
 
             </div>
 
-            <div className="flex items-center justify-between text-sm">
+            <div className="mt-2 flex items-center justify-between text-sm">
 
               <span className="text-slate-500">
                 Mortar Materials
@@ -347,16 +389,11 @@ export default function ResultCard({
             NOTE
         ================================================= */}
 
-        <div className="mt-5 rounded-xl bg-slate-50 px-4 py-3">
-
-          <p className="text-xs leading-5 text-slate-600">
-            Results are estimates. Actual brick and mortar
-            quantities can vary because of brick size,
-            mortar joint thickness, wall construction,
-            openings, cutting, breakage and site conditions.
-          </p>
-
-        </div>
+        <p className="mt-3 px-1 text-xs leading-5 text-slate-500">
+          Results are estimates. Actual quantities may vary
+          depending on brick size, mortar joint thickness,
+          openings, waste, cutting and site conditions.
+        </p>
 
       </div>
 
