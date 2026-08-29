@@ -55,19 +55,19 @@ export default function WallDetails({
   setQuantity,
 }: WallDetailsProps) {
   const fieldClass =
-    "flex h-12 overflow-hidden rounded-lg border border-slate-300 bg-white transition focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-100";
+    "flex h-12 min-w-0 overflow-hidden rounded-lg border border-slate-300 bg-white transition focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-100";
 
   const inputClass =
     "min-w-0 flex-1 bg-transparent px-3 text-base font-medium text-slate-900 outline-none";
 
   const unitClass =
-    "border-l border-slate-200 bg-slate-50 px-3 text-sm font-semibold text-blue-700 outline-none";
+    "shrink-0 border-l border-slate-200 bg-slate-50 px-2 text-sm font-semibold text-blue-700 outline-none";
 
   return (
     <section className="border-b border-slate-200">
 
       {/* =====================================================
-          COMPACT HEADER
+          HEADER
       ===================================================== */}
 
       <button
@@ -78,17 +78,17 @@ export default function WallDetails({
       >
         <div className="flex min-w-0 items-center gap-3">
 
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-lg">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-xl">
             📐
           </span>
 
           <div className="min-w-0">
 
-            <h2 className="text-lg font-bold text-slate-900">
+            <h2 className="text-lg font-bold tracking-tight text-slate-900 sm:text-xl">
               Wall Dimensions
             </h2>
 
-            <p className="mt-0.5 text-xs text-slate-500">
+            <p className="mt-0.5 text-sm text-slate-500">
               Length, height and wall type
             </p>
 
@@ -96,7 +96,13 @@ export default function WallDetails({
 
         </div>
 
-        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-slate-100 text-lg font-semibold text-slate-600">
+        <span
+          className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xl font-medium ${
+            open
+              ? "bg-slate-100 text-slate-600"
+              : "bg-slate-100 text-slate-600"
+          }`}
+        >
           {open ? "−" : "+"}
         </span>
 
@@ -116,6 +122,7 @@ export default function WallDetails({
           <div className="mb-4">
 
             <div className="mb-2 flex items-center justify-between">
+
               <label className="text-sm font-semibold text-slate-700">
                 Wall Type
               </label>
@@ -123,6 +130,7 @@ export default function WallDetails({
               <span className="text-xs text-slate-400">
                 Construction
               </span>
+
             </div>
 
             <div className="grid grid-cols-2 overflow-hidden rounded-lg border border-slate-300 bg-white">
@@ -132,7 +140,7 @@ export default function WallDetails({
                 onClick={() =>
                   setWallType("single")
                 }
-                className={`h-11 px-3 text-sm font-semibold transition ${
+                className={`h-11 px-2 text-sm font-semibold transition sm:text-base ${
                   wallType === "single"
                     ? "bg-blue-600 text-white"
                     : "bg-white text-slate-600 hover:bg-slate-50"
@@ -146,7 +154,7 @@ export default function WallDetails({
                 onClick={() =>
                   setWallType("double")
                 }
-                className={`h-11 border-l border-slate-300 px-3 text-sm font-semibold transition ${
+                className={`h-11 border-l border-slate-300 px-2 text-sm font-semibold transition sm:text-base ${
                   wallType === "double"
                     ? "bg-blue-600 text-white"
                     : "bg-white text-slate-600 hover:bg-slate-50"
@@ -160,14 +168,14 @@ export default function WallDetails({
           </div>
 
           {/* =================================================
-              DIMENSIONS
+              LENGTH + HEIGHT
           ================================================= */}
 
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className="grid grid-cols-2 gap-3">
 
             {/* WALL LENGTH */}
 
-            <div>
+            <div className="min-w-0">
 
               <label className="mb-1.5 block text-sm font-semibold text-slate-700">
                 Wall Length
@@ -219,7 +227,7 @@ export default function WallDetails({
 
             {/* WALL HEIGHT */}
 
-            <div>
+            <div className="min-w-0">
 
               <label className="mb-1.5 block text-sm font-semibold text-slate-700">
                 Wall Height
@@ -272,7 +280,7 @@ export default function WallDetails({
           </div>
 
           {/* =================================================
-              QUANTITY
+              NUMBER OF WALLS
           ================================================= */}
 
           <div className="mt-3">
@@ -299,7 +307,7 @@ export default function WallDetails({
                 aria-label="Number of walls"
               />
 
-              <span className="flex h-12 items-center border-l border-slate-200 bg-slate-50 px-4 text-sm font-semibold text-slate-500">
+              <span className="flex h-12 shrink-0 items-center border-l border-slate-200 bg-slate-50 px-3 text-sm font-semibold text-slate-500">
                 walls
               </span>
 
@@ -308,22 +316,24 @@ export default function WallDetails({
           </div>
 
           {/* =================================================
-              LIVE AREA PREVIEW
+              AREA INFO
           ================================================= */}
 
           <div className="mt-4 flex items-center justify-between rounded-lg bg-blue-50 px-4 py-3">
 
-            <div>
-              <p className="text-xs font-medium text-blue-700">
-                Wall area
+            <div className="min-w-0">
+
+              <p className="text-sm font-semibold text-blue-700">
+                Wall Area
               </p>
 
               <p className="mt-0.5 text-xs text-blue-600">
                 Length × Height × Quantity
               </p>
+
             </div>
 
-            <span className="text-sm font-bold text-blue-700">
+            <span className="ml-3 shrink-0 text-sm font-bold text-blue-700">
               Live
             </span>
 
