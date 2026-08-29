@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+
 import CalculatorForm from "./components/CalculatorForm";
 import RelatedCalculators from "../components/RelatedCalculators";
+import CalculatorStructuredData from "../../../components/CalculatorStructuredData";
+
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ||
   "https://www.cornerspan.com";
@@ -33,6 +36,7 @@ export const metadata: Metadata = {
 
   twitter: {
     card: "summary",
+
     title:
       "Square Footage Calculator | Sq Ft, Sq Yards, Sq Meters & Acres",
 
@@ -46,86 +50,22 @@ export const metadata: Metadata = {
   },
 };
 
-const calculatorSchema = {
-  "@context": "https://schema.org",
-  "@type": "WebApplication",
-
-  name: "Square Footage Calculator",
-
-  url:
-    `${siteUrl}/calculators/square-footage`,
-
-  description:
-    "Free square footage calculator for rooms, walls, floors and construction projects.",
-
-  applicationCategory:
-    "UtilitiesApplication",
-
-  operatingSystem: "Web",
-
-  offers: {
-    "@type": "Offer",
-    price: "0",
-    priceCurrency: "USD",
-  },
-};
-
-const breadcrumbSchema = {
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-
-  itemListElement: [
-    {
-      "@type": "ListItem",
-      position: 1,
-      name: "Calculators",
-      item:
-        `${siteUrl}/calculators`,
-    },
-
-    {
-      "@type": "ListItem",
-      position: 2,
-      name: "Construction Calculators",
-      item:
-        `${siteUrl}/calculators`,
-    },
-
-    {
-      "@type": "ListItem",
-      position: 3,
-      name: "Square Footage Calculator",
-      item:
-        `${siteUrl}/calculators/square-footage`,
-    },
-  ],
-};
-
 export default function SquareFootagePage() {
   return (
     <main className="min-h-screen bg-slate-50 px-4 py-6 sm:px-6">
 
-      {/* Calculator structured data */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html:
-            JSON.stringify(calculatorSchema),
-        }}
-      />
+      {/* Structured Data */}
 
-      {/* Breadcrumb structured data */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html:
-            JSON.stringify(breadcrumbSchema),
-        }}
+      <CalculatorStructuredData
+        name="Square Footage Calculator"
+        url={`${siteUrl}/calculators/square-footage`}
+        description="Free square footage calculator for rooms, walls, floors and construction projects."
       />
 
       <div className="mx-auto max-w-2xl">
 
         {/* Breadcrumb */}
+
         <nav
           aria-label="Breadcrumb"
           className="mb-2 text-sm text-blue-700"
@@ -147,6 +87,7 @@ export default function SquareFootagePage() {
         </nav>
 
         {/* Page Title */}
+
         <h1 className="text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
           Square Footage Calculator
         </h1>
@@ -159,17 +100,23 @@ export default function SquareFootagePage() {
         </p>
 
         {/* Calculator */}
+
         {/* LOCKED — DO NOT CHANGE */}
+
         <div className="mt-6">
           <CalculatorForm />
         </div>
-        
+
         {/* Related Calculators */}
-<div className="mt-3">
-  <RelatedCalculators currentSlug="square-footage" />
-</div>
+
+        <div className="mt-3">
+          <RelatedCalculators
+            currentSlug="square-footage"
+          />
+        </div>
 
         {/* How to Calculate */}
+
         <section className="mt-6 rounded-xl border border-slate-200 bg-white p-5">
 
           <h2 className="text-xl font-bold text-slate-900">
@@ -203,6 +150,7 @@ export default function SquareFootagePage() {
         </section>
 
         {/* Feet and Inches */}
+
         <section className="mt-6 rounded-xl border border-slate-200 bg-white p-5">
 
           <h2 className="text-xl font-bold text-slate-900">
@@ -228,6 +176,7 @@ export default function SquareFootagePage() {
         </section>
 
         {/* Unit Conversions */}
+
         <section className="mt-6 rounded-xl border border-slate-200 bg-white p-5">
 
           <h2 className="text-xl font-bold text-slate-900">
@@ -241,6 +190,7 @@ export default function SquareFootagePage() {
           </p>
 
           <ul className="mt-4 list-disc space-y-2 pl-5 text-sm leading-6 text-slate-600">
+
             <li>
               1 square yard = 9 square feet
             </li>
@@ -252,11 +202,13 @@ export default function SquareFootagePage() {
             <li>
               1 square foot = 144 square inches
             </li>
+
           </ul>
 
         </section>
 
         {/* Common Uses */}
+
         <section className="mt-6 rounded-xl border border-slate-200 bg-white p-5">
 
           <h2 className="text-xl font-bold text-slate-900">
@@ -266,6 +218,7 @@ export default function SquareFootagePage() {
           <div className="mt-4 grid gap-3 sm:grid-cols-2">
 
             <div className="rounded-lg bg-slate-50 p-4">
+
               <h3 className="font-semibold text-slate-900">
                 Room Area
               </h3>
@@ -275,9 +228,11 @@ export default function SquareFootagePage() {
                 rectangular room using its length
                 and width.
               </p>
+
             </div>
 
             <div className="rounded-lg bg-slate-50 p-4">
+
               <h3 className="font-semibold text-slate-900">
                 Wall Area
               </h3>
@@ -286,9 +241,11 @@ export default function SquareFootagePage() {
                 Calculate wall area and account
                 for window openings.
               </p>
+
             </div>
 
             <div className="rounded-lg bg-slate-50 p-4">
+
               <h3 className="font-semibold text-slate-900">
                 Flooring
               </h3>
@@ -297,9 +254,11 @@ export default function SquareFootagePage() {
                 Calculate floor area and include
                 an optional material waste factor.
               </p>
+
             </div>
 
             <div className="rounded-lg bg-slate-50 p-4">
+
               <h3 className="font-semibold text-slate-900">
                 Construction
               </h3>
@@ -309,6 +268,7 @@ export default function SquareFootagePage() {
                 construction shapes and convert
                 between useful area units.
               </p>
+
             </div>
 
           </div>
@@ -316,6 +276,7 @@ export default function SquareFootagePage() {
         </section>
 
         {/* Material Waste */}
+
         <section className="mt-6 rounded-xl border border-slate-200 bg-white p-5">
 
           <h2 className="text-xl font-bold text-slate-900">
@@ -334,6 +295,7 @@ export default function SquareFootagePage() {
         </section>
 
         {/* FAQ */}
+
         <section className="mt-6 rounded-xl border border-slate-200 bg-white p-5">
 
           <h2 className="text-xl font-bold text-slate-900">
@@ -343,6 +305,7 @@ export default function SquareFootagePage() {
           <div className="mt-4 space-y-5">
 
             <div>
+
               <h3 className="font-semibold text-slate-900">
                 How do you calculate square footage?
               </h3>
@@ -352,9 +315,11 @@ export default function SquareFootagePage() {
                 area by its width. If both measurements
                 are in feet, the answer is square feet.
               </p>
+
             </div>
 
             <div>
+
               <h3 className="font-semibold text-slate-900">
                 How many square feet are in a square yard?
               </h3>
@@ -362,9 +327,11 @@ export default function SquareFootagePage() {
               <p className="mt-1 text-sm leading-6 text-slate-600">
                 One square yard contains 9 square feet.
               </p>
+
             </div>
 
             <div>
+
               <h3 className="font-semibold text-slate-900">
                 Can I use feet and inches?
               </h3>
@@ -374,9 +341,11 @@ export default function SquareFootagePage() {
                 and the calculator converts the
                 measurements automatically.
               </p>
+
             </div>
 
             <div>
+
               <h3 className="font-semibold text-slate-900">
                 How do I calculate wall area with windows?
               </h3>
@@ -387,9 +356,11 @@ export default function SquareFootagePage() {
                 openings. The Wall with Window shape
                 handles this calculation.
               </p>
+
             </div>
 
             <div>
+
               <h3 className="font-semibold text-slate-900">
                 Can I add material waste?
               </h3>
@@ -399,6 +370,7 @@ export default function SquareFootagePage() {
                 percentage to account for additional
                 material needed during installation.
               </p>
+
             </div>
 
           </div>
@@ -406,6 +378,7 @@ export default function SquareFootagePage() {
         </section>
 
       </div>
+
     </main>
   );
 }
