@@ -23,27 +23,36 @@ export const metadata: Metadata = {
   },
 
   openGraph: {
-    title:
-      "Brick Calculator – Bricks, Mortar & Cost Estimate",
+  title: "Brick Calculator – Bricks, Mortar & Cost | CornerSpan",
 
-    description:
-      "Calculate bricks, mortar, openings, waste, and estimated material cost for your wall construction project.",
+  description:
+    "Calculate bricks, mortar, openings, waste, and estimated material cost for your wall construction project.",
 
-    url:
-      "https://www.cornerspan.com/calculators/brick",
+  url: "https://www.cornerspan.com/calculators/brick",
 
-    siteName: "CornerSpan",
-    type: "website",
-  },
+  siteName: "CornerSpan",
+  type: "website",
+
+  images: [
+    {
+      url: "/og-image.png",
+      width: 1200,
+      height: 630,
+      alt: "CornerSpan Brick Calculator",
+    },
+  ],
+},
 
   twitter: {
-    card: "summary",
-    title:
-      "Brick Calculator – Bricks, Mortar & Cost Estimate",
+  card: "summary_large_image",
 
-    description:
-      "Free brick calculator for estimating bricks, mortar, waste, openings, and material cost.",
-  },
+  title: "Brick Calculator – Bricks, Mortar & Cost | CornerSpan",
+
+  description:
+    "Free brick calculator for estimating bricks, mortar, waste, openings, and material cost.",
+
+  images: ["/og-image.png"],
+},
 
   robots: {
     index: true,
