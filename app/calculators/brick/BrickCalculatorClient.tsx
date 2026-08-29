@@ -53,7 +53,7 @@ export default function BrickCalculator() {
   return (
     <main className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-slate-100">
 
-      <div className="mx-auto max-w-7xl px-5 py-6 sm:px-6 sm:py-10">
+      <div className="mx-auto w-full max-w-7xl px-4 py-5 sm:px-6 sm:py-8">
 
         {/* =================================================
             BREADCRUMB
@@ -74,59 +74,71 @@ export default function BrickCalculator() {
         />
 
         {/* =================================================
-            MAIN CALCULATOR
+            MAIN CALCULATOR AREA
         ================================================= */}
 
-        <div className="mx-auto mt-6 max-w-3xl">
+        <div className="mx-auto mt-6 max-w-6xl">
 
-          {/* =================================================
-              BRICK DIAGRAM
-          ================================================= */}
+          <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(340px,0.8fr)]">
 
-          <BrickDiagram
-            brickLength={
-              state.brickLength
-            }
-            brickHeight={
-              state.brickHeight
-            }
-            brickWidth={
-              state.brickWidth
-            }
-            mortarJoint={
-              state.mortarJoint
-            }
-          />
+            {/* =================================================
+                LEFT — CALCULATOR INPUTS
+            ================================================= */}
 
-          {/* =================================================
-              CALCULATOR SECTIONS
-          ================================================= */}
+            <div className="min-w-0">
 
-          <div className="mt-6">
+              {/* =================================================
+                  BRICK DIAGRAM
+              ================================================= */}
 
-            <CalculatorSections
-              state={state}
-              setState={setState}
-              openSection={openSection}
-              setOpenSection={
-                setOpenSection
-              }
-            />
+              <BrickDiagram
+                brickLength={
+                  state.brickLength
+                }
+                brickHeight={
+                  state.brickHeight
+                }
+                brickWidth={
+                  state.brickWidth
+                }
+                mortarJoint={
+                  state.mortarJoint
+                }
+              />
 
-          </div>
+              {/* =================================================
+                  CALCULATOR SECTIONS
+              ================================================= */}
 
-          {/* =================================================
-              RESULT
-          ================================================= */}
+              <div className="mt-5">
 
-          <div className="mt-6">
+                <CalculatorSections
+                  state={state}
+                  setState={setState}
+                  openSection={openSection}
+                  setOpenSection={
+                    setOpenSection
+                  }
+                />
 
-            <ResultCard
-              result={result}
-              currency={
-                state.currency
-              }
-            />
+              </div>
+
+            </div>
+
+            {/* =================================================
+                RIGHT — CALCULATION RESULT
+            ================================================= */}
+
+            <div className="min-w-0 lg:sticky lg:top-24">
+
+              <ResultCard
+                result={result}
+                currency={
+                  state.currency
+                }
+              />
+
+            </div>
 
           </div>
 
@@ -134,7 +146,7 @@ export default function BrickCalculator() {
               TIPS
           ================================================= */}
 
-          <section className="mt-6 rounded-2xl border border-blue-100 bg-blue-50 p-5">
+          <section className="mx-auto mt-7 max-w-6xl rounded-2xl border border-blue-100 bg-blue-50 p-5 sm:p-6">
 
             <h2 className="text-lg font-bold text-slate-900">
               Brick Calculator Tips
@@ -175,7 +187,7 @@ export default function BrickCalculator() {
               DISCLAIMER
           ================================================= */}
 
-          <p className="mt-6 px-2 pb-6 text-center text-xs leading-5 text-slate-500">
+          <p className="mx-auto mt-6 max-w-4xl px-2 pb-6 text-center text-xs leading-5 text-slate-500">
 
             This brick calculator provides an estimate
             for planning purposes only. Actual quantities
