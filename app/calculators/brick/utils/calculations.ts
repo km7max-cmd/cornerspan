@@ -89,10 +89,16 @@ function calculateOpeningArea(
   }
 
   const widthMeters =
-    toMeters(width, widthUnit);
+    toMeters(
+      width,
+      widthUnit
+    );
 
   const heightMeters =
-    toMeters(height, heightUnit);
+    toMeters(
+      height,
+      heightUnit
+    );
 
   return (
     qty *
@@ -238,6 +244,9 @@ export function calculateBrick(
 
   /* =======================================================
      9. EFFECTIVE BRICK FACE
+
+     Brick + mortar joint is used as the
+     effective brick module.
   ======================================================= */
 
   const effectiveLength =
@@ -274,6 +283,11 @@ export function calculateBrick(
      12. DOUBLE WALL
   ======================================================= */
 
+  const wallLayers =
+    state.wallType === "double"
+      ? 2
+      : 1;
+
   if (
     state.wallType ===
     "double"
@@ -288,8 +302,11 @@ export function calculateBrick(
   const wastePercent =
     Math.max(
       0,
-      safeNumber(
-        state.waste
+      Math.min(
+        100,
+        safeNumber(
+          state.waste
+        )
       )
     );
 
@@ -308,18 +325,23 @@ export function calculateBrick(
 
   /* =======================================================
      14. BRICKS PER SQ FT
+
+     For a double wall, two brick layers are required,
+     so the actual brick requirement per wall sq ft doubles.
   ======================================================= */
 
   const bricksPerSqFt =
     bricksPerSqM *
-    0.09290304;
+    0.09290304 *
+    wallLayers;
 
   /* =======================================================
      15. BRICKS PER AREA
   ======================================================= */
 
   const bricksPerArea =
-    bricksPerSqM;
+    bricksPerSqM *
+    wallLayers;
 
   /* =======================================================
      16. BRICK COST
@@ -361,22 +383,21 @@ export function calculateBrick(
      17. MORTAR CALCULATION
   ======================================================= */
 
-  if (state.includeMortar) {
+  if (
+    state.includeMortar
+  ) {
     /* -----------------------------------------------------
        WALL THICKNESS
     ----------------------------------------------------- */
 
     const wallThickness =
       brickWidthMeters *
-      (
-        state.wallType ===
-        "double"
-          ? 2
-          : 1
-      );
+      wallLayers;
 
     /* -----------------------------------------------------
        WALL VOLUME
+
+       Net wall area × wall thickness
     ----------------------------------------------------- */
 
     const wallVolume =
@@ -398,6 +419,8 @@ export function calculateBrick(
 
     /* -----------------------------------------------------
        WET MORTAR
+
+       Wall volume minus actual solid brick volume.
     ----------------------------------------------------- */
 
     mortarWetVolume =
@@ -409,6 +432,11 @@ export function calculateBrick(
 
     /* -----------------------------------------------------
        DRY MORTAR FACTOR
+
+       Default = 1.33
+
+       This matches the default shown in the
+       Mortar & Cement UI.
     ----------------------------------------------------- */
 
     const wetToDry =
@@ -416,7 +444,7 @@ export function calculateBrick(
         1,
         safeNumber(
           state.mortarWetToDryRatio,
-          1.52
+          1.33
         )
       );
 
@@ -431,8 +459,11 @@ export function calculateBrick(
     const mortarWastePercent =
       Math.max(
         0,
-        safeNumber(
-          state.mortarWaste
+        Math.min(
+          100,
+          safeNumber(
+            state.mortarWaste
+          )
         )
       );
 
