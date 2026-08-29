@@ -39,14 +39,14 @@ export default function CostDetails({
   sandPrice,
   setSandPrice,
 }: CostDetailsProps) {
-  const inputClass =
-    "h-12 min-w-0 flex-1 bg-transparent px-3 text-base text-slate-900 outline-none";
+  const fieldClass =
+    "flex h-12 min-w-0 overflow-hidden rounded-xl border border-slate-200 bg-white transition focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-100";
 
-  const selectClass =
-    "h-12 w-full rounded-xl border border-slate-200 bg-white px-3 text-base text-slate-900 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100";
+  const inputClass =
+    "min-w-0 flex-1 bg-transparent px-3 text-base font-medium text-slate-900 outline-none";
 
   const labelClass =
-    "mb-1.5 block text-sm font-semibold text-slate-700";
+    "mb-1.5 block text-sm font-medium text-slate-700";
 
   const currencyOption =
     CURRENCY_OPTIONS.find(
@@ -67,27 +67,30 @@ export default function CostDetails({
         type="button"
         onClick={onToggle}
         aria-expanded={open}
-        className="flex w-full items-center justify-between gap-4 px-5 py-5 text-left sm:px-7"
+        className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left sm:px-7"
       >
-        <div className="min-w-0">
 
-          <h2 className="text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">
-            Material Cost
-          </h2>
+        <div className="flex min-w-0 items-center gap-3">
 
-          <p className="mt-1 text-sm leading-6 text-slate-500">
-            Enter material prices to estimate the total cost.
-          </p>
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-green-50 text-xl">
+            💰
+          </span>
+
+          <div className="min-w-0">
+
+            <h2 className="text-lg font-bold tracking-tight text-slate-900 sm:text-xl">
+              Material Cost
+            </h2>
+
+            <p className="mt-0.5 text-sm text-slate-500">
+              Enter material prices for an estimate
+            </p>
+
+          </div>
 
         </div>
 
-        <span
-          className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-lg font-semibold transition ${
-            open
-              ? "bg-blue-600 text-white"
-              : "bg-slate-100 text-slate-600"
-          }`}
-        >
+        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-slate-100 text-xl font-medium text-slate-600">
           {open ? "−" : "+"}
         </span>
 
@@ -98,13 +101,13 @@ export default function CostDetails({
       ===================================================== */}
 
       {open && (
-        <div className="border-t border-slate-100 bg-white p-5 sm:px-7 sm:py-6">
+        <div className="px-5 pb-5 sm:px-7">
 
           {/* =================================================
               CURRENCY
           ================================================= */}
 
-          <div className="mb-5">
+          <div className="mb-4">
 
             <label className={labelClass}>
               Currency
@@ -117,7 +120,24 @@ export default function CostDetails({
                   event.target.value as Currency
                 )
               }
-              className={selectClass}
+              className="
+                h-12
+                w-full
+                rounded-xl
+                border
+                border-slate-200
+                bg-white
+                px-3
+                text-base
+                font-semibold
+                text-blue-700
+                outline-none
+                transition
+                focus:border-blue-500
+                focus:ring-4
+                focus:ring-blue-100
+              "
+              aria-label="Currency"
             >
               {CURRENCY_OPTIONS.map(
                 (option) => (
@@ -134,85 +154,78 @@ export default function CostDetails({
           </div>
 
           {/* =================================================
-              BRICK PRICE
+              BRICK + CEMENT PRICE
           ================================================= */}
 
-          <div className="mb-5">
+          <div className="grid grid-cols-2 gap-3">
 
-            <label className={labelClass}>
-              Price per Brick
-            </label>
+            {/* PRICE PER BRICK */}
 
-            <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-white transition focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-100">
+            <div className="min-w-0">
 
-              <span className="flex h-12 items-center px-3 text-base font-semibold text-slate-500">
-                {currencySymbol}
-              </span>
+              <label className={labelClass}>
+                Price / Brick
+              </label>
 
-              <input
-                type="number"
-                min="0"
-                step="any"
-                inputMode="decimal"
-                value={pricePerBrick}
-                onChange={(event) =>
-                  setPricePerBrick(
-                    event.target.value
-                  )
-                }
-                placeholder="0.00"
-                className={inputClass}
-              />
+              <div className={fieldClass}>
 
-              <span className="flex h-12 items-center border-l border-slate-200 px-3 text-sm text-slate-500">
-                / brick
-              </span>
+                <span className="flex h-12 shrink-0 items-center px-2.5 text-base font-semibold text-slate-500">
+                  {currencySymbol}
+                </span>
+
+                <input
+                  type="number"
+                  min="0"
+                  step="any"
+                  inputMode="decimal"
+                  value={pricePerBrick}
+                  onChange={(event) =>
+                    setPricePerBrick(
+                      event.target.value
+                    )
+                  }
+                  placeholder="0.00"
+                  className={inputClass}
+                  aria-label="Price per brick"
+                />
+
+              </div>
 
             </div>
 
-          </div>
+            {/* CEMENT PRICE */}
 
-          {/* =================================================
-              CEMENT PRICE
-          ================================================= */}
+            <div className="min-w-0">
 
-          <div className="mb-5">
+              <label className={labelClass}>
+                Cement / Bag
+              </label>
 
-            <label className={labelClass}>
-              Cement Price
-            </label>
+              <div className={fieldClass}>
 
-            <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-white transition focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-100">
+                <span className="flex h-12 shrink-0 items-center px-2.5 text-base font-semibold text-slate-500">
+                  {currencySymbol}
+                </span>
 
-              <span className="flex h-12 items-center px-3 text-base font-semibold text-slate-500">
-                {currencySymbol}
-              </span>
+                <input
+                  type="number"
+                  min="0"
+                  step="any"
+                  inputMode="decimal"
+                  value={cementPrice}
+                  onChange={(event) =>
+                    setCementPrice(
+                      event.target.value
+                    )
+                  }
+                  placeholder="0.00"
+                  className={inputClass}
+                  aria-label="Cement price per bag"
+                />
 
-              <input
-                type="number"
-                min="0"
-                step="any"
-                inputMode="decimal"
-                value={cementPrice}
-                onChange={(event) =>
-                  setCementPrice(
-                    event.target.value
-                  )
-                }
-                placeholder="0.00"
-                className={inputClass}
-              />
-
-              <span className="flex h-12 items-center border-l border-slate-200 px-3 text-sm text-slate-500">
-                / bag
-              </span>
+              </div>
 
             </div>
-
-            <p className="mt-1.5 text-xs leading-5 text-slate-500">
-              Price is calculated using the cement bag size
-              selected in the Mortar & Cement section.
-            </p>
 
           </div>
 
@@ -220,15 +233,15 @@ export default function CostDetails({
               SAND PRICE
           ================================================= */}
 
-          <div>
+          <div className="mt-4">
 
             <label className={labelClass}>
-              Sand Price
+              Sand Price / m³
             </label>
 
-            <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-white transition focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-100">
+            <div className={fieldClass}>
 
-              <span className="flex h-12 items-center px-3 text-base font-semibold text-slate-500">
+              <span className="flex h-12 shrink-0 items-center px-3 text-base font-semibold text-slate-500">
                 {currencySymbol}
               </span>
 
@@ -245,33 +258,49 @@ export default function CostDetails({
                 }
                 placeholder="0.00"
                 className={inputClass}
+                aria-label="Sand price per cubic meter"
               />
 
-              <span className="flex h-12 items-center border-l border-slate-200 px-3 text-sm text-slate-500">
-                / m³
-              </span>
-
             </div>
-
-            <p className="mt-1.5 text-xs leading-5 text-slate-500">
-              Enter the local sand price per cubic meter.
-            </p>
 
           </div>
 
           {/* =================================================
-              INFO
+              PRICE INFO
           ================================================= */}
 
-          <div className="mt-5 rounded-xl bg-slate-50 px-4 py-3">
+          <div className="mt-4 rounded-xl bg-green-50 px-4 py-3">
 
-            <p className="text-xs leading-5 text-slate-600">
-              Cost estimates use the selected currency and
-              entered material prices. They are intended for
-              planning purposes only.
-            </p>
+            <div className="flex items-center justify-between gap-3">
+
+              <div className="min-w-0">
+
+                <p className="text-sm font-semibold text-green-700">
+                  Cost Estimate
+                </p>
+
+                <p className="mt-0.5 text-xs leading-5 text-green-600">
+                  Uses the prices entered above
+                </p>
+
+              </div>
+
+              <span className="shrink-0 text-lg font-bold text-green-700">
+                {currencySymbol}
+              </span>
+
+            </div>
 
           </div>
+
+          {/* =================================================
+              NOTE
+          ================================================= */}
+
+          <p className="mt-3 text-xs leading-5 text-slate-500">
+            Material costs are estimates and can vary by
+            supplier, location, material quality and market price.
+          </p>
 
         </div>
       )}
