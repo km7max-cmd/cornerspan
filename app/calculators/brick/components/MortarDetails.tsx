@@ -53,11 +53,20 @@ export default function MortarDetails({
   cementBagSize,
   setCementBagSize,
 }: MortarDetailsProps) {
+  const fieldClass =
+    "flex h-12 min-w-0 overflow-hidden rounded-xl border border-slate-200 bg-white transition focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-100";
+
   const inputClass =
-    "h-12 w-full rounded-xl border border-slate-200 bg-white px-3 text-base text-slate-900 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100";
+    "min-w-0 flex-1 bg-transparent px-3 text-base font-medium text-slate-900 outline-none";
+
+  const unitClass =
+    "flex h-12 shrink-0 items-center border-l border-slate-200 bg-slate-50 px-3 text-sm font-semibold text-slate-500";
 
   const labelClass =
-    "mb-1.5 block text-sm font-semibold text-slate-700";
+    "mb-1.5 block text-sm font-medium text-slate-700";
+
+  const selectClass =
+    "h-12 w-full rounded-xl border border-slate-200 bg-white px-3 text-base font-semibold text-blue-700 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100";
 
   return (
     <section className="border-b border-slate-100">
@@ -70,27 +79,30 @@ export default function MortarDetails({
         type="button"
         onClick={onToggle}
         aria-expanded={open}
-        className="flex w-full items-center justify-between gap-4 px-5 py-5 text-left sm:px-7"
+        className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left sm:px-7"
       >
-        <div className="min-w-0">
 
-          <h2 className="text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">
-            Mortar & Cement
-          </h2>
+        <div className="flex min-w-0 items-center gap-3">
 
-          <p className="mt-1 text-sm leading-6 text-slate-500">
-            Estimate mortar, cement and sand requirements.
-          </p>
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-orange-50 text-xl">
+            🧱
+          </span>
+
+          <div className="min-w-0">
+
+            <h2 className="text-lg font-bold tracking-tight text-slate-900 sm:text-xl">
+              Mortar & Cement
+            </h2>
+
+            <p className="mt-0.5 text-sm text-slate-500">
+              Mortar, cement and sand requirements
+            </p>
+
+          </div>
 
         </div>
 
-        <span
-          className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-lg font-semibold transition ${
-            open
-              ? "bg-blue-600 text-white"
-              : "bg-slate-100 text-slate-600"
-          }`}
-        >
+        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-slate-100 text-xl font-medium text-slate-600">
           {open ? "−" : "+"}
         </span>
 
@@ -101,22 +113,22 @@ export default function MortarDetails({
       ===================================================== */}
 
       {open && (
-        <div className="border-t border-slate-100 bg-white p-5 sm:px-7 sm:py-6">
+        <div className="px-5 pb-5 sm:px-7">
 
           {/* =================================================
               INCLUDE MORTAR
           ================================================= */}
 
-          <div className="mb-5 flex items-center justify-between rounded-2xl border border-slate-200 bg-slate-50 p-4">
+          <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
 
-            <div className="pr-4">
+            <div className="min-w-0 pr-4">
 
-              <p className="text-sm font-bold text-slate-900">
+              <p className="text-sm font-semibold text-slate-900">
                 Include Mortar Estimate
               </p>
 
-              <p className="mt-1 text-xs leading-5 text-slate-500">
-                Calculate cement and sand required for mortar.
+              <p className="mt-0.5 text-xs text-slate-500">
+                Calculate cement and sand requirements
               </p>
 
             </div>
@@ -150,140 +162,147 @@ export default function MortarDetails({
           </div>
 
           {includeMortar && (
-            <>
+            <div className="mt-4">
 
               {/* =================================================
-                  MORTAR RATIO
+                  MIX RATIO + WET/DRY FACTOR
               ================================================= */}
 
-              <div className="mb-5">
+              <div className="grid grid-cols-2 gap-3">
 
-                <label className={labelClass}>
-                  Mortar Mix Ratio
-                </label>
+                {/* MIX RATIO */}
 
-                <select
-                  value={mortarRatio}
-                  onChange={(event) =>
-                    setMortarRatio(
-                      event.target.value as MortarRatio
-                    )
-                  }
-                  className={inputClass}
-                >
-                  {MORTAR_RATIO_OPTIONS.map(
-                    (option) => (
-                      <option
-                        key={option.value}
-                        value={option.value}
-                      >
-                        {option.label}
-                      </option>
-                    )
-                  )}
-                </select>
+                <div className="min-w-0">
 
-                <p className="mt-1.5 text-xs leading-5 text-slate-500">
-                  Ratio is expressed as cement : sand.
-                </p>
+                  <label className={labelClass}>
+                    Mortar Mix Ratio
+                  </label>
 
-              </div>
-
-              {/* =================================================
-                  WET TO DRY
-              ================================================= */}
-
-              <div className="mb-5">
-
-                <label className={labelClass}>
-                  Wet to Dry Mortar Factor
-                </label>
-
-                <input
-                  type="number"
-                  min="1"
-                  step="0.01"
-                  inputMode="decimal"
-                  value={mortarWetToDryRatio}
-                  onChange={(event) =>
-                    setMortarWetToDryRatio(
-                      event.target.value
-                    )
-                  }
-                  className={inputClass}
-                />
-
-                <p className="mt-1.5 text-xs leading-5 text-slate-500">
-                  Default: 1.33. This converts estimated wet
-                  mortar volume to dry material volume.
-                </p>
-
-              </div>
-
-              {/* =================================================
-                  MORTAR WASTE
-              ================================================= */}
-
-              <div className="mb-5">
-
-                <label className={labelClass}>
-                  Mortar Waste
-                </label>
-
-                <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-white focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-100">
-
-                  <input
-                    type="number"
-                    min="0"
-                    max="100"
-                    step="1"
-                    inputMode="numeric"
-                    value={mortarWaste}
+                  <select
+                    value={mortarRatio}
                     onChange={(event) =>
-                      setMortarWaste(
-                        event.target.value
+                      setMortarRatio(
+                        event.target.value as MortarRatio
                       )
                     }
-                    className="h-12 min-w-0 flex-1 bg-transparent px-3 text-base text-slate-900 outline-none"
-                  />
+                    className={selectClass}
+                    aria-label="Mortar mix ratio"
+                  >
+                    {MORTAR_RATIO_OPTIONS.map(
+                      (option) => (
+                        <option
+                          key={option.value}
+                          value={option.value}
+                        >
+                          {option.label}
+                        </option>
+                      )
+                    )}
+                  </select>
 
-                  <span className="flex h-12 items-center border-l border-slate-200 px-4 text-sm font-semibold text-slate-500">
-                    %
-                  </span>
+                </div>
+
+                {/* WET TO DRY */}
+
+                <div className="min-w-0">
+
+                  <label className={labelClass}>
+                    Wet / Dry Factor
+                  </label>
+
+                  <div className={fieldClass}>
+
+                    <input
+                      type="number"
+                      min="1"
+                      step="0.01"
+                      inputMode="decimal"
+                      value={mortarWetToDryRatio}
+                      onChange={(event) =>
+                        setMortarWetToDryRatio(
+                          event.target.value
+                        )
+                      }
+                      className={inputClass}
+                      aria-label="Wet to dry mortar factor"
+                    />
+
+                  </div>
 
                 </div>
 
               </div>
 
               {/* =================================================
-                  CEMENT DENSITY
+                  MORTAR WASTE + CEMENT DENSITY
               ================================================= */}
 
-              <div className="mb-5">
+              <div className="mt-4 grid grid-cols-2 gap-3">
 
-                <label className={labelClass}>
-                  Cement Density
-                </label>
+                {/* MORTAR WASTE */}
 
-                <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-white">
+                <div className="min-w-0">
 
-                  <input
-                    type="number"
-                    min="1"
-                    step="1"
-                    inputMode="numeric"
-                    value={cementDensity}
-                    onChange={(event) =>
-                      setCementDensity(
-                        event.target.value
-                      )
-                    }
-                    className="h-12 min-w-0 flex-1 bg-transparent px-3 text-base text-slate-900 outline-none"
-                  />
+                  <label className={labelClass}>
+                    Mortar Waste
+                  </label>
 
-                  <span className="flex h-12 items-center border-l border-slate-200 px-4 text-sm text-slate-500">
-                    kg/m³
-                  </span>
+                  <div className={fieldClass}>
+
+                    <input
+                      type="number"
+                      min="0"
+                      max="100"
+                      step="1"
+                      inputMode="numeric"
+                      value={mortarWaste}
+                      onChange={(event) =>
+                        setMortarWaste(
+                          event.target.value
+                        )
+                      }
+                      className={inputClass}
+                      aria-label="Mortar waste percentage"
+                    />
+
+                    <span className={unitClass}>
+                      %
+                    </span>
+
+                  </div>
+
+                </div>
+
+                {/* CEMENT DENSITY */}
+
+                <div className="min-w-0">
+
+                  <label className={labelClass}>
+                    Cement Density
+                  </label>
+
+                  <div className={fieldClass}>
+
+                    <input
+                      type="number"
+                      min="1"
+                      step="1"
+                      inputMode="numeric"
+                      value={cementDensity}
+                      onChange={(event) =>
+                        setCementDensity(
+                          event.target.value
+                        )
+                      }
+                      className={inputClass}
+                      aria-label="Cement density"
+                    />
+
+                    <span className={unitClass}>
+                      kg/m³
+                    </span>
+
+                  </div>
 
                 </div>
 
@@ -293,13 +312,13 @@ export default function MortarDetails({
                   CEMENT BAG SIZE
               ================================================= */}
 
-              <div>
+              <div className="mt-4">
 
                 <label className={labelClass}>
                   Cement Bag Size
                 </label>
 
-                <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-white">
+                <div className={fieldClass}>
 
                   <input
                     type="number"
@@ -312,10 +331,11 @@ export default function MortarDetails({
                         event.target.value
                       )
                     }
-                    className="h-12 min-w-0 flex-1 bg-transparent px-3 text-base text-slate-900 outline-none"
+                    className={inputClass}
+                    aria-label="Cement bag size"
                   />
 
-                  <span className="flex h-12 items-center border-l border-slate-200 px-4 text-sm text-slate-500">
+                  <span className={unitClass}>
                     kg / bag
                   </span>
 
@@ -323,7 +343,20 @@ export default function MortarDetails({
 
               </div>
 
-            </>
+              {/* =================================================
+                  INFO
+              ================================================= */}
+
+              <div className="mt-4 rounded-xl bg-orange-50 px-4 py-3">
+
+                <p className="text-xs leading-5 text-orange-700">
+                  Mortar quantity is estimated from the brickwork,
+                  mortar joint, mix ratio and selected waste factor.
+                </p>
+
+              </div>
+
+            </div>
           )}
 
         </div>
