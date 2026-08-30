@@ -11,28 +11,23 @@ type Props = {
 
 export default function RelatedCalculators({ items }: Props) {
   return (
-    <section className="mt-12 rounded-2xl border bg-white p-6 shadow-sm">
-      <h2 className="mb-6 text-2xl font-bold">
+    <section className="mt-12 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h2 className="mb-5 text-2xl font-bold text-slate-900">
         Related Calculators
       </h2>
 
-      <div className="grid gap-4 md:grid-cols-2">
+      <ul className="space-y-3">
         {items.map((item) => (
-          <Link
-            key={item.href}
-            href={item.href}
-            className="rounded-lg border p-4 hover:bg-slate-50"
-          >
-            <h3 className="font-semibold">
-              {item.title}
-            </h3>
-
-            <p className="mt-1 text-sm text-slate-500">
-              Open Calculator →
-            </p>
-          </Link>
+          <li key={item.href}>
+            <Link
+              href={item.href}
+              className="block rounded-lg px-3 py-2 text-base font-medium text-blue-600 transition hover:bg-blue-50 hover:text-blue-700"
+            >
+              {item.title} →
+            </Link>
+          </li>
         ))}
-      </div>
+      </ul>
     </section>
   );
 }
