@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 
 import Breadcrumb from "../../../components/Breadcrumb";
 import CalculatorHero from "../../components/CalculatorHero";
-
+import RelatedCalculators from "../../components/RelatedCalculators";
 import BrickDiagram from "./components/BrickDiagram";
 import CalculatorSections from "./components/CalculatorSections";
 import ResultCard from "./components/ResultCard";
@@ -182,6 +182,19 @@ export default function BrickCalculator() {
             </ul>
 
           </section>
+
+          <RelatedCalculators
+  items={[
+    {
+      title: "Concrete Calculator",
+      href: "/calculators/concrete",
+    },
+    {
+      title: "Square Footage Calculator",
+      href: "/calculators/square-footage",
+    },
+  ]}
+/>
 
           {/* =================================================
               DISCLAIMER
