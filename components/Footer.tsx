@@ -89,7 +89,7 @@ export default function Footer() {
             className="flex items-center justify-center"
           >
             <img
-              src="/logo-dark.png?v=2"
+              src="/logo-dark.webp?v=2"
               alt="CornerSpan - Construction Calculators"
               className="h-auto w-[220px] max-w-full object-contain"
             />
