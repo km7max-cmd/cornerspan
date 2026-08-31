@@ -38,7 +38,7 @@ export default function Header() {
         >
           {/* Light Mode Logo */}
           <img
-            src="/logo.png"
+            src="/logo.webp"
             alt="CornerSpan - Construction Calculators"
             className="cornerspan-logo-light"
             style={{
