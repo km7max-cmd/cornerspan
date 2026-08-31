@@ -29,6 +29,7 @@ export default function Header() {
 
       <div className="mx-auto flex h-[76px] max-w-7xl items-center justify-between px-4 md:px-6">
 
+        
         {/* Logo */}
 
         <Link
@@ -50,7 +51,8 @@ export default function Header() {
 
           {/* Dark Mode Logo */}
           <img
-            src="/logo-dark.png"
+            <img
+            src="/logo-dark.webp"
             alt="CornerSpan - Construction Calculators"
             className="cornerspan-logo-dark"
             style={{
