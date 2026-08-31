@@ -1,124 +1,148 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
+
 import Breadcrumb from "../../../components/Breadcrumb";
+import PaintInputs from "./components/PaintInputs";
+import PaintResults from "./components/PaintResults";
+import PaintTips from "./components/PaintTips";
+import {
+  calculatePaint,
+  type PaintCalculationResult,
+} from "./utils/calculations";
 
 export default function PaintCalculator() {
-  const [length, setLength] = useState("");
-  const [width, setWidth] = useState("");
-  const [height, setHeight] = useState("");
-  const [coats, setCoats] = useState("2");
-  const [price, setPrice] = useState("45");
+  const [values, setValues] = useState({
+    length: "",
+    width: "",
+    height: "",
+    coats: "2",
+    doors: "0",
+    windows: "0",
+    coverage: "350",
+    pricePerGallon: "45",
+  });
 
-  const result = useMemo(() => {
-    const l = Number(length) || 0;
-    const w = Number(width) || 0;
-    const h = Number(height) || 0;
+  const [result, setResult] =
+    useState<PaintCalculationResult | null>(null);
 
-    const wallArea = 2 * (l + w) * h;
-    const totalArea = wallArea * (Number(coats) || 1);
+  function handleChange(
+    field: string,
+    value: string
+  ) {
+    setValues((previous) => ({
+      ...previous,
+      [field]: value,
+    }));
+  }
 
-    const gallons = totalArea / 350;
-    const cost = gallons * (Number(price) || 0);
+  function handleCalculate() {
+    const length = Number(values.length);
+    const width = Number(values.width);
+    const height = Number(values.height);
+    const coats = Number(values.coats);
+    const doors = Number(values.doors);
+    const windows = Number(values.windows);
+    const coverage = Number(values.coverage);
+    const pricePerGallon =
+      Number(values.pricePerGallon);
 
-    return {
-      wallArea,
-      totalArea,
-      gallons,
-      cost,
-    };
-  }, [length, width, height, coats, price]);
+    if (
+      length <= 0 ||
+      width <= 0 ||
+      height <= 0 ||
+      coats <= 0 ||
+      coverage <= 0
+    ) {
+      setResult(null);
+      return;
+    }
+
+    setResult(
+      calculatePaint({
+        length,
+        width,
+        height,
+        coats,
+        doors: Math.max(doors, 0),
+        windows: Math.max(windows, 0),
+        coverage,
+        pricePerGallon:
+          Math.max(pricePerGallon, 0),
+      })
+    );
+  }
 
   return (
-    <main className="mx-auto max-w-xl p-6">
-      <Breadcrumb current="Paint Calculator" />
-      <h1 className="mb-2 text-4xl font-bold">
-        Paint Calculator
-      </h1>
+    <main className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-slate-100">
+      <div className="mx-auto max-w-4xl px-4 py-6 sm:px-6 sm:py-10">
 
-      <p className="mb-6 text-slate-600">
-        Professional Paint Estimator
-      </p>
-            <div className="space-y-4">
+        <Breadcrumb current="Paint Calculator" />
 
-        <input
-          className="w-full rounded-lg border p-3"
-          type="number"
-          placeholder="Room Length (ft)"
-          value={length}
-          onChange={(e) => setLength(e.target.value)}
-        />
+        <h1 className="mt-4 text-3xl font-black tracking-tight text-slate-950 sm:text-5xl">
+          Paint Calculator
+        </h1>
 
-        <input
-          className="w-full rounded-lg border p-3"
-          type="number"
-          placeholder="Room Width (ft)"
-          value={width}
-          onChange={(e) => setWidth(e.target.value)}
-        />
+        <p className="mt-3 max-w-3xl text-base leading-7 text-slate-600 sm:text-lg">
+          Calculate how much paint you need for interior
+          walls and ceilings, including doors, windows,
+          multiple coats and estimated paint cost.
+        </p>
 
-        <input
-          className="w-full rounded-lg border p-3"
-          type="number"
-          placeholder="Wall Height (ft)"
-          value={height}
-          onChange={(e) => setHeight(e.target.value)}
-        />
+        <section className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
 
-        <input
-          className="w-full rounded-lg border p-3"
-          type="number"
-          placeholder="Number of Coats"
-          value={coats}
-          onChange={(e) => setCoats(e.target.value)}
-        />
-
-        <input
-          className="w-full rounded-lg border p-3"
-          type="number"
-          placeholder="Paint Price per Gallon ($)"
-          value={price}
-          onChange={(e) => setPrice(e.target.value)}
-        />
-
-        <div className="rounded-xl bg-slate-100 p-5 space-y-2">
-          <h2 className="text-2xl font-bold">
-            Results
+          <h2 className="mb-5 text-xl font-bold text-slate-900">
+            Paint Calculator Inputs
           </h2>
 
-          <p>
-            🎨 Wall Area:
-            <b> {result.wallArea.toFixed(2)} sq ft</b>
+          <PaintInputs
+            {...values}
+            onChange={handleChange}
+          />
+
+          <button
+            type="button"
+            onClick={handleCalculate}
+            className="mt-5 w-full rounded-xl bg-blue-600 px-5 py-3 font-bold text-white transition hover:bg-blue-700"
+          >
+            Calculate Paint
+          </button>
+        </section>
+
+        {result && (
+          <PaintResults
+            wallArea={result.wallArea}
+            ceilingArea={result.ceilingArea}
+            doorArea={result.doorArea}
+            windowArea={result.windowArea}
+            paintableArea={result.paintableArea}
+            totalPaintArea={result.totalPaintArea}
+            gallonsRequired={result.gallonsRequired}
+            gallonsToBuy={result.gallonsToBuy}
+            estimatedCost={result.estimatedCost}
+          />
+        )}
+
+        <PaintTips />
+
+        <section className="mt-8 rounded-xl border border-slate-200 bg-white p-5">
+          <h2 className="text-xl font-bold text-slate-900">
+            How Paint Calculation Works
+          </h2>
+
+          <p className="mt-3 text-sm leading-7 text-slate-600">
+            The calculator estimates wall and ceiling
+            area, subtracts standard door and window
+            areas, multiplies the remaining area by the
+            number of coats, and divides the result by
+            the selected paint coverage per gallon.
           </p>
 
-          <p>
-            🖌️ Paint Area:
-            <b> {result.totalArea.toFixed(2)} sq ft</b>
-          </p>
+          <div className="mt-4 rounded-lg bg-slate-50 p-4 text-center font-semibold text-slate-800">
+            Paint Required = Total Paint Area ÷ Coverage per Gallon
+          </div>
+        </section>
 
-          <p>
-            🪣 Paint Required:
-            <b> {result.gallons.toFixed(2)} Gallons</b>
-          </p>
-
-          <p className="text-xl font-bold text-green-600">
-            💲 Estimated Cost:
-            <b> ${result.cost.toFixed(2)}</b>
-          </p>
-                  </div>
-      </div>
-
-      <div className="mt-8 rounded-xl border bg-blue-50 p-5">
-        <h3 className="mb-2 text-xl font-bold">
-          USA Paint Tips
-        </h3>
-
-        <ul className="list-disc space-y-2 pl-5 text-slate-700">
-          <li>One gallon of paint typically covers about 350 sq ft.</li>
-          <li>Most interior walls require two coats for the best finish.</li>
-          <li>Buy an extra gallon for future touch-ups.</li>
-          <li>Use primer on new drywall or when changing dark colors to light colors.</li>
-        </ul>
       </div>
     </main>
   );
