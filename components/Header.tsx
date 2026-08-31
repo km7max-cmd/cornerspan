@@ -51,7 +51,6 @@ export default function Header() {
 
           {/* Dark Mode Logo */}
           <img
-            <img
             src="/logo-dark.webp"
             alt="CornerSpan - Construction Calculators"
             className="cornerspan-logo-dark"
