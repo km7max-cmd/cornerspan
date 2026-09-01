@@ -1,4 +1,8 @@
-import type { PaintCalculationResult } from "../utils/calculations";
+"use client";
+
+import type {
+  PaintCalculationResult,
+} from "../utils/calculations";
 
 type CurrencyCode =
   | "USD"
@@ -68,10 +72,17 @@ export default function PaintResults({
     );
   }
 
+  const isMetric =
+    result.quantityUnit === "liters";
+
+  const areaUnit = isMetric
+    ? "m²"
+    : "ft²";
+
   return (
     <section className="mt-5 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
 
-      {/* Result header */}
+      {/* Smart result header */}
       <div className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 p-5 text-white">
         <div className="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-white/10 blur-2xl" />
 
@@ -98,7 +109,7 @@ export default function PaintResults({
 
       <div className="p-5">
 
-        {/* Main result */}
+        {/* Main quantity */}
         <div className="rounded-2xl bg-slate-50 p-4">
           <p className="text-sm font-medium text-slate-500">
             Paint needed
@@ -106,9 +117,10 @@ export default function PaintResults({
 
           <div className="mt-1 flex items-end justify-between gap-3">
             <p className="text-3xl font-black tracking-tight text-slate-900">
-              {result.gallonsNeeded.toFixed(2)}
+              {result.paintQuantity.toFixed(2)}
+
               <span className="ml-1 text-base font-semibold text-slate-500">
-                gal
+                {result.quantityUnit}
               </span>
             </p>
 
@@ -118,7 +130,8 @@ export default function PaintResults({
               </p>
 
               <p className="text-lg font-bold text-blue-600">
-                {result.gallonsToBuy} gal
+                {result.quantityToBuy}{" "}
+                {result.quantityUnit}
               </p>
             </div>
           </div>
@@ -156,7 +169,7 @@ export default function PaintResults({
         </div>
 
         {/* Total */}
-        <div className="mt-3 flex items-center justify-between rounded-xl border border-blue-100 bg-blue-50 px-4 py-3">
+        <div className="mt-3 flex items-center justify-between gap-3 rounded-xl border border-blue-100 bg-blue-50 px-4 py-3">
           <div>
             <p className="text-xs font-medium text-blue-700">
               Total estimated cost
@@ -167,7 +180,7 @@ export default function PaintResults({
             </p>
           </div>
 
-          <p className="text-2xl font-black text-blue-700">
+          <p className="text-xl font-black text-blue-700 sm:text-2xl">
             {formatMoney(
               result.totalCost,
               currency
@@ -190,17 +203,23 @@ export default function PaintResults({
               </span>
 
               <span className="font-semibold text-slate-800">
-                {result.paintedArea.toFixed(2)} sq ft
+                {isMetric
+                  ? result.paintedAreaSqM.toFixed(2)
+                  : result.paintedAreaSqFt.toFixed(2)}{" "}
+                {areaUnit}
               </span>
             </div>
 
             <div className="flex justify-between gap-4">
               <span className="text-slate-500">
-                Total paint area
+                Area including coats
               </span>
 
               <span className="font-semibold text-slate-800">
-                {result.paintArea.toFixed(2)} sq ft
+                {isMetric
+                  ? result.paintAreaSqM.toFixed(2)
+                  : result.paintAreaSqFt.toFixed(2)}{" "}
+                {areaUnit}
               </span>
             </div>
 
@@ -217,15 +236,15 @@ export default function PaintResults({
           </div>
         </div>
 
-        {/* Smart notes */}
+        {/* Smart note */}
         <div className="mt-4 rounded-xl bg-slate-50 px-4 py-3">
           <div className="flex gap-2">
             <span>💡</span>
 
             <p className="text-xs leading-5 text-slate-600">
-              We recommend buying the rounded-up quantity
-              so you have enough paint for the complete job
-              and minor touch-ups.
+              The recommended purchase quantity is
+              rounded up so you have enough paint for
+              the complete job and minor touch-ups.
             </p>
           </div>
         </div>
