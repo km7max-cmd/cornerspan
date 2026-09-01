@@ -8,9 +8,23 @@ import PaintResults from "./components/PaintResults";
 import PaintTips from "./components/PaintTips";
 import { calculatePaint } from "./utils/calculations";
 
+type CurrencyCode =
+  | "USD"
+  | "INR"
+  | "EUR"
+  | "GBP"
+  | "AED"
+  | "AUD"
+  | "CAD"
+  | "JPY"
+  | "SAR";
+
 export default function PaintCalculator() {
   const [jobType, setJobType] = useState("room");
   const [unit, setUnit] = useState("us");
+
+  const [currency, setCurrency] =
+    useState<CurrencyCode>("USD");
 
   const [length, setLength] = useState("");
   const [width, setWidth] = useState("");
@@ -27,6 +41,16 @@ export default function PaintCalculator() {
   const [result, setResult] =
     useState<ReturnType<typeof calculatePaint> | null>(null);
 
+  const currencySymbol =
+    new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency,
+      maximumFractionDigits: 2,
+    })
+      .formatToParts(0)
+      .find((part) => part.type === "currency")
+      ?.value ?? currency;
+
   function handleCalculate() {
     const l = Number(length);
     const w = Number(width);
@@ -38,15 +62,40 @@ export default function PaintCalculator() {
     }
 
     const calculated = calculatePaint({
-      jobType: jobType as "room" | "walls" | "ceiling",
+      jobType: jobType as
+        | "room"
+        | "walls"
+        | "ceiling",
+
       length: l,
       width: w,
       height: h,
-      doors: Math.max(0, Number(doors) || 0),
-      windows: Math.max(0, Number(windows) || 0),
-      coats: Math.max(1, Number(coats) || 1),
-      coverage: Math.max(1, Number(coverage) || 350),
-      pricePerGallon: Math.max(0, Number(price) || 0),
+
+      doors: Math.max(
+        0,
+        Number(doors) || 0
+      ),
+
+      windows: Math.max(
+        0,
+        Number(windows) || 0
+      ),
+
+      coats: Math.max(
+        1,
+        Number(coats) || 1
+      ),
+
+      coverage: Math.max(
+        1,
+        Number(coverage) || 350
+      ),
+
+      pricePerGallon: Math.max(
+        0,
+        Number(price) || 0
+      ),
+
       laborPricePerSqFt: Math.max(
         0,
         Number(laborPrice) || 0
@@ -74,16 +123,17 @@ export default function PaintCalculator() {
 
         <section className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
 
-          <h2 className="mb-5 text-xl font-bold text-slate-900">
-            Paint Calculator
-          </h2>
-
           <PaintInputs
             jobType={jobType}
             setJobType={setJobType}
 
             unit={unit}
             setUnit={setUnit}
+
+            currency={currency}
+            setCurrency={setCurrency}
+
+            currencySymbol={currencySymbol}
 
             length={length}
             setLength={setLength}
@@ -116,14 +166,18 @@ export default function PaintCalculator() {
           <button
             type="button"
             onClick={handleCalculate}
-            className="mt-6 w-full rounded-xl bg-blue-600 px-5 py-3 font-bold text-white transition hover:bg-blue-700"
+            className="mt-6 w-full rounded-xl bg-blue-600 px-5 py-3.5 font-bold text-white shadow-sm transition hover:bg-blue-700 active:scale-[0.99]"
           >
-            Calculate Paint
+            ✨ Generate Paint Estimate
           </button>
 
         </section>
 
-        <PaintResults result={result} />
+        <PaintResults
+          result={result}
+          currency={currency}
+          currencySymbol={currencySymbol}
+        />
 
         <PaintTips />
 
