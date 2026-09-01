@@ -1,78 +1,82 @@
+import type { PaintCalculationResult } from "../utils/calculations";
+
 type PaintResultsProps = {
-  wallArea: number;
-  ceilingArea: number;
-  doorArea: number;
-  windowArea: number;
-  paintableArea: number;
-  totalPaintArea: number;
-  gallonsRequired: number;
-  gallonsToBuy: number;
-  estimatedCost: number;
+  result: PaintCalculationResult | null;
 };
 
 export default function PaintResults({
-  wallArea,
-  ceilingArea,
-  doorArea,
-  windowArea,
-  paintableArea,
-  totalPaintArea,
-  gallonsRequired,
-  gallonsToBuy,
-  estimatedCost,
+  result,
 }: PaintResultsProps) {
   return (
-    <div className="mt-6 rounded-xl bg-slate-100 p-5">
-      <h2 className="mb-4 text-2xl font-bold">
-        Paint Estimate Results
+    <div className="mt-6 rounded-xl border border-slate-300 bg-white p-5 shadow-sm">
+      <h2 className="mb-6 text-2xl font-bold text-slate-800">
+        Answer
       </h2>
 
-      <div className="space-y-2">
-        <p>
-          Wall Area:
-          <b> {wallArea.toFixed(2)} sq ft</b>
+      {!result ? (
+        <p className="text-slate-500">
+          Enter your room dimensions and calculate.
         </p>
+      ) : (
+        <div className="space-y-5">
 
-        <p>
-          Ceiling Area:
-          <b> {ceilingArea.toFixed(2)} sq ft</b>
-        </p>
+          <div>
+            <p className="font-semibold text-slate-700">
+              Paint Needed:
+            </p>
+            <p className="text-xl font-bold">
+              {result.gallonsNeeded.toFixed(2)} gallons
+            </p>
+          </div>
 
-        <p>
-          Door Area Deduction:
-          <b> {doorArea.toFixed(2)} sq ft</b>
-        </p>
+          <div>
+            <p className="font-semibold text-slate-700">
+              Purchase:
+            </p>
+            <p className="text-xl font-bold">
+              {result.gallonsToBuy} gallon
+              {result.gallonsToBuy !== 1 ? "s" : ""}
+            </p>
+          </div>
 
-        <p>
-          Window Area Deduction:
-          <b> {windowArea.toFixed(2)} sq ft</b>
-        </p>
+          <div>
+            <p className="font-semibold text-slate-700">
+              Paint Cost:
+            </p>
+            <p className="text-xl font-bold">
+              ${result.paintCost.toFixed(2)}
+            </p>
+          </div>
 
-        <p>
-          Paintable Area:
-          <b> {paintableArea.toFixed(2)} sq ft</b>
-        </p>
+          <div>
+            <p className="font-semibold text-slate-700">
+              Labor:
+            </p>
+            <p className="text-xl font-bold">
+              ${result.laborCost.toFixed(2)}
+            </p>
+          </div>
 
-        <p>
-          Total Paint Area:
-          <b> {totalPaintArea.toFixed(2)} sq ft</b>
-        </p>
+          <div className="border-t pt-5">
+            <p className="font-semibold text-slate-700">
+              Total Estimated Cost:
+            </p>
+            <p className="text-2xl font-bold text-blue-600">
+              ${result.totalCost.toFixed(2)}
+            </p>
+          </div>
 
-        <p>
-          Paint Required:
-          <b> {gallonsRequired.toFixed(2)} gallons</b>
-        </p>
+          <div>
+            <p className="font-semibold text-slate-700">
+              Painted Area:
+            </p>
+            <p className="text-xl font-bold">
+              {result.paintedArea.toFixed(2)} sq ft
+            </p>
+          </div>
 
-        <p>
-          Gallons to Buy:
-          <b> {gallonsToBuy} gallons</b>
-        </p>
-
-        <p className="pt-2 text-xl font-bold text-green-600">
-          Estimated Cost:
-          <b> ${estimatedCost.toFixed(2)}</b>
-        </p>
-      </div>
+        </div>
+      )}
     </div>
   );
 }
