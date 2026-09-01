@@ -100,6 +100,11 @@ export default function PaintCalculator() {
         0,
         Number(laborPrice) || 0
       ),
+
+      // Important:
+      // Pass the selected measurement system
+      // to the calculation engine.
+      unit: unit as "us" | "metric",
     });
 
     setResult(calculated);
