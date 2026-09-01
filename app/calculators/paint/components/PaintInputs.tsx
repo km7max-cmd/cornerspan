@@ -39,12 +39,12 @@ function Field({
   placeholder?: string;
 }) {
   return (
-    <div>
+    <div className="min-w-0">
       <label className="mb-1.5 block text-sm font-medium text-slate-600">
         {label}
       </label>
 
-      <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-slate-50 transition focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-100">
+      <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-slate-50 transition-all focus-within:border-blue-500 focus-within:bg-white focus-within:ring-4 focus-within:ring-blue-500/10">
         <input
           type="number"
           min="0"
@@ -57,7 +57,7 @@ function Field({
         />
 
         {unit && (
-          <span className="flex items-center border-l border-slate-200 px-3 text-sm font-semibold text-slate-500">
+          <span className="flex shrink-0 items-center border-l border-slate-200 px-3 text-sm font-semibold text-slate-500">
             {unit}
           </span>
         )}
@@ -76,24 +76,24 @@ function Counter({
   const number = Math.max(0, Number(value) || 0);
 
   return (
-    <div className="flex shrink-0 items-center rounded-xl border border-slate-200 bg-white">
+    <div className="flex items-center overflow-hidden rounded-xl border border-slate-200 bg-white">
       <button
         type="button"
         onClick={() => setValue(String(Math.max(0, number - 1)))}
-        className="h-11 w-10 text-xl font-semibold text-slate-500 hover:bg-slate-100"
+        className="h-11 w-10 text-xl font-medium text-slate-500 transition hover:bg-slate-100 active:scale-95"
         aria-label="Decrease"
       >
         −
       </button>
 
-      <span className="min-w-8 text-center font-bold text-slate-900">
+      <span className="min-w-10 text-center text-sm font-bold text-slate-900">
         {number}
       </span>
 
       <button
         type="button"
         onClick={() => setValue(String(number + 1))}
-        className="h-11 w-10 text-xl font-semibold text-blue-600 hover:bg-blue-50"
+        className="h-11 w-10 text-xl font-medium text-blue-600 transition hover:bg-blue-50 active:scale-95"
         aria-label="Increase"
       >
         +
@@ -126,37 +126,89 @@ export default function PaintInputs({
   laborPrice,
   setLaborPrice,
 }: PaintInputsProps) {
-  return (
-    <div className="space-y-5">
+  const hasDimensions =
+    Number(length) > 0 &&
+    Number(width) > 0 &&
+    Number(height) > 0;
 
-      {/* Smart intro */}
-      <div className="rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 p-4 text-white">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/15 text-xl">
+  const dimensionsComplete =
+    Number(length) > 0 &&
+    Number(width) > 0 &&
+    Number(height) > 0;
+
+  const getStatus = () => {
+    if (!length && !width && !height) {
+      return "Start with your space";
+    }
+
+    if (!dimensionsComplete) {
+      return "Almost there — add the missing dimensions";
+    }
+
+    if (jobType === "ceiling") {
+      return "Space ready — check your paint settings";
+    }
+
+    return "Space understood — refine openings if needed";
+  };
+
+  return (
+    <div className="space-y-4">
+
+      {/* AI-style hero */}
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 p-4 text-white shadow-lg shadow-blue-500/15">
+        <div className="absolute -right-10 -top-10 h-28 w-28 rounded-full bg-white/10 blur-2xl" />
+        <div className="absolute -bottom-10 left-20 h-24 w-24 rounded-full bg-cyan-300/10 blur-2xl" />
+
+        <div className="relative flex items-center gap-3">
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/15 text-xl ring-1 ring-white/20">
             ✨
           </div>
 
-          <div>
-            <p className="font-bold">Smart Paint Estimate</p>
+          <div className="min-w-0">
+            <p className="text-base font-bold">
+              Smart Paint Estimate
+            </p>
+
             <p className="text-sm text-blue-100">
-              Tell us about your space
+              {getStatus()}
             </p>
           </div>
+
+          <div className="ml-auto hidden rounded-full bg-white/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-blue-100 sm:block">
+            Smart
+          </div>
+        </div>
+
+        {/* Progress */}
+        <div className="relative mt-4 h-1 overflow-hidden rounded-full bg-white/15">
+          <div
+            className={`h-full rounded-full bg-white transition-all duration-500 ${
+              hasDimensions ? "w-full" : length || width || height ? "w-2/3" : "w-1/4"
+            }`}
+          />
         </div>
       </div>
 
-      {/* Job type */}
-      <div>
-        <div className="mb-2 flex items-center justify-between gap-3">
-          <label className="text-sm font-semibold text-slate-700">
-            What are you painting?
-          </label>
+      {/* What are you painting? */}
+      <div className="rounded-2xl border border-slate-200 bg-white p-4">
+        <div className="mb-3 flex items-center justify-between gap-3">
+          <div>
+            <p className="font-bold text-slate-900">
+              What are you painting?
+            </p>
 
+            <p className="mt-0.5 text-xs text-slate-500">
+              Choose the area you want to estimate
+            </p>
+          </div>
+
+          {/* Units */}
           <div className="flex shrink-0 rounded-lg bg-slate-100 p-1">
             <button
               type="button"
               onClick={() => setUnit("us")}
-              className={`rounded-md px-2.5 py-1 text-xs font-semibold ${
+              className={`rounded-md px-2.5 py-1.5 text-xs font-semibold transition ${
                 unit === "us"
                   ? "bg-white text-blue-600 shadow-sm"
                   : "text-slate-500"
@@ -168,7 +220,7 @@ export default function PaintInputs({
             <button
               type="button"
               onClick={() => setUnit("metric")}
-              className={`rounded-md px-2.5 py-1 text-xs font-semibold ${
+              className={`rounded-md px-2.5 py-1.5 text-xs font-semibold transition ${
                 unit === "metric"
                   ? "bg-white text-blue-600 shadow-sm"
                   : "text-slate-500"
@@ -183,16 +235,16 @@ export default function PaintInputs({
           {[
             ["room", "🏠", "Room"],
             ["walls", "🧱", "Walls"],
-            ["ceiling", "⬜", "Ceiling"],
+            ["ceiling", "◻️", "Ceiling"],
           ].map(([value, icon, label]) => (
             <button
               key={value}
               type="button"
               onClick={() => setJobType(value)}
-              className={`rounded-xl border px-2 py-3 text-sm font-semibold transition ${
+              className={`rounded-xl border px-2 py-3 text-sm font-semibold transition-all active:scale-[0.98] ${
                 jobType === value
-                  ? "border-blue-500 bg-blue-50 text-blue-700"
-                  : "border-slate-200 bg-white text-slate-600"
+                  ? "border-blue-500 bg-blue-50 text-blue-700 shadow-sm"
+                  : "border-slate-200 bg-white text-slate-600 hover:border-slate-300"
               }`}
             >
               <span className="mr-1">{icon}</span>
@@ -204,14 +256,26 @@ export default function PaintInputs({
 
       {/* Dimensions */}
       <div className="rounded-2xl border border-slate-200 bg-white p-4">
-        <div className="mb-4">
-          <p className="font-bold text-slate-900">
-            📐 Space dimensions
-          </p>
+        <div className="mb-4 flex items-start gap-3">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-lg">
+            📐
+          </div>
 
-          <p className="text-xs text-slate-500">
-            Enter your room measurements
-          </p>
+          <div>
+            <p className="font-bold text-slate-900">
+              Space dimensions
+            </p>
+
+            <p className="text-xs text-slate-500">
+              Tell us the size of your space
+            </p>
+          </div>
+
+          {dimensionsComplete && (
+            <div className="ml-auto text-sm font-bold text-green-600">
+              ✓
+            </div>
+          )}
         </div>
 
         <div className="grid grid-cols-3 gap-2.5">
@@ -239,25 +303,36 @@ export default function PaintInputs({
             placeholder="8"
           />
         </div>
+
+        {!dimensionsComplete && (
+          <div className="mt-3 flex items-center gap-2 text-xs text-slate-500">
+            <span className="h-1.5 w-1.5 rounded-full bg-blue-500" />
+            Enter all three measurements to continue
+          </div>
+        )}
       </div>
 
       {/* Openings */}
       {jobType !== "ceiling" && (
         <div className="rounded-2xl border border-slate-200 bg-white p-4">
-          <div className="mb-3">
-            <p className="font-bold text-slate-900">
-              🚪 Openings
-            </p>
+          <div className="mb-3 flex items-start gap-3">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-amber-50 text-lg">
+              🚪
+            </div>
 
-            <p className="text-xs text-slate-500">
-              We'll subtract these areas
-            </p>
+            <div>
+              <p className="font-bold text-slate-900">
+                Openings
+              </p>
+
+              <p className="text-xs text-slate-500">
+                We'll automatically subtract these areas
+              </p>
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-
-            {/* Doors */}
-            <div className="flex items-center justify-between gap-3 rounded-xl bg-slate-50 px-3 py-2.5">
+          <div className="grid gap-2.5 sm:grid-cols-2">
+            <div className="flex items-center justify-between rounded-xl bg-slate-50 px-3 py-2">
               <span className="text-sm font-medium text-slate-700">
                 Doors
               </span>
@@ -268,8 +343,7 @@ export default function PaintInputs({
               />
             </div>
 
-            {/* Windows */}
-            <div className="flex items-center justify-between gap-3 rounded-xl bg-slate-50 px-3 py-2.5">
+            <div className="flex items-center justify-between rounded-xl bg-slate-50 px-3 py-2">
               <span className="text-sm font-medium text-slate-700">
                 Windows
               </span>
@@ -279,17 +353,20 @@ export default function PaintInputs({
                 setValue={setWindows}
               />
             </div>
-
           </div>
         </div>
       )}
 
-      {/* Paint settings */}
-      <details className="group rounded-2xl border border-slate-200 bg-white">
-        <summary className="flex cursor-pointer list-none items-center justify-between p-4">
-          <div>
+      {/* Smart paint settings */}
+      <details className="group overflow-hidden rounded-2xl border border-slate-200 bg-white">
+        <summary className="flex cursor-pointer list-none items-center gap-3 p-4">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-lg">
+            ⚙️
+          </div>
+
+          <div className="min-w-0">
             <p className="font-bold text-slate-900">
-              ⚙️ Paint settings
+              Paint settings
             </p>
 
             <p className="text-xs text-slate-500">
@@ -297,43 +374,49 @@ export default function PaintInputs({
             </p>
           </div>
 
-          <span className="text-slate-400 transition group-open:rotate-180">
+          <span className="ml-auto text-slate-400 transition-transform duration-200 group-open:rotate-180">
             ↓
           </span>
         </summary>
 
-        <div className="grid gap-4 border-t border-slate-100 p-4 sm:grid-cols-3">
-          <Field
-            label="Coats"
-            value={coats}
-            onChange={setCoats}
-            placeholder="2"
-          />
-
-          <Field
-            label="Coverage / gallon"
-            value={coverage}
-            onChange={setCoverage}
-            unit={unit === "us" ? "ft²" : "m²"}
-            placeholder="350"
-          />
-
-          <Field
-            label="Price / gallon"
-            value={price}
-            onChange={setPrice}
-            unit="$"
-            placeholder="45"
-          />
-
-          <div className="sm:col-span-3">
+        <div className="border-t border-slate-100 p-4">
+          <div className="grid gap-4 sm:grid-cols-3">
             <Field
-              label="Labor / sq ft (optional)"
-              value={laborPrice}
-              onChange={setLaborPrice}
-              unit="$"
-              placeholder="0"
+              label="Coats"
+              value={coats}
+              onChange={setCoats}
+              placeholder="2"
             />
+
+            <Field
+              label="Coverage / gallon"
+              value={coverage}
+              onChange={setCoverage}
+              unit={unit === "us" ? "ft²" : "m²"}
+              placeholder="350"
+            />
+
+            <Field
+              label="Price / gallon"
+              value={price}
+              onChange={setPrice}
+              unit="$"
+              placeholder="45"
+            />
+
+            <div className="sm:col-span-3">
+              <Field
+                label="Labor / sq ft"
+                value={laborPrice}
+                onChange={setLaborPrice}
+                unit="$"
+                placeholder="Optional"
+              />
+
+              <p className="mt-1.5 text-xs text-slate-400">
+                Leave at 0 if you only want paint cost.
+              </p>
+            </div>
           </div>
         </div>
       </details>
