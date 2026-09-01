@@ -37,14 +37,36 @@ export default function PaintCalculator() {
   const [currency, setCurrency] =
     useState<CurrencyCode>("USD");
 
+  /*
+   * Main dimensions
+   */
   const [length, setLength] = useState("");
   const [width, setWidth] = useState("");
   const [height, setHeight] = useState("");
 
-  const [doors, setDoors] = useState("0");
-  const [windows, setWindows] = useState("0");
+  /*
+   * Mixed-unit values
+   *
+   * Example:
+   * 12 ft 6 in
+   */
+  const [lengthSecondary, setLengthSecondary] =
+    useState("");
 
-  const [coats, setCoats] = useState("2");
+  const [widthSecondary, setWidthSecondary] =
+    useState("");
+
+  const [heightSecondary, setHeightSecondary] =
+    useState("");
+
+  const [doors, setDoors] =
+    useState("0");
+
+  const [windows, setWindows] =
+    useState("0");
+
+  const [coats, setCoats] =
+    useState("2");
 
   const [coverage, setCoverage] =
     useState("350");
@@ -73,9 +95,9 @@ export default function PaintCalculator() {
       ?.value ?? currency;
 
   function handleCalculate() {
-    const l = Number(length);
-    const w = Number(width);
-    const h = Number(height);
+    const l = Number(length) || 0;
+    const w = Number(width) || 0;
+    const h = Number(height) || 0;
 
     if (l <= 0 || w <= 0 || h <= 0) {
       setResult(null);
@@ -91,6 +113,15 @@ export default function PaintCalculator() {
       length: l,
       width: w,
       height: h,
+
+      lengthSecondary:
+        Number(lengthSecondary) || 0,
+
+      widthSecondary:
+        Number(widthSecondary) || 0,
+
+      heightSecondary:
+        Number(heightSecondary) || 0,
 
       doors: Math.max(
         0,
@@ -122,14 +153,7 @@ export default function PaintCalculator() {
         Number(laborPrice) || 0
       ),
 
-      unit: unit as
-        | "ft"
-        | "in"
-        | "cm"
-        | "m"
-        | "yd"
-        | "ft-in"
-        | "m-cm",
+      unit,
     });
 
     setResult(calculated);
@@ -158,14 +182,12 @@ export default function PaintCalculator() {
             setJobType={setJobType}
 
             unit={unit}
-            setUnit={
-              (value) =>
-                setUnit(value as UnitCode)
+            setUnit={(value) =>
+              setUnit(value as UnitCode)
             }
 
             currency={currency}
             setCurrency={setCurrency}
-
             currencySymbol={currencySymbol}
 
             length={length}
@@ -176,6 +198,15 @@ export default function PaintCalculator() {
 
             height={height}
             setHeight={setHeight}
+
+            lengthSecondary={lengthSecondary}
+            setLengthSecondary={setLengthSecondary}
+
+            widthSecondary={widthSecondary}
+            setWidthSecondary={setWidthSecondary}
+
+            heightSecondary={heightSecondary}
+            setHeightSecondary={setHeightSecondary}
 
             doors={doors}
             setDoors={setDoors}
