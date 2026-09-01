@@ -76,24 +76,24 @@ function Counter({
   const number = Math.max(0, Number(value) || 0);
 
   return (
-    <div className="flex items-center rounded-xl border border-slate-200 bg-slate-50">
+    <div className="flex shrink-0 items-center rounded-xl border border-slate-200 bg-white">
       <button
         type="button"
         onClick={() => setValue(String(Math.max(0, number - 1)))}
-        className="h-11 w-11 text-xl font-semibold text-slate-500 hover:bg-slate-100"
+        className="h-11 w-10 text-xl font-semibold text-slate-500 hover:bg-slate-100"
         aria-label="Decrease"
       >
         −
       </button>
 
-      <span className="min-w-10 text-center font-bold text-slate-900">
+      <span className="min-w-8 text-center font-bold text-slate-900">
         {number}
       </span>
 
       <button
         type="button"
         onClick={() => setValue(String(number + 1))}
-        className="h-11 w-11 text-xl font-semibold text-blue-600 hover:bg-blue-50"
+        className="h-11 w-10 text-xl font-semibold text-blue-600 hover:bg-blue-50"
         aria-label="Increase"
       >
         +
@@ -132,7 +132,7 @@ export default function PaintInputs({
       {/* Smart intro */}
       <div className="rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 p-4 text-white">
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/15 text-xl">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/15 text-xl">
             ✨
           </div>
 
@@ -147,12 +147,12 @@ export default function PaintInputs({
 
       {/* Job type */}
       <div>
-        <div className="mb-2 flex items-center justify-between">
+        <div className="mb-2 flex items-center justify-between gap-3">
           <label className="text-sm font-semibold text-slate-700">
             What are you painting?
           </label>
 
-          <div className="flex rounded-lg bg-slate-100 p-1">
+          <div className="flex shrink-0 rounded-lg bg-slate-100 p-1">
             <button
               type="button"
               onClick={() => setUnit("us")}
@@ -208,6 +208,7 @@ export default function PaintInputs({
           <p className="font-bold text-slate-900">
             📐 Space dimensions
           </p>
+
           <p className="text-xs text-slate-500">
             Enter your room measurements
           </p>
@@ -247,25 +248,38 @@ export default function PaintInputs({
             <p className="font-bold text-slate-900">
               🚪 Openings
             </p>
+
             <p className="text-xs text-slate-500">
               We'll subtract these areas
             </p>
           </div>
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            className="flex items-center justify-between rounded-xl bg-slate-50 px-3 py-2.5"
+
+            {/* Doors */}
+            <div className="flex items-center justify-between gap-3 rounded-xl bg-slate-50 px-3 py-2.5">
               <span className="text-sm font-medium text-slate-700">
                 Doors
               </span>
-              <Counter value={doors} setValue={setDoors} />
+
+              <Counter
+                value={doors}
+                setValue={setDoors}
+              />
             </div>
 
-            <div className="flex items-center justify-between rounded-xl bg-slate-50 p-2.5">
+            {/* Windows */}
+            <div className="flex items-center justify-between gap-3 rounded-xl bg-slate-50 px-3 py-2.5">
               <span className="text-sm font-medium text-slate-700">
                 Windows
               </span>
-              <Counter value={windows} setValue={setWindows} />
+
+              <Counter
+                value={windows}
+                setValue={setWindows}
+              />
             </div>
+
           </div>
         </div>
       )}
@@ -277,6 +291,7 @@ export default function PaintInputs({
             <p className="font-bold text-slate-900">
               ⚙️ Paint settings
             </p>
+
             <p className="text-xs text-slate-500">
               Coats, coverage & pricing
             </p>
