@@ -19,9 +19,20 @@ type CurrencyCode =
   | "JPY"
   | "SAR";
 
+type UnitCode =
+  | "ft"
+  | "in"
+  | "cm"
+  | "m"
+  | "yd"
+  | "ft-in"
+  | "m-cm";
+
 export default function PaintCalculator() {
   const [jobType, setJobType] = useState("room");
-  const [unit, setUnit] = useState("us");
+
+  const [unit, setUnit] =
+    useState<UnitCode>("ft");
 
   const [currency, setCurrency] =
     useState<CurrencyCode>("USD");
@@ -34,12 +45,20 @@ export default function PaintCalculator() {
   const [windows, setWindows] = useState("0");
 
   const [coats, setCoats] = useState("2");
-  const [coverage, setCoverage] = useState("350");
-  const [price, setPrice] = useState("45");
-  const [laborPrice, setLaborPrice] = useState("0");
+
+  const [coverage, setCoverage] =
+    useState("350");
+
+  const [price, setPrice] =
+    useState("45");
+
+  const [laborPrice, setLaborPrice] =
+    useState("0");
 
   const [result, setResult] =
-    useState<ReturnType<typeof calculatePaint> | null>(null);
+    useState<ReturnType<typeof calculatePaint> | null>(
+      null
+    );
 
   const currencySymbol =
     new Intl.NumberFormat("en-US", {
@@ -48,7 +67,9 @@ export default function PaintCalculator() {
       maximumFractionDigits: 2,
     })
       .formatToParts(0)
-      .find((part) => part.type === "currency")
+      .find(
+        (part) => part.type === "currency"
+      )
       ?.value ?? currency;
 
   function handleCalculate() {
@@ -101,10 +122,14 @@ export default function PaintCalculator() {
         Number(laborPrice) || 0
       ),
 
-      // Important:
-      // Pass the selected measurement system
-      // to the calculation engine.
-      unit: unit as "us" | "metric",
+      unit: unit as
+        | "ft"
+        | "in"
+        | "cm"
+        | "m"
+        | "yd"
+        | "ft-in"
+        | "m-cm",
     });
 
     setResult(calculated);
@@ -133,7 +158,10 @@ export default function PaintCalculator() {
             setJobType={setJobType}
 
             unit={unit}
-            setUnit={setUnit}
+            setUnit={
+              (value) =>
+                setUnit(value as UnitCode)
+            }
 
             currency={currency}
             setCurrency={setCurrency}
