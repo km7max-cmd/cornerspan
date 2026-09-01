@@ -1,26 +1,51 @@
 "use client";
 
+type CurrencyCode =
+  | "USD"
+  | "INR"
+  | "EUR"
+  | "GBP"
+  | "AED"
+  | "AUD"
+  | "CAD"
+  | "JPY"
+  | "SAR";
+
 type PaintInputsProps = {
   jobType: string;
   setJobType: (value: string) => void;
+
   unit: string;
   setUnit: (value: string) => void;
+
+  currency: CurrencyCode;
+  setCurrency: (value: CurrencyCode) => void;
+  currencySymbol: string;
+
   length: string;
   setLength: (value: string) => void;
+
   width: string;
   setWidth: (value: string) => void;
+
   height: string;
   setHeight: (value: string) => void;
+
   doors: string;
   setDoors: (value: string) => void;
+
   windows: string;
   setWindows: (value: string) => void;
+
   coats: string;
   setCoats: (value: string) => void;
+
   coverage: string;
   setCoverage: (value: string) => void;
+
   price: string;
   setPrice: (value: string) => void;
+
   laborPrice: string;
   setLaborPrice: (value: string) => void;
 };
@@ -76,10 +101,12 @@ function Counter({
   const number = Math.max(0, Number(value) || 0);
 
   return (
-    <div className="flex items-center overflow-hidden rounded-xl border border-slate-200 bg-white">
+    <div className="flex shrink-0 items-center overflow-hidden rounded-xl border border-slate-200 bg-white">
       <button
         type="button"
-        onClick={() => setValue(String(Math.max(0, number - 1)))}
+        onClick={() =>
+          setValue(String(Math.max(0, number - 1)))
+        }
         className="h-11 w-10 text-xl font-medium text-slate-500 transition hover:bg-slate-100 active:scale-95"
         aria-label="Decrease"
       >
@@ -92,7 +119,9 @@ function Counter({
 
       <button
         type="button"
-        onClick={() => setValue(String(number + 1))}
+        onClick={() =>
+          setValue(String(number + 1))
+        }
         className="h-11 w-10 text-xl font-medium text-blue-600 transition hover:bg-blue-50 active:scale-95"
         aria-label="Increase"
       >
@@ -102,11 +131,29 @@ function Counter({
   );
 }
 
+const currencies: {
+  code: CurrencyCode;
+  name: string;
+}[] = [
+  { code: "USD", name: "US Dollar" },
+  { code: "INR", name: "Indian Rupee" },
+  { code: "EUR", name: "Euro" },
+  { code: "GBP", name: "British Pound" },
+  { code: "AED", name: "UAE Dirham" },
+  { code: "AUD", name: "Australian Dollar" },
+  { code: "CAD", name: "Canadian Dollar" },
+  { code: "JPY", name: "Japanese Yen" },
+  { code: "SAR", name: "Saudi Riyal" },
+];
+
 export default function PaintInputs({
   jobType,
   setJobType,
   unit,
   setUnit,
+  currency,
+  setCurrency,
+  currencySymbol,
   length,
   setLength,
   width,
@@ -126,11 +173,6 @@ export default function PaintInputs({
   laborPrice,
   setLaborPrice,
 }: PaintInputsProps) {
-  const hasDimensions =
-    Number(length) > 0 &&
-    Number(width) > 0 &&
-    Number(height) > 0;
-
   const dimensionsComplete =
     Number(length) > 0 &&
     Number(width) > 0 &&
@@ -155,10 +197,9 @@ export default function PaintInputs({
   return (
     <div className="space-y-4">
 
-      {/* AI-style hero */}
+      {/* Smart Header */}
       <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 p-4 text-white shadow-lg shadow-blue-500/15">
         <div className="absolute -right-10 -top-10 h-28 w-28 rounded-full bg-white/10 blur-2xl" />
-        <div className="absolute -bottom-10 left-20 h-24 w-24 rounded-full bg-cyan-300/10 blur-2xl" />
 
         <div className="relative flex items-center gap-3">
           <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white/15 text-xl ring-1 ring-white/20">
@@ -166,7 +207,7 @@ export default function PaintInputs({
           </div>
 
           <div className="min-w-0">
-            <p className="text-base font-bold">
+            <p className="font-bold">
               Smart Paint Estimate
             </p>
 
@@ -180,17 +221,20 @@ export default function PaintInputs({
           </div>
         </div>
 
-        {/* Progress */}
         <div className="relative mt-4 h-1 overflow-hidden rounded-full bg-white/15">
           <div
             className={`h-full rounded-full bg-white transition-all duration-500 ${
-              hasDimensions ? "w-full" : length || width || height ? "w-2/3" : "w-1/4"
+              dimensionsComplete
+                ? "w-full"
+                : length || width || height
+                  ? "w-2/3"
+                  : "w-1/4"
             }`}
           />
         </div>
       </div>
 
-      {/* What are you painting? */}
+      {/* Job Type + Units */}
       <div className="rounded-2xl border border-slate-200 bg-white p-4">
         <div className="mb-3 flex items-center justify-between gap-3">
           <div>
@@ -203,7 +247,6 @@ export default function PaintInputs({
             </p>
           </div>
 
-          {/* Units */}
           <div className="flex shrink-0 rounded-lg bg-slate-100 p-1">
             <button
               type="button"
@@ -247,7 +290,10 @@ export default function PaintInputs({
                   : "border-slate-200 bg-white text-slate-600 hover:border-slate-300"
               }`}
             >
-              <span className="mr-1">{icon}</span>
+              <span className="mr-1">
+                {icon}
+              </span>
+
               {label}
             </button>
           ))}
@@ -272,7 +318,7 @@ export default function PaintInputs({
           </div>
 
           {dimensionsComplete && (
-            <div className="ml-auto text-sm font-bold text-green-600">
+            <div className="ml-auto font-bold text-green-600">
               ✓
             </div>
           )}
@@ -303,13 +349,6 @@ export default function PaintInputs({
             placeholder="8"
           />
         </div>
-
-        {!dimensionsComplete && (
-          <div className="mt-3 flex items-center gap-2 text-xs text-slate-500">
-            <span className="h-1.5 w-1.5 rounded-full bg-blue-500" />
-            Enter all three measurements to continue
-          </div>
-        )}
       </div>
 
       {/* Openings */}
@@ -332,7 +371,7 @@ export default function PaintInputs({
           </div>
 
           <div className="grid gap-2.5 sm:grid-cols-2">
-            <div className="flex items-center justify-between rounded-xl bg-slate-50 px-3 py-2">
+            <div className="flex items-center justify-between gap-3 rounded-xl bg-slate-50 px-3 py-2">
               <span className="text-sm font-medium text-slate-700">
                 Doors
               </span>
@@ -343,7 +382,7 @@ export default function PaintInputs({
               />
             </div>
 
-            <div className="flex items-center justify-between rounded-xl bg-slate-50 px-3 py-2">
+            <div className="flex items-center justify-between gap-3 rounded-xl bg-slate-50 px-3 py-2">
               <span className="text-sm font-medium text-slate-700">
                 Windows
               </span>
@@ -357,7 +396,7 @@ export default function PaintInputs({
         </div>
       )}
 
-      {/* Smart paint settings */}
+      {/* Paint Settings */}
       <details className="group overflow-hidden rounded-2xl border border-slate-200 bg-white">
         <summary className="flex cursor-pointer list-none items-center gap-3 p-4">
           <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-lg">
@@ -370,7 +409,7 @@ export default function PaintInputs({
             </p>
 
             <p className="text-xs text-slate-500">
-              Coats, coverage & pricing
+              Coats, coverage, pricing & labor
             </p>
           </div>
 
@@ -380,43 +419,72 @@ export default function PaintInputs({
         </summary>
 
         <div className="border-t border-slate-100 p-4">
-          <div className="grid gap-4 sm:grid-cols-3">
-            <Field
-              label="Coats"
-              value={coats}
-              onChange={setCoats}
-              placeholder="2"
-            />
+          <div className="space-y-4">
 
-            <Field
-              label="Coverage / gallon"
-              value={coverage}
-              onChange={setCoverage}
-              unit={unit === "us" ? "ft²" : "m²"}
-              placeholder="350"
-            />
+            {/* Currency */}
+            <div>
+              <label className="mb-1.5 block text-sm font-medium text-slate-600">
+                Currency
+              </label>
 
-            <Field
-              label="Price / gallon"
-              value={price}
-              onChange={setPrice}
-              unit="$"
-              placeholder="45"
-            />
+              <select
+                value={currency}
+                onChange={(e) =>
+                  setCurrency(
+                    e.target.value as CurrencyCode
+                  )
+                }
+                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-3 text-sm font-semibold text-slate-900 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10"
+              >
+                {currencies.map((item) => (
+                  <option
+                    key={item.code}
+                    value={item.code}
+                  >
+                    {item.code} — {item.name}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-            <div className="sm:col-span-3">
+            <div className="grid gap-4 sm:grid-cols-3">
               <Field
-                label="Labor / sq ft"
-                value={laborPrice}
-                onChange={setLaborPrice}
-                unit="$"
-                placeholder="Optional"
+                label="Coats"
+                value={coats}
+                onChange={setCoats}
+                placeholder="2"
               />
 
-              <p className="mt-1.5 text-xs text-slate-400">
-                Leave at 0 if you only want paint cost.
-              </p>
+              <Field
+                label="Coverage / gallon"
+                value={coverage}
+                onChange={setCoverage}
+                unit={unit === "us" ? "ft²" : "m²"}
+                placeholder="350"
+              />
+
+              <Field
+                label="Price / gallon"
+                value={price}
+                onChange={setPrice}
+                unit={currencySymbol}
+                placeholder="45"
+              />
             </div>
+
+            <Field
+              label="Labor / sq ft"
+              value={laborPrice}
+              onChange={setLaborPrice}
+              unit={currencySymbol}
+              placeholder="Optional"
+            />
+
+            <p className="text-xs leading-5 text-slate-400">
+              Enter local paint and labor prices in your
+              selected currency. No exchange-rate conversion
+              is applied.
+            </p>
           </div>
         </div>
       </details>
