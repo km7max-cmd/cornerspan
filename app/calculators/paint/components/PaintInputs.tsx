@@ -252,8 +252,8 @@ export default function PaintInputs({
             </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
-            <div className="flex items-center justify-between rounded-xl bg-slate-50 p-2.5">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            className="flex items-center justify-between rounded-xl bg-slate-50 px-3 py-2.5"
               <span className="text-sm font-medium text-slate-700">
                 Doors
               </span>
