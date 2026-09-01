@@ -3,26 +3,36 @@ export type PaintCalculationInput = {
   length: number;
   width: number;
   height: number;
+
   doors: number;
   windows: number;
+
   coats: number;
+
   coverage: number;
   pricePerGallon: number;
   laborPricePerSqFt: number;
+
+  unit: "us" | "metric";
 };
 
 export type PaintCalculationResult = {
   paintedArea: number;
   paintArea: number;
+
   gallonsNeeded: number;
   gallonsToBuy: number;
+
   paintCost: number;
   laborCost: number;
   totalCost: number;
 };
 
-const DOOR_AREA = 21; // 3 ft × 7 ft
-const WINDOW_AREA = 15; // 3 ft × 5 ft
+const DOOR_AREA_US = 21;
+const WINDOW_AREA_US = 15;
+
+const DOOR_AREA_METRIC = 1.95;
+const WINDOW_AREA_METRIC = 1.39;
 
 export function calculatePaint(
   input: PaintCalculationInput
@@ -38,41 +48,140 @@ export function calculatePaint(
     coverage,
     pricePerGallon,
     laborPricePerSqFt,
+    unit,
   } = input;
+
+  const safeLength = Math.max(0, length);
+  const safeWidth = Math.max(0, width);
+  const safeHeight = Math.max(0, height);
 
   let baseArea = 0;
 
-  if (jobType === "room" || jobType === "walls") {
-    baseArea = 2 * (length + width) * height;
+  // ---------------------------------------------
+  // Wall / Ceiling Area
+  // ---------------------------------------------
+
+  if (
+    jobType === "room" ||
+    jobType === "walls"
+  ) {
+    baseArea =
+      2 *
+      (safeLength + safeWidth) *
+      safeHeight;
   }
 
   if (jobType === "ceiling") {
-    baseArea = length * width;
+    baseArea =
+      safeLength * safeWidth;
   }
+
+  // ---------------------------------------------
+  // Doors & Windows
+  // ---------------------------------------------
+
+  const doorArea =
+    unit === "us"
+      ? doors * DOOR_AREA_US
+      : doors * DOOR_AREA_METRIC;
+
+  const windowArea =
+    unit === "us"
+      ? windows * WINDOW_AREA_US
+      : windows * WINDOW_AREA_METRIC;
 
   const openingsArea =
     jobType === "ceiling"
       ? 0
-      : doors * DOOR_AREA + windows * WINDOW_AREA;
+      : doorArea + windowArea;
 
-  const paintedArea = Math.max(0, baseArea - openingsArea);
+  const paintedArea = Math.max(
+    0,
+    baseArea - openingsArea
+  );
 
-  const safeCoats = Math.max(1, coats || 1);
-  const safeCoverage = Math.max(1, coverage || 400);
+  // ---------------------------------------------
+  // Multiple Coats
+  // ---------------------------------------------
 
-  const paintArea = paintedArea * safeCoats;
+  const safeCoats = Math.max(
+    1,
+    coats || 1
+  );
 
-  const gallonsNeeded = paintArea / safeCoverage;
+  const paintArea =
+    paintedArea * safeCoats;
 
-  // Always round up because paint is purchased in whole gallons.
-  const gallonsToBuy = Math.ceil(gallonsNeeded);
+  // ---------------------------------------------
+  // Coverage
+  //
+  // US:
+  // coverage = sq ft / gallon
+  //
+  // Metric:
+  // coverage = sq m / gallon
+  //
+  // Convert m² → ft² because
+  // paint quantity is still measured
+  // in US gallons.
+  // ---------------------------------------------
 
-  const paintCost = gallonsToBuy * Math.max(0, pricePerGallon || 0);
+  let coverageInSqFt = Math.max(
+    1,
+    coverage || 350
+  );
+
+  let paintAreaInSqFt =
+    paintArea;
+
+  if (unit === "metric") {
+    paintAreaInSqFt =
+      paintArea * 10.7639;
+
+    coverageInSqFt =
+      coverage * 10.7639;
+  }
+
+  // ---------------------------------------------
+  // Paint Required
+  // ---------------------------------------------
+
+  const gallonsNeeded =
+    paintAreaInSqFt /
+    coverageInSqFt;
+
+  const gallonsToBuy =
+    Math.ceil(gallonsNeeded);
+
+  // ---------------------------------------------
+  // Paint Cost
+  // ---------------------------------------------
+
+  const paintCost =
+    gallonsToBuy *
+    Math.max(
+      0,
+      pricePerGallon || 0
+    );
+
+  // ---------------------------------------------
+  // Labor
+  // ---------------------------------------------
+
+  const laborArea =
+    unit === "metric"
+      ? paintArea
+      : paintedArea;
 
   const laborCost =
-    paintedArea * Math.max(0, laborPricePerSqFt || 0);
+    laborArea *
+    Math.max(
+      0,
+      laborPricePerSqFt || 0
+    );
 
-  const totalCost = paintCost + laborCost;
+  const totalCost =
+    paintCost + laborCost;
 
   return {
     paintedArea,
