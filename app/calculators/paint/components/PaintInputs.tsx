@@ -31,6 +31,15 @@ type PaintInputsProps = {
   height: string;
   setHeight: (value: string) => void;
 
+  lengthSecondary: string;
+  setLengthSecondary: (value: string) => void;
+
+  widthSecondary: string;
+  setWidthSecondary: (value: string) => void;
+
+  heightSecondary: string;
+  setHeightSecondary: (value: string) => void;
+
   doors: string;
   setDoors: (value: string) => void;
 
@@ -49,6 +58,43 @@ type PaintInputsProps = {
   laborPrice: string;
   setLaborPrice: (value: string) => void;
 };
+
+type UnitCode =
+  | "ft"
+  | "in"
+  | "cm"
+  | "m"
+  | "yd"
+  | "ft-in"
+  | "m-cm";
+
+const units: {
+  code: UnitCode;
+  label: string;
+}[] = [
+  { code: "ft", label: "Feet (ft)" },
+  { code: "in", label: "Inches (in)" },
+  { code: "cm", label: "Centimeters (cm)" },
+  { code: "m", label: "Meters (m)" },
+  { code: "yd", label: "Yards (yd)" },
+  { code: "ft-in", label: "Feet / Inches (ft / in)" },
+  { code: "m-cm", label: "Meters / Centimeters (m / cm)" },
+];
+
+const currencies: {
+  code: CurrencyCode;
+  name: string;
+}[] = [
+  { code: "USD", name: "US Dollar" },
+  { code: "INR", name: "Indian Rupee" },
+  { code: "EUR", name: "Euro" },
+  { code: "GBP", name: "British Pound" },
+  { code: "AED", name: "UAE Dirham" },
+  { code: "AUD", name: "Australian Dollar" },
+  { code: "CAD", name: "Canadian Dollar" },
+  { code: "JPY", name: "Japanese Yen" },
+  { code: "SAR", name: "Saudi Riyal" },
+];
 
 function Field({
   label,
@@ -86,6 +132,76 @@ function Field({
             {unit}
           </span>
         )}
+      </div>
+    </div>
+  );
+}
+
+function MixedField({
+  label,
+  primaryValue,
+  secondaryValue,
+  setPrimaryValue,
+  setSecondaryValue,
+  primaryUnit,
+  secondaryUnit,
+  primaryPlaceholder,
+  secondaryPlaceholder,
+}: {
+  label: string;
+  primaryValue: string;
+  secondaryValue: string;
+  setPrimaryValue: (value: string) => void;
+  setSecondaryValue: (value: string) => void;
+  primaryUnit: string;
+  secondaryUnit: string;
+  primaryPlaceholder: string;
+  secondaryPlaceholder: string;
+}) {
+  return (
+    <div className="min-w-0">
+      <label className="mb-1.5 block text-sm font-medium text-slate-600">
+        {label}
+      </label>
+
+      <div className="grid grid-cols-2 gap-2">
+        <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-slate-50 focus-within:border-blue-500 focus-within:bg-white focus-within:ring-4 focus-within:ring-blue-500/10">
+          <input
+            type="number"
+            min="0"
+            step="any"
+            inputMode="decimal"
+            value={primaryValue}
+            placeholder={primaryPlaceholder}
+            onChange={(e) =>
+              setPrimaryValue(e.target.value)
+            }
+            className="min-w-0 flex-1 bg-transparent px-2.5 py-3 text-base font-semibold text-slate-900 outline-none placeholder:text-slate-400"
+          />
+
+          <span className="flex items-center border-l border-slate-200 px-2 text-xs font-bold text-slate-500">
+            {primaryUnit}
+          </span>
+        </div>
+
+        <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-slate-50 focus-within:border-blue-500 focus-within:bg-white focus-within:ring-4 focus-within:ring-blue-500/10">
+          <input
+            type="number"
+            min="0"
+            step="any"
+            inputMode="decimal"
+            value={secondaryValue}
+            placeholder={secondaryPlaceholder}
+            onChange={(e) =>
+              setSecondaryValue(e.target.value)
+            }
+            className="min-w-0 flex-1 bg-transparent px-2.5 py-3 text-base font-semibold text-slate-900 outline-none placeholder:text-slate-400"
+          />
+
+          <span className="flex items-center border-l border-slate-200 px-2 text-xs font-bold text-slate-500">
+            {secondaryUnit}
+          </span>
+        </div>
       </div>
     </div>
   );
@@ -131,21 +247,6 @@ function Counter({
   );
 }
 
-const currencies: {
-  code: CurrencyCode;
-  name: string;
-}[] = [
-  { code: "USD", name: "US Dollar" },
-  { code: "INR", name: "Indian Rupee" },
-  { code: "EUR", name: "Euro" },
-  { code: "GBP", name: "British Pound" },
-  { code: "AED", name: "UAE Dirham" },
-  { code: "AUD", name: "Australian Dollar" },
-  { code: "CAD", name: "Canadian Dollar" },
-  { code: "JPY", name: "Japanese Yen" },
-  { code: "SAR", name: "Saudi Riyal" },
-];
-
 export default function PaintInputs({
   jobType,
   setJobType,
@@ -160,6 +261,12 @@ export default function PaintInputs({
   setWidth,
   height,
   setHeight,
+  lengthSecondary,
+  setLengthSecondary,
+  widthSecondary,
+  setWidthSecondary,
+  heightSecondary,
+  setHeightSecondary,
   doors,
   setDoors,
   windows,
@@ -173,18 +280,34 @@ export default function PaintInputs({
   laborPrice,
   setLaborPrice,
 }: PaintInputsProps) {
+  const mixedImperial = unit === "ft-in";
+  const mixedMetric = unit === "m-cm";
+  const isMetric =
+    unit === "cm" ||
+    unit === "m" ||
+    mixedMetric;
+
   const dimensionsComplete =
-    Number(length) > 0 &&
-    Number(width) > 0 &&
-    Number(height) > 0;
+    mixedImperial || mixedMetric
+      ? (
+          Number(length) > 0 ||
+          Number(lengthSecondary) > 0
+        ) &&
+        (
+          Number(width) > 0 ||
+          Number(widthSecondary) > 0
+        ) &&
+        (
+          Number(height) > 0 ||
+          Number(heightSecondary) > 0
+        )
+      : Number(length) > 0 &&
+        Number(width) > 0 &&
+        Number(height) > 0;
 
   const getStatus = () => {
-    if (!length && !width && !height) {
-      return "Start with your space";
-    }
-
     if (!dimensionsComplete) {
-      return "Almost there — add the missing dimensions";
+      return "Start with your space";
     }
 
     if (jobType === "ceiling") {
@@ -193,6 +316,29 @@ export default function PaintInputs({
 
     return "Space understood — refine openings if needed";
   };
+
+  const singleUnit =
+    unit === "in"
+      ? "in"
+      : unit === "cm"
+        ? "cm"
+        : unit === "m"
+          ? "m"
+          : unit === "yd"
+            ? "yd"
+            : "ft";
+
+  const coverageUnit = isMetric
+    ? "m²"
+    : "ft²";
+
+  const coverageLabel = isMetric
+    ? "Coverage / liter"
+    : "Coverage / gallon";
+
+  const priceLabel = isMetric
+    ? "Price / liter"
+    : "Price / gallon";
 
   return (
     <div className="space-y-4">
@@ -217,7 +363,7 @@ export default function PaintInputs({
           </div>
 
           <div className="ml-auto hidden rounded-full bg-white/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-blue-100 sm:block">
-            Smart
+            AI Ready
           </div>
         </div>
 
@@ -226,52 +372,23 @@ export default function PaintInputs({
             className={`h-full rounded-full bg-white transition-all duration-500 ${
               dimensionsComplete
                 ? "w-full"
-                : length || width || height
-                  ? "w-2/3"
-                  : "w-1/4"
+                : "w-1/3"
             }`}
           />
         </div>
       </div>
 
-      {/* Job Type + Units */}
+      {/* Job Type */}
       <div className="rounded-2xl border border-slate-200 bg-white p-4">
-        <div className="mb-3 flex items-center justify-between gap-3">
-          <div>
-            <p className="font-bold text-slate-900">
-              What are you painting?
-            </p>
 
-            <p className="mt-0.5 text-xs text-slate-500">
-              Choose the area you want to estimate
-            </p>
-          </div>
+        <div className="mb-3">
+          <p className="font-bold text-slate-900">
+            What are you painting?
+          </p>
 
-          <div className="flex shrink-0 rounded-lg bg-slate-100 p-1">
-            <button
-              type="button"
-              onClick={() => setUnit("us")}
-              className={`rounded-md px-2.5 py-1.5 text-xs font-semibold transition ${
-                unit === "us"
-                  ? "bg-white text-blue-600 shadow-sm"
-                  : "text-slate-500"
-              }`}
-            >
-              US
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setUnit("metric")}
-              className={`rounded-md px-2.5 py-1.5 text-xs font-semibold transition ${
-                unit === "metric"
-                  ? "bg-white text-blue-600 shadow-sm"
-                  : "text-slate-500"
-              }`}
-            >
-              Metric
-            </button>
-          </div>
+          <p className="mt-0.5 text-xs text-slate-500">
+            Choose the area you want to estimate
+          </p>
         </div>
 
         <div className="grid grid-cols-3 gap-2">
@@ -290,18 +407,54 @@ export default function PaintInputs({
                   : "border-slate-200 bg-white text-slate-600 hover:border-slate-300"
               }`}
             >
-              <span className="mr-1">
-                {icon}
-              </span>
-
+              <span className="mr-1">{icon}</span>
               {label}
             </button>
           ))}
+        </div>
+
+        {/* Unit selector */}
+        <div className="mt-4">
+          <div className="mb-2 flex items-center justify-between gap-2">
+            <label className="text-sm font-semibold text-slate-700">
+              Measurement units
+            </label>
+
+            <span className="text-xs text-slate-400">
+              Flexible units
+            </span>
+          </div>
+
+          <select
+            value={unit}
+            onChange={(e) => {
+              setUnit(e.target.value);
+
+              // Reset secondary values when leaving
+              // mixed-unit mode.
+              if (e.target.value !== "ft-in") {
+                setLengthSecondary("");
+                setWidthSecondary("");
+                setHeightSecondary("");
+              }
+            }}
+            className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-3 text-sm font-semibold text-slate-900 outline-none transition focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10"
+          >
+            {units.map((item) => (
+              <option
+                key={item.code}
+                value={item.code}
+              >
+                {item.label}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
 
       {/* Dimensions */}
       <div className="rounded-2xl border border-slate-200 bg-white p-4">
+
         <div className="mb-4 flex items-start gap-3">
           <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-lg">
             📐
@@ -324,36 +477,121 @@ export default function PaintInputs({
           )}
         </div>
 
-        <div className="grid grid-cols-3 gap-2.5">
-          <Field
-            label="Length"
-            value={length}
-            onChange={setLength}
-            unit={unit === "us" ? "ft" : "m"}
-            placeholder="12"
-          />
+        {mixedImperial ? (
+          <div className="grid gap-4">
 
-          <Field
-            label="Width"
-            value={width}
-            onChange={setWidth}
-            unit={unit === "us" ? "ft" : "m"}
-            placeholder="10"
-          />
+            <MixedField
+              label="Length"
+              primaryValue={length}
+              secondaryValue={lengthSecondary}
+              setPrimaryValue={setLength}
+              setSecondaryValue={setLengthSecondary}
+              primaryUnit="ft"
+              secondaryUnit="in"
+              primaryPlaceholder="12"
+              secondaryPlaceholder="6"
+            />
 
-          <Field
-            label="Height"
-            value={height}
-            onChange={setHeight}
-            unit={unit === "us" ? "ft" : "m"}
-            placeholder="8"
-          />
-        </div>
+            <MixedField
+              label="Width"
+              primaryValue={width}
+              secondaryValue={widthSecondary}
+              setPrimaryValue={setWidth}
+              setSecondaryValue={setWidthSecondary}
+              primaryUnit="ft"
+              secondaryUnit="in"
+              primaryPlaceholder="10"
+              secondaryPlaceholder="0"
+            />
+
+            <MixedField
+              label="Height"
+              primaryValue={height}
+              secondaryValue={heightSecondary}
+              setPrimaryValue={setHeight}
+              setSecondaryValue={setHeightSecondary}
+              primaryUnit="ft"
+              secondaryUnit="in"
+              primaryPlaceholder="8"
+              secondaryPlaceholder="0"
+            />
+
+          </div>
+        ) : mixedMetric ? (
+          <div className="grid gap-4">
+
+            <MixedField
+              label="Length"
+              primaryValue={length}
+              secondaryValue={lengthSecondary}
+              setPrimaryValue={setLength}
+              setSecondaryValue={setLengthSecondary}
+              primaryUnit="m"
+              secondaryUnit="cm"
+              primaryPlaceholder="3"
+              secondaryPlaceholder="66"
+            />
+
+            <MixedField
+              label="Width"
+              primaryValue={width}
+              secondaryValue={widthSecondary}
+              setPrimaryValue={setWidth}
+              setSecondaryValue={setWidthSecondary}
+              primaryUnit="m"
+              secondaryUnit="cm"
+              primaryPlaceholder="3"
+              secondaryPlaceholder="5"
+            />
+
+            <MixedField
+              label="Height"
+              primaryValue={height}
+              secondaryValue={heightSecondary}
+              setPrimaryValue={setHeight}
+              setSecondaryValue={setHeightSecondary}
+              primaryUnit="m"
+              secondaryUnit="cm"
+              primaryPlaceholder="2"
+              secondaryPlaceholder="44"
+            />
+
+          </div>
+        ) : (
+          <div className="grid grid-cols-3 gap-2.5">
+
+            <Field
+              label="Length"
+              value={length}
+              onChange={setLength}
+              unit={singleUnit}
+              placeholder="12"
+            />
+
+            <Field
+              label="Width"
+              value={width}
+              onChange={setWidth}
+              unit={singleUnit}
+              placeholder="10"
+            />
+
+            <Field
+              label="Height"
+              value={height}
+              onChange={setHeight}
+              unit={singleUnit}
+              placeholder="8"
+            />
+
+          </div>
+        )}
       </div>
 
       {/* Openings */}
       {jobType !== "ceiling" && (
         <div className="rounded-2xl border border-slate-200 bg-white p-4">
+
           <div className="mb-3 flex items-start gap-3">
             <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-amber-50 text-lg">
               🚪
@@ -371,6 +609,7 @@ export default function PaintInputs({
           </div>
 
           <div className="grid gap-2.5 sm:grid-cols-2">
+
             <div className="flex items-center justify-between gap-3 rounded-xl bg-slate-50 px-3 py-2">
               <span className="text-sm font-medium text-slate-700">
                 Doors
@@ -392,13 +631,16 @@ export default function PaintInputs({
                 setValue={setWindows}
               />
             </div>
+
           </div>
         </div>
       )}
 
       {/* Paint Settings */}
       <details className="group overflow-hidden rounded-2xl border border-slate-200 bg-white">
+
         <summary className="flex cursor-pointer list-none items-center gap-3 p-4">
+
           <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-lg">
             ⚙️
           </div>
@@ -416,9 +658,11 @@ export default function PaintInputs({
           <span className="ml-auto text-slate-400 transition-transform duration-200 group-open:rotate-180">
             ↓
           </span>
+
         </summary>
 
         <div className="border-t border-slate-100 p-4">
+
           <div className="space-y-4">
 
             {/* Currency */}
@@ -448,6 +692,7 @@ export default function PaintInputs({
             </div>
 
             <div className="grid gap-4 sm:grid-cols-3">
+
               <Field
                 label="Coats"
                 value={coats}
@@ -456,24 +701,29 @@ export default function PaintInputs({
               />
 
               <Field
-                label="Coverage / gallon"
+                label={coverageLabel}
                 value={coverage}
                 onChange={setCoverage}
-                unit={unit === "us" ? "ft²" : "m²"}
-                placeholder="350"
+                unit={coverageUnit}
+                placeholder={isMetric ? "10" : "350"}
               />
 
               <Field
-                label="Price / gallon"
+                label={priceLabel}
                 value={price}
                 onChange={setPrice}
                 unit={currencySymbol}
                 placeholder="45"
               />
+
             </div>
 
             <Field
-              label="Labor / sq ft"
+              label={
+                isMetric
+                  ? "Labor / m²"
+                  : "Labor / ft²"
+              }
               value={laborPrice}
               onChange={setLaborPrice}
               unit={currencySymbol}
@@ -485,6 +735,7 @@ export default function PaintInputs({
               selected currency. No exchange-rate conversion
               is applied.
             </p>
+
           </div>
         </div>
       </details>
