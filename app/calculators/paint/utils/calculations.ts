@@ -14,9 +14,6 @@ export type PaintCalculationInput = {
   width: number;
   height: number;
 
-  // Secondary values for:
-  // ft-in  -> inches
-  // m-cm   -> centimeters
   lengthSecondary: number;
   widthSecondary: number;
   heightSecondary: number;
@@ -26,31 +23,53 @@ export type PaintCalculationInput = {
 
   coats: number;
 
-  // ft²/gallon for imperial
-  // m²/liter for metric
+  /*
+   * Imperial:
+   * ft² per gallon
+   *
+   * Metric:
+   * m² per liter
+   */
   coverage: number;
 
-  pricePerGallon: number;
-  laborPricePerSqFt: number;
+  /*
+   * Imperial:
+   * price per gallon
+   *
+   * Metric:
+   * price per liter
+   */
+  pricePerUnit: number;
+
+  /*
+   * Imperial:
+   * labor price per ft²
+   *
+   * Metric:
+   * labor price per m²
+   */
+  laborPricePerArea: number;
 
   unit: PaintUnit;
 };
 
 export type PaintCalculationResult = {
-  paintedArea: number;
-  paintArea: number;
+  paintedAreaSqFt: number;
+  paintedAreaSqM: number;
 
-  gallonsNeeded: number;
-  gallonsToBuy: number;
+  paintAreaSqFt: number;
+  paintAreaSqM: number;
+
+  paintQuantity: number;
+  quantityUnit: "gallons" | "liters";
+
+  quantityToBuy: number;
 
   paintCost: number;
   laborCost: number;
   totalCost: number;
 };
 
-/*
- * Convert one dimension to feet.
- */
 function toFeet(
   value: number,
   unit: PaintUnit,
@@ -79,28 +98,22 @@ function toFeet(
       return primary + extra / 12;
 
     case "m-cm":
-      return primary * 3.28084 + extra / 30.48;
+      return (
+        primary * 3.28084 +
+        extra / 30.48
+      );
 
     default:
       return primary;
   }
 }
 
-/*
- * Square feet → square meters.
- */
 function sqFtToSqM(
-  squareFeet: number
+  value: number
 ): number {
-  return squareFeet * 0.092903;
+  return value * 0.092903;
 }
 
-/*
- * Standard estimated opening sizes.
- *
- * Door: 3 ft × 7 ft = 21 ft²
- * Window: 3 ft × 5 ft = 15 ft²
- */
 const DOOR_AREA_SQ_FT = 21;
 const WINDOW_AREA_SQ_FT = 15;
 
@@ -112,21 +125,26 @@ export function calculatePaint(
     length,
     width,
     height,
+
     lengthSecondary,
     widthSecondary,
     heightSecondary,
+
     doors,
     windows,
+
     coats,
     coverage,
-    pricePerGallon,
-    laborPricePerSqFt,
+
+    pricePerUnit,
+    laborPricePerArea,
+
     unit,
   } = input;
 
   /*
    * -----------------------------------------
-   * Convert all dimensions to feet
+   * 1. Convert dimensions to feet
    * -----------------------------------------
    */
 
@@ -150,7 +168,7 @@ export function calculatePaint(
 
   /*
    * -----------------------------------------
-   * Base paint surface
+   * 2. Calculate base wall/ceiling area
    * -----------------------------------------
    */
 
@@ -173,7 +191,7 @@ export function calculatePaint(
 
   /*
    * -----------------------------------------
-   * Openings
+   * 3. Subtract openings
    * -----------------------------------------
    */
 
@@ -185,16 +203,15 @@ export function calculatePaint(
         Math.max(0, windows) *
           WINDOW_AREA_SQ_FT;
 
-  const paintedAreaSqFt =
-    Math.max(
-      0,
-      baseAreaSqFt -
-        openingsAreaSqFt
-    );
+  const paintedAreaSqFt = Math.max(
+    0,
+    baseAreaSqFt -
+      openingsAreaSqFt
+  );
 
   /*
    * -----------------------------------------
-   * Multiple coats
+   * 4. Multiple coats
    * -----------------------------------------
    */
 
@@ -204,32 +221,52 @@ export function calculatePaint(
   );
 
   const paintAreaSqFt =
-    paintedAreaSqFt * safeCoats;
+    paintedAreaSqFt *
+    safeCoats;
+
+  const paintAreaSqM =
+    sqFtToSqM(
+      paintAreaSqFt
+    );
+
+  const paintedAreaSqM =
+    sqFtToSqM(
+      paintedAreaSqFt
+    );
 
   /*
    * -----------------------------------------
-   * Paint quantity
-   *
-   * Imperial:
-   * ft² / gallon
-   *
-   * Metric:
-   * m² / liter
+   * 5. Determine measurement system
    * -----------------------------------------
    */
 
-  const metricUnit =
+  const metric =
     unit === "cm" ||
     unit === "m" ||
     unit === "m-cm";
 
-  let gallonsNeeded = 0;
+  /*
+   * -----------------------------------------
+   * 6. Paint quantity
+   * -----------------------------------------
+   */
 
-  if (metricUnit) {
-    const paintAreaSqM =
-      sqFtToSqM(
-        paintAreaSqFt
-      );
+  let paintQuantity = 0;
+
+  let quantityToBuy = 0;
+
+  let quantityUnit:
+    | "gallons"
+    | "liters";
+
+  if (metric) {
+    /*
+     * Metric:
+     *
+     * Area = m²
+     * Coverage = m²/liter
+     * Result = liters
+     */
 
     const safeCoverage =
       Math.max(
@@ -237,67 +274,87 @@ export function calculatePaint(
         coverage || 10
       );
 
-    const litersNeeded =
+    paintQuantity =
       paintAreaSqM /
       safeCoverage;
 
     /*
-     * 1 US gallon = 3.78541 liters
+     * Round up to practical
+     * whole-liter purchase.
      */
-    gallonsNeeded =
-      litersNeeded / 3.78541;
+
+    quantityToBuy =
+      Math.ceil(
+        paintQuantity
+      );
+
+    quantityUnit = "liters";
   } else {
+    /*
+     * Imperial:
+     *
+     * Area = ft²
+     * Coverage = ft²/gallon
+     * Result = gallons
+     */
+
     const safeCoverage =
       Math.max(
         1,
         coverage || 350
       );
 
-    gallonsNeeded =
+    paintQuantity =
       paintAreaSqFt /
       safeCoverage;
+
+    /*
+     * Round up to whole gallons.
+     */
+
+    quantityToBuy =
+      Math.ceil(
+        paintQuantity
+      );
+
+    quantityUnit = "gallons";
   }
 
   /*
-   * Always round up.
-   *
-   * You cannot buy 2.37 gallons
-   * if the store sells whole gallons.
-   */
-  const gallonsToBuy =
-    Math.ceil(gallonsNeeded);
-
-  /*
    * -----------------------------------------
-   * Paint cost
+   * 7. Paint cost
    * -----------------------------------------
    */
 
   const paintCost =
-    gallonsToBuy *
+    quantityToBuy *
     Math.max(
       0,
-      pricePerGallon || 0
+      pricePerUnit || 0
     );
 
   /*
    * -----------------------------------------
-   * Labor
-   *
-   * Internally calculated per ft².
+   * 8. Labor cost
    * -----------------------------------------
    */
 
   const laborCost =
-    paintedAreaSqFt *
-    Math.max(
-      0,
-      laborPricePerSqFt || 0
-    );
+    metric
+      ? paintedAreaSqM *
+        Math.max(
+          0,
+          laborPricePerArea || 0
+        )
+      : paintedAreaSqFt *
+        Math.max(
+          0,
+          laborPricePerArea || 0
+        );
 
   /*
    * -----------------------------------------
-   * Total
+   * 9. Total cost
    * -----------------------------------------
    */
 
@@ -305,11 +362,16 @@ export function calculatePaint(
     paintCost + laborCost;
 
   return {
-    paintedArea: paintedAreaSqFt,
-    paintArea: paintAreaSqFt,
+    paintedAreaSqFt,
+    paintedAreaSqM,
 
-    gallonsNeeded,
-    gallonsToBuy,
+    paintAreaSqFt,
+    paintAreaSqM,
+
+    paintQuantity,
+    quantityUnit,
+
+    quantityToBuy,
 
     paintCost,
     laborCost,
