@@ -3,37 +3,104 @@
 type PaintInputsProps = {
   jobType: string;
   setJobType: (value: string) => void;
-
   unit: string;
   setUnit: (value: string) => void;
-
   length: string;
   setLength: (value: string) => void;
-
   width: string;
   setWidth: (value: string) => void;
-
   height: string;
   setHeight: (value: string) => void;
-
   doors: string;
   setDoors: (value: string) => void;
-
   windows: string;
   setWindows: (value: string) => void;
-
   coats: string;
   setCoats: (value: string) => void;
-
   coverage: string;
   setCoverage: (value: string) => void;
-
   price: string;
   setPrice: (value: string) => void;
-
   laborPrice: string;
   setLaborPrice: (value: string) => void;
 };
+
+function Field({
+  label,
+  value,
+  onChange,
+  unit,
+  placeholder,
+}: {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  unit?: string;
+  placeholder?: string;
+}) {
+  return (
+    <div>
+      <label className="mb-1.5 block text-sm font-medium text-slate-600">
+        {label}
+      </label>
+
+      <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-slate-50 transition focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-100">
+        <input
+          type="number"
+          min="0"
+          step="any"
+          inputMode="decimal"
+          value={value}
+          placeholder={placeholder}
+          onChange={(e) => onChange(e.target.value)}
+          className="min-w-0 flex-1 bg-transparent px-3 py-3 text-base font-semibold text-slate-900 outline-none placeholder:text-slate-400"
+        />
+
+        {unit && (
+          <span className="flex items-center border-l border-slate-200 px-3 text-sm font-semibold text-slate-500">
+            {unit}
+          </span>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function Counter({
+  value,
+  setValue,
+}: {
+  value: string;
+  setValue: (value: string) => void;
+}) {
+  const number = Math.max(0, Number(value) || 0);
+
+  return (
+    <div className="flex items-center rounded-xl border border-slate-200 bg-slate-50">
+      <button
+        type="button"
+        onClick={() => setValue(String(Math.max(0, number - 1)))}
+        className="h-11 w-11 text-xl font-semibold text-slate-500 hover:bg-slate-100"
+        aria-label="Decrease"
+      >
+        −
+      </button>
+
+      <span className="min-w-10 text-center font-bold text-slate-900">
+        {number}
+      </span>
+
+      <button
+        type="button"
+        onClick={() => setValue(String(number + 1))}
+        className="h-11 w-11 text-xl font-semibold text-blue-600 hover:bg-blue-50"
+        aria-label="Increase"
+      >
+        +
+      </button>
+    </div>
+  );
+}
 
 export default function PaintInputs({
   jobType,
@@ -60,287 +127,201 @@ export default function PaintInputs({
   setLaborPrice,
 }: PaintInputsProps) {
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
 
-      {/* Paint Job */}
-      <div>
-        <label className="mb-2 block font-semibold text-slate-800">
-          Paint Job
-        </label>
+      {/* Smart intro */}
+      <div className="rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 p-4 text-white">
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/15 text-xl">
+            ✨
+          </div>
 
-        <select
-          className="w-full rounded-lg border border-slate-300 bg-white p-3"
-          value={jobType}
-          onChange={(e) => setJobType(e.target.value)}
-        >
-          <option value="room">Room</option>
-          <option value="walls">Walls</option>
-          <option value="ceiling">Ceiling</option>
-        </select>
-      </div>
-
-      {/* Units */}
-      <div>
-        <label className="mb-2 block font-semibold text-slate-800">
-          Units
-        </label>
-
-        <div className="flex gap-6">
-          <label className="flex items-center gap-2">
-            <input
-              type="radio"
-              name="unit"
-              value="us"
-              checked={unit === "us"}
-              onChange={(e) => setUnit(e.target.value)}
-            />
-            US
-          </label>
-
-          <label className="flex items-center gap-2">
-            <input
-              type="radio"
-              name="unit"
-              value="metric"
-              checked={unit === "metric"}
-              onChange={(e) => setUnit(e.target.value)}
-            />
-            Metric
-          </label>
+          <div>
+            <p className="font-bold">Smart Paint Estimate</p>
+            <p className="text-sm text-blue-100">
+              Tell us about your space
+            </p>
+          </div>
         </div>
       </div>
 
-      {/* Room Dimensions */}
-      <fieldset className="rounded-xl border border-slate-300 p-4">
-        <legend className="px-2 text-lg font-semibold">
-          Room Dimensions
-        </legend>
+      {/* Job type */}
+      <div>
+        <div className="mb-2 flex items-center justify-between">
+          <label className="text-sm font-semibold text-slate-700">
+            What are you painting?
+          </label>
 
-        <div className="space-y-4">
+          <div className="flex rounded-lg bg-slate-100 p-1">
+            <button
+              type="button"
+              onClick={() => setUnit("us")}
+              className={`rounded-md px-2.5 py-1 text-xs font-semibold ${
+                unit === "us"
+                  ? "bg-white text-blue-600 shadow-sm"
+                  : "text-slate-500"
+              }`}
+            >
+              US
+            </button>
 
-          <div>
-            <label className="mb-1 block text-sm font-medium">
-              Length
-            </label>
-
-            <div className="flex gap-2">
-              <input
-                className="w-full rounded-lg border border-slate-300 p-3"
-                type="number"
-                min="0"
-                step="any"
-                inputMode="decimal"
-                placeholder="Length"
-                value={length}
-                onChange={(e) => setLength(e.target.value)}
-              />
-
-              <span className="flex items-center rounded-lg border bg-slate-50 px-4">
-                {unit === "us" ? "ft" : "m"}
-              </span>
-            </div>
+            <button
+              type="button"
+              onClick={() => setUnit("metric")}
+              className={`rounded-md px-2.5 py-1 text-xs font-semibold ${
+                unit === "metric"
+                  ? "bg-white text-blue-600 shadow-sm"
+                  : "text-slate-500"
+              }`}
+            >
+              Metric
+            </button>
           </div>
-
-          <div>
-            <label className="mb-1 block text-sm font-medium">
-              Width
-            </label>
-
-            <div className="flex gap-2">
-              <input
-                className="w-full rounded-lg border border-slate-300 p-3"
-                type="number"
-                min="0"
-                step="any"
-                inputMode="decimal"
-                placeholder="Width"
-                value={width}
-                onChange={(e) => setWidth(e.target.value)}
-              />
-
-              <span className="flex items-center rounded-lg border bg-slate-50 px-4">
-                {unit === "us" ? "ft" : "m"}
-              </span>
-            </div>
-          </div>
-
-          <div>
-            <label className="mb-1 block text-sm font-medium">
-              Wall Height
-            </label>
-
-            <div className="flex gap-2">
-              <input
-                className="w-full rounded-lg border border-slate-300 p-3"
-                type="number"
-                min="0"
-                step="any"
-                inputMode="decimal"
-                placeholder="Wall height"
-                value={height}
-                onChange={(e) => setHeight(e.target.value)}
-              />
-
-              <span className="flex items-center rounded-lg border bg-slate-50 px-4">
-                {unit === "us" ? "ft" : "m"}
-              </span>
-            </div>
-          </div>
-
         </div>
-      </fieldset>
+
+        <div className="grid grid-cols-3 gap-2">
+          {[
+            ["room", "🏠", "Room"],
+            ["walls", "🧱", "Walls"],
+            ["ceiling", "⬜", "Ceiling"],
+          ].map(([value, icon, label]) => (
+            <button
+              key={value}
+              type="button"
+              onClick={() => setJobType(value)}
+              className={`rounded-xl border px-2 py-3 text-sm font-semibold transition ${
+                jobType === value
+                  ? "border-blue-500 bg-blue-50 text-blue-700"
+                  : "border-slate-200 bg-white text-slate-600"
+              }`}
+            >
+              <span className="mr-1">{icon}</span>
+              {label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Dimensions */}
+      <div className="rounded-2xl border border-slate-200 bg-white p-4">
+        <div className="mb-4">
+          <p className="font-bold text-slate-900">
+            📐 Space dimensions
+          </p>
+          <p className="text-xs text-slate-500">
+            Enter your room measurements
+          </p>
+        </div>
+
+        <div className="grid grid-cols-3 gap-2.5">
+          <Field
+            label="Length"
+            value={length}
+            onChange={setLength}
+            unit={unit === "us" ? "ft" : "m"}
+            placeholder="12"
+          />
+
+          <Field
+            label="Width"
+            value={width}
+            onChange={setWidth}
+            unit={unit === "us" ? "ft" : "m"}
+            placeholder="10"
+          />
+
+          <Field
+            label="Height"
+            value={height}
+            onChange={setHeight}
+            unit={unit === "us" ? "ft" : "m"}
+            placeholder="8"
+          />
+        </div>
+      </div>
 
       {/* Openings */}
-      <fieldset className="rounded-xl border border-slate-300 p-4">
-        <legend className="px-2 text-lg font-semibold">
-          Openings to Subtract
-        </legend>
-
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-
-          <div>
-            <label className="mb-1 block text-sm font-medium">
-              How many doors
-            </label>
-
-            <input
-              className="w-full rounded-lg border border-slate-300 p-3"
-              type="number"
-              min="0"
-              step="1"
-              inputMode="numeric"
-              value={doors}
-              onChange={(e) => setDoors(e.target.value)}
-            />
-          </div>
-
-          <div>
-            <label className="mb-1 block text-sm font-medium">
-              How many windows
-            </label>
-
-            <input
-              className="w-full rounded-lg border border-slate-300 p-3"
-              type="number"
-              min="0"
-              step="1"
-              inputMode="numeric"
-              value={windows}
-              onChange={(e) => setWindows(e.target.value)}
-            />
-          </div>
-
-        </div>
-      </fieldset>
-
-      {/* Paint Specs */}
-      <fieldset className="rounded-xl border border-slate-300 p-4">
-        <legend className="px-2 text-lg font-semibold">
-          Paint Specs
-        </legend>
-
-        <div className="space-y-4">
-
-          <div>
-            <label className="mb-1 block text-sm font-medium">
-              How many coats
-            </label>
-
-            <input
-              className="w-full rounded-lg border border-slate-300 p-3"
-              type="number"
-              min="1"
-              step="1"
-              inputMode="numeric"
-              value={coats}
-              onChange={(e) => setCoats(e.target.value)}
-            />
-
-            <p className="mt-1 text-sm text-slate-500">
-              Typically 2 coats
+      {jobType !== "ceiling" && (
+        <div className="rounded-2xl border border-slate-200 bg-white p-4">
+          <div className="mb-3">
+            <p className="font-bold text-slate-900">
+              🚪 Openings
+            </p>
+            <p className="text-xs text-slate-500">
+              We'll subtract these areas
             </p>
           </div>
 
-          <div>
-            <label className="mb-1 block text-sm font-medium">
-              Coverage per gallon
-            </label>
-
-            <div className="flex gap-2">
-              <input
-                className="w-full rounded-lg border border-slate-300 p-3"
-                type="number"
-                min="1"
-                step="1"
-                inputMode="numeric"
-                value={coverage}
-                onChange={(e) => setCoverage(e.target.value)}
-              />
-
-              <span className="flex items-center rounded-lg border bg-slate-50 px-4">
-                {unit === "us" ? "ft²" : "m²"}
+          <div className="grid grid-cols-2 gap-3">
+            <div className="flex items-center justify-between rounded-xl bg-slate-50 p-2.5">
+              <span className="text-sm font-medium text-slate-700">
+                Doors
               </span>
+              <Counter value={doors} setValue={setDoors} />
             </div>
 
-            <p className="mt-1 text-sm text-slate-500">
-              Typically 350–400 sq ft
+            <div className="flex items-center justify-between rounded-xl bg-slate-50 p-2.5">
+              <span className="text-sm font-medium text-slate-700">
+                Windows
+              </span>
+              <Counter value={windows} setValue={setWindows} />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Paint settings */}
+      <details className="group rounded-2xl border border-slate-200 bg-white">
+        <summary className="flex cursor-pointer list-none items-center justify-between p-4">
+          <div>
+            <p className="font-bold text-slate-900">
+              ⚙️ Paint settings
+            </p>
+            <p className="text-xs text-slate-500">
+              Coats, coverage & pricing
             </p>
           </div>
 
-          <div>
-            <label className="mb-1 block text-sm font-medium">
-              Cost per gallon
-            </label>
-
-            <div className="flex items-center gap-2">
-              <span className="text-lg">$</span>
-
-              <input
-                className="w-full rounded-lg border border-slate-300 p-3"
-                type="number"
-                min="0"
-                step="0.01"
-                inputMode="decimal"
-                placeholder="45.00"
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
-              />
-            </div>
-          </div>
-
-        </div>
-      </fieldset>
-
-      {/* Labor */}
-      <fieldset className="rounded-xl border border-slate-300 p-4">
-        <legend className="px-2 text-lg font-semibold">
-          Labor Estimate{" "}
-          <span className="text-sm font-normal text-slate-500">
-            optional
+          <span className="text-slate-400 transition group-open:rotate-180">
+            ↓
           </span>
-        </legend>
+        </summary>
 
-        <div>
-          <label className="mb-1 block text-sm font-medium">
-            Labor price per square foot
-          </label>
+        <div className="grid gap-4 border-t border-slate-100 p-4 sm:grid-cols-3">
+          <Field
+            label="Coats"
+            value={coats}
+            onChange={setCoats}
+            placeholder="2"
+          />
 
-          <div className="flex items-center gap-2">
-            <span className="text-lg">$</span>
+          <Field
+            label="Coverage / gallon"
+            value={coverage}
+            onChange={setCoverage}
+            unit={unit === "us" ? "ft²" : "m²"}
+            placeholder="350"
+          />
 
-            <input
-              className="w-full rounded-lg border border-slate-300 p-3"
-              type="number"
-              min="0"
-              step="0.01"
-              inputMode="decimal"
-              placeholder="0.00"
+          <Field
+            label="Price / gallon"
+            value={price}
+            onChange={setPrice}
+            unit="$"
+            placeholder="45"
+          />
+
+          <div className="sm:col-span-3">
+            <Field
+              label="Labor / sq ft (optional)"
               value={laborPrice}
-              onChange={(e) => setLaborPrice(e.target.value)}
+              onChange={setLaborPrice}
+              unit="$"
+              placeholder="0"
             />
           </div>
         </div>
-      </fieldset>
+      </details>
 
     </div>
   );
