@@ -37,19 +37,10 @@ export default function PaintCalculator() {
   const [currency, setCurrency] =
     useState<CurrencyCode>("USD");
 
-  /*
-   * Main dimensions
-   */
   const [length, setLength] = useState("");
   const [width, setWidth] = useState("");
   const [height, setHeight] = useState("");
 
-  /*
-   * Mixed-unit values
-   *
-   * Example:
-   * 12 ft 6 in
-   */
   const [lengthSecondary, setLengthSecondary] =
     useState("");
 
@@ -59,14 +50,10 @@ export default function PaintCalculator() {
   const [heightSecondary, setHeightSecondary] =
     useState("");
 
-  const [doors, setDoors] =
-    useState("0");
+  const [doors, setDoors] = useState("0");
+  const [windows, setWindows] = useState("0");
 
-  const [windows, setWindows] =
-    useState("0");
-
-  const [coats, setCoats] =
-    useState("2");
+  const [coats, setCoats] = useState("2");
 
   const [coverage, setCoverage] =
     useState("350");
@@ -99,7 +86,30 @@ export default function PaintCalculator() {
     const w = Number(width) || 0;
     const h = Number(height) || 0;
 
-    if (l <= 0 || w <= 0 || h <= 0) {
+    const mixedUnit =
+      unit === "ft-in" ||
+      unit === "m-cm";
+
+    const hasLength =
+      mixedUnit
+        ? l > 0 || Number(lengthSecondary) > 0
+        : l > 0;
+
+    const hasWidth =
+      mixedUnit
+        ? w > 0 || Number(widthSecondary) > 0
+        : w > 0;
+
+    const hasHeight =
+      mixedUnit
+        ? h > 0 || Number(heightSecondary) > 0
+        : h > 0;
+
+    if (
+      !hasLength ||
+      !hasWidth ||
+      !hasHeight
+    ) {
       setResult(null);
       return;
     }
@@ -139,16 +149,16 @@ export default function PaintCalculator() {
       ),
 
       coverage: Math.max(
-        1,
-        Number(coverage) || 350
+        0.01,
+        Number(coverage) || 0
       ),
 
-      pricePerGallon: Math.max(
+      pricePerUnit: Math.max(
         0,
         Number(price) || 0
       ),
 
-      laborPricePerSqFt: Math.max(
+      laborPricePerArea: Math.max(
         0,
         Number(laborPrice) || 0
       ),
@@ -200,13 +210,19 @@ export default function PaintCalculator() {
             setHeight={setHeight}
 
             lengthSecondary={lengthSecondary}
-            setLengthSecondary={setLengthSecondary}
+            setLengthSecondary={
+              setLengthSecondary
+            }
 
             widthSecondary={widthSecondary}
-            setWidthSecondary={setWidthSecondary}
+            setWidthSecondary={
+              setWidthSecondary
+            }
 
             heightSecondary={heightSecondary}
-            setHeightSecondary={setHeightSecondary}
+            setHeightSecondary={
+              setHeightSecondary
+            }
 
             doors={doors}
             setDoors={setDoors}
