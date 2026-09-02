@@ -24,14 +24,9 @@ export default function Header() {
 
   return (
     <header className="fixed left-0 right-0 top-0 z-[100] border-b border-blue-100/70 bg-blue-50/95 backdrop-blur-md">
-
       {/* Main Header */}
-
       <div className="mx-auto flex h-[76px] max-w-7xl items-center justify-between px-4 md:px-6">
-
-        
         {/* Logo */}
-
         <Link
           href="/"
           onClick={closeMenu}
@@ -41,31 +36,27 @@ export default function Header() {
           <img
             src="/logo.webp"
             alt="CornerSpan - Construction Calculators"
-            className="cornerspan-logo-light"
-            style={{
-              height: "56px",
-              width: "auto",
-              objectFit: "contain",
-            }}
+            width={1397}
+            height={365}
+            loading="eager"
+            decoding="async"
+            className="cornerspan-logo-light h-[56px] w-auto object-contain"
           />
 
           {/* Dark Mode Logo */}
           <img
             src="/logo-dark.webp"
             alt="CornerSpan - Construction Calculators"
-            className="cornerspan-logo-dark"
-            style={{
-              height: "56px",
-              width: "auto",
-              objectFit: "contain",
-            }}
+            width={1511}
+            height={416}
+            loading="eager"
+            decoding="async"
+            className="cornerspan-logo-dark h-[56px] w-auto object-contain"
           />
         </Link>
 
         {/* Desktop Navigation */}
-
         <nav className="hidden items-center gap-6 md:flex">
-
           <Link
             href="/"
             className="text-sm font-semibold text-slate-600 transition hover:text-blue-600"
@@ -114,15 +105,11 @@ export default function Header() {
           >
             Blog
           </Link>
-
         </nav>
 
         {/* Right Controls */}
-
         <div className="flex items-center gap-2">
-
           {/* Search */}
-
           <button
             type="button"
             aria-label="Search calculators"
@@ -139,62 +126,39 @@ export default function Header() {
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
+              aria-hidden="true"
             >
-              <circle
-                cx="11"
-                cy="11"
-                r="7"
-              />
-
+              <circle cx="11" cy="11" r="7" />
               <path d="m20 20-4-4" />
             </svg>
           </button>
 
           {/* Mobile Menu */}
-
           <button
             type="button"
-            aria-label={
-              menuOpen
-                ? "Close menu"
-                : "Open menu"
-            }
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
             aria-expanded={menuOpen}
             onClick={toggleMenu}
             className="flex h-11 w-11 items-center justify-center rounded-xl text-slate-800 transition hover:bg-white md:hidden"
           >
             {menuOpen ? (
-              <span className="text-3xl leading-none">
-                ×
-              </span>
+              <span className="text-3xl leading-none">×</span>
             ) : (
-              <span className="text-2xl leading-none">
-                ☰
-              </span>
+              <span className="text-2xl leading-none">☰</span>
             )}
           </button>
-
         </div>
-
       </div>
 
       {/* Search Panel */}
-
       {searchOpen && (
-        <SearchBar
-          onClose={() =>
-            setSearchOpen(false)
-          }
-        />
+        <SearchBar onClose={() => setSearchOpen(false)} />
       )}
 
       {/* Mobile Menu */}
-
       {menuOpen && (
         <div className="border-t border-blue-100 bg-white px-5 py-4 shadow-lg md:hidden">
-
           <nav className="flex flex-col gap-1">
-
             <Link
               href="/"
               onClick={closeMenu}
@@ -266,12 +230,9 @@ export default function Header() {
             >
               Contact
             </Link>
-
           </nav>
-
         </div>
       )}
-
     </header>
   );
 }
