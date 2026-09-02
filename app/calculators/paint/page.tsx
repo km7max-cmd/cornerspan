@@ -5,11 +5,10 @@ const pageUrl =
   "https://www.cornerspan.com/calculators/paint";
 
 export const metadata: Metadata = {
-  title:
-    "Paint Calculator | How Much Paint Do I Need?",
+  title: "Paint Calculator | How Much Paint Do I Need?",
 
   description:
-    "Free paint calculator to estimate how many gallons of paint you need for walls and ceilings, including doors, windows, coats and paint cost.",
+    "Free paint calculator to estimate how much paint you need for walls and ceilings. Calculate paint quantity, coats, doors, windows and estimated cost.",
 
   keywords: [
     "paint calculator",
@@ -37,10 +36,9 @@ export const metadata: Metadata = {
   },
 
   openGraph: {
-    title:
-      "Paint Calculator | How Much Paint Do I Need?",
+    title: "Paint Calculator | How Much Paint Do I Need?",
     description:
-      "Free paint calculator to estimate paint quantity and cost for walls and ceilings.",
+      "Calculate paint quantity and estimated cost for walls and ceilings, including doors, windows and multiple coats.",
     url: pageUrl,
     siteName: "CornerSpan",
     type: "website",
@@ -50,17 +48,16 @@ export const metadata: Metadata = {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "CornerSpan Paint Calculator",
+        alt: "Paint Calculator - CornerSpan",
       },
     ],
   },
 
   twitter: {
     card: "summary_large_image",
-    title:
-      "Paint Calculator | How Much Paint Do I Need?",
+    title: "Paint Calculator | How Much Paint Do I Need?",
     description:
-      "Calculate paint required for walls and ceilings, including coats, doors, windows and cost.",
+      "Calculate paint required for walls and ceilings, including coats, doors, windows and estimated cost.",
     images: ["/og-image.png"],
   },
 };
