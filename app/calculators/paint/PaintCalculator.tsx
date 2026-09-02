@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 
-import Breadcrumb from "../../../components/Breadcrumb";
 import PaintInputs from "./components/PaintInputs";
 import PaintResults from "./components/PaintResults";
 import PaintGuide from "./components/PaintGuide";
@@ -31,8 +30,7 @@ type UnitCode =
 export default function PaintCalculator() {
   const [jobType, setJobType] = useState("room");
 
-  const [unit, setUnit] =
-    useState<UnitCode>("ft");
+  const [unit, setUnit] = useState<UnitCode>("ft");
 
   const [currency, setCurrency] =
     useState<CurrencyCode>("USD");
@@ -170,98 +168,80 @@ export default function PaintCalculator() {
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-slate-100">
-      <div className="mx-auto max-w-4xl px-4 py-6 sm:px-6 sm:py-10">
+    <section className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
 
-        <Breadcrumb current="Paint Calculator" />
+      <PaintInputs
+        jobType={jobType}
+        setJobType={setJobType}
 
-        <h1 className="mt-4 text-3xl font-black tracking-tight text-slate-950 sm:text-5xl">
-          Paint Calculator
-        </h1>
+        unit={unit}
+        setUnit={(value) =>
+          setUnit(value as UnitCode)
+        }
 
-        <p className="mt-3 max-w-3xl text-base leading-7 text-slate-600 sm:text-lg">
-          Calculate how much paint you need for walls
-          and ceilings, including doors, windows,
-          multiple coats and estimated cost.
-        </p>
+        currency={currency}
+        setCurrency={setCurrency}
+        currencySymbol={currencySymbol}
 
-        <section className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+        length={length}
+        setLength={setLength}
 
-          <PaintInputs
-            jobType={jobType}
-            setJobType={setJobType}
+        width={width}
+        setWidth={setWidth}
 
-            unit={unit}
-            setUnit={(value) =>
-              setUnit(value as UnitCode)
-            }
+        height={height}
+        setHeight={setHeight}
 
-            currency={currency}
-            setCurrency={setCurrency}
-            currencySymbol={currencySymbol}
+        lengthSecondary={lengthSecondary}
+        setLengthSecondary={
+          setLengthSecondary
+        }
 
-            length={length}
-            setLength={setLength}
+        widthSecondary={widthSecondary}
+        setWidthSecondary={
+          setWidthSecondary
+        }
 
-            width={width}
-            setWidth={setWidth}
+        heightSecondary={heightSecondary}
+        setHeightSecondary={
+          setHeightSecondary
+        }
 
-            height={height}
-            setHeight={setHeight}
+        doors={doors}
+        setDoors={setDoors}
 
-            lengthSecondary={lengthSecondary}
-            setLengthSecondary={
-              setLengthSecondary
-            }
+        windows={windows}
+        setWindows={setWindows}
 
-            widthSecondary={widthSecondary}
-            setWidthSecondary={
-              setWidthSecondary
-            }
+        coats={coats}
+        setCoats={setCoats}
 
-            heightSecondary={heightSecondary}
-            setHeightSecondary={
-              setHeightSecondary
-            }
+        coverage={coverage}
+        setCoverage={setCoverage}
 
-            doors={doors}
-            setDoors={setDoors}
+        price={price}
+        setPrice={setPrice}
 
-            windows={windows}
-            setWindows={setWindows}
+        laborPrice={laborPrice}
+        setLaborPrice={setLaborPrice}
+      />
 
-            coats={coats}
-            setCoats={setCoats}
+      <button
+        type="button"
+        onClick={handleCalculate}
+        className="mt-6 w-full rounded-xl bg-blue-600 px-5 py-3.5 font-bold text-white shadow-sm transition hover:bg-blue-700 active:scale-[0.99]"
+      >
+        ✨ Generate Paint Estimate
+      </button>
 
-            coverage={coverage}
-            setCoverage={setCoverage}
+      <PaintResults
+        result={result}
+        currency={currency}
+        currencySymbol={currencySymbol}
+      />
 
-            price={price}
-            setPrice={setPrice}
+      <PaintGuide />
 
-            laborPrice={laborPrice}
-            setLaborPrice={setLaborPrice}
-          />
-
-          <button
-            type="button"
-            onClick={handleCalculate}
-            className="mt-6 w-full rounded-xl bg-blue-600 px-5 py-3.5 font-bold text-white shadow-sm transition hover:bg-blue-700 active:scale-[0.99]"
-          >
-            ✨ Generate Paint Estimate
-          </button>
-
-        </section>
-
-        <PaintResults
-          result={result}
-          currency={currency}
-          currencySymbol={currencySymbol}
-        />
-
-        <PaintGuide />
-
-      </div>
-    </main>
+    </section>
   );
 }
