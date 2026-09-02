@@ -36,22 +36,28 @@ export default function Header() {
           <img
             src="/logo.webp"
             alt="CornerSpan - Construction Calculators"
-            width={1397}
-            height={365}
-            loading="eager"
-            decoding="async"
-            className="cornerspan-logo-light h-[56px] w-auto object-contain"
+            width={220}
+            height={57}
+            className="cornerspan-logo-light"
+            style={{
+              height: "56px",
+              width: "auto",
+              objectFit: "contain",
+            }}
           />
 
           {/* Dark Mode Logo */}
           <img
             src="/logo-dark.webp"
             alt="CornerSpan - Construction Calculators"
-            width={1511}
-            height={416}
-            loading="eager"
-            decoding="async"
-            className="cornerspan-logo-dark h-[56px] w-auto object-contain"
+            width={220}
+            height={61}
+            className="cornerspan-logo-dark"
+            style={{
+              height: "56px",
+              width: "auto",
+              objectFit: "contain",
+            }}
           />
         </Link>
 
@@ -142,9 +148,19 @@ export default function Header() {
             className="flex h-11 w-11 items-center justify-center rounded-xl text-slate-800 transition hover:bg-white md:hidden"
           >
             {menuOpen ? (
-              <span className="text-3xl leading-none">×</span>
+              <span
+                className="text-3xl leading-none"
+                aria-hidden="true"
+              >
+                ×
+              </span>
             ) : (
-              <span className="text-2xl leading-none">☰</span>
+              <span
+                className="text-2xl leading-none"
+                aria-hidden="true"
+              >
+                ☰
+              </span>
             )}
           </button>
         </div>
@@ -152,7 +168,9 @@ export default function Header() {
 
       {/* Search Panel */}
       {searchOpen && (
-        <SearchBar onClose={() => setSearchOpen(false)} />
+        <SearchBar
+          onClose={() => setSearchOpen(false)}
+        />
       )}
 
       {/* Mobile Menu */}
