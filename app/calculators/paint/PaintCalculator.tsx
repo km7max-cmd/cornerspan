@@ -4,7 +4,6 @@ import { useState } from "react";
 
 import PaintInputs from "./components/PaintInputs";
 import PaintResults from "./components/PaintResults";
-import PaintGuide from "./components/PaintGuide";
 import { calculatePaint } from "./utils/calculations";
 
 type CurrencyCode =
@@ -169,7 +168,6 @@ export default function PaintCalculator() {
 
   return (
     <section className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-
       <PaintInputs
         jobType={jobType}
         setJobType={setJobType}
@@ -239,9 +237,6 @@ export default function PaintCalculator() {
         currency={currency}
         currencySymbol={currencySymbol}
       />
-
-      <PaintGuide />
-
     </section>
   );
 }
