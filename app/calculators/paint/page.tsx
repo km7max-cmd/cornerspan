@@ -143,18 +143,7 @@ export default function PaintCalculatorPage() {
         }}
       />
 
-      <Breadcrumb
-        items={[
-          {
-            label: "Calculators",
-            href: "/calculators",
-          },
-          {
-            label: "Paint Calculator",
-            href: "/calculators/paint",
-          },
-        ]}
-      />
+      <Breadcrumb current="Paint Calculator" />
 
       <section className="mt-5">
         <h1 className="text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">
@@ -172,7 +161,7 @@ export default function PaintCalculatorPage() {
       {/* Calculator */}
       <PaintCalculator />
 
-      {/* Related Calculators immediately after Calculator */}
+      {/* Related Calculators */}
       <RelatedCalculators items={relatedCalculators} />
 
       {/* Paint Guide + Formula + FAQ */}
