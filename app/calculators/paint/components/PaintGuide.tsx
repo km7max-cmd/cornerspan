@@ -1,7 +1,5 @@
 "use client";
 
-import Link from "next/link";
-
 const faqs = [
   {
     question: "How much paint do I need for a room?",
@@ -38,7 +36,6 @@ const faqs = [
 export default function PaintGuide() {
   return (
     <section className="mt-8 space-y-6">
-
       {/* How it works */}
       <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
         <div className="mb-5">
@@ -58,7 +55,6 @@ export default function PaintGuide() {
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2">
-
           <div className="rounded-xl bg-slate-50 p-4">
             <div className="text-lg font-black text-blue-600">
               01
@@ -117,7 +113,6 @@ export default function PaintGuide() {
               you enter.
             </p>
           </div>
-
         </div>
       </div>
 
@@ -128,7 +123,6 @@ export default function PaintGuide() {
         </h2>
 
         <div className="mt-4 space-y-3 text-sm leading-7 text-slate-700">
-
           <p>
             <strong>Wall Area:</strong>{" "}
             2 × (Length + Width) × Height
@@ -153,7 +147,6 @@ export default function PaintGuide() {
             <strong>Paint Cost:</strong>{" "}
             Paint Quantity × Price per Unit
           </p>
-
         </div>
 
         <div className="mt-4 rounded-xl bg-blue-50 p-4 text-sm leading-6 text-slate-700">
@@ -179,7 +172,10 @@ export default function PaintGuide() {
                 <span className="flex items-center justify-between gap-4">
                   {faq.question}
 
-                  <span className="text-xl text-blue-600 transition-transform group-open:rotate-45">
+                  <span
+                    aria-hidden="true"
+                    className="text-xl text-blue-600 transition-transform group-open:rotate-45"
+                  >
                     +
                   </span>
                 </span>
@@ -192,57 +188,6 @@ export default function PaintGuide() {
           ))}
         </div>
       </div>
-
-      {/* More calculators */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-        <h2 className="text-xl font-black text-slate-950">
-          More Construction Calculators
-        </h2>
-
-        <div className="mt-4 grid gap-3 sm:grid-cols-3">
-
-          <Link
-            href="/calculators/brick"
-            className="rounded-xl border border-slate-200 p-4 transition hover:border-blue-300 hover:bg-blue-50"
-          >
-            <div className="font-bold text-slate-900">
-              Brick Calculator
-            </div>
-
-            <p className="mt-1 text-sm text-slate-600">
-              Estimate bricks and mortar.
-            </p>
-          </Link>
-
-          <Link
-            href="/calculators/concrete"
-            className="rounded-xl border border-slate-200 p-4 transition hover:border-blue-300 hover:bg-blue-50"
-          >
-            <div className="font-bold text-slate-900">
-              Concrete Calculator
-            </div>
-
-            <p className="mt-1 text-sm text-slate-600">
-              Estimate concrete quantity and materials.
-            </p>
-          </Link>
-
-          <Link
-            href="/calculators/square-footage"
-            className="rounded-xl border border-slate-200 p-4 transition hover:border-blue-300 hover:bg-blue-50"
-          >
-            <div className="font-bold text-slate-900">
-              Square Footage Calculator
-            </div>
-
-            <p className="mt-1 text-sm text-slate-600">
-              Calculate area quickly.
-            </p>
-          </Link>
-
-        </div>
-      </div>
-
     </section>
   );
 }
