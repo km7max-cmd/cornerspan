@@ -6,165 +6,186 @@ const faqs = [
   {
     question: "How much paint do I need for a room?",
     answer:
-      "It depends on the room dimensions, number of coats, and the paint coverage rate. Enter your length, width and height above to get a personalized estimate.",
+      "It depends on the wall area, ceiling height, doors, windows, number of coats, and the paint coverage rate. Enter your room dimensions and the calculator will estimate the required paint.",
   },
   {
     question: "How many coats of paint should I use?",
     answer:
-      "Two coats are commonly used for interior walls, but the ideal number depends on the existing surface, paint type, color change and desired finish.",
+      "Two coats are a common starting point for many interior painting projects. New surfaces, strong color changes, or poor existing coverage may require additional coats.",
   },
   {
-    question: "Should doors and windows be subtracted?",
+    question: "Does the calculator subtract doors and windows?",
     answer:
-      "Yes. Subtracting doors and windows gives a more realistic paintable-area estimate. Our calculator automatically accounts for them when you enter their quantities.",
+      "Yes. The calculator subtracts estimated areas for doors and windows before calculating the final paint requirement.",
   },
   {
-    question: "Can I use metric measurements?",
+    question: "Can I calculate paint in liters?",
     answer:
-      "Yes. You can switch between US and Metric measurements and enter your dimensions using the available measurement units.",
+      "Yes. Metric units such as meters and centimeters use square meters and liters. Imperial units use square feet and gallons.",
   },
   {
-    question: "Can I calculate paint cost in my local currency?",
+    question: "Can I enter feet and inches together?",
     answer:
-      "Yes. Select your preferred currency and enter the local paint and labor prices. The calculator does not apply exchange-rate conversion, so your entered prices remain local.",
+      "Yes. Select the ft + in option and enter the primary feet value and secondary inches value. The calculator converts them automatically.",
   },
   {
-    question: "Why is the recommended purchase amount rounded up?",
+    question: "Does the calculator include labor cost?",
     answer:
-      "Paint is normally purchased in practical container quantities. Rounding up helps ensure you have enough paint for the complete job and minor touch-ups.",
+      "Yes. You can enter a local labor rate per square foot or square meter. The calculator then estimates the labor cost separately from the paint cost.",
   },
 ];
 
 export default function PaintGuide() {
   return (
-    <section className="mt-6 space-y-5">
+    <section className="mt-8 space-y-6">
 
-      {/* How we calculate */}
+      {/* How it works */}
       <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-        <div className="mb-4 flex items-start gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-xl">
-            🧠
-          </div>
+        <div className="mb-5">
+          <p className="text-sm font-bold uppercase tracking-wide text-blue-600">
+            Paint Guide
+          </p>
 
-          <div>
-            <h2 className="text-xl font-bold tracking-tight text-slate-950">
-              How We Calculate Your Paint Estimate
-            </h2>
+          <h2 className="mt-1 text-2xl font-black text-slate-950">
+            How We Calculate Your Paint Estimate
+          </h2>
 
-            <p className="mt-1 text-sm leading-6 text-slate-500">
-              A simple calculation based on your space, paint coverage and
-              project settings.
-            </p>
-          </div>
+          <p className="mt-2 text-sm leading-6 text-slate-600">
+            The calculator uses your dimensions, openings, coats,
+            coverage rate and local prices to create a practical paint
+            estimate.
+          </p>
         </div>
 
-        <div className="grid gap-3 sm:grid-cols-4">
-          {[
-            ["01", "Measure", "Enter your space dimensions."],
-            ["02", "Calculate area", "We determine the paintable area."],
-            ["03", "Apply coats", "Your selected coats are included."],
-            ["04", "Estimate paint", "Area is divided by paint coverage."],
-          ].map(([number, title, description]) => (
-            <div
-              key={number}
-              className="rounded-xl bg-slate-50 p-4"
-            >
-              <span className="text-xs font-bold text-blue-600">
-                {number}
-              </span>
+        <div className="grid gap-4 sm:grid-cols-2">
 
-              <h3 className="mt-1 font-bold text-slate-900">
-                {title}
-              </h3>
-
-              <p className="mt-1 text-sm leading-5 text-slate-500">
-                {description}
-              </p>
+          <div className="rounded-xl bg-slate-50 p-4">
+            <div className="text-lg font-black text-blue-600">
+              01
             </div>
-          ))}
+
+            <h3 className="mt-1 font-bold text-slate-900">
+              Measure the space
+            </h3>
+
+            <p className="mt-1 text-sm leading-6 text-slate-600">
+              Enter the length, width and wall height using your preferred
+              measurement unit.
+            </p>
+          </div>
+
+          <div className="rounded-xl bg-slate-50 p-4">
+            <div className="text-lg font-black text-blue-600">
+              02
+            </div>
+
+            <h3 className="mt-1 font-bold text-slate-900">
+              Account for openings
+            </h3>
+
+            <p className="mt-1 text-sm leading-6 text-slate-600">
+              Doors and windows are deducted from the paintable wall area.
+            </p>
+          </div>
+
+          <div className="rounded-xl bg-slate-50 p-4">
+            <div className="text-lg font-black text-blue-600">
+              03
+            </div>
+
+            <h3 className="mt-1 font-bold text-slate-900">
+              Apply coats and coverage
+            </h3>
+
+            <p className="mt-1 text-sm leading-6 text-slate-600">
+              The calculator accounts for the number of coats and the
+              coverage rate printed on your paint product.
+            </p>
+          </div>
+
+          <div className="rounded-xl bg-slate-50 p-4">
+            <div className="text-lg font-black text-blue-600">
+              04
+            </div>
+
+            <h3 className="mt-1 font-bold text-slate-900">
+              Estimate your cost
+            </h3>
+
+            <p className="mt-1 text-sm leading-6 text-slate-600">
+              Paint and labor are estimated separately using the prices
+              you enter.
+            </p>
+          </div>
+
         </div>
       </div>
 
       {/* Formula */}
       <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-        <div className="mb-4 flex items-start gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-indigo-50 text-xl">
-            📐
-          </div>
+        <h2 className="text-2xl font-black text-slate-950">
+          Paint Calculator Formula
+        </h2>
 
-          <div>
-            <h2 className="text-xl font-bold tracking-tight text-slate-950">
-              Paint Calculator Formula
-            </h2>
+        <div className="mt-4 space-y-3 text-sm leading-7 text-slate-700">
 
-            <p className="mt-1 text-sm leading-6 text-slate-500">
-              The estimate is based on paintable surface area and the coverage
-              specified for your paint.
-            </p>
-          </div>
+          <p>
+            <strong>Wall Area:</strong>{" "}
+            2 × (Length + Width) × Height
+          </p>
+
+          <p>
+            <strong>Paintable Area:</strong>{" "}
+            Wall Area − Doors − Windows
+          </p>
+
+          <p>
+            <strong>Total Paint Area:</strong>{" "}
+            Paintable Area × Number of Coats
+          </p>
+
+          <p>
+            <strong>Paint Required:</strong>{" "}
+            Total Paint Area ÷ Paint Coverage
+          </p>
+
+          <p>
+            <strong>Paint Cost:</strong>{" "}
+            Paint Quantity × Price per Unit
+          </p>
+
         </div>
 
-        <div className="space-y-3">
-          <Formula
-            title="Room walls"
-            formula="Wall area = 2 × (Length + Width) × Height"
-          />
-
-          <Formula
-            title="Ceiling"
-            formula="Ceiling area = Length × Width"
-          />
-
-          <Formula
-            title="Paint required"
-            formula="Paint required = Paintable area × Coats ÷ Coverage"
-          />
-
-          <Formula
-            title="Paint cost"
-            formula="Paint cost = Paint required × Price per unit"
-          />
-        </div>
-
-        <div className="mt-4 rounded-xl bg-blue-50 px-4 py-3 text-sm leading-6 text-blue-800">
-          💡 Doors and windows are subtracted from wall area when applicable.
-          The calculator then applies your selected number of coats.
+        <div className="mt-4 rounded-xl bg-blue-50 p-4 text-sm leading-6 text-slate-700">
+          <strong>Tip:</strong> Actual paint usage can vary because of
+          surface texture, application method, primer, color changes and
+          product-specific coverage.
         </div>
       </div>
 
       {/* FAQ */}
       <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-        <div className="mb-4 flex items-start gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-violet-50 text-xl">
-            ❓
-          </div>
+        <h2 className="text-2xl font-black text-slate-950">
+          Paint Calculator FAQ
+        </h2>
 
-          <div>
-            <h2 className="text-xl font-bold tracking-tight text-slate-950">
-              Paint Calculator FAQ
-            </h2>
-
-            <p className="mt-1 text-sm leading-6 text-slate-500">
-              Common questions about estimating paint quantity and cost.
-            </p>
-          </div>
-        </div>
-
-        <div className="divide-y divide-slate-100">
+        <div className="mt-4 divide-y divide-slate-200">
           {faqs.map((faq) => (
             <details
               key={faq.question}
-              className="group py-3"
+              className="group py-4"
             >
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-semibold text-slate-800">
-                <span>{faq.question}</span>
+              <summary className="cursor-pointer list-none pr-6 font-bold text-slate-900">
+                <span className="flex items-center justify-between gap-4">
+                  {faq.question}
 
-                <span className="shrink-0 text-slate-400 transition-transform duration-200 group-open:rotate-180">
-                  ↓
+                  <span className="text-xl text-blue-600 transition-transform group-open:rotate-45">
+                    +
+                  </span>
                 </span>
               </summary>
 
-              <p className="mt-2 pr-6 text-sm leading-6 text-slate-500">
+              <p className="mt-3 text-sm leading-6 text-slate-600">
                 {faq.answer}
               </p>
             </details>
@@ -172,86 +193,56 @@ export default function PaintGuide() {
         </div>
       </div>
 
-      {/* Related calculators */}
-      <div className="rounded-2xl border border-blue-100 bg-gradient-to-br from-blue-50 to-indigo-50 p-5 sm:p-6">
-        <div className="mb-4">
-          <h2 className="text-xl font-bold tracking-tight text-slate-950">
-            More Construction Calculators
-          </h2>
+      {/* More calculators */}
+      <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+        <h2 className="text-xl font-black text-slate-950">
+          More Construction Calculators
+        </h2>
 
-          <p className="mt-1 text-sm leading-6 text-slate-600">
-            Continue planning your project with other CornerSpan calculators.
-          </p>
-        </div>
+        <div className="mt-4 grid gap-3 sm:grid-cols-3">
 
-        <div className="grid gap-2 sm:grid-cols-2">
-          <RelatedCalculator
+          <Link
             href="/calculators/brick"
-            icon="🧱"
-            title="Brick Calculator"
-          />
+            className="rounded-xl border border-slate-200 p-4 transition hover:border-blue-300 hover:bg-blue-50"
+          >
+            <div className="font-bold text-slate-900">
+              Brick Calculator
+            </div>
 
-          <RelatedCalculator
+            <p className="mt-1 text-sm text-slate-600">
+              Estimate bricks and mortar.
+            </p>
+          </Link>
+
+          <Link
             href="/calculators/concrete"
-            icon="🏗️"
-            title="Concrete Calculator"
-          />
+            className="rounded-xl border border-slate-200 p-4 transition hover:border-blue-300 hover:bg-blue-50"
+          >
+            <div className="font-bold text-slate-900">
+              Concrete Calculator
+            </div>
 
-          <RelatedCalculator
-            href="/calculators/tile"
-            icon="◻️"
-            title="Tile Calculator"
-          />
+            <p className="mt-1 text-sm text-slate-600">
+              Estimate concrete quantity and materials.
+            </p>
+          </Link>
 
-          <RelatedCalculator
-            href="/calculators/flooring"
-            icon="📐"
-            title="Flooring Calculator"
-          />
+          <Link
+            href="/calculators/square-footage"
+            className="rounded-xl border border-slate-200 p-4 transition hover:border-blue-300 hover:bg-blue-50"
+          >
+            <div className="font-bold text-slate-900">
+              Square Footage Calculator
+            </div>
+
+            <p className="mt-1 text-sm text-slate-600">
+              Calculate area quickly.
+            </p>
+          </Link>
+
         </div>
       </div>
 
     </section>
-  );
-}
-
-function Formula({
-  title,
-  formula,
-}: {
-  title: string;
-  formula: string;
-}) {
-  return (
-    <div className="rounded-xl border border-slate-100 bg-slate-50 p-4">
-      <p className="text-sm font-bold text-slate-800">
-        {title}
-      </p>
-
-      <p className="mt-1 overflow-x-auto text-sm font-medium text-blue-700">
-        {formula}
-      </p>
-    </div>
-  );
-}
-
-function RelatedCalculator({
-  href,
-  icon,
-  title,
-}: {
-  href: string;
-  icon: string;
-  title: string;
-}) {
-  return (
-    <Link
-      href={href}
-      className="flex items-center gap-3 rounded-xl border border-white/80 bg-white/80 px-4 py-3 font-semibold text-slate-700 transition hover:border-blue-200 hover:bg-white hover:text-blue-700"
-    >
-      <span className="text-lg">{icon}</span>
-      <span>{title}</span>
-      <span className="ml-auto text-slate-400">→</span>
-    </Link>
   );
 }
