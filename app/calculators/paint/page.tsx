@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import dynamic from "next/dynamic";
 
-import Breadcrumb from "@/components/Breadcrumb";
-import RelatedCalculators from "@/components/RelatedCalculators";
+import Breadcrumb from "../../../components/Breadcrumb";
+import RelatedCalculators from "../../../components/RelatedCalculators";
 import PaintGuide from "./components/PaintGuide";
 
 const PaintCalculator = dynamic(() => import("./PaintCalculator"), {
@@ -169,13 +169,13 @@ export default function PaintCalculatorPage() {
         </p>
       </section>
 
-      {/* 1. Calculator */}
+      {/* Calculator */}
       <PaintCalculator />
 
-      {/* 2. Related Calculators */}
+      {/* Related Calculators immediately after Calculator */}
       <RelatedCalculators items={relatedCalculators} />
 
-      {/* 3. Paint Guide + Formula + FAQ */}
+      {/* Paint Guide + Formula + FAQ */}
       <PaintGuide />
     </main>
   );
