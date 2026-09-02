@@ -62,6 +62,52 @@ export const metadata: Metadata = {
   },
 };
 
+const structuredData = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": `${pageUrl}#webpage`,
+      url: pageUrl,
+      name: "Paint Calculator | How Much Paint Do I Need?",
+      description:
+        "Free paint calculator to estimate how much paint you need for walls and ceilings, including doors, windows, multiple coats and estimated cost.",
+      isPartOf: {
+        "@type": "WebSite",
+        name: "CornerSpan",
+        url: "https://www.cornerspan.com/",
+      },
+    },
+    {
+      "@type": "SoftwareApplication",
+      "@id": `${pageUrl}#calculator`,
+      name: "CornerSpan Paint Calculator",
+      url: pageUrl,
+      applicationCategory: "Calculator",
+      applicationSubCategory: "Paint Calculator",
+      operatingSystem: "Web",
+      description:
+        "Calculate paint quantity and estimated paint and labor costs for walls and ceilings.",
+      offers: {
+        "@type": "Offer",
+        price: "0",
+        priceCurrency: "USD",
+      },
+    },
+  ],
+};
+
 export default function Page() {
-  return <PaintCalculator />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(structuredData),
+        }}
+      />
+
+      <PaintCalculator />
+    </>
+  );
 }
