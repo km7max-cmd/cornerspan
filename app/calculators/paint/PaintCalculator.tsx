@@ -5,7 +5,7 @@ import { useState } from "react";
 import Breadcrumb from "../../../components/Breadcrumb";
 import PaintInputs from "./components/PaintInputs";
 import PaintResults from "./components/PaintResults";
-import PaintTips from "./components/PaintTips";
+import PaintGuide from "./components/PaintGuide";
 import { calculatePaint } from "./utils/calculations";
 
 type CurrencyCode =
@@ -259,7 +259,7 @@ export default function PaintCalculator() {
           currencySymbol={currencySymbol}
         />
 
-        <PaintTips />
+        <PaintGuide />
 
       </div>
     </main>
