@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Breadcrumb from "../../../components/Breadcrumb";
 import PaintCalculator from "./PaintCalculator";
 
 const pageUrl =
@@ -107,7 +108,22 @@ export default function Page() {
         }}
       />
 
-      <PaintCalculator />
+      <main className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-slate-100">
+        <div className="mx-auto max-w-4xl px-4 py-6 sm:px-6 sm:py-10">
+          <Breadcrumb current="Paint Calculator" />
+
+          <h1 className="mt-4 text-3xl font-black tracking-tight text-slate-950 sm:text-5xl">
+            Paint Calculator
+          </h1>
+
+          <p className="mt-3 max-w-3xl text-base leading-7 text-slate-600 sm:text-lg">
+            Calculate how much paint you need for walls and ceilings,
+            including doors, windows, multiple coats and estimated cost.
+          </p>
+
+          <PaintCalculator />
+        </div>
+      </main>
     </>
   );
 }
