@@ -1,26 +1,32 @@
 import type { Metadata } from "next";
 import dynamic from "next/dynamic";
 import Breadcrumb from "../../../components/Breadcrumb";
+import RelatedCalculators from "../../../components/RelatedCalculators";
 
-const PaintCalculator = dynamic(() => import("./PaintCalculator"), {
-  loading: () => (
-    <div
-      className="mt-6 min-h-[520px] animate-pulse rounded-3xl border border-slate-200 bg-white/80 p-6 shadow-sm"
-      aria-label="Loading paint calculator"
-    >
-      <div className="h-10 w-2/3 rounded-xl bg-slate-200" />
-      <div className="mt-4 h-4 w-full rounded bg-slate-200" />
-      <div className="mt-2 h-4 w-5/6 rounded bg-slate-200" />
+const PaintCalculator = dynamic(
+  () => import("./PaintCalculator"),
+  {
+    loading: () => (
+      <div
+        className="mt-6 min-h-[520px] animate-pulse rounded-3xl border border-slate-200 bg-white/80 p-6 shadow-sm"
+        aria-label="Loading paint calculator"
+      >
+        <div className="h-10 w-2/3 rounded-xl bg-slate-200" />
 
-      <div className="mt-8 grid gap-4 sm:grid-cols-2">
-        <div className="h-20 rounded-2xl bg-slate-100" />
-        <div className="h-20 rounded-2xl bg-slate-100" />
-        <div className="h-20 rounded-2xl bg-slate-100" />
-        <div className="h-20 rounded-2xl bg-slate-100" />
+        <div className="mt-4 h-4 w-full rounded bg-slate-200" />
+
+        <div className="mt-2 h-4 w-5/6 rounded bg-slate-200" />
+
+        <div className="mt-8 grid gap-4 sm:grid-cols-2">
+          <div className="h-20 rounded-2xl bg-slate-100" />
+          <div className="h-20 rounded-2xl bg-slate-100" />
+          <div className="h-20 rounded-2xl bg-slate-100" />
+          <div className="h-20 rounded-2xl bg-slate-100" />
+        </div>
       </div>
-    </div>
-  ),
-});
+    ),
+  }
+);
 
 const pageUrl =
   "https://www.cornerspan.com/calculators/paint";
@@ -118,6 +124,25 @@ const structuredData = {
   ],
 };
 
+const relatedCalculators = [
+  {
+    title: "Brick Calculator",
+    href: "/calculators/brick",
+  },
+  {
+    title: "Concrete Calculator",
+    href: "/calculators/concrete",
+  },
+  {
+    title: "Square Footage Calculator",
+    href: "/calculators/square-footage",
+  },
+  {
+    title: "Tile Calculator",
+    href: "/calculators/tile",
+  },
+];
+
 export default function Page() {
   return (
     <>
@@ -142,6 +167,8 @@ export default function Page() {
           </p>
 
           <PaintCalculator />
+
+          <RelatedCalculators items={relatedCalculators} />
         </div>
       </main>
     </>
