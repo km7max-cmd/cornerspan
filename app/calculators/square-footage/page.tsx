@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import CalculatorForm from "./components/CalculatorForm";
-import RelatedCalculators from "../components/RelatedCalculators";
+import RelatedCalculators from "../../../components/RelatedCalculators";
 
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ||
@@ -167,8 +167,6 @@ export default function SquareFootagePage() {
           STRUCTURED DATA
       ===================================================== */}
 
-      {/* WebApplication Schema */}
-
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -176,8 +174,6 @@ export default function SquareFootagePage() {
             JSON.stringify(calculatorSchema),
         }}
       />
-
-      {/* Breadcrumb Schema */}
 
       <script
         type="application/ld+json"
@@ -201,7 +197,6 @@ export default function SquareFootagePage() {
           aria-label="Breadcrumb"
           className="mb-2 text-sm text-blue-700"
         >
-
           <Link
             href="/calculators"
             className="hover:underline"
@@ -216,7 +211,6 @@ export default function SquareFootagePage() {
           <span>
             Construction / Area
           </span>
-
         </nav>
 
         {/* =================================================
@@ -246,12 +240,11 @@ export default function SquareFootagePage() {
 
         {/* =================================================
             RELATED CALCULATORS
+            Automatically discovered
         ================================================= */}
 
         <div className="mt-3">
-          <RelatedCalculators
-            currentSlug="square-footage"
-          />
+          <RelatedCalculators />
         </div>
 
         {/* =================================================
@@ -455,10 +448,7 @@ export default function SquareFootagePage() {
 
           <div className="mt-4 space-y-5">
 
-            {/* FAQ 1 */}
-
             <div>
-
               <h3 className="font-semibold text-slate-900">
                 How do you calculate square footage?
               </h3>
@@ -468,13 +458,9 @@ export default function SquareFootagePage() {
                 area by its width. If both measurements
                 are in feet, the answer is square feet.
               </p>
-
             </div>
 
-            {/* FAQ 2 */}
-
             <div>
-
               <h3 className="font-semibold text-slate-900">
                 How many square feet are in a square yard?
               </h3>
@@ -482,13 +468,9 @@ export default function SquareFootagePage() {
               <p className="mt-1 text-sm leading-6 text-slate-600">
                 One square yard contains 9 square feet.
               </p>
-
             </div>
 
-            {/* FAQ 3 */}
-
             <div>
-
               <h3 className="font-semibold text-slate-900">
                 Can I use feet and inches?
               </h3>
@@ -498,13 +480,9 @@ export default function SquareFootagePage() {
                 and the calculator converts the
                 measurements automatically.
               </p>
-
             </div>
 
-            {/* FAQ 4 */}
-
             <div>
-
               <h3 className="font-semibold text-slate-900">
                 How do I calculate wall area with windows?
               </h3>
@@ -515,13 +493,9 @@ export default function SquareFootagePage() {
                 openings. The Wall with Window shape
                 handles this calculation.
               </p>
-
             </div>
 
-            {/* FAQ 5 */}
-
             <div>
-
               <h3 className="font-semibold text-slate-900">
                 Can I add material waste?
               </h3>
@@ -531,7 +505,6 @@ export default function SquareFootagePage() {
                 percentage to account for additional
                 material needed during installation.
               </p>
-
             </div>
 
           </div>
