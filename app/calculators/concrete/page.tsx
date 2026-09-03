@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Breadcrumb from "../../../components/Breadcrumb";
 import ConcreteCalculator from "./ConcreteCalculator";
 import CalculatorStructuredData from "../../../components/CalculatorStructuredData";
 
@@ -6,7 +7,7 @@ export const metadata: Metadata = {
   title: "Concrete Calculator",
 
   description:
-    "Free concrete calculator to estimate concrete volume, cement bags, sand, aggregate, water, and material cost for construction projects.",
+    "Free concrete calculator to calculate concrete volume, cement bags, sand, aggregate, water, and estimated material cost for slabs, walls, footings, columns, and stairs.",
 
   alternates: {
     canonical: "https://www.cornerspan.com/calculators/concrete",
@@ -26,16 +27,11 @@ export const metadata: Metadata = {
 
   openGraph: {
     title: "Concrete Calculator | CornerSpan",
-
     description:
-      "Free concrete calculator to estimate concrete volume, cement, sand, aggregate, water and material cost.",
-
+      "Calculate concrete volume, cement bags, sand, aggregate, water, and estimated material cost for construction projects.",
     type: "website",
-
     url: "https://www.cornerspan.com/calculators/concrete",
-
     siteName: "CornerSpan",
-
     images: [
       {
         url: "/og-image.png",
@@ -46,12 +42,9 @@ export const metadata: Metadata = {
 
   twitter: {
     card: "summary_large_image",
-
     title: "Concrete Calculator | CornerSpan",
-
     description:
-      "Free concrete calculator to estimate concrete volume, cement, sand, aggregate, water and material cost.",
-
+      "Calculate concrete volume, cement, sand, aggregate, water, and estimated material cost.",
     images: ["/og-image.png"],
   },
 };
@@ -59,10 +52,12 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <>
+      <Breadcrumb current="Concrete Calculator" />
+
       <CalculatorStructuredData
         name="Concrete Calculator"
         url="https://www.cornerspan.com/calculators/concrete"
-        description="Free online concrete calculator for calculating concrete volume, cement bags, sand, aggregate, water and material cost."
+        description="Free online concrete calculator for calculating concrete volume, cement bags, sand, aggregate, water, and estimated material cost."
       />
 
       <ConcreteCalculator />
