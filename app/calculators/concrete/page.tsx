@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+
 import Breadcrumb from "../../../components/Breadcrumb";
-import ConcreteCalculator from "./ConcreteCalculator";
+import RelatedCalculators from "../../../components/RelatedCalculators";
 import CalculatorStructuredData from "../../../components/CalculatorStructuredData";
+import ConcreteCalculator from "./ConcreteCalculator";
 
 export const metadata: Metadata = {
   title: "Concrete Calculator",
@@ -61,6 +63,10 @@ export default function Page() {
       />
 
       <ConcreteCalculator />
+
+      <div className="mx-auto max-w-7xl px-6">
+        <RelatedCalculators />
+      </div>
     </>
   );
 }
