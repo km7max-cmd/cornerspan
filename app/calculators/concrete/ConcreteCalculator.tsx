@@ -7,7 +7,6 @@ import CalculatorForm from "./components/CalculatorForm";
 import ResultCard from "./components/ResultCard";
 import Formula from "./components/Formula";
 import FAQ from "./components/FAQ";
-import RelatedCalculators from "./components/RelatedCalculators";
 import Example from "./components/Example";
 import History from "./components/History";
 import AboutCalculator from "./components/AboutCalculator";
@@ -1141,14 +1140,6 @@ Currency        : ${currency}`;
               }
             />
 
-          </div>
-
-          {/* ================================================= */}
-          {/* Related Calculators */}
-          {/* ================================================= */}
-
-          <div className="mt-6">
-            <RelatedCalculators />
           </div>
 
           {/* ================================================= */}
