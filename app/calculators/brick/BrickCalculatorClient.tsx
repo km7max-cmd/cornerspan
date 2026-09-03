@@ -52,7 +52,6 @@ export default function BrickCalculator() {
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-slate-100">
-
       <div className="mx-auto w-full max-w-7xl px-4 py-5 sm:px-6 sm:py-8">
 
         {/* =================================================
@@ -78,7 +77,6 @@ export default function BrickCalculator() {
         ================================================= */}
 
         <div className="mx-auto mt-6 max-w-6xl">
-
           <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(340px,0.8fr)]">
 
             {/* =================================================
@@ -111,7 +109,6 @@ export default function BrickCalculator() {
               ================================================= */}
 
               <div className="mt-5">
-
                 <CalculatorSections
                   state={state}
                   setState={setState}
@@ -120,7 +117,6 @@ export default function BrickCalculator() {
                     setOpenSection
                   }
                 />
-
               </div>
 
             </div>
@@ -130,14 +126,12 @@ export default function BrickCalculator() {
             ================================================= */}
 
             <div className="min-w-0 lg:sticky lg:top-24">
-
               <ResultCard
                 result={result}
                 currency={
                   state.currency
                 }
               />
-
             </div>
 
           </div>
@@ -147,13 +141,11 @@ export default function BrickCalculator() {
           ================================================= */}
 
           <section className="mx-auto mt-7 max-w-6xl rounded-2xl border border-blue-100 bg-blue-50 p-5 sm:p-6">
-
             <h2 className="text-lg font-bold text-slate-900">
               Brick Calculator Tips
             </h2>
 
             <ul className="mt-3 list-disc space-y-2 pl-5 text-sm leading-6 text-slate-700">
-
               <li>
                 Measure the wall length and height
                 accurately before calculating.
@@ -178,42 +170,30 @@ export default function BrickCalculator() {
                 Brick sizes can vary by region,
                 manufacturer and construction method.
               </li>
-
             </ul>
-
           </section>
 
-          <RelatedCalculators
-  items={[
-    {
-      title: "Concrete Calculator",
-      href: "/calculators/concrete",
-    },
-    {
-      title: "Square Footage Calculator",
-      href: "/calculators/square-footage",
-    },
-  ]}
-/>
+          {/* =================================================
+              RELATED CALCULATORS
+              Automatically discovered from data/calculators.ts
+          ================================================= */}
+
+          <RelatedCalculators />
 
           {/* =================================================
               DISCLAIMER
           ================================================= */}
 
           <p className="mx-auto mt-6 max-w-4xl px-2 pb-6 text-center text-xs leading-5 text-slate-500">
-
             This brick calculator provides an estimate
             for planning purposes only. Actual quantities
             may vary depending on brick dimensions,
             mortar joint thickness, openings, wall
             construction method, waste and site conditions.
-
           </p>
 
         </div>
-
       </div>
-
     </main>
   );
 }
