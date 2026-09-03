@@ -80,25 +80,6 @@ export const metadata: Metadata = {
   },
 };
 
-const relatedCalculators = [
-  {
-    title: "Brick Calculator",
-    href: "/calculators/brick",
-  },
-  {
-    title: "Concrete Calculator",
-    href: "/calculators/concrete",
-  },
-  {
-    title: "Square Footage Calculator",
-    href: "/calculators/square-footage",
-  },
-  {
-    title: "Tile Calculator",
-    href: "/calculators/tile",
-  },
-];
-
 export default function PaintCalculatorPage() {
   const structuredData = [
     {
@@ -162,7 +143,7 @@ export default function PaintCalculatorPage() {
       <PaintCalculator />
 
       {/* Related Calculators */}
-      <RelatedCalculators items={relatedCalculators} />
+      <RelatedCalculators />
 
       {/* Paint Guide + Formula + FAQ */}
       <PaintGuide />
