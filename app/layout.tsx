@@ -9,18 +9,16 @@ const GA_MEASUREMENT_ID = "G-F6Y04EJR2P";
 
 export const metadata: Metadata = {
   title: {
-    default:
-      "Free Construction Calculators | Concrete, Brick, Steel & More | CornerSpan",
+    default: "Free Construction Calculators | CornerSpan",
     template: "%s | CornerSpan",
   },
 
   description:
-    "Free online construction calculators for concrete, brick, steel, paint, tile, roofing and more. Fast, accurate tools for construction estimates and material calculations.",
+    "Free online construction calculators for concrete, brick, steel, paint, tile and roofing. Get fast, accurate material estimates for your next project.",
 
   keywords: [
     "construction calculator",
     "construction calculators",
-    "free construction calculator",
     "concrete calculator",
     "brick calculator",
     "brick quantity calculator",
@@ -28,8 +26,6 @@ export const metadata: Metadata = {
     "paint calculator",
     "tile calculator",
     "roofing calculator",
-    "construction estimating calculator",
-    "material calculator",
   ],
 
   authors: [{ name: "CornerSpan" }],
@@ -37,10 +33,10 @@ export const metadata: Metadata = {
   publisher: "CornerSpan",
 
   openGraph: {
-    title:
-      "Free Construction Calculators | Concrete, Brick, Steel & More | CornerSpan",
+    title: "Free Construction Calculators | CornerSpan",
     description:
-      "Free online construction calculators for concrete, brick, steel, paint, tile, roofing and other construction materials.",
+      "Free online construction calculators for concrete, brick, steel, paint, tile and roofing. Get fast, accurate material estimates.",
+    url: "https://www.cornerspan.com/",
     type: "website",
     locale: "en_US",
     siteName: "CornerSpan",
@@ -49,17 +45,16 @@ export const metadata: Metadata = {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "CornerSpan Free Construction Calculators",
+        alt: "Free Construction Calculators - CornerSpan",
       },
     ],
   },
 
   twitter: {
     card: "summary_large_image",
-    title:
-      "Free Construction Calculators | Concrete, Brick, Steel & More | CornerSpan",
+    title: "Free Construction Calculators | CornerSpan",
     description:
-      "Free online construction calculators for concrete, brick, steel, paint, tile, roofing and more.",
+      "Free online construction calculators for concrete, brick, steel, paint, tile and roofing.",
     images: ["/og-image.png"],
   },
 
