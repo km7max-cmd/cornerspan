@@ -10,7 +10,7 @@ import CalculatorGuides from "../components/CalculatorGuides";
 import PopularCalculators from "../components/PopularCalculators";
 
 export const metadata: Metadata = {
-  title: "Free Construction Calculators",
+  title: "Free Construction Calculators Online",
 
   description:
     "Free online construction calculators for concrete, brick, steel, paint, tile and roofing. Get fast, accurate material estimates for your next project.",
@@ -20,11 +20,29 @@ export const metadata: Metadata = {
   },
 
   openGraph: {
-    title: "Free Construction Calculators | CornerSpan",
+    title: "Free Construction Calculators Online | CornerSpan",
     description:
       "Free online construction calculators for concrete, brick, steel, paint, tile and roofing. Get fast, accurate material estimates.",
     url: "https://www.cornerspan.com/",
     type: "website",
+    siteName: "CornerSpan",
+    locale: "en_US",
+    images: [
+      {
+        url: "https://www.cornerspan.com/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Free Construction Calculators - CornerSpan",
+      },
+    ],
+  },
+
+  twitter: {
+    card: "summary_large_image",
+    title: "Free Construction Calculators Online | CornerSpan",
+    description:
+      "Free online construction calculators for concrete, brick, steel, paint, tile and roofing.",
+    images: ["https://www.cornerspan.com/og-image.png"],
   },
 };
 
