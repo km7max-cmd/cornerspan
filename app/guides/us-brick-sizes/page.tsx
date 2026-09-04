@@ -2,7 +2,8 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "US Brick Sizes & Dimensions Chart | Bricks Per Square Foot | CornerSpan",
+  title:
+    "US Brick Sizes & Dimensions Chart | Bricks Per Square Foot | CornerSpan",
   description:
     "US brick sizes and dimensions chart for common modular, Norman, Queen, King and Utility bricks. Learn bricks per square foot, mortar joint effects and how to calculate brick quantity.",
   alternates: {
@@ -44,7 +45,7 @@ const brickSizes = [
     height: "2 3/4 in",
     width: "2 3/4 in",
     module: "8 × 3 1/8 in",
-    approxPerSqFt: "6.14",
+    approxPerSqFt: "5.76",
   },
   {
     name: "King",
@@ -148,8 +149,8 @@ export default function USBrickSizesGuide() {
           </h2>
 
           <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-600 md:text-base">
-            The following dimensions are commonly used reference sizes for
-            US brickwork. Always verify the actual dimensions of the brick
+            The following dimensions are commonly used reference sizes for US
+            brickwork. Always verify the actual dimensions of the brick
             selected for your project before ordering materials.
           </p>
 
@@ -226,8 +227,10 @@ export default function USBrickSizesGuide() {
           <p className="mt-4 max-w-3xl text-base leading-8 text-slate-600">
             Modular brick is one of the most common reference sizes used in
             US brickwork. A typical modular brick measures approximately{" "}
-            <strong>7 5/8 inches long × 2 1/4 inches high × 3 5/8 inches
-            wide</strong>.
+            <strong>
+              7 5/8 inches long × 2 1/4 inches high × 3 5/8 inches wide
+            </strong>
+            .
           </p>
 
           <div className="mt-6 grid gap-4 sm:grid-cols-3">
@@ -270,9 +273,8 @@ export default function USBrickSizesGuide() {
 
           <p className="mt-4 max-w-3xl text-base leading-8 text-slate-600">
             To estimate bricks per square foot, use the length and height of
-            the brick together with the mortar joint. The basic approach is
-            to calculate the wall area occupied by one repeating brick
-            module.
+            the brick together with the mortar joint. The basic approach is to
+            calculate the wall area occupied by one repeating brick module.
           </p>
 
           <div className="mt-6 rounded-xl border border-slate-200 bg-slate-50 px-6 py-6">
@@ -281,8 +283,8 @@ export default function USBrickSizesGuide() {
             </p>
 
             <p className="mt-3 text-lg font-extrabold text-blue-600 md:text-xl">
-              Bricks per sq ft ≈ 1 ÷ (Brick Length + Joint) × (Brick Height +
-              Joint)
+              Bricks per sq ft ≈ 1 ÷ [(Brick Length + Joint) × (Brick Height +
+              Joint)]
             </p>
           </div>
 
@@ -399,7 +401,7 @@ export default function USBrickSizesGuide() {
               <h3 className="font-bold text-slate-950">
                 Check manufacturer dimensions
               </h3>
-              <p className="mt-2 text-sm leading-7 text-slate-600">
+              <p className="mt-1.5 text-sm leading-6 text-slate-600">
                 Confirm the actual length, height and width before calculating
                 material quantities.
               </p>
@@ -409,7 +411,7 @@ export default function USBrickSizesGuide() {
               <h3 className="font-bold text-slate-950">
                 Confirm the mortar joint
               </h3>
-              <p className="mt-2 text-sm leading-7 text-slate-600">
+              <p className="mt-1.5 text-sm leading-6 text-slate-600">
                 The selected joint thickness affects the repeating brick
                 module and the resulting quantity.
               </p>
@@ -419,7 +421,7 @@ export default function USBrickSizesGuide() {
               <h3 className="font-bold text-slate-950">
                 Deduct openings
               </h3>
-              <p className="mt-2 text-sm leading-7 text-slate-600">
+              <p className="mt-1.5 text-sm leading-6 text-slate-600">
                 Doors, windows and other significant openings reduce the net
                 wall area.
               </p>
@@ -429,7 +431,7 @@ export default function USBrickSizesGuide() {
               <h3 className="font-bold text-slate-950">
                 Allow for waste
               </h3>
-              <p className="mt-2 text-sm leading-7 text-slate-600">
+              <p className="mt-1.5 text-sm leading-6 text-slate-600">
                 Breakage, cutting and handling losses can affect the number of
                 bricks that should be ordered.
               </p>
@@ -611,8 +613,7 @@ export default function USBrickSizesGuide() {
               </h3>
 
               <p className="mt-2 text-sm leading-6 text-slate-600">
-                Explore practical guides for common construction
-                calculations.
+                Explore practical guides for common construction calculations.
               </p>
 
               <span className="mt-4 inline-block text-sm font-semibold text-blue-600">
