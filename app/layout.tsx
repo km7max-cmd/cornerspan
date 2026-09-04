@@ -10,22 +10,26 @@ const GA_MEASUREMENT_ID = "G-F6Y04EJR2P";
 export const metadata: Metadata = {
   title: {
     default:
-      "CornerSpan | Professional Construction Calculators",
+      "Free Construction Calculators | Concrete, Brick, Steel & More | CornerSpan",
     template: "%s | CornerSpan",
   },
 
   description:
-    "Professional construction calculators for concrete, brick, steel, paint, roofing, tile and more. Fast, accurate and free online estimating tools.",
+    "Free online construction calculators for concrete, brick, steel, paint, tile, roofing and more. Fast, accurate tools for construction estimates and material calculations.",
 
   keywords: [
     "construction calculator",
+    "construction calculators",
+    "free construction calculator",
     "concrete calculator",
     "brick calculator",
-    "paint calculator",
+    "brick quantity calculator",
     "steel calculator",
-    "roofing calculator",
+    "paint calculator",
     "tile calculator",
+    "roofing calculator",
     "construction estimating calculator",
+    "material calculator",
   ],
 
   authors: [{ name: "CornerSpan" }],
@@ -33,30 +37,31 @@ export const metadata: Metadata = {
   publisher: "CornerSpan",
 
   openGraph: {
-  title: "Construction Calculator – Free Online Tools | CornerSpan",
-  description:
-    "Free online construction calculators for concrete, bricks, steel, paint, tiles and roofing materials.",
-  type: "website",
-  locale: "en_US",
-  siteName: "CornerSpan",
-  images: [
-    {
-      url: "/og-image.png",
-      width: 1200,
-      height: 630,
-      alt: "CornerSpan Free Construction Calculators",
-    },
-  ],
-},
+    title:
+      "Free Construction Calculators | Concrete, Brick, Steel & More | CornerSpan",
+    description:
+      "Free online construction calculators for concrete, brick, steel, paint, tile, roofing and other construction materials.",
+    type: "website",
+    locale: "en_US",
+    siteName: "CornerSpan",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "CornerSpan Free Construction Calculators",
+      },
+    ],
+  },
 
-  
   twitter: {
-  card: "summary_large_image",
-  title: "Construction Calculator – Free Online Tools | CornerSpan",
-  description:
-    "Free online construction calculators for concrete, bricks, steel, paint, tiles and roofing materials.",
-  images: ["/og-image.png"],
-},
+    card: "summary_large_image",
+    title:
+      "Free Construction Calculators | Concrete, Brick, Steel & More | CornerSpan",
+    description:
+      "Free online construction calculators for concrete, brick, steel, paint, tile, roofing and more.",
+    images: ["/og-image.png"],
+  },
 
   robots: {
     index: true,
@@ -78,24 +83,22 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="bg-[var(--background)] text-[var(--foreground)] antialiased">
-
         {/* Google Analytics */}
-<Script
-  src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
-  strategy="lazyOnload"
-/>
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
+          strategy="lazyOnload"
+        />
 
-<Script id="google-analytics" strategy="lazyOnload">
-  {`
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', '${GA_MEASUREMENT_ID}');
-  `}
-</Script>
+        <Script id="google-analytics" strategy="lazyOnload">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '${GA_MEASUREMENT_ID}');
+          `}
+        </Script>
 
         <ThemeProvider>
-
           <Header />
 
           <main className="pt-[76px]">
@@ -103,9 +106,7 @@ export default function RootLayout({
           </main>
 
           <Footer />
-
         </ThemeProvider>
-
       </body>
     </html>
   );
