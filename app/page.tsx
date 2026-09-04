@@ -9,7 +9,7 @@ import PopularCalculators from "../components/PopularCalculators";
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-slate-50 pt-[80px]">
+    <main className="min-h-screen bg-slate-50">
       <Hero />
       <Stats />
       <PopularCalculators />
