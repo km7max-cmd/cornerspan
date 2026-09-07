@@ -16,18 +16,21 @@ export const metadata: Metadata = {
     "Square Footage Calculator | Sq Ft & Area",
 
   description:
-    "Free square footage calculator for rooms, walls, floors and construction projects. Calculate square feet, square yards, square meters and more.",
+    "Free square footage calculator for rooms, floors, walls and construction projects. Calculate square feet, square inches, square yards and square meters.",
 
   keywords: [
     "square footage calculator",
+    "square foot calculator",
     "square feet calculator",
     "sq ft calculator",
-    "square meter calculator",
-    "square yard calculator",
-    "area calculator",
-    "room area calculator",
+    "square footage",
+    "calculate square feet",
+    "room square footage calculator",
     "floor area calculator",
     "wall area calculator",
+    "square feet calculator with inches",
+    "square meter calculator",
+    "square yard calculator",
     "construction area calculator",
   ],
 
@@ -53,7 +56,7 @@ export const metadata: Metadata = {
       "Square Footage Calculator | Sq Ft & Area",
 
     description:
-      "Free square footage calculator for rooms, walls, floors and construction projects. Calculate square feet, square yards, square meters and more.",
+      "Free square footage calculator for rooms, floors, walls and construction projects. Calculate square feet, square inches, square yards and square meters.",
 
     url: pageUrl,
 
@@ -81,7 +84,7 @@ export const metadata: Metadata = {
       "Square Footage Calculator | Sq Ft & Area",
 
     description:
-      "Free square footage calculator for rooms, walls, floors and construction projects.",
+      "Free square footage calculator for rooms, floors, walls and construction projects.",
 
     images: ["/og-image.png"],
   },
@@ -97,7 +100,7 @@ const calculatorSchema = {
   url: pageUrl,
 
   description:
-    "Free online square footage calculator for rooms, walls, floors and construction projects.",
+    "Free online square footage calculator for rooms, floors, walls and construction projects.",
 
   applicationCategory:
     "UtilitiesApplication",
@@ -240,7 +243,6 @@ export default function SquareFootagePage() {
 
         {/* =================================================
             RELATED CALCULATORS
-            Automatically discovered
         ================================================= */}
 
         <div className="mt-3">
@@ -248,7 +250,7 @@ export default function SquareFootagePage() {
         </div>
 
         {/* =================================================
-            HOW TO CALCULATE
+            QUICK ANSWER
         ================================================= */}
 
         <section className="mt-6 rounded-xl border border-slate-200 bg-white p-5">
@@ -258,10 +260,10 @@ export default function SquareFootagePage() {
           </h2>
 
           <p className="mt-3 text-sm leading-6 text-slate-600">
-            For a rectangular area, multiply the
-            length by the width. When both
-            measurements are in feet, the result
-            is square feet.
+            For a rectangular room, floor or other
+            area, multiply the length by the width.
+            When both measurements are in feet, the
+            result is square feet.
           </p>
 
           <div className="mt-4 rounded-lg bg-slate-50 p-4 text-center font-semibold text-slate-800">
@@ -269,17 +271,82 @@ export default function SquareFootagePage() {
           </div>
 
           <p className="mt-4 text-sm leading-6 text-slate-600">
-            For example, a room that is 12 feet
-            long and 10 feet wide has an area of
-            120 square feet.
+            For example, an area that is 12 feet long
+            and 10 feet wide has 120 square feet.
           </p>
 
+        </section>
+
+        {/* =================================================
+            WORKED EXAMPLES
+        ================================================= */}
+
+        <section className="mt-6 rounded-xl border border-slate-200 bg-white p-5">
+
+          <h2 className="text-xl font-bold text-slate-900">
+            Square Footage Examples
+          </h2>
+
           <p className="mt-3 text-sm leading-6 text-slate-600">
-            For walls, windows, circles, triangles,
-            borders and other shapes, select the
-            appropriate shape in the calculator
-            and enter the required measurements.
+            These examples show how to calculate
+            square footage for common rooms and
+            construction areas.
           </p>
+
+          <div className="mt-4 space-y-4">
+
+            <div className="rounded-lg bg-slate-50 p-4">
+
+              <h3 className="font-semibold text-slate-900">
+                Example 1: 12 ft × 10 ft room
+              </h3>
+
+              <p className="mt-1 text-sm leading-6 text-slate-600">
+                12 × 10 = <strong>120 square feet</strong>
+              </p>
+
+            </div>
+
+            <div className="rounded-lg bg-slate-50 p-4">
+
+              <h3 className="font-semibold text-slate-900">
+                Example 2: 15 ft × 20 ft floor
+              </h3>
+
+              <p className="mt-1 text-sm leading-6 text-slate-600">
+                15 × 20 = <strong>300 square feet</strong>
+              </p>
+
+            </div>
+
+            <div className="rounded-lg bg-slate-50 p-4">
+
+              <h3 className="font-semibold text-slate-900">
+                Example 3: 8 ft × 9 ft area
+              </h3>
+
+              <p className="mt-1 text-sm leading-6 text-slate-600">
+                8 × 9 = <strong>72 square feet</strong>
+              </p>
+
+            </div>
+
+            <div className="rounded-lg bg-slate-50 p-4">
+
+              <h3 className="font-semibold text-slate-900">
+                Example 4: 10 ft 6 in × 12 ft
+              </h3>
+
+              <p className="mt-1 text-sm leading-6 text-slate-600">
+                Convert the 6 inches as part of the
+                measurement, then multiply the length
+                by the width. The calculator handles
+                feet and inches automatically.
+              </p>
+
+            </div>
+
+          </div>
 
         </section>
 
@@ -294,20 +361,150 @@ export default function SquareFootagePage() {
           </h2>
 
           <p className="mt-3 text-sm leading-6 text-slate-600">
-            Construction measurements are often
-            given in feet and inches. This calculator
-            lets you enter both measurements directly
-            instead of manually converting inches
-            to decimal feet.
+            Construction measurements are often given
+            in feet and inches. Instead of converting
+            every measurement to decimal feet manually,
+            enter the feet and inches directly in the
+            calculator.
           </p>
 
           <p className="mt-3 text-sm leading-6 text-slate-600">
             For example, a measurement of 10 feet
             6 inches can be entered using the feet
             and inches fields. The calculator handles
-            the conversion before calculating the
-            area.
+            the conversion before calculating the area.
           </p>
+
+          <div className="mt-4 rounded-lg bg-slate-50 p-4">
+
+            <h3 className="font-semibold text-slate-900">
+              Quick conversion
+            </h3>
+
+            <p className="mt-2 text-sm leading-6 text-slate-600">
+              12 inches = 1 foot
+            </p>
+
+            <p className="mt-1 text-sm leading-6 text-slate-600">
+              6 inches = 0.5 foot
+            </p>
+
+          </div>
+
+        </section>
+
+        {/* =================================================
+            IRREGULAR AREAS
+        ================================================= */}
+
+        <section className="mt-6 rounded-xl border border-slate-200 bg-white p-5">
+
+          <h2 className="text-xl font-bold text-slate-900">
+            How to Calculate Square Footage for an Irregular Area
+          </h2>
+
+          <p className="mt-3 text-sm leading-6 text-slate-600">
+            Not every room or construction area is a
+            simple rectangle. For an L-shaped or
+            irregular area, divide the space into
+            smaller rectangles or other simple shapes.
+          </p>
+
+          <p className="mt-3 text-sm leading-6 text-slate-600">
+            Calculate the area of each section and then
+            add the results together to get the total
+            square footage.
+          </p>
+
+          <div className="mt-4 rounded-lg bg-slate-50 p-4 text-sm leading-6 text-slate-700">
+
+            <p className="font-semibold">
+              Example:
+            </p>
+
+            <p className="mt-1">
+              Section A = 10 ft × 8 ft = 80 sq ft
+            </p>
+
+            <p>
+              Section B = 6 ft × 5 ft = 30 sq ft
+            </p>
+
+            <p className="mt-1 font-semibold">
+              Total = 110 sq ft
+            </p>
+
+          </div>
+
+        </section>
+
+        {/* =================================================
+            ROOM / FLOOR / WALL
+        ================================================= */}
+
+        <section className="mt-6 rounded-xl border border-slate-200 bg-white p-5">
+
+          <h2 className="text-xl font-bold text-slate-900">
+            Common Square Footage Calculations
+          </h2>
+
+          <div className="mt-4 grid gap-3 sm:grid-cols-2">
+
+            <div className="rounded-lg bg-slate-50 p-4">
+
+              <h3 className="font-semibold text-slate-900">
+                Room Square Footage
+              </h3>
+
+              <p className="mt-1 text-sm leading-6 text-slate-600">
+                Multiply the room length by its width
+                to find the floor area.
+              </p>
+
+            </div>
+
+            <div className="rounded-lg bg-slate-50 p-4">
+
+              <h3 className="font-semibold text-slate-900">
+                Floor Area
+              </h3>
+
+              <p className="mt-1 text-sm leading-6 text-slate-600">
+                Use the floor dimensions to estimate
+                the area for flooring, carpet or other
+                surface materials.
+              </p>
+
+            </div>
+
+            <div className="rounded-lg bg-slate-50 p-4">
+
+              <h3 className="font-semibold text-slate-900">
+                Wall Area
+              </h3>
+
+              <p className="mt-1 text-sm leading-6 text-slate-600">
+                Calculate wall area using the wall
+                dimensions and account for openings
+                such as windows where applicable.
+              </p>
+
+            </div>
+
+            <div className="rounded-lg bg-slate-50 p-4">
+
+              <h3 className="font-semibold text-slate-900">
+                Construction Areas
+              </h3>
+
+              <p className="mt-1 text-sm leading-6 text-slate-600">
+                Estimate areas used for construction,
+                renovation and material planning.
+              </p>
+
+            </div>
+
+          </div>
 
         </section>
 
@@ -322,12 +519,15 @@ export default function SquareFootagePage() {
           </h2>
 
           <p className="mt-3 text-sm leading-6 text-slate-600">
-            The calculator provides several useful
-            area measurements so you can compare
-            construction areas using different units.
+            Square footage can be converted to several
+            other common units of area.
           </p>
 
           <ul className="mt-4 list-disc space-y-2 pl-5 text-sm leading-6 text-slate-600">
+
+            <li>
+              1 square foot = 144 square inches
+            </li>
 
             <li>
               1 square yard = 9 square feet
@@ -338,7 +538,7 @@ export default function SquareFootagePage() {
             </li>
 
             <li>
-              1 square foot = 144 square inches
+              1 square foot ≈ 0.092903 square meters
             </li>
 
           </ul>
@@ -346,72 +546,28 @@ export default function SquareFootagePage() {
         </section>
 
         {/* =================================================
-            COMMON USES
+            HOW MANY SQ FT
         ================================================= */}
 
         <section className="mt-6 rounded-xl border border-slate-200 bg-white p-5">
 
           <h2 className="text-xl font-bold text-slate-900">
-            Common Square Footage Calculations
+            How Many Square Feet Do I Need?
           </h2>
 
-          <div className="mt-4 grid gap-3 sm:grid-cols-2">
+          <p className="mt-3 text-sm leading-6 text-slate-600">
+            First calculate the actual area of the
+            room, floor or wall. If you are estimating
+            material quantities, add an appropriate
+            amount of extra material for cutting,
+            fitting and installation waste.
+          </p>
 
-            <div className="rounded-lg bg-slate-50 p-4">
-
-              <h3 className="font-semibold text-slate-900">
-                Room Area
-              </h3>
-
-              <p className="mt-1 text-sm text-slate-600">
-                Calculate the floor area of a
-                rectangular room using its length
-                and width.
-              </p>
-
-            </div>
-
-            <div className="rounded-lg bg-slate-50 p-4">
-
-              <h3 className="font-semibold text-slate-900">
-                Wall Area
-              </h3>
-
-              <p className="mt-1 text-sm text-slate-600">
-                Calculate wall area and account
-                for window openings.
-              </p>
-
-            </div>
-
-            <div className="rounded-lg bg-slate-50 p-4">
-
-              <h3 className="font-semibold text-slate-900">
-                Flooring
-              </h3>
-
-              <p className="mt-1 text-sm text-slate-600">
-                Calculate floor area and include
-                an optional material waste factor.
-              </p>
-
-            </div>
-
-            <div className="rounded-lg bg-slate-50 p-4">
-
-              <h3 className="font-semibold text-slate-900">
-                Construction
-              </h3>
-
-              <p className="mt-1 text-sm text-slate-600">
-                Calculate areas for common
-                construction shapes and convert
-                between useful area units.
-              </p>
-
-            </div>
-
-          </div>
+          <p className="mt-3 text-sm leading-6 text-slate-600">
+            The amount of waste depends on the material,
+            installation pattern, shape of the area and
+            the number of cuts required.
+          </p>
 
         </section>
 
@@ -430,9 +586,47 @@ export default function SquareFootagePage() {
             require additional material because of
             cutting, fitting and installation waste.
             Use the optional waste percentage in the
-            calculator when estimating the amount
-            of material required.
+            calculator when estimating the amount of
+            material required.
           </p>
+
+        </section>
+
+        {/* =================================================
+            ACCURACY TIPS
+        ================================================= */}
+
+        <section className="mt-6 rounded-xl border border-slate-200 bg-white p-5">
+
+          <h2 className="text-xl font-bold text-slate-900">
+            Tips for Accurate Square Footage
+          </h2>
+
+          <ul className="mt-4 list-disc space-y-2 pl-5 text-sm leading-6 text-slate-600">
+
+            <li>
+              Measure length and width at the same unit.
+            </li>
+
+            <li>
+              Double-check measurements before calculating.
+            </li>
+
+            <li>
+              Use feet and inches when that matches your
+              construction measurements.
+            </li>
+
+            <li>
+              Divide irregular areas into smaller sections.
+            </li>
+
+            <li>
+              Add material waste only after determining
+              the actual area.
+            </li>
+
+          </ul>
 
         </section>
 
@@ -449,6 +643,7 @@ export default function SquareFootagePage() {
           <div className="mt-4 space-y-5">
 
             <div>
+
               <h3 className="font-semibold text-slate-900">
                 How do you calculate square footage?
               </h3>
@@ -458,9 +653,25 @@ export default function SquareFootagePage() {
                 area by its width. If both measurements
                 are in feet, the answer is square feet.
               </p>
+
             </div>
 
             <div>
+
+              <h3 className="font-semibold text-slate-900">
+                What is the formula for square feet?
+              </h3>
+
+              <p className="mt-1 text-sm leading-6 text-slate-600">
+                For a rectangular area, the formula is
+                length × width. For example, 12 feet ×
+                10 feet = 120 square feet.
+              </p>
+
+            </div>
+
+            <div>
+
               <h3 className="font-semibold text-slate-900">
                 How many square feet are in a square yard?
               </h3>
@@ -468,9 +679,11 @@ export default function SquareFootagePage() {
               <p className="mt-1 text-sm leading-6 text-slate-600">
                 One square yard contains 9 square feet.
               </p>
+
             </div>
 
             <div>
+
               <h3 className="font-semibold text-slate-900">
                 Can I use feet and inches?
               </h3>
@@ -480,22 +693,55 @@ export default function SquareFootagePage() {
                 and the calculator converts the
                 measurements automatically.
               </p>
+
             </div>
 
             <div>
+
               <h3 className="font-semibold text-slate-900">
-                How do I calculate wall area with windows?
+                How do I calculate room square footage?
               </h3>
 
               <p className="mt-1 text-sm leading-6 text-slate-600">
-                Calculate the total wall area and
-                subtract the area of the window
-                openings. The Wall with Window shape
-                handles this calculation.
+                Measure the room length and width in
+                feet, then multiply them. A 12 ft ×
+                10 ft room has 120 square feet.
               </p>
+
             </div>
 
             <div>
+
+              <h3 className="font-semibold text-slate-900">
+                How do I calculate wall square footage?
+              </h3>
+
+              <p className="mt-1 text-sm leading-6 text-slate-600">
+                Multiply the wall width by its height
+                to find the wall area. Subtract the
+                area of openings such as windows or
+                doors when appropriate.
+              </p>
+
+            </div>
+
+            <div>
+
+              <h3 className="font-semibold text-slate-900">
+                How do I calculate an irregular area?
+              </h3>
+
+              <p className="mt-1 text-sm leading-6 text-slate-600">
+                Divide the irregular space into smaller
+                rectangles or other simple shapes.
+                Calculate each section and add the
+                areas together.
+              </p>
+
+            </div>
+
+            <div>
+
               <h3 className="font-semibold text-slate-900">
                 Can I add material waste?
               </h3>
@@ -505,6 +751,7 @@ export default function SquareFootagePage() {
                 percentage to account for additional
                 material needed during installation.
               </p>
+
             </div>
 
           </div>
