@@ -8,6 +8,8 @@ import ThemeProvider from "./components/ThemeProvider";
 const GA_MEASUREMENT_ID = "G-F6Y04EJR2P";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://www.cornerspan.com"),
+
   title: {
     default: "Free Construction Calculators | CornerSpan",
     template: "%s | CornerSpan",
