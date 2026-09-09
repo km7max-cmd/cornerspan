@@ -120,16 +120,7 @@ export default function SquareFootagePage() {
       />
 
       <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
-        <Breadcrumb
-          items={[
-            { label: "Home", href: "/" },
-            { label: "Calculators", href: "/calculators" },
-            {
-              label: "Square Footage Calculator",
-              href: "/calculators/square-footage",
-            },
-          ]}
-        />
+        <Breadcrumb current="Square Footage Calculator" />
 
         <section className="mt-6">
           <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
@@ -302,9 +293,7 @@ export default function SquareFootagePage() {
             feet.
           </p>
 
-          <p>
-            Therefore:
-          </p>
+          <p>Therefore:</p>
 
           <p>
             10.5 × 12 = <strong>126 square feet</strong>
@@ -336,9 +325,7 @@ export default function SquareFootagePage() {
             </li>
           </ul>
 
-          <p>
-            Total area:
-          </p>
+          <p>Total area:</p>
 
           <p>
             80 + 30 = <strong>110 square feet</strong>
@@ -438,8 +425,12 @@ export default function SquareFootagePage() {
             <li>Use the same units for length and width.</li>
             <li>Measure irregular areas in smaller sections.</li>
             <li>Double-check measurements before ordering materials.</li>
-            <li>Subtract openings such as doors and windows when appropriate.</li>
-            <li>Add reasonable material waste for installation projects.</li>
+            <li>
+              Subtract openings such as doors and windows when appropriate.
+            </li>
+            <li>
+              Add reasonable material waste for installation projects.
+            </li>
             <li>
               Keep measurements and calculated totals for future reference.
             </li>
@@ -492,28 +483,22 @@ export default function SquareFootagePage() {
 
           <h3>How many square feet are in a square yard?</h3>
 
-          <p>
-            One square yard equals 9 square feet.
-          </p>
+          <p>One square yard equals 9 square feet.</p>
 
           <h3>How many square inches are in one square foot?</h3>
 
-          <p>
-            One square foot contains 144 square inches.
-          </p>
+          <p>One square foot contains 144 square inches.</p>
 
           <h3>How many square feet are in an acre?</h3>
 
-          <p>
-            One acre contains 43,560 square feet.
-          </p>
+          <p>One acre contains 43,560 square feet.</p>
 
           <h3>Should I add waste to my square footage?</h3>
 
           <p>
-            For many material-installation projects, yes. The appropriate waste
-            percentage depends on the material, layout, cutting requirements
-            and installation method.
+            For many material-installation projects, yes. The appropriate
+            waste percentage depends on the material, layout, cutting
+            requirements and installation method.
           </p>
         </article>
 
