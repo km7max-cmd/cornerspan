@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import Breadcrumb from "../../../components/Breadcrumb";
 import RelatedCalculators from "../../../components/RelatedCalculators";
 
-const CalculatorForm = dynamic(() => import("./CalculatorForm"), {
+const CalculatorForm = dynamic(() => import("./components/CalculatorForm"), {
   loading: () => (
     <div className="rounded-2xl border bg-white p-6 shadow-sm">
       Loading calculator…
