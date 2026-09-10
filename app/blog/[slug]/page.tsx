@@ -55,7 +55,7 @@ export async function generateMetadata({
         url: `/blog/${squareFootageSlug}`,
         images: [
           {
-            url: "/images/square-footage-guide.webp",
+            url: "/square-footage-guide.webp",
             width: 1672,
             height: 941,
             alt: "How to Calculate Square Footage - CornerSpan Guide",
@@ -67,7 +67,7 @@ export async function generateMetadata({
         title: "How to Calculate Square Footage: Complete Guide",
         description:
           "Learn how to calculate square footage for rooms, walls, floors and irregular areas.",
-        images: ["/images/square-footage-guide.webp"],
+        images: ["/square-footage-guide.webp"],
       },
       robots: {
         index: true,
@@ -99,6 +99,9 @@ export default async function BlogPostPage({ params }: Props) {
     notFound();
   }
 
+  /*
+   * Keep the existing simple layout for the other guides.
+   */
   if (slug !== squareFootageSlug) {
     return (
       <main className="min-h-screen bg-slate-50">
@@ -173,8 +176,9 @@ export default async function BlogPostPage({ params }: Props) {
   }
 
   const articleUrl = `https://www.cornerspan.com/blog/${squareFootageSlug}`;
+
   const imageUrl =
-    "https://www.cornerspan.com/images/square-footage-guide.webp";
+    "https://www.cornerspan.com/square-footage-guide.webp";
 
   const articleSchema = {
     "@context": "https://schema.org",
@@ -194,7 +198,7 @@ export default async function BlogPostPage({ params }: Props) {
       url: "https://www.cornerspan.com",
       logo: {
         "@type": "ImageObject",
-        url: "https://www.cornerspan.com/images/logo.webp",
+        url: "https://www.cornerspan.com/logo.webp",
       },
     },
     mainEntityOfPage: {
@@ -230,49 +234,6 @@ export default async function BlogPostPage({ params }: Props) {
     ],
   };
 
-  const faqSchema = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: [
-      {
-        "@type": "Question",
-        name: "How do you calculate square footage?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text:
-            "For a rectangular area, multiply the length by the width. If both measurements are in feet, the result is square feet.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "How do you calculate square footage with feet and inches?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text:
-            "Convert the inches to a fraction of a foot first. For example, 6 inches equals 0.5 feet, so 10 feet 6 inches becomes 10.5 feet.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "How do you calculate square footage of an irregular room?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text:
-            "Divide the irregular room into smaller rectangles or other simple shapes, calculate each area separately, and add the results together.",
-        },
-      },
-      {
-        "@type": "Question",
-        name: "How much waste should I add to square footage?",
-        acceptedAnswer: {
-          "@type": "Answer",
-          text:
-            "A common planning allowance is around 5% to 15%, depending on the material, installation pattern and complexity of the project.",
-        },
-      },
-    ],
-  };
-
   return (
     <main className="min-h-screen bg-slate-50">
       <article className="mx-auto max-w-5xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
@@ -302,7 +263,7 @@ export default async function BlogPostPage({ params }: Props) {
         <header className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
           <div className="relative aspect-[16/9] w-full">
             <Image
-              src="/images/square-footage-guide.webp"
+              src="/square-footage-guide.webp"
               alt="How to Calculate Square Footage - CornerSpan Complete Guide"
               fill
               priority
@@ -342,7 +303,7 @@ export default async function BlogPostPage({ params }: Props) {
           </div>
         </header>
 
-        {/* Article */}
+        {/* Article Content */}
         <div className="mt-8 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-10">
           <div className="prose prose-slate max-w-none prose-headings:tracking-tight prose-a:text-blue-600">
             <p className="text-lg leading-8">
@@ -381,6 +342,7 @@ export default async function BlogPostPage({ params }: Props) {
                 <div className="border-b border-r border-slate-200 p-4">
                   Measurement
                 </div>
+
                 <div className="border-b border-slate-200 p-4">
                   Value
                 </div>
@@ -390,6 +352,7 @@ export default async function BlogPostPage({ params }: Props) {
                 <div className="border-b border-r border-slate-200 p-4">
                   Length
                 </div>
+
                 <div className="border-b border-slate-200 p-4">
                   12 ft
                 </div>
@@ -397,6 +360,7 @@ export default async function BlogPostPage({ params }: Props) {
                 <div className="border-b border-r border-slate-200 p-4">
                   Width
                 </div>
+
                 <div className="border-b border-slate-200 p-4">
                   10 ft
                 </div>
@@ -404,6 +368,7 @@ export default async function BlogPostPage({ params }: Props) {
                 <div className="border-r border-slate-200 p-4 font-bold">
                   Area
                 </div>
+
                 <div className="p-4 font-bold">
                   120 sq ft
                 </div>
@@ -464,7 +429,9 @@ export default async function BlogPostPage({ params }: Props) {
               depending on how accurately you need to estimate materials.
             </p>
 
-            <h2>How to Calculate Square Feet Using Feet and Inches</h2>
+            <h2>
+              How to Calculate Square Feet Using Feet and Inches
+            </h2>
 
             <p>
               Measurements often include both feet and inches. Convert
@@ -491,15 +458,16 @@ export default async function BlogPostPage({ params }: Props) {
             </p>
 
             <p>
-              For more complex feet-and-inches measurements, you can use
-              the{" "}
+              For more complex feet-and-inches measurements, use the{" "}
               <Link href="/calculators/square-footage">
                 CornerSpan Square Footage Calculator
               </Link>
               .
             </p>
 
-            <h2>How to Calculate Square Footage for an Irregular Area</h2>
+            <h2>
+              How to Calculate Square Footage for an Irregular Area
+            </h2>
 
             <p>
               Not every room or floor has a simple rectangle shape. A
@@ -531,13 +499,16 @@ export default async function BlogPostPage({ params }: Props) {
               <li>
                 <strong>Floor area:</strong> Length × Width
               </li>
+
               <li>
                 <strong>Wall area:</strong> Height × Width
               </li>
+
               <li>
                 <strong>Multiple rooms:</strong> Calculate each room and
                 add the areas
               </li>
+
               <li>
                 <strong>Irregular areas:</strong> Divide into simple
                 shapes and add the results
@@ -673,13 +644,6 @@ export default async function BlogPostPage({ params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(breadcrumbSchema),
-        }}
-      />
-
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(faqSchema),
         }}
       />
     </main>
