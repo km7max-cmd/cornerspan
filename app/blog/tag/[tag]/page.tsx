@@ -44,7 +44,7 @@ export async function generateMetadata({
       canonical: `/blog/tag/${tag.toLowerCase()}`,
     },
     robots: {
-      index: true,
+      index: false,
       follow: true,
     },
   };
