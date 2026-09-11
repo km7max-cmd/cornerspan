@@ -38,7 +38,7 @@ export async function generateMetadata({
       canonical: `/blog/category/${category.toLowerCase()}`,
     },
     robots: {
-      index: true,
+      index: false,
       follow: true,
     },
   };
