@@ -1,4 +1,11 @@
+import type { Metadata } from "next";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "Construction Calculation Guides | CornerSpan",
+  description:
+    "Practical construction calculation guides covering measurements, material estimates and common construction formulas.",
+};
 
 type Guide = {
   title: string;
