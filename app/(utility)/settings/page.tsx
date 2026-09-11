@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { useTheme } from "../components/ThemeProvider";
+import { useTheme } from "../../components/ThemeProvider";
 
 type Theme = "system" | "light" | "dark";
 
