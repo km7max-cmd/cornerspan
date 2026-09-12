@@ -63,41 +63,40 @@ export default function PaverCalculator() {
   ]);
 
   return (
-    <div className="mx-auto w-full max-w-4xl px-4 sm:px-6">
-      {/* SINGLE CALCULATOR CARD */}
-      <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl">
-        {/* Calculator Header */}
-        <div className="border-b border-slate-200 bg-slate-50 px-5 py-6 sm:px-8">
+    <div className="mx-auto w-full max-w-3xl px-3 sm:px-4">
+      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-lg">
+        {/* Header */}
+        <div className="border-b border-slate-200 bg-slate-50 px-4 py-4 sm:px-6">
           <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-600 text-xl text-white shadow-sm">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-blue-600 text-lg text-white">
               ▦
             </div>
 
             <div>
-              <h2 className="text-xl font-bold text-slate-900">
+              <h2 className="text-lg font-bold text-slate-900">
                 Paver Calculator
               </h2>
 
-              <p className="text-sm text-slate-500">
-                Enter your measurements to calculate pavers needed.
+              <p className="text-xs text-slate-500">
+                Calculate the pavers you need.
               </p>
             </div>
           </div>
         </div>
 
-        {/* Calculator Body */}
-        <div className="p-5 sm:p-8">
+        {/* Calculator */}
+        <div className="p-4 sm:p-6">
           {/* Project Size */}
           <div>
-            <div className="mb-3 flex items-center justify-between">
-              <h3 className="text-sm font-bold uppercase tracking-wide text-slate-700">
+            <div className="mb-2 flex items-center justify-between">
+              <h3 className="text-xs font-bold uppercase tracking-wide text-slate-600">
                 Project Size
               </h3>
 
-              <span className="text-xs text-slate-400">feet</span>
+              <span className="text-xs text-slate-400">ft</span>
             </div>
 
-            <div className="flex items-center gap-2 sm:gap-4">
+            <div className="flex items-end gap-2">
               <CalculatorInput
                 label="Length"
                 value={projectLength}
@@ -105,7 +104,7 @@ export default function PaverCalculator() {
                 placeholder="12"
               />
 
-              <span className="mt-6 text-xl font-bold text-slate-400">×</span>
+              <span className="mb-3 text-lg font-bold text-slate-400">×</span>
 
               <CalculatorInput
                 label="Width"
@@ -116,20 +115,17 @@ export default function PaverCalculator() {
             </div>
           </div>
 
-          {/* Divider */}
-          <div className="my-7 border-t border-slate-100" />
-
           {/* Paver Size */}
-          <div>
-            <div className="mb-3 flex items-center justify-between">
-              <h3 className="text-sm font-bold uppercase tracking-wide text-slate-700">
+          <div className="mt-5">
+            <div className="mb-2 flex items-center justify-between">
+              <h3 className="text-xs font-bold uppercase tracking-wide text-slate-600">
                 Paver Size
               </h3>
 
-              <span className="text-xs text-slate-400">inches</span>
+              <span className="text-xs text-slate-400">in</span>
             </div>
 
-            <div className="flex items-center gap-2 sm:gap-4">
+            <div className="flex items-end gap-2">
               <CalculatorInput
                 label="Length"
                 value={paverLength}
@@ -137,7 +133,7 @@ export default function PaverCalculator() {
                 placeholder="8"
               />
 
-              <span className="mt-6 text-xl font-bold text-slate-400">×</span>
+              <span className="mb-3 text-lg font-bold text-slate-400">×</span>
 
               <CalculatorInput
                 label="Width"
@@ -148,22 +144,17 @@ export default function PaverCalculator() {
             </div>
           </div>
 
-          {/* Divider */}
-          <div className="my-7 border-t border-slate-100" />
-
           {/* Waste */}
-          <div>
-            <div className="mb-3 flex items-center justify-between">
-              <h3 className="text-sm font-bold uppercase tracking-wide text-slate-700">
-                Waste Allowance
+          <div className="mt-5">
+            <div className="mb-2 flex items-center justify-between">
+              <h3 className="text-xs font-bold uppercase tracking-wide text-slate-600">
+                Waste
               </h3>
 
-              <span className="text-xs text-slate-400">
-                cutting & breakage
-              </span>
+              <span className="text-xs text-slate-400">allowance</span>
             </div>
 
-            <div className="grid grid-cols-3 gap-2 sm:flex sm:flex-wrap">
+            <div className="flex gap-2">
               {wastePresets.map((value) => {
                 const active = wastePercent === String(value);
 
@@ -172,9 +163,9 @@ export default function PaverCalculator() {
                     key={value}
                     type="button"
                     onClick={() => setWastePercent(String(value))}
-                    className={`rounded-xl border px-4 py-3 text-sm font-semibold transition ${
+                    className={`flex-1 rounded-lg border px-3 py-2 text-sm font-semibold transition sm:flex-none sm:px-5 ${
                       active
-                        ? "border-blue-600 bg-blue-600 text-white shadow-sm"
+                        ? "border-blue-600 bg-blue-600 text-white"
                         : "border-slate-200 bg-slate-50 text-slate-700 hover:border-blue-300 hover:bg-blue-50"
                     }`}
                   >
@@ -184,7 +175,7 @@ export default function PaverCalculator() {
               })}
             </div>
 
-            <div className="relative mt-3">
+            <div className="relative mt-2">
               <input
                 type="number"
                 min="0"
@@ -192,68 +183,61 @@ export default function PaverCalculator() {
                 value={wastePercent}
                 onChange={(e) => setWastePercent(e.target.value)}
                 inputMode="decimal"
-                aria-label="Custom waste percentage"
-                className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 pr-10 text-base font-semibold text-slate-900 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+                aria-label="Waste percentage"
+                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
               />
 
-              <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 font-semibold text-slate-400">
+              <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-sm text-slate-400">
                 %
               </span>
             </div>
           </div>
 
-          {/* RESULT DISPLAY */}
-          <div className="mt-8 overflow-hidden rounded-2xl border border-blue-100 bg-blue-50">
-            <div className="px-5 py-5 text-center sm:px-8 sm:py-7">
-              <p className="text-xs font-bold uppercase tracking-widest text-blue-600">
+          {/* Main Result */}
+          <div className="mt-6 overflow-hidden rounded-xl border border-blue-100 bg-blue-50">
+            <div className="px-4 py-5 text-center">
+              <p className="text-[11px] font-bold uppercase tracking-widest text-blue-600">
                 Pavers to Order
               </p>
 
-              <div className="mt-1">
-                <span className="text-5xl font-extrabold tracking-tight text-slate-900 sm:text-6xl">
-                  {result ? formatNumber(result.paversToOrder, 0) : "—"}
-                </span>
-              </div>
+              <p className="mt-1 text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">
+                {result ? formatNumber(result.paversToOrder, 0) : "—"}
+              </p>
 
-              <p className="mt-2 text-sm text-slate-500">
+              <p className="mt-1 text-xs text-slate-500">
                 {result
-                  ? `Includes ${formatNumber(Number(wastePercent), 1)}% waste`
-                  : "Enter valid dimensions to calculate"}
+                  ? `Including ${formatNumber(Number(wastePercent), 1)}% waste`
+                  : "Enter dimensions to calculate"}
               </p>
             </div>
 
             {/* Quick Results */}
             {result && (
-              <div className="grid grid-cols-2 border-t border-blue-100 bg-white sm:grid-cols-4">
+              <div className="grid grid-cols-3 border-t border-blue-100 bg-white">
                 <MiniResult
-                  label="Project Area"
-                  value={`${formatNumber(result.projectAreaSqFt)} sq ft`}
+                  label="Area"
+                  value={`${formatNumber(result.projectAreaSqFt)} ft²`}
                 />
 
                 <MiniResult
-                  label="Exact Pavers"
+                  label="Exact"
                   value={formatNumber(result.exactPavers, 0)}
                 />
 
                 <MiniResult
-                  label="Pavers / Sq Ft"
+                  label="Per Sq Ft"
                   value={formatNumber(result.paversPerSqFt, 2)}
-                />
-
-                <MiniResult
-                  label="Area + Waste"
-                  value={`${formatNumber(result.areaWithWasteSqFt)} sq ft`}
                 />
               </div>
             )}
           </div>
 
-          {/* Optional Cost */}
-          <div className="mt-7">
-            <div className="mb-3 flex items-center justify-between">
+          {/* Price */}
+          <div className="mt-5">
+            <div className="mb-2 flex items-center justify-between">
               <label
-                htmlFor="price-per-paver"
-                className="text-sm font-bold text-slate-700"
+                htmlFor="paver-price"
+                className="text-xs font-bold uppercase tracking-wide text-slate-600"
               >
                 Price per Paver
               </label>
@@ -261,80 +245,66 @@ export default function PaverCalculator() {
               <span className="text-xs text-slate-400">optional</span>
             </div>
 
-            <div className="relative">
-              <input
-                id="price-per-paver"
-                type="number"
-                min="0"
-                step="any"
-                value={pricePerPaver}
-                onChange={(e) => setPricePerPaver(e.target.value)}
-                placeholder="Enter price"
-                inputMode="decimal"
-                className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-base text-slate-900 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
-              />
-            </div>
+            <input
+              id="paver-price"
+              type="number"
+              min="0"
+              step="any"
+              value={pricePerPaver}
+              onChange={(e) => setPricePerPaver(e.target.value)}
+              placeholder="Enter price"
+              inputMode="decimal"
+              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+            />
 
             {result?.estimatedCost !== undefined && (
-              <div className="mt-3 flex items-center justify-between rounded-xl bg-slate-50 px-4 py-4">
-                <span className="text-sm font-medium text-slate-600">
-                  Estimated Paver Cost
+              <div className="mt-2 flex items-center justify-between rounded-lg bg-slate-50 px-3 py-2.5">
+                <span className="text-xs text-slate-500">
+                  Estimated Cost
                 </span>
 
-                <span className="text-xl font-bold text-slate-900">
+                <span className="text-base font-bold text-slate-900">
                   {formatNumber(result.estimatedCost, 2)}
                 </span>
               </div>
             )}
           </div>
 
-          {/* Calculation Details */}
+          {/* Details */}
           {result && (
-            <div className="mt-7 rounded-xl border border-slate-200 bg-slate-50 p-4">
-              <h3 className="text-sm font-bold text-slate-900">
-                Calculation Details
-              </h3>
-
-              <div className="mt-3 space-y-2 text-sm">
-                <DetailRow
-                  label="One paver covers"
-                  value={`${formatNumber(result.paverAreaSqFt, 4)} sq ft`}
+            <div className="mt-5 border-t border-slate-100 pt-4">
+              <div className="grid grid-cols-2 gap-x-5 gap-y-2 text-xs sm:grid-cols-4">
+                <Detail
+                  label="Paver Area"
+                  value={`${formatNumber(result.paverAreaSqFt, 4)} ft²`}
                 />
 
-                <DetailRow
-                  label="Project area"
-                  value={`${formatNumber(result.projectAreaSqFt)} sq ft`}
+                <Detail
+                  label="Area + Waste"
+                  value={`${formatNumber(result.areaWithWasteSqFt)} ft²`}
                 />
 
-                <DetailRow
-                  label="Area including waste"
-                  value={`${formatNumber(result.areaWithWasteSqFt)} sq ft`}
-                />
-
-                <DetailRow
-                  label="Metric area"
+                <Detail
+                  label="Metric Area"
                   value={`${formatNumber(result.projectAreaSqM)} m²`}
+                />
+
+                <Detail
+                  label="Waste"
+                  value={`${formatNumber(Number(wastePercent), 1)}%`}
                 />
               </div>
             </div>
           )}
         </div>
 
-        {/* Calculator Footer */}
-        <div className="border-t border-slate-200 bg-slate-50 px-5 py-4 sm:px-8">
-          <p className="text-center text-xs leading-5 text-slate-500">
-            Estimates are based on the dimensions you enter. Actual material
-            requirements may vary because of joints, cutting, layout and
-            installation conditions.
+        {/* Footer */}
+        <div className="border-t border-slate-100 bg-slate-50 px-4 py-3">
+          <p className="text-center text-[11px] leading-4 text-slate-500">
+            Estimates may vary due to cutting, joints, layout and installation
+            conditions.
           </p>
         </div>
-      </div>
-
-      {/* Small example outside calculator */}
-      <div className="mt-5 text-center text-sm text-slate-500">
-        <span className="font-medium text-slate-700">Example:</span> 12 × 10
-        ft area + 8 × 4 in pavers + 10% waste ={" "}
-        <strong className="text-slate-900">594 pavers</strong>
       </div>
     </div>
   );
@@ -353,7 +323,7 @@ function CalculatorInput({
 }) {
   return (
     <label className="min-w-0 flex-1">
-      <span className="mb-1.5 block text-xs font-medium text-slate-500">
+      <span className="mb-1 block text-[11px] text-slate-400">
         {label}
       </span>
 
@@ -365,7 +335,7 @@ function CalculatorInput({
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         inputMode="decimal"
-        className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-lg font-semibold text-slate-900 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+        className="w-full rounded-lg border border-slate-300 px-3 py-2 text-base font-semibold text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
       />
     </label>
   );
@@ -379,17 +349,15 @@ function MiniResult({
   value: string;
 }) {
   return (
-    <div className="border-b border-r border-blue-100 px-3 py-4 text-center last:border-r-0 sm:border-b-0">
-      <p className="text-xs text-slate-500">{label}</p>
+    <div className="border-r border-blue-100 px-2 py-3 text-center last:border-r-0">
+      <p className="text-[10px] text-slate-400">{label}</p>
 
-      <p className="mt-1 text-sm font-bold text-slate-900 sm:text-base">
-        {value}
-      </p>
+      <p className="mt-0.5 text-sm font-bold text-slate-900">{value}</p>
     </div>
   );
 }
 
-function DetailRow({
+function Detail({
   label,
   value,
 }: {
@@ -397,10 +365,9 @@ function DetailRow({
   value: string;
 }) {
   return (
-    <div className="flex items-center justify-between gap-4 border-b border-slate-200 pb-2 last:border-0 last:pb-0">
-      <span className="text-slate-500">{label}</span>
-
-      <span className="font-semibold text-slate-900">{value}</span>
+    <div>
+      <p className="text-slate-400">{label}</p>
+      <p className="mt-0.5 font-semibold text-slate-800">{value}</p>
     </div>
   );
 }
