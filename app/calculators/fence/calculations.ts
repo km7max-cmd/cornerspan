@@ -1,8 +1,18 @@
-export type FenceMode = "wood-picket" | "wood-panel" | "chain-link";
+export type FenceMode =
+  | "wood-picket"
+  | "wood-panel"
+  | "chain-link";
 
-export type FenceUnit = "ft" | "m" | "in" | "cm";
+export type FenceUnit =
+  | "ft"
+  | "m"
+  | "in"
+  | "cm";
 
-export type ConcreteBagSize = "50" | "60" | "80";
+export type ConcreteBagSize =
+  | "50"
+  | "60"
+  | "80";
 
 export type FenceCalculationInput = {
   mode: FenceMode;
@@ -90,7 +100,10 @@ const FEET_PER_UNIT: Record<FenceUnit, number> = {
   cm: 0.03280839895013123,
 };
 
-const BAG_COVERAGE_CU_FT: Record<ConcreteBagSize, number> = {
+const BAG_COVERAGE_CU_FT: Record<
+  ConcreteBagSize,
+  number
+> = {
   "50": 0.375,
   "60": 0.45,
   "80": 0.6,
@@ -104,21 +117,28 @@ export function convertToFeet(
 }
 
 function positive(value: number): number {
-  return Number.isFinite(value) && value > 0 ? value : 0;
+  return Number.isFinite(value) && value > 0
+    ? value
+    : 0;
 }
 
-function wasteMultiplier(wastePercent: number): number {
-  return 1 + Math.max(0, wastePercent || 0) / 100;
+function wasteMultiplier(
+  wastePercent: number,
+): number {
+  return (
+    1 +
+    Math.max(0, wastePercent || 0) / 100
+  );
 }
 
 function quantityWithWaste(
   quantity: number,
   wastePercent: number,
 ): number {
-  // Prevent floating-point rounding such as
-  // 200 × 1.10 becoming 220.00000000000003.
   return Math.ceil(
-    quantity * wasteMultiplier(wastePercent) - 1e-9,
+    quantity *
+      wasteMultiplier(wastePercent) -
+      1e-9,
   );
 }
 
@@ -141,19 +161,31 @@ export function calculateFence(
   input: FenceCalculationInput,
 ): FenceCalculationResult {
   const fenceLengthFt = positive(
-    convertToFeet(input.fenceLength, input.unit),
+    convertToFeet(
+      input.fenceLength,
+      input.unit,
+    ),
   );
 
   const fenceHeightFt = positive(
-    convertToFeet(input.fenceHeight, input.unit),
+    convertToFeet(
+      input.fenceHeight,
+      input.unit,
+    ),
   );
 
   const postSpacingFt = positive(
-    convertToFeet(input.postSpacing, input.unit),
+    convertToFeet(
+      input.postSpacing,
+      input.unit,
+    ),
   );
 
   const gateWidthFt = positive(
-    convertToFeet(input.gateWidth, input.unit),
+    convertToFeet(
+      input.gateWidth,
+      input.unit,
+    ),
   );
 
   const gateCount = Math.max(
@@ -177,17 +209,22 @@ export function calculateFence(
   const sections =
     postSpacingFt > 0
       ? Math.ceil(
-          netFenceLengthFt / postSpacingFt,
+          netFenceLengthFt /
+            postSpacingFt,
         )
       : 0;
 
   /*
-   * Straight-fence planning estimate:
-   * sections + 1 base posts.
+   * Base post calculation.
    *
-   * Each gate receives two additional supported posts.
+   * Straight fence:
+   * sections + 1 posts
+   *
+   * Each gate:
+   * 2 additional gate posts
    */
-  const gatePosts = gateCount * 2;
+  const gatePosts =
+    gateCount * 2;
 
   const posts =
     netFenceLengthFt > 0
@@ -209,14 +246,15 @@ export function calculateFence(
    * Effective coverage width =
    * picket face width + installation gap.
    */
-  const effectivePicketWidthIn = Math.max(
-    0.001,
-    positive(input.picketWidthIn) +
-      Math.max(
-        0,
-        input.picketGapIn || 0,
-      ),
-  );
+  const effectivePicketWidthIn =
+    Math.max(
+      0.001,
+      positive(input.picketWidthIn) +
+        Math.max(
+          0,
+          input.picketGapIn || 0,
+        ),
+    );
 
   const picketsExact =
     input.mode === "wood-picket"
@@ -258,67 +296,33 @@ export function calculateFence(
     );
 
   /*
-   * Concrete
-   *
-   * Cylinder volume:
-   * π × r² × depth
-   */
-  const holeDiameterFt =
-    positive(input.postHoleDiameterIn) /
-    12;
-
-  const holeDepthFt =
-    positive(input.postHoleDepthIn) /
-    12;
-
-  const concretePerPostCuFt =
-    Math.PI *
-    Math.pow(
-      holeDiameterFt / 2,
-      2,
-    ) *
-    holeDepthFt;
-
-  const concreteTotalCuFt =
-    concretePerPostCuFt * posts;
-
-  const concreteBags =
-    concreteTotalCuFt > 0
-      ? Math.ceil(
-          concreteTotalCuFt /
-            BAG_COVERAGE_CU_FT[
-              input.concreteBagSize
-            ],
-        )
-      : 0;
-
-  /*
-   * Paint / stain
-   */
-  const paintCoverage =
-    positive(
-      input.paintCoverageSqFt,
-    );
-
-  const paintGallons =
-    paintCoverage > 0
-      ? (
-          (fenceAreaSqFt *
-            Math.max(
-              1,
-              input.paintCoats || 1,
-            ) *
-            input.paintSides) /
-          paintCoverage
-        ) *
-        wasteMultiplier(
-          input.wastePercent,
-        )
-      : 0;
-
-  /*
    * Chain Link
+   *
+   * Corners replace intermediate
+   * line-post positions.
+   *
+   * Because the calculator currently
+   * accepts total fence length rather
+   * than separate fence runs, this is
+   * a planning estimate rather than a
+   * geometry-exact layout.
    */
+  const cornerCount =
+    input.mode === "chain-link"
+      ? Math.min(
+          Math.max(
+            0,
+            Math.floor(
+              input.chainCorners || 0,
+            ),
+          ),
+          Math.max(
+            0,
+            sections - 1,
+          ),
+        )
+      : 0;
+
   const linePosts =
     input.mode === "chain-link" &&
     postSpacingFt > 0 &&
@@ -328,7 +332,9 @@ export function calculateFence(
           Math.ceil(
             netFenceLengthFt /
               postSpacingFt,
-          ) - 1,
+          ) -
+            1 -
+            cornerCount,
         )
       : 0;
 
@@ -336,12 +342,7 @@ export function calculateFence(
     input.mode === "chain-link" &&
     netFenceLengthFt > 0
       ? 2 +
-        Math.max(
-          0,
-          Math.floor(
-            input.chainCorners || 0,
-          ),
-        ) +
+        cornerCount +
         gatePosts
       : 0;
 
@@ -369,6 +370,66 @@ export function calculateFence(
   const topRailFt =
     input.mode === "chain-link"
       ? chainFabricFt
+      : 0;
+
+  /*
+   * Concrete
+   *
+   * Cylinder volume:
+   * π × r² × depth
+   */
+  const holeDiameterFt =
+    positive(
+      input.postHoleDiameterIn,
+    ) / 12;
+
+  const holeDepthFt =
+    positive(
+      input.postHoleDepthIn,
+    ) / 12;
+
+  const concretePerPostCuFt =
+    Math.PI *
+    Math.pow(
+      holeDiameterFt / 2,
+      2,
+    ) *
+    holeDepthFt;
+
+  const concreteTotalCuFt =
+    concretePerPostCuFt * posts;
+
+  const concreteBags =
+    concreteTotalCuFt > 0
+      ? Math.ceil(
+          concreteTotalCuFt /
+            BAG_COVERAGE_CU_FT[
+              input.concreteBagSize
+            ],
+        )
+      : 0;
+
+  /*
+   * Paint / stain
+   */
+  const paintCoverage = positive(
+    input.paintCoverageSqFt,
+  );
+
+  const paintGallons =
+    paintCoverage > 0
+      ? (
+          (fenceAreaSqFt *
+            Math.max(
+              1,
+              input.paintCoats || 1,
+            ) *
+            input.paintSides) /
+          paintCoverage
+        ) *
+        wasteMultiplier(
+          input.wastePercent,
+        )
       : 0;
 
   /*
