@@ -795,10 +795,13 @@ export default function FenceCalculator() {
               strong
             />
 
-            <Result
-              label="Rails needed"
-              value={`${result.rails}`}
-            />
+            {/* Rails apply only to wood/picket and panel fences */}
+            {mode !== "chain-link" && (
+              <Result
+                label="Rails needed"
+                value={`${result.rails}`}
+              />
+            )}
 
             {mode ===
               "wood-picket" && (
