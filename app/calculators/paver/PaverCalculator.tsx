@@ -62,14 +62,16 @@ function convertUnit(
 }
 
 export default function PaverCalculator() {
-  const [projectLength, setProjectLength] = useState("12");
-  const [projectWidth, setProjectWidth] = useState("10");
+  // Blank by default — no example values in the calculator.
+  const [projectLength, setProjectLength] = useState("");
+  const [projectWidth, setProjectWidth] = useState("");
   const [projectUnit, setProjectUnit] = useState<PaverUnit>("ft");
 
-  const [paverLength, setPaverLength] = useState("8");
-  const [paverWidth, setPaverWidth] = useState("4");
+  const [paverLength, setPaverLength] = useState("");
+  const [paverWidth, setPaverWidth] = useState("");
   const [paverUnit, setPaverUnit] = useState<PaverUnit>("in");
 
+  // 10% is a practical default allowance, not an example dimension.
   const [wastePercent, setWastePercent] = useState("10");
   const [pricePerPaver, setPricePerPaver] = useState("");
 
@@ -84,6 +86,16 @@ export default function PaverCalculator() {
       pricePerPaver.trim() === ""
         ? undefined
         : Number(pricePerPaver);
+
+    if (
+      projectLength.trim() === "" ||
+      projectWidth.trim() === "" ||
+      paverLength.trim() === "" ||
+      paverWidth.trim() === "" ||
+      wastePercent.trim() === ""
+    ) {
+      return null;
+    }
 
     if (
       !Number.isFinite(length) ||
@@ -204,7 +216,7 @@ export default function PaverCalculator() {
                 label="Length"
                 value={projectLength}
                 onChange={setProjectLength}
-                placeholder="12"
+                placeholder="Enter length"
               />
 
               <span className="mb-3 text-lg font-bold text-slate-400">
@@ -215,7 +227,7 @@ export default function PaverCalculator() {
                 label="Width"
                 value={projectWidth}
                 onChange={setProjectWidth}
-                placeholder="10"
+                placeholder="Enter width"
               />
             </div>
           </div>
@@ -253,7 +265,7 @@ export default function PaverCalculator() {
                 label="Length"
                 value={paverLength}
                 onChange={setPaverLength}
-                placeholder="8"
+                placeholder="Enter length"
               />
 
               <span className="mb-3 text-lg font-bold text-slate-400">
@@ -264,7 +276,7 @@ export default function PaverCalculator() {
                 label="Width"
                 value={paverWidth}
                 onChange={setPaverWidth}
-                placeholder="4"
+                placeholder="Enter width"
               />
             </div>
           </div>
