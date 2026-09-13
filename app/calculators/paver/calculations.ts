@@ -1,10 +1,12 @@
-// app/calculators/paver/calculations.ts
+export type PaverUnit = "ft" | "m" | "in" | "cm";
 
 export type PaverCalculationInput = {
   projectLength: number;
   projectWidth: number;
+  projectUnit: PaverUnit;
   paverLength: number;
   paverWidth: number;
+  paverUnit: PaverUnit;
   wastePercent: number;
   pricePerPaver?: number;
 };
@@ -20,23 +22,48 @@ export type PaverCalculationResult = {
   estimatedCost?: number;
 };
 
+function toFeet(value: number, unit: PaverUnit): number {
+  switch (unit) {
+    case "ft":
+      return value;
+
+    case "m":
+      return value * 3.280839895;
+
+    case "in":
+      return value / 12;
+
+    case "cm":
+      return value / 30.48;
+
+    default:
+      return value;
+  }
+}
+
 export function calculatePavers(
   input: PaverCalculationInput
 ): PaverCalculationResult {
   const {
     projectLength,
     projectWidth,
+    projectUnit,
     paverLength,
     paverWidth,
+    paverUnit,
     wastePercent,
     pricePerPaver,
   } = input;
 
-  const projectAreaSqFt = projectLength * projectWidth;
+  const projectLengthFt = toFeet(projectLength, projectUnit);
+  const projectWidthFt = toFeet(projectWidth, projectUnit);
 
-  // Paver dimensions are entered in inches.
-  // Convert square inches to square feet.
-  const paverAreaSqFt = (paverLength * paverWidth) / 144;
+  const paverLengthFt = toFeet(paverLength, paverUnit);
+  const paverWidthFt = toFeet(paverWidth, paverUnit);
+
+  const projectAreaSqFt = projectLengthFt * projectWidthFt;
+
+  const paverAreaSqFt = paverLengthFt * paverWidthFt;
 
   const safeWaste = Math.max(0, wastePercent);
 
