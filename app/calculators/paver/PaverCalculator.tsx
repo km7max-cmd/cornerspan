@@ -1,9 +1,19 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { calculatePavers } from "./calculations";
+import {
+  calculatePavers,
+  type PaverUnit,
+} from "./calculations";
 
 const wastePresets = [5, 10, 15];
+
+const unitOptions: { value: PaverUnit; label: string }[] = [
+  { value: "ft", label: "ft" },
+  { value: "m", label: "m" },
+  { value: "in", label: "in" },
+  { value: "cm", label: "cm" },
+];
 
 function formatNumber(value: number, decimals = 2) {
   return new Intl.NumberFormat("en-US", {
@@ -11,11 +21,55 @@ function formatNumber(value: number, decimals = 2) {
   }).format(value);
 }
 
+function convertUnit(
+  value: string,
+  from: PaverUnit,
+  to: PaverUnit
+): string {
+  const number = Number(value);
+
+  if (!Number.isFinite(number) || number <= 0 || from === to) {
+    return value;
+  }
+
+  const feet = (() => {
+    switch (from) {
+      case "ft":
+        return number;
+      case "m":
+        return number * 3.280839895;
+      case "in":
+        return number / 12;
+      case "cm":
+        return number / 30.48;
+    }
+  })();
+
+  const converted = (() => {
+    switch (to) {
+      case "ft":
+        return feet;
+      case "m":
+        return feet * 0.3048;
+      case "in":
+        return feet * 12;
+      case "cm":
+        return feet * 30.48;
+    }
+  })();
+
+  return formatNumber(converted, 4);
+}
+
 export default function PaverCalculator() {
   const [projectLength, setProjectLength] = useState("12");
   const [projectWidth, setProjectWidth] = useState("10");
+  const [projectUnit, setProjectUnit] = useState<PaverUnit>("ft");
+
   const [paverLength, setPaverLength] = useState("8");
   const [paverWidth, setPaverWidth] = useState("4");
+  const [paverUnit, setPaverUnit] = useState<PaverUnit>("in");
+
   const [wastePercent, setWastePercent] = useState("10");
   const [pricePerPaver, setPricePerPaver] = useState("");
 
@@ -27,7 +81,9 @@ export default function PaverCalculator() {
     const waste = Number(wastePercent);
 
     const price =
-      pricePerPaver.trim() === "" ? undefined : Number(pricePerPaver);
+      pricePerPaver.trim() === ""
+        ? undefined
+        : Number(pricePerPaver);
 
     if (
       !Number.isFinite(length) ||
@@ -40,7 +96,8 @@ export default function PaverCalculator() {
       pLength <= 0 ||
       pWidth <= 0 ||
       waste < 0 ||
-      (price !== undefined && (!Number.isFinite(price) || price < 0))
+      (price !== undefined &&
+        (!Number.isFinite(price) || price < 0))
     ) {
       return null;
     }
@@ -48,19 +105,47 @@ export default function PaverCalculator() {
     return calculatePavers({
       projectLength: length,
       projectWidth: width,
+      projectUnit,
       paverLength: pLength,
       paverWidth: pWidth,
+      paverUnit,
       wastePercent: waste,
       pricePerPaver: price,
     });
   }, [
     projectLength,
     projectWidth,
+    projectUnit,
     paverLength,
     paverWidth,
+    paverUnit,
     wastePercent,
     pricePerPaver,
   ]);
+
+  function handleProjectUnitChange(nextUnit: PaverUnit) {
+    setProjectLength(
+      convertUnit(projectLength, projectUnit, nextUnit)
+    );
+
+    setProjectWidth(
+      convertUnit(projectWidth, projectUnit, nextUnit)
+    );
+
+    setProjectUnit(nextUnit);
+  }
+
+  function handlePaverUnitChange(nextUnit: PaverUnit) {
+    setPaverLength(
+      convertUnit(paverLength, paverUnit, nextUnit)
+    );
+
+    setPaverWidth(
+      convertUnit(paverWidth, paverUnit, nextUnit)
+    );
+
+    setPaverUnit(nextUnit);
+  }
 
   return (
     <div className="mx-auto w-full max-w-3xl px-3 sm:px-4">
@@ -93,7 +178,25 @@ export default function PaverCalculator() {
                 Project Size
               </h3>
 
-              <span className="text-xs text-slate-400">ft</span>
+              <select
+                value={projectUnit}
+                onChange={(e) =>
+                  handleProjectUnitChange(
+                    e.target.value as PaverUnit
+                  )
+                }
+                aria-label="Project size unit"
+                className="rounded-md border border-slate-200 bg-white px-2 py-1 text-xs font-semibold text-slate-600 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+              >
+                {unitOptions.map((unit) => (
+                  <option
+                    key={unit.value}
+                    value={unit.value}
+                  >
+                    {unit.label}
+                  </option>
+                ))}
+              </select>
             </div>
 
             <div className="flex items-end gap-2">
@@ -104,7 +207,9 @@ export default function PaverCalculator() {
                 placeholder="12"
               />
 
-              <span className="mb-3 text-lg font-bold text-slate-400">×</span>
+              <span className="mb-3 text-lg font-bold text-slate-400">
+                ×
+              </span>
 
               <CalculatorInput
                 label="Width"
@@ -122,7 +227,25 @@ export default function PaverCalculator() {
                 Paver Size
               </h3>
 
-              <span className="text-xs text-slate-400">in</span>
+              <select
+                value={paverUnit}
+                onChange={(e) =>
+                  handlePaverUnitChange(
+                    e.target.value as PaverUnit
+                  )
+                }
+                aria-label="Paver size unit"
+                className="rounded-md border border-slate-200 bg-white px-2 py-1 text-xs font-semibold text-slate-600 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+              >
+                {unitOptions.map((unit) => (
+                  <option
+                    key={unit.value}
+                    value={unit.value}
+                  >
+                    {unit.label}
+                  </option>
+                ))}
+              </select>
             </div>
 
             <div className="flex items-end gap-2">
@@ -133,7 +256,9 @@ export default function PaverCalculator() {
                 placeholder="8"
               />
 
-              <span className="mb-3 text-lg font-bold text-slate-400">×</span>
+              <span className="mb-3 text-lg font-bold text-slate-400">
+                ×
+              </span>
 
               <CalculatorInput
                 label="Width"
@@ -151,18 +276,23 @@ export default function PaverCalculator() {
                 Waste
               </h3>
 
-              <span className="text-xs text-slate-400">allowance</span>
+              <span className="text-xs text-slate-400">
+                allowance
+              </span>
             </div>
 
             <div className="flex gap-2">
               {wastePresets.map((value) => {
-                const active = wastePercent === String(value);
+                const active =
+                  wastePercent === String(value);
 
                 return (
                   <button
                     key={value}
                     type="button"
-                    onClick={() => setWastePercent(String(value))}
+                    onClick={() =>
+                      setWastePercent(String(value))
+                    }
                     className={`flex-1 rounded-lg border px-3 py-2 text-sm font-semibold transition sm:flex-none sm:px-5 ${
                       active
                         ? "border-blue-600 bg-blue-600 text-white"
@@ -181,7 +311,9 @@ export default function PaverCalculator() {
                 min="0"
                 step="any"
                 value={wastePercent}
-                onChange={(e) => setWastePercent(e.target.value)}
+                onChange={(e) =>
+                  setWastePercent(e.target.value)
+                }
                 inputMode="decimal"
                 aria-label="Waste percentage"
                 className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
@@ -201,12 +333,17 @@ export default function PaverCalculator() {
               </p>
 
               <p className="mt-1 text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">
-                {result ? formatNumber(result.paversToOrder, 0) : "—"}
+                {result
+                  ? formatNumber(result.paversToOrder, 0)
+                  : "—"}
               </p>
 
               <p className="mt-1 text-xs text-slate-500">
                 {result
-                  ? `Including ${formatNumber(Number(wastePercent), 1)}% waste`
+                  ? `Including ${formatNumber(
+                      Number(wastePercent),
+                      1
+                    )}% waste`
                   : "Enter dimensions to calculate"}
               </p>
             </div>
@@ -216,17 +353,25 @@ export default function PaverCalculator() {
               <div className="grid grid-cols-3 border-t border-blue-100 bg-white">
                 <MiniResult
                   label="Area"
-                  value={`${formatNumber(result.projectAreaSqFt)} ft²`}
+                  value={`${formatNumber(
+                    result.projectAreaSqFt
+                  )} ft²`}
                 />
 
                 <MiniResult
                   label="Exact"
-                  value={formatNumber(result.exactPavers, 0)}
+                  value={formatNumber(
+                    result.exactPavers,
+                    0
+                  )}
                 />
 
                 <MiniResult
                   label="Per Sq Ft"
-                  value={formatNumber(result.paversPerSqFt, 2)}
+                  value={formatNumber(
+                    result.paversPerSqFt,
+                    2
+                  )}
                 />
               </div>
             )}
@@ -242,7 +387,9 @@ export default function PaverCalculator() {
                 Price per Paver
               </label>
 
-              <span className="text-xs text-slate-400">optional</span>
+              <span className="text-xs text-slate-400">
+                optional
+              </span>
             </div>
 
             <input
@@ -251,7 +398,9 @@ export default function PaverCalculator() {
               min="0"
               step="any"
               value={pricePerPaver}
-              onChange={(e) => setPricePerPaver(e.target.value)}
+              onChange={(e) =>
+                setPricePerPaver(e.target.value)
+              }
               placeholder="Enter price"
               inputMode="decimal"
               className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
@@ -264,7 +413,10 @@ export default function PaverCalculator() {
                 </span>
 
                 <span className="text-base font-bold text-slate-900">
-                  {formatNumber(result.estimatedCost, 2)}
+                  {formatNumber(
+                    result.estimatedCost,
+                    2
+                  )}
                 </span>
               </div>
             )}
@@ -276,22 +428,32 @@ export default function PaverCalculator() {
               <div className="grid grid-cols-2 gap-x-5 gap-y-2 text-xs sm:grid-cols-4">
                 <Detail
                   label="Paver Area"
-                  value={`${formatNumber(result.paverAreaSqFt, 4)} ft²`}
+                  value={`${formatNumber(
+                    result.paverAreaSqFt,
+                    4
+                  )} ft²`}
                 />
 
                 <Detail
                   label="Area + Waste"
-                  value={`${formatNumber(result.areaWithWasteSqFt)} ft²`}
+                  value={`${formatNumber(
+                    result.areaWithWasteSqFt
+                  )} ft²`}
                 />
 
                 <Detail
                   label="Metric Area"
-                  value={`${formatNumber(result.projectAreaSqM)} m²`}
+                  value={`${formatNumber(
+                    result.projectAreaSqM
+                  )} m²`}
                 />
 
                 <Detail
                   label="Waste"
-                  value={`${formatNumber(Number(wastePercent), 1)}%`}
+                  value={`${formatNumber(
+                    Number(wastePercent),
+                    1
+                  )}%`}
                 />
               </div>
             </div>
@@ -301,8 +463,8 @@ export default function PaverCalculator() {
         {/* Footer */}
         <div className="border-t border-slate-100 bg-slate-50 px-4 py-3">
           <p className="text-center text-[11px] leading-4 text-slate-500">
-            Estimates may vary due to cutting, joints, layout and installation
-            conditions.
+            Estimates may vary due to cutting, joints, layout
+            and installation conditions.
           </p>
         </div>
       </div>
@@ -332,7 +494,9 @@ function CalculatorInput({
         min="0"
         step="any"
         value={value}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={(e) =>
+          onChange(e.target.value)
+        }
         placeholder={placeholder}
         inputMode="decimal"
         className="w-full rounded-lg border border-slate-300 px-3 py-2 text-base font-semibold text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
@@ -350,9 +514,13 @@ function MiniResult({
 }) {
   return (
     <div className="border-r border-blue-100 px-2 py-3 text-center last:border-r-0">
-      <p className="text-[10px] text-slate-400">{label}</p>
+      <p className="text-[10px] text-slate-400">
+        {label}
+      </p>
 
-      <p className="mt-0.5 text-sm font-bold text-slate-900">{value}</p>
+      <p className="mt-0.5 text-sm font-bold text-slate-900">
+        {value}
+      </p>
     </div>
   );
 }
@@ -367,7 +535,10 @@ function Detail({
   return (
     <div>
       <p className="text-slate-400">{label}</p>
-      <p className="mt-0.5 font-semibold text-slate-800">{value}</p>
+
+      <p className="mt-0.5 font-semibold text-slate-800">
+        {value}
+      </p>
     </div>
   );
 }
