@@ -189,9 +189,9 @@ export default function PaverCalculatorPage() {
               </h3>
 
               <p className="mt-1 text-sm leading-6 text-slate-600">
-                The calculator shows the exact estimated quantity and the
-                number of pavers to order after the selected waste allowance is
-                included.
+                The calculator shows the estimated quantity and the
+                recommended number of pavers to order after the selected waste
+                allowance is included.
               </p>
             </div>
           </div>
@@ -285,38 +285,24 @@ export default function PaverCalculatorPage() {
           </p>
         </section>
 
-        {/* Example */}
+        {/* Example - No Number Box */}
         <section className="mt-12">
           <h2 className="text-2xl font-bold text-slate-900">
-            Example: How Many Pavers Do I Need?
+            Paver Calculator Example
           </h2>
 
           <p className="mt-4 text-base leading-7 text-slate-600">
-            Suppose you have a 12 ft × 10 ft patio and want to install 8 × 4
-            inch pavers with 10% waste.
+            To estimate the number of pavers for your project, enter the
+            project length and width, select the appropriate units, enter the
+            paver dimensions, and choose a waste allowance. The calculator
+            will show the estimated quantity and the recommended number of
+            pavers to order.
           </p>
 
-          <div className="mt-5 overflow-hidden rounded-xl border border-slate-200">
-            <div className="divide-y divide-slate-200">
-              <ExampleRow label="Project area" value="120 sq ft" />
-              <ExampleRow label="Paver size" value="8 × 4 in" />
-              <ExampleRow label="Pavers per sq ft" value="4.5" />
-              <ExampleRow label="Exact quantity" value="540" />
-              <ExampleRow
-                label="10% waste allowance"
-                value="54 pavers"
-              />
-              <ExampleRow
-                label="Pavers to order"
-                value="594 pavers"
-                strong
-              />
-            </div>
-          </div>
-
           <p className="mt-4 text-sm leading-6 text-slate-600">
-            In this example, 540 pavers cover the 120-square-foot area before
-            waste. Adding 10% gives a recommended order quantity of 594 pavers.
+            The final quantity depends on the size of the project, paver
+            dimensions, layout, cutting requirements and selected waste
+            allowance.
           </p>
         </section>
 
@@ -369,9 +355,9 @@ export default function PaverCalculatorPage() {
           </p>
 
           <p className="mt-4 text-sm leading-6 text-slate-600">
-            For example, a 100 sq ft patio using 8 × 4 inch pavers requires
-            about 450 pavers before waste. With 10% waste, the recommended
-            order quantity would be 495 pavers.
+            For irregular or complex layouts, divide the project into smaller
+            measurable sections and calculate each section separately before
+            combining the results.
           </p>
         </section>
 
@@ -420,9 +406,10 @@ export default function PaverCalculatorPage() {
           </h2>
 
           <p className="mt-4 text-base leading-7 text-slate-600">
-            This calculator estimates the quantity of paving units and optional
-            paver material cost. It does not calculate the required depth or
-            quantity of base gravel, bedding sand or jointing material.
+            This paver calculator estimates the quantity of paving units and
+            optional paver material cost. It does not calculate the required
+            depth or quantity of base gravel, bedding sand or jointing
+            material.
           </p>
 
           <p className="mt-4 text-sm leading-6 text-slate-600">
@@ -441,14 +428,14 @@ export default function PaverCalculatorPage() {
           <div className="mt-6 space-y-7">
             <div>
               <h3 className="font-semibold text-slate-900">
-                How many 8 × 4 pavers are needed per square foot?
+                How many pavers are needed per square foot?
               </h3>
 
               <p className="mt-2 text-sm leading-6 text-slate-600">
-                An 8 × 4 inch paver covers 32 square inches, which is about
-                0.2222 square feet. Therefore, about 4.5 pavers cover one
-                square foot before accounting for waste and installation
-                details.
+                The number of pavers required per square foot depends on the
+                dimensions of the paver. Larger pavers cover more area and
+                require fewer units per square foot, while smaller pavers
+                require more.
               </p>
             </div>
 
@@ -521,31 +508,5 @@ export default function PaverCalculatorPage() {
         <RelatedCalculators />
       </div>
     </main>
-  );
-}
-
-function ExampleRow({
-  label,
-  value,
-  strong = false,
-}: {
-  label: string;
-  value: string;
-  strong?: boolean;
-}) {
-  return (
-    <div className="flex items-center justify-between gap-4 p-4">
-      <span className="text-sm text-slate-600">{label}</span>
-
-      <strong
-        className={
-          strong
-            ? "text-slate-900"
-            : "font-semibold text-slate-900"
-        }
-      >
-        {value}
-      </strong>
-    </div>
   );
 }
