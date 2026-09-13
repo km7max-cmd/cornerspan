@@ -285,24 +285,39 @@ export default function PaverCalculatorPage() {
           </p>
         </section>
 
-        {/* Example - No Number Box */}
+        {/* Example */}
         <section className="mt-12">
           <h2 className="text-2xl font-bold text-slate-900">
-            Paver Calculator Example
+            Example: How Many Pavers Do I Need?
           </h2>
 
           <p className="mt-4 text-base leading-7 text-slate-600">
-            To estimate the number of pavers for your project, enter the
-            project length and width, select the appropriate units, enter the
-            paver dimensions, and choose a waste allowance. The calculator
-            will show the estimated quantity and the recommended number of
-            pavers to order.
+            Suppose you have a 12 ft × 10 ft patio and want to install 8 × 4
+            inch pavers with 10% waste.
           </p>
 
+          <div className="mt-5 overflow-hidden rounded-xl border border-slate-200">
+            <div className="divide-y divide-slate-200">
+              <ExampleRow label="Project area" value="120 sq ft" />
+              <ExampleRow label="Paver size" value="8 × 4 in" />
+              <ExampleRow label="Pavers per sq ft" value="4.5" />
+              <ExampleRow label="Exact quantity" value="540" />
+              <ExampleRow
+                label="10% waste allowance"
+                value="54 pavers"
+              />
+              <ExampleRow
+                label="Pavers to order"
+                value="594 pavers"
+                strong
+              />
+            </div>
+          </div>
+
           <p className="mt-4 text-sm leading-6 text-slate-600">
-            The final quantity depends on the size of the project, paver
-            dimensions, layout, cutting requirements and selected waste
-            allowance.
+            In this example, 540 pavers cover the project area before waste.
+            Adding a 10% waste allowance gives a recommended order quantity of
+            594 pavers.
           </p>
         </section>
 
@@ -508,5 +523,31 @@ export default function PaverCalculatorPage() {
         <RelatedCalculators />
       </div>
     </main>
+  );
+}
+
+function ExampleRow({
+  label,
+  value,
+  strong = false,
+}: {
+  label: string;
+  value: string;
+  strong?: boolean;
+}) {
+  return (
+    <div className="flex items-center justify-between gap-4 p-4">
+      <span className="text-sm text-slate-600">{label}</span>
+
+      <strong
+        className={
+          strong
+            ? "text-slate-900"
+            : "font-semibold text-slate-900"
+        }
+      >
+        {value}
+      </strong>
+    </div>
   );
 }
