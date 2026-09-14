@@ -312,6 +312,15 @@ export default function FenceCalculator() {
   const isPanel =
     mode === "wood-panel";
 
+  const handleCalculate = () => {
+    document
+      .getElementById("fence-results")
+      ?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+  };
+
   return (
     <div className="mx-auto w-full max-w-6xl">
       <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-lg">
@@ -492,6 +501,7 @@ export default function FenceCalculator() {
               <div className="mt-6">
                 <button
                   type="button"
+                  onClick={handleCalculate}
                   className="w-full rounded-xl bg-blue-600 px-6 py-4 text-base font-bold text-white shadow-sm transition hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-100"
                 >
                   Calculate Fence Materials
@@ -507,6 +517,7 @@ export default function FenceCalculator() {
                 <summary className="cursor-pointer list-none px-4 py-4 text-sm font-bold text-slate-900">
                   <span className="flex items-center justify-between">
                     <span>More Fence Options</span>
+
                     <span className="text-slate-400">
                       +
                     </span>
@@ -1013,7 +1024,10 @@ export default function FenceCalculator() {
           </div>
 
           {/* RIGHT — RESULTS */}
-          <div className="bg-slate-50 px-5 py-6 sm:px-8">
+          <div
+            id="fence-results"
+            className="bg-slate-50 px-5 py-6 sm:px-8"
+          >
             <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="text-xs font-bold uppercase tracking-wider text-blue-600">
