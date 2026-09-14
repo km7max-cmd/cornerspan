@@ -100,10 +100,7 @@ const FEET_PER_UNIT: Record<FenceUnit, number> = {
   cm: 0.03280839895013123,
 };
 
-const BAG_COVERAGE_CU_FT: Record<
-  ConcreteBagSize,
-  number
-> = {
+const BAG_COVERAGE_CU_FT: Record<ConcreteBagSize, number> = {
   "50": 0.375,
   "60": 0.45,
   "80": 0.6,
@@ -117,28 +114,31 @@ export function convertToFeet(
 }
 
 function positive(value: number): number {
-  return Number.isFinite(value) && value > 0
-    ? value
-    : 0;
+  return Number.isFinite(value) && value > 0 ? value : 0;
 }
 
-function wasteMultiplier(
-  wastePercent: number,
-): number {
-  return (
-    1 +
-    Math.max(0, wastePercent || 0) / 100
-  );
+function nonNegative(value: number): number {
+  return Number.isFinite(value) && value >= 0 ? value : 0;
+}
+
+function wholeNonNegative(value: number): number {
+  return Math.max(0, Math.floor(value || 0));
+}
+
+function wasteMultiplier(wastePercent: number): number {
+  return 1 + nonNegative(wastePercent) / 100;
 }
 
 function quantityWithWaste(
   quantity: number,
   wastePercent: number,
 ): number {
+  if (quantity <= 0) {
+    return 0;
+  }
+
   return Math.ceil(
-    quantity *
-      wasteMultiplier(wastePercent) -
-      1e-9,
+    quantity * wasteMultiplier(wastePercent) - 1e-9,
   );
 }
 
@@ -149,7 +149,8 @@ function calculateCost(
   if (
     price === undefined ||
     !Number.isFinite(price) ||
-    price < 0
+    price < 0 ||
+    quantity <= 0
   ) {
     return 0;
   }
@@ -157,9 +158,23 @@ function calculateCost(
   return price * quantity;
 }
 
+function hasPrice(value: number | undefined): boolean {
+  return (
+    value !== undefined &&
+    Number.isFinite(value) &&
+    value >= 0
+  );
+}
+
 export function calculateFence(
   input: FenceCalculationInput,
 ): FenceCalculationResult {
+  /*
+   * ---------------------------------------------------------
+   * BASIC DIMENSIONS
+   * ---------------------------------------------------------
+   */
+
   const fenceLengthFt = positive(
     convertToFeet(
       input.fenceLength,
@@ -188,11 +203,15 @@ export function calculateFence(
     ),
   );
 
-  const gateCount = Math.max(
-    0,
-    Math.floor(input.gates || 0),
-  );
+  const gateCount = wholeNonNegative(input.gates);
 
+  /*
+   * Gate openings cannot exceed the total fence-line length.
+   *
+   * The calculator uses total fence-line length as the
+   * project length and subtracts gate openings from the
+   * material-covered fence length.
+   */
   const totalGateWidth = Math.min(
     fenceLengthFt,
     gateCount * gateWidthFt,
@@ -203,61 +222,96 @@ export function calculateFence(
     fenceLengthFt - totalGateWidth,
   );
 
+  /*
+   * Fence-covered area.
+   *
+   * Gate openings are excluded.
+   */
   const fenceAreaSqFt =
     netFenceLengthFt * fenceHeightFt;
 
+  /*
+   * ---------------------------------------------------------
+   * SECTIONS & POSTS
+   * ---------------------------------------------------------
+   *
+   * This is a planning estimate based on total net fence
+   * length and post spacing.
+   *
+   * Exact post placement can vary with actual run/corner/gate
+   * geometry.
+   */
+
   const sections =
-    postSpacingFt > 0
+    postSpacingFt > 0 && netFenceLengthFt > 0
       ? Math.ceil(
-          netFenceLengthFt /
-            postSpacingFt,
+          netFenceLengthFt / postSpacingFt,
+        )
+      : 0;
+
+  const gatePosts = gateCount * 2;
+
+  const basePosts =
+    netFenceLengthFt > 0
+      ? sections + 1
+      : 0;
+
+  const posts =
+    basePosts + gatePosts;
+
+  /*
+   * ---------------------------------------------------------
+   * WOOD / PICKET RAILS
+   * ---------------------------------------------------------
+   *
+   * Rails are applicable to wood/picket fences.
+   *
+   * Panel fences normally contain their own horizontal
+   * rails, so they are not counted separately.
+   *
+   * Chain-link uses top rail separately.
+   */
+
+  const railsPerSection = wholeNonNegative(
+    input.railsPerSection,
+  );
+
+  const rails =
+    input.mode === "wood-picket"
+      ? quantityWithWaste(
+          sections * railsPerSection,
+          input.wastePercent,
         )
       : 0;
 
   /*
-   * Base post calculation.
+   * ---------------------------------------------------------
+   * WOOD / PICKETS
+   * ---------------------------------------------------------
    *
-   * Straight fence:
-   * sections + 1 posts
+   * Effective picket coverage:
    *
-   * Each gate:
-   * 2 additional gate posts
+   *   picket face width + installation gap
+   *
+   * Gate openings have already been removed from
+   * netFenceLengthFt, so they are not counted again.
    */
-  const gatePosts =
-    gateCount * 2;
 
-  const posts =
-    netFenceLengthFt > 0
-      ? sections + 1 + gatePosts
-      : gatePosts;
-
-  const rails = quantityWithWaste(
-    sections *
-      Math.max(
-        0,
-        input.railsPerSection || 0,
-      ),
-    input.wastePercent,
+  const picketWidthIn = positive(
+    input.picketWidthIn,
   );
 
-  /*
-   * Wood / Picket
-   *
-   * Effective coverage width =
-   * picket face width + installation gap.
-   */
+  const picketGapIn = nonNegative(
+    input.picketGapIn,
+  );
+
   const effectivePicketWidthIn =
-    Math.max(
-      0.001,
-      positive(input.picketWidthIn) +
-        Math.max(
-          0,
-          input.picketGapIn || 0,
-        ),
-    );
+    picketWidthIn + picketGapIn;
 
   const picketsExact =
-    input.mode === "wood-picket"
+    input.mode === "wood-picket" &&
+    effectivePicketWidthIn > 0 &&
+    netFenceLengthFt > 0
       ? Math.ceil(
           (netFenceLengthFt * 12) /
             effectivePicketWidthIn,
@@ -265,14 +319,22 @@ export function calculateFence(
       : 0;
 
   const picketsToOrder =
-    quantityWithWaste(
-      picketsExact,
-      input.wastePercent,
-    );
+    input.mode === "wood-picket"
+      ? quantityWithWaste(
+          picketsExact,
+          input.wastePercent,
+        )
+      : 0;
 
   /*
-   * Wood Panels
+   * ---------------------------------------------------------
+   * WOOD PANELS
+   * ---------------------------------------------------------
+   *
+   * Full panels are purchased, so a partial final panel
+   * rounds up to the next complete panel.
    */
+
   const panelWidthFt = positive(
     convertToFeet(
       input.panelWidth,
@@ -282,7 +344,8 @@ export function calculateFence(
 
   const panelsExact =
     input.mode === "wood-panel" &&
-    panelWidthFt > 0
+    panelWidthFt > 0 &&
+    netFenceLengthFt > 0
       ? Math.ceil(
           netFenceLengthFt /
             panelWidthFt,
@@ -290,40 +353,34 @@ export function calculateFence(
       : 0;
 
   const panelsToOrder =
-    quantityWithWaste(
-      panelsExact,
-      input.wastePercent,
-    );
-
-  /*
-   * Chain Link
-   *
-   * Corners replace intermediate
-   * line-post positions.
-   *
-   * Because the calculator currently
-   * accepts total fence length rather
-   * than separate fence runs, this is
-   * a planning estimate rather than a
-   * geometry-exact layout.
-   */
-  const cornerCount =
-    input.mode === "chain-link"
-      ? Math.min(
-          Math.max(
-            0,
-            Math.floor(
-              input.chainCorners || 0,
-            ),
-          ),
-          Math.max(
-            0,
-            sections - 1,
-          ),
+    input.mode === "wood-panel"
+      ? quantityWithWaste(
+          panelsExact,
+          input.wastePercent,
         )
       : 0;
 
-  const linePosts =
+  /*
+   * ---------------------------------------------------------
+   * CHAIN LINK
+   * ---------------------------------------------------------
+   *
+   * This remains a planning estimate because the calculator
+   * currently accepts total fence length rather than
+   * individual fence runs.
+   *
+   * Corners replace intermediate line-post positions.
+   */
+
+  const cornerCount =
+    input.mode === "chain-link"
+      ? Math.min(
+          wholeNonNegative(input.chainCorners),
+          Math.max(0, sections - 1),
+        )
+      : 0;
+
+  const intermediatePostPositions =
     input.mode === "chain-link" &&
     postSpacingFt > 0 &&
     netFenceLengthFt > 0
@@ -332,8 +389,15 @@ export function calculateFence(
           Math.ceil(
             netFenceLengthFt /
               postSpacingFt,
-          ) -
-            1 -
+          ) - 1,
+        )
+      : 0;
+
+  const linePosts =
+    input.mode === "chain-link"
+      ? Math.max(
+          0,
+          intermediatePostPositions -
             cornerCount,
         )
       : 0;
@@ -346,6 +410,28 @@ export function calculateFence(
         gatePosts
       : 0;
 
+  /*
+   * For chain link, the post total is derived from the
+   * specialized line + terminal post model.
+   *
+   * This prevents the generic wood-fence post formula from
+   * being used for chain-link.
+   */
+  const chainLinkPosts =
+    input.mode === "chain-link"
+      ? linePosts + terminalPosts
+      : 0;
+
+  const calculatedPosts =
+    input.mode === "chain-link"
+      ? chainLinkPosts
+      : posts;
+
+  /*
+   * Chain-link fabric.
+   *
+   * Waste is applied to material length.
+   */
   const chainFabricFt =
     input.mode === "chain-link"
       ? netFenceLengthFt *
@@ -360,24 +446,36 @@ export function calculateFence(
 
   const chainRolls =
     input.mode === "chain-link" &&
-    chainRollLength > 0
+    chainRollLength > 0 &&
+    chainFabricFt > 0
       ? Math.ceil(
           chainFabricFt /
             chainRollLength,
         )
       : 0;
 
+  /*
+   * Top rail is estimated using the same material-length
+   * allowance as chain-link fabric.
+   */
   const topRailFt =
     input.mode === "chain-link"
       ? chainFabricFt
       : 0;
 
   /*
-   * Concrete
+   * ---------------------------------------------------------
+   * CONCRETE
+   * ---------------------------------------------------------
    *
-   * Cylinder volume:
-   * π × r² × depth
+   * Hole volume:
+   *
+   *   π × radius² × depth
+   *
+   * Hole dimensions are supplied in inches and converted
+   * to feet.
    */
+
   const holeDiameterFt =
     positive(
       input.postHoleDiameterIn,
@@ -389,42 +487,72 @@ export function calculateFence(
     ) / 12;
 
   const concretePerPostCuFt =
-    Math.PI *
-    Math.pow(
-      holeDiameterFt / 2,
-      2,
-    ) *
-    holeDepthFt;
+    holeDiameterFt > 0 &&
+    holeDepthFt > 0
+      ? Math.PI *
+        Math.pow(
+          holeDiameterFt / 2,
+          2,
+        ) *
+        holeDepthFt
+      : 0;
 
   const concreteTotalCuFt =
-    concretePerPostCuFt * posts;
+    concretePerPostCuFt *
+    calculatedPosts;
+
+  const bagYield =
+    BAG_COVERAGE_CU_FT[
+      input.concreteBagSize
+    ];
 
   const concreteBags =
-    concreteTotalCuFt > 0
+    concreteTotalCuFt > 0 &&
+    bagYield > 0
       ? Math.ceil(
           concreteTotalCuFt /
-            BAG_COVERAGE_CU_FT[
-              input.concreteBagSize
-            ],
+            bagYield,
         )
       : 0;
 
   /*
-   * Paint / stain
+   * ---------------------------------------------------------
+   * PAINT / STAIN
+   * ---------------------------------------------------------
+   *
+   * Paint estimate:
+   *
+   *   fence area
+   *   × coats
+   *   × painted sides
+   *   ÷ coverage
+   *   × waste
+   *
+   * Gate openings are excluded because fenceAreaSqFt is
+   * based on net fence length.
+   *
+   * Separate gate-surface area is not modeled.
    */
+
   const paintCoverage = positive(
     input.paintCoverageSqFt,
   );
 
+  const paintCoats = Math.max(
+    1,
+    wholeNonNegative(input.paintCoats),
+  );
+
+  const paintSides =
+    input.paintSides === 2 ? 2 : 1;
+
   const paintGallons =
-    paintCoverage > 0
+    paintCoverage > 0 &&
+    fenceAreaSqFt > 0
       ? (
           (fenceAreaSqFt *
-            Math.max(
-              1,
-              input.paintCoats || 1,
-            ) *
-            input.paintSides) /
+            paintCoats *
+            paintSides) /
           paintCoverage
         ) *
         wasteMultiplier(
@@ -433,76 +561,131 @@ export function calculateFence(
       : 0;
 
   /*
-   * Optional material cost
+   * ---------------------------------------------------------
+   * MATERIAL COST
+   * ---------------------------------------------------------
+   *
+   * Wood/Picket:
+   *   posts + rails + pickets + concrete + paint
+   *
+   * Wood/Panel:
+   *   posts + panels + concrete + paint
+   *
+   * Chain Link:
+   *   line posts + terminal posts + fabric +
+   *   top rail + concrete + paint
+   *
+   * IMPORTANT:
+   * pricePost is deliberately NOT used in chain-link mode.
+   * This prevents double-counting when line-post and
+   * terminal-post prices are supplied separately.
    */
-  const costs = [
-    calculateCost(
-      input.pricePost,
-      posts,
-    ),
 
-    calculateCost(
-      input.priceRail,
-      rails,
-    ),
+  const costItems: number[] = [];
 
-    calculateCost(
-      input.pricePicket,
-      picketsToOrder,
-    ),
+  if (input.mode !== "chain-link") {
+    costItems.push(
+      calculateCost(
+        input.pricePost,
+        calculatedPosts,
+      ),
+    );
+  }
 
-    calculateCost(
-      input.pricePanel,
-      panelsToOrder,
-    ),
+  if (input.mode === "wood-picket") {
+    costItems.push(
+      calculateCost(
+        input.priceRail,
+        rails,
+      ),
+      calculateCost(
+        input.pricePicket,
+        picketsToOrder,
+      ),
+    );
+  }
 
+  if (input.mode === "wood-panel") {
+    costItems.push(
+      calculateCost(
+        input.pricePanel,
+        panelsToOrder,
+      ),
+    );
+  }
+
+  if (input.mode === "chain-link") {
+    costItems.push(
+      calculateCost(
+        input.priceLinePost,
+        linePosts,
+      ),
+      calculateCost(
+        input.priceTerminalPost,
+        terminalPosts,
+      ),
+      calculateCost(
+        input.priceChainFabricPerFt,
+        chainFabricFt,
+      ),
+      calculateCost(
+        input.priceTopRailPerFt,
+        topRailFt,
+      ),
+    );
+  }
+
+  costItems.push(
     calculateCost(
       input.priceConcreteBag,
       concreteBags,
     ),
-
-    calculateCost(
-      input.priceChainFabricPerFt,
-      chainFabricFt,
-    ),
-
-    calculateCost(
-      input.priceLinePost,
-      linePosts,
-    ),
-
-    calculateCost(
-      input.priceTerminalPost,
-      terminalPosts,
-    ),
-
-    calculateCost(
-      input.priceTopRailPerFt,
-      topRailFt,
-    ),
-
     calculateCost(
       input.pricePaintPerGallon,
       paintGallons,
     ),
-  ];
-
-  const hasAnyPrice = [
-    input.pricePost,
-    input.priceRail,
-    input.pricePicket,
-    input.pricePanel,
-    input.priceConcreteBag,
-    input.priceChainFabricPerFt,
-    input.priceLinePost,
-    input.priceTerminalPost,
-    input.priceTopRailPerFt,
-    input.pricePaintPerGallon,
-  ].some(
-    (value) =>
-      value !== undefined &&
-      Number.isFinite(value),
   );
+
+  const relevantPrices =
+    input.mode === "wood-picket"
+      ? [
+          input.pricePost,
+          input.priceRail,
+          input.pricePicket,
+          input.priceConcreteBag,
+          input.pricePaintPerGallon,
+        ]
+      : input.mode === "wood-panel"
+        ? [
+            input.pricePost,
+            input.pricePanel,
+            input.priceConcreteBag,
+            input.pricePaintPerGallon,
+          ]
+        : [
+            input.priceLinePost,
+            input.priceTerminalPost,
+            input.priceChainFabricPerFt,
+            input.priceTopRailPerFt,
+            input.priceConcreteBag,
+            input.pricePaintPerGallon,
+          ];
+
+  const hasAnyPrice =
+    relevantPrices.some(hasPrice);
+
+  const estimatedCost = hasAnyPrice
+    ? costItems.reduce(
+        (sum, value) => sum + value,
+        0,
+      )
+    : null;
+
+  /*
+   * ---------------------------------------------------------
+   * FINAL RESULT
+   * ---------------------------------------------------------
+   */
 
   return {
     fenceLengthFt,
@@ -511,7 +694,7 @@ export function calculateFence(
 
     sections,
 
-    posts,
+    posts: calculatedPosts,
     gatePosts,
 
     rails,
@@ -535,12 +718,6 @@ export function calculateFence(
     chainRolls,
     topRailFt,
 
-    estimatedCost: hasAnyPrice
-      ? costs.reduce(
-          (sum, value) =>
-            sum + value,
-          0,
-        )
-      : null,
+    estimatedCost,
   };
 }
