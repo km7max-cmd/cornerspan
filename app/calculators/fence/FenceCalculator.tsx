@@ -14,7 +14,11 @@ type ResultProps = {
   highlight?: boolean;
 };
 
-function Result({ label, value, highlight = false }: ResultProps) {
+function Result({
+  label,
+  value,
+  highlight = false,
+}: ResultProps) {
   return (
     <div
       className={`rounded-xl border p-4 ${
@@ -54,10 +58,14 @@ function SectionHeader({
       </div>
 
       <div>
-        <h2 className="text-lg font-bold text-slate-900">{title}</h2>
+        <h2 className="text-lg font-bold text-slate-900">
+          {title}
+        </h2>
 
         {description && (
-          <p className="mt-1 text-sm text-slate-500">{description}</p>
+          <p className="mt-1 text-sm text-slate-500">
+            {description}
+          </p>
         )}
       </div>
     </div>
@@ -77,7 +85,11 @@ function InputLabel({
         {label}
       </label>
 
-      {hint && <p className="mt-0.5 text-xs text-slate-500">{hint}</p>}
+      {hint && (
+        <p className="mt-0.5 text-xs text-slate-500">
+          {hint}
+        </p>
+      )}
     </div>
   );
 }
@@ -89,87 +101,202 @@ const selectClass =
   "w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100";
 
 export default function FenceCalculator() {
-  const [mode, setMode] = useState<FenceMode>("wood-picket");
+  const [mode, setMode] =
+    useState<FenceMode>("wood-picket");
 
-  const [projectLength, setProjectLength] = useState("100");
-  const [projectHeight, setProjectHeight] = useState("6");
-  const [projectUnit, setProjectUnit] = useState<FenceUnit>("ft");
+  const [projectLength, setProjectLength] =
+    useState("100");
 
-  const [postSpacing, setPostSpacing] = useState("8");
+  const [projectHeight, setProjectHeight] =
+    useState("6");
 
-  const [gateCount, setGateCount] = useState("0");
-  const [gateWidth, setGateWidth] = useState("4");
+  const [projectUnit, setProjectUnit] =
+    useState<FenceUnit>("ft");
 
-  const [railsPerSection, setRailsPerSection] = useState("3");
+  const [postSpacing, setPostSpacing] =
+    useState("8");
 
-  const [picketWidth, setPicketWidth] = useState("5.5");
-  const [picketGap, setPicketGap] = useState("0.5");
+  const [gateCount, setGateCount] =
+    useState("0");
 
-  const [panelWidth, setPanelWidth] = useState("8");
+  const [gateWidth, setGateWidth] =
+    useState("4");
 
-  const [holeDiameter, setHoleDiameter] = useState("10");
-  const [holeDepth, setHoleDepth] = useState("24");
+  const [railsPerSection, setRailsPerSection] =
+    useState("3");
+
+  const [picketWidth, setPicketWidth] =
+    useState("5.5");
+
+  const [picketGap, setPicketGap] =
+    useState("0.5");
+
+  const [panelWidth, setPanelWidth] =
+    useState("8");
+
+  const [holeDiameter, setHoleDiameter] =
+    useState("10");
+
+  const [holeDepth, setHoleDepth] =
+    useState("24");
+
   const [concreteBagSize, setConcreteBagSize] =
     useState<ConcreteBagSize>("80");
 
-  const [wastePercent, setWastePercent] = useState("10");
+  const [wastePercent, setWastePercent] =
+    useState("10");
 
-  const [chainRollLength, setChainRollLength] = useState("50");
-  const [chainCorners, setChainCorners] = useState("0");
+  const [chainRollLength, setChainRollLength] =
+    useState("50");
 
-  const [paintCoverage, setPaintCoverage] = useState("350");
-  const [paintCoats, setPaintCoats] = useState("2");
-  const [paintSides, setPaintSides] = useState("1");
+  const [chainCorners, setChainCorners] =
+    useState("0");
 
-  const [pricePost, setPricePost] = useState("");
-  const [priceRail, setPriceRail] = useState("");
-  const [pricePicket, setPricePicket] = useState("");
-  const [pricePanel, setPricePanel] = useState("");
-  const [priceConcreteBag, setPriceConcreteBag] = useState("");
-  const [priceChainFabricFt, setPriceChainFabricFt] = useState("");
-  const [priceLinePost, setPriceLinePost] = useState("");
-  const [priceTerminalPost, setPriceTerminalPost] = useState("");
-  const [priceTopRailFt, setPriceTopRailFt] = useState("");
-  const [pricePaintGallon, setPricePaintGallon] = useState("");
+  const [paintCoverage, setPaintCoverage] =
+    useState("350");
+
+  const [paintCoats, setPaintCoats] =
+    useState("2");
+
+  const [paintSides, setPaintSides] =
+    useState<1 | 2>(1);
+
+  const [pricePost, setPricePost] =
+    useState("");
+
+  const [priceRail, setPriceRail] =
+    useState("");
+
+  const [pricePicket, setPricePicket] =
+    useState("");
+
+  const [pricePanel, setPricePanel] =
+    useState("");
+
+  const [priceConcreteBag, setPriceConcreteBag] =
+    useState("");
+
+  const [priceChainFabricFt, setPriceChainFabricFt] =
+    useState("");
+
+  const [priceLinePost, setPriceLinePost] =
+    useState("");
+
+  const [priceTerminalPost, setPriceTerminalPost] =
+    useState("");
+
+  const [priceTopRailFt, setPriceTopRailFt] =
+    useState("");
+
+  const [pricePaintGallon, setPricePaintGallon] =
+    useState("");
 
   const result = useMemo(() => {
     return calculateFence({
       mode,
-      projectLength,
-      projectHeight,
-      projectUnit,
-      postSpacing,
-      gateCount,
-      gateWidth,
-      railsPerSection,
-      picketWidth,
-      picketGap,
-      panelWidth,
-      holeDiameter,
-      holeDepth,
+
+      unit: projectUnit,
+
+      fenceLength: Number(projectLength) || 0,
+      fenceHeight: Number(projectHeight) || 0,
+
+      postSpacing: Number(postSpacing) || 0,
+
+      gates: Number(gateCount) || 0,
+      gateWidth: Number(gateWidth) || 0,
+
+      railsPerSection:
+        Number(railsPerSection) || 0,
+
+      picketWidthIn:
+        Number(picketWidth) || 0,
+
+      picketGapIn:
+        Number(picketGap) || 0,
+
+      panelWidth:
+        Number(panelWidth) || 0,
+
+      postHoleDiameterIn:
+        Number(holeDiameter) || 0,
+
+      postHoleDepthIn:
+        Number(holeDepth) || 0,
+
       concreteBagSize,
-      wastePercent,
-      chainRollLength,
-      chainCorners,
-      paintCoverage,
-      paintCoats,
+
+      wastePercent:
+        Number(wastePercent) || 0,
+
+      chainRollLength:
+        Number(chainRollLength) || 0,
+
+      chainCorners:
+        Number(chainCorners) || 0,
+
+      paintCoverageSqFt:
+        Number(paintCoverage) || 0,
+
+      paintCoats:
+        Number(paintCoats) || 0,
+
       paintSides,
-      pricePost,
-      priceRail,
-      pricePicket,
-      pricePanel,
-      priceConcreteBag,
-      priceChainFabricFt,
-      priceLinePost,
-      priceTerminalPost,
-      priceTopRailFt,
-      pricePaintGallon,
+
+      pricePost:
+        pricePost === ""
+          ? undefined
+          : Number(pricePost),
+
+      priceRail:
+        priceRail === ""
+          ? undefined
+          : Number(priceRail),
+
+      pricePicket:
+        pricePicket === ""
+          ? undefined
+          : Number(pricePicket),
+
+      pricePanel:
+        pricePanel === ""
+          ? undefined
+          : Number(pricePanel),
+
+      priceConcreteBag:
+        priceConcreteBag === ""
+          ? undefined
+          : Number(priceConcreteBag),
+
+      priceChainFabricPerFt:
+        priceChainFabricFt === ""
+          ? undefined
+          : Number(priceChainFabricFt),
+
+      priceLinePost:
+        priceLinePost === ""
+          ? undefined
+          : Number(priceLinePost),
+
+      priceTerminalPost:
+        priceTerminalPost === ""
+          ? undefined
+          : Number(priceTerminalPost),
+
+      priceTopRailPerFt:
+        priceTopRailFt === ""
+          ? undefined
+          : Number(priceTopRailFt),
+
+      pricePaintPerGallon:
+        pricePaintGallon === ""
+          ? undefined
+          : Number(pricePaintGallon),
     });
   }, [
     mode,
+    projectUnit,
     projectLength,
     projectHeight,
-    projectUnit,
     postSpacing,
     gateCount,
     gateWidth,
@@ -198,37 +325,47 @@ export default function FenceCalculator() {
     pricePaintGallon,
   ]);
 
-  const isChainLink = mode === "chain-link";
-  const isPanel = mode === "wood-panel";
+  const isChainLink =
+    mode === "chain-link";
+
+  const isPanel =
+    mode === "wood-panel";
 
   return (
     <div className="mx-auto w-full max-w-5xl">
-      {/* Calculator shell */}
       <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+
         {/* Header */}
         <div className="border-b border-slate-200 bg-slate-50 px-5 py-6 sm:px-8">
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+          <div className="text-sm font-semibold uppercase tracking-wide text-blue-600">
+            Construction Calculator
+          </div>
+
+          <h2 className="mt-1 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
             Fence Calculator
-          </h1>
+          </h2>
 
           <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600 sm:text-base">
-            Estimate fence posts, rails, pickets, panels, concrete,
-            chain-link fabric, paint and material costs for your project.
+            Estimate fence posts, rails, pickets, panels,
+            concrete, chain-link fabric, paint and material
+            costs for your project.
           </p>
         </div>
 
-        {/* Fence type */}
+        {/* Fence Type */}
         <div className="border-b border-slate-200 px-5 py-6 sm:px-8">
           <SectionHeader
             number={1}
             title="Choose Fence Type"
-            description="Select the fence style you are planning to build."
+            description="Select the fence system you are planning to build."
           />
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
             <button
               type="button"
-              onClick={() => setMode("wood-picket")}
+              onClick={() =>
+                setMode("wood-picket")
+              }
               className={`rounded-xl border-2 p-4 text-left transition ${
                 mode === "wood-picket"
                   ? "border-blue-600 bg-blue-50"
@@ -246,7 +383,9 @@ export default function FenceCalculator() {
 
             <button
               type="button"
-              onClick={() => setMode("wood-panel")}
+              onClick={() =>
+                setMode("wood-panel")
+              }
               className={`rounded-xl border-2 p-4 text-left transition ${
                 mode === "wood-panel"
                   ? "border-blue-600 bg-blue-50"
@@ -264,7 +403,9 @@ export default function FenceCalculator() {
 
             <button
               type="button"
-              onClick={() => setMode("chain-link")}
+              onClick={() =>
+                setMode("chain-link")
+              }
               className={`rounded-xl border-2 p-4 text-left transition ${
                 mode === "chain-link"
                   ? "border-blue-600 bg-blue-50"
@@ -282,12 +423,12 @@ export default function FenceCalculator() {
           </div>
         </div>
 
-        {/* Project dimensions */}
+        {/* Dimensions */}
         <div className="border-b border-slate-200 px-5 py-6 sm:px-8">
           <SectionHeader
             number={2}
             title="Project Dimensions"
-            description="Enter the total fence length and height."
+            description="Enter the total length and height of your fence."
           />
 
           <div className="grid gap-5 sm:grid-cols-3">
@@ -299,7 +440,9 @@ export default function FenceCalculator() {
                 min="0"
                 step="any"
                 value={projectLength}
-                onChange={(e) => setProjectLength(e.target.value)}
+                onChange={(e) =>
+                  setProjectLength(e.target.value)
+                }
                 className={inputClass}
                 placeholder="Enter length"
               />
@@ -313,7 +456,9 @@ export default function FenceCalculator() {
                 min="0"
                 step="any"
                 value={projectHeight}
-                onChange={(e) => setProjectHeight(e.target.value)}
+                onChange={(e) =>
+                  setProjectHeight(e.target.value)
+                }
                 className={inputClass}
                 placeholder="Enter height"
               />
@@ -325,32 +470,45 @@ export default function FenceCalculator() {
               <select
                 value={projectUnit}
                 onChange={(e) =>
-                  setProjectUnit(e.target.value as FenceUnit)
+                  setProjectUnit(
+                    e.target.value as FenceUnit,
+                  )
                 }
                 className={selectClass}
               >
-                <option value="ft">Feet</option>
-                <option value="m">Meters</option>
-                <option value="in">Inches</option>
-                <option value="cm">Centimeters</option>
+                <option value="ft">
+                  Feet
+                </option>
+
+                <option value="m">
+                  Meters
+                </option>
+
+                <option value="in">
+                  Inches
+                </option>
+
+                <option value="cm">
+                  Centimeters
+                </option>
               </select>
             </div>
           </div>
         </div>
 
-        {/* Fence settings */}
+        {/* Fence Settings */}
         <div className="border-b border-slate-200 px-5 py-6 sm:px-8">
           <SectionHeader
             number={3}
             title="Fence Settings"
-            description="Adjust spacing and material dimensions for your fence."
+            description="Set post spacing and material dimensions."
           />
 
           <div className="grid gap-5 sm:grid-cols-2">
             <div>
               <InputLabel
                 label="Post Spacing"
-                hint="Typical spacing is around 6–8 ft."
+                hint="Typical residential spacing is around 6–8 ft."
               />
 
               <input
@@ -358,7 +516,9 @@ export default function FenceCalculator() {
                 min="0"
                 step="any"
                 value={postSpacing}
-                onChange={(e) => setPostSpacing(e.target.value)}
+                onChange={(e) =>
+                  setPostSpacing(e.target.value)
+                }
                 className={inputClass}
               />
             </div>
@@ -373,7 +533,9 @@ export default function FenceCalculator() {
                   step="1"
                   value={railsPerSection}
                   onChange={(e) =>
-                    setRailsPerSection(e.target.value)
+                    setRailsPerSection(
+                      e.target.value,
+                    )
                   }
                   className={inputClass}
                 />
@@ -383,7 +545,7 @@ export default function FenceCalculator() {
             {mode === "wood-picket" && (
               <>
                 <div>
-                  <InputLabel label="Picket Width" />
+                  <InputLabel label="Picket Width (in)" />
 
                   <input
                     type="number"
@@ -391,7 +553,9 @@ export default function FenceCalculator() {
                     step="any"
                     value={picketWidth}
                     onChange={(e) =>
-                      setPicketWidth(e.target.value)
+                      setPicketWidth(
+                        e.target.value,
+                      )
                     }
                     className={inputClass}
                   />
@@ -399,8 +563,8 @@ export default function FenceCalculator() {
 
                 <div>
                   <InputLabel
-                    label="Gap Between Pickets"
-                    hint="Use 0 for a solid installation."
+                    label="Gap Between Pickets (in)"
+                    hint="Use 0 for a solid fence."
                   />
 
                   <input
@@ -409,7 +573,9 @@ export default function FenceCalculator() {
                     step="any"
                     value={picketGap}
                     onChange={(e) =>
-                      setPicketGap(e.target.value)
+                      setPicketGap(
+                        e.target.value,
+                      )
                     }
                     className={inputClass}
                   />
@@ -426,7 +592,11 @@ export default function FenceCalculator() {
                   min="0"
                   step="any"
                   value={panelWidth}
-                  onChange={(e) => setPanelWidth(e.target.value)}
+                  onChange={(e) =>
+                    setPanelWidth(
+                      e.target.value,
+                    )
+                  }
                   className={inputClass}
                 />
               </div>
@@ -436,7 +606,7 @@ export default function FenceCalculator() {
               <>
                 <div>
                   <InputLabel
-                    label="Chain-Link Roll Length"
+                    label="Chain-Link Roll Length (ft)"
                     hint="Length of one fabric roll."
                   />
 
@@ -446,7 +616,9 @@ export default function FenceCalculator() {
                     step="any"
                     value={chainRollLength}
                     onChange={(e) =>
-                      setChainRollLength(e.target.value)
+                      setChainRollLength(
+                        e.target.value,
+                      )
                     }
                     className={inputClass}
                   />
@@ -455,7 +627,7 @@ export default function FenceCalculator() {
                 <div>
                   <InputLabel
                     label="Corners"
-                    hint="Number of corner posts."
+                    hint="Number of corner positions."
                   />
 
                   <input
@@ -464,7 +636,9 @@ export default function FenceCalculator() {
                     step="1"
                     value={chainCorners}
                     onChange={(e) =>
-                      setChainCorners(e.target.value)
+                      setChainCorners(
+                        e.target.value,
+                      )
                     }
                     className={inputClass}
                   />
@@ -491,7 +665,11 @@ export default function FenceCalculator() {
                 min="0"
                 step="1"
                 value={gateCount}
-                onChange={(e) => setGateCount(e.target.value)}
+                onChange={(e) =>
+                  setGateCount(
+                    e.target.value,
+                  )
+                }
                 className={inputClass}
               />
             </div>
@@ -504,7 +682,11 @@ export default function FenceCalculator() {
                 min="0"
                 step="any"
                 value={gateWidth}
-                onChange={(e) => setGateWidth(e.target.value)}
+                onChange={(e) =>
+                  setGateWidth(
+                    e.target.value,
+                  )
+                }
                 className={inputClass}
               />
             </div>
@@ -516,7 +698,7 @@ export default function FenceCalculator() {
           <SectionHeader
             number={5}
             title="Post Hole & Concrete"
-            description="Estimate concrete needed for your fence posts."
+            description="Estimate concrete required for your fence posts."
           />
 
           <div className="grid gap-5 sm:grid-cols-3">
@@ -528,7 +710,11 @@ export default function FenceCalculator() {
                 min="0"
                 step="any"
                 value={holeDiameter}
-                onChange={(e) => setHoleDiameter(e.target.value)}
+                onChange={(e) =>
+                  setHoleDiameter(
+                    e.target.value,
+                  )
+                }
                 className={inputClass}
               />
             </div>
@@ -541,7 +727,11 @@ export default function FenceCalculator() {
                 min="0"
                 step="any"
                 value={holeDepth}
-                onChange={(e) => setHoleDepth(e.target.value)}
+                onChange={(e) =>
+                  setHoleDepth(
+                    e.target.value,
+                  )
+                }
                 className={inputClass}
               />
             </div>
@@ -553,14 +743,22 @@ export default function FenceCalculator() {
                 value={concreteBagSize}
                 onChange={(e) =>
                   setConcreteBagSize(
-                    e.target.value as ConcreteBagSize
+                    e.target.value as ConcreteBagSize,
                   )
                 }
                 className={selectClass}
               >
-                <option value="50">50 lb</option>
-                <option value="60">60 lb</option>
-                <option value="80">80 lb</option>
+                <option value="50">
+                  50 lb
+                </option>
+
+                <option value="60">
+                  60 lb
+                </option>
+
+                <option value="80">
+                  80 lb
+                </option>
               </select>
             </div>
           </div>
@@ -571,7 +769,7 @@ export default function FenceCalculator() {
           <SectionHeader
             number={6}
             title="Waste Allowance"
-            description="Add extra material to account for cuts, damage and installation waste."
+            description="Allow extra material for cuts, damage and installation waste."
           />
 
           <div className="max-w-sm">
@@ -582,7 +780,11 @@ export default function FenceCalculator() {
               min="0"
               step="1"
               value={wastePercent}
-              onChange={(e) => setWastePercent(e.target.value)}
+              onChange={(e) =>
+                setWastePercent(
+                  e.target.value,
+                )
+              }
               className={inputClass}
             />
           </div>
@@ -593,7 +795,7 @@ export default function FenceCalculator() {
           <SectionHeader
             number={7}
             title="Paint or Stain"
-            description="Optional estimate for painting or staining the fence."
+            description="Optional estimate for painting or staining your fence."
           />
 
           <div className="grid gap-5 sm:grid-cols-3">
@@ -605,7 +807,11 @@ export default function FenceCalculator() {
                 min="0"
                 step="any"
                 value={paintCoverage}
-                onChange={(e) => setPaintCoverage(e.target.value)}
+                onChange={(e) =>
+                  setPaintCoverage(
+                    e.target.value,
+                  )
+                }
                 className={inputClass}
               />
             </div>
@@ -618,7 +824,11 @@ export default function FenceCalculator() {
                 min="0"
                 step="1"
                 value={paintCoats}
-                onChange={(e) => setPaintCoats(e.target.value)}
+                onChange={(e) =>
+                  setPaintCoats(
+                    e.target.value,
+                  )
+                }
                 className={inputClass}
               />
             </div>
@@ -628,11 +838,20 @@ export default function FenceCalculator() {
 
               <select
                 value={paintSides}
-                onChange={(e) => setPaintSides(e.target.value)}
+                onChange={(e) =>
+                  setPaintSides(
+                    Number(e.target.value) as 1 | 2,
+                  )
+                }
                 className={selectClass}
               >
-                <option value="1">1 side</option>
-                <option value="2">2 sides</option>
+                <option value="1">
+                  1 side
+                </option>
+
+                <option value="2">
+                  2 sides
+                </option>
               </select>
             </div>
           </div>
@@ -643,7 +862,7 @@ export default function FenceCalculator() {
           <SectionHeader
             number={8}
             title="Optional Material Pricing"
-            description="Enter unit prices if you also want an estimated material cost."
+            description="Enter unit prices to estimate material cost."
           />
 
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -657,7 +876,11 @@ export default function FenceCalculator() {
                     min="0"
                     step="any"
                     value={pricePost}
-                    onChange={(e) => setPricePost(e.target.value)}
+                    onChange={(e) =>
+                      setPricePost(
+                        e.target.value,
+                      )
+                    }
                     className={inputClass}
                     placeholder="Optional"
                   />
@@ -672,7 +895,11 @@ export default function FenceCalculator() {
                       min="0"
                       step="any"
                       value={priceRail}
-                      onChange={(e) => setPriceRail(e.target.value)}
+                      onChange={(e) =>
+                        setPriceRail(
+                          e.target.value,
+                        )
+                      }
                       className={inputClass}
                       placeholder="Optional"
                     />
@@ -689,7 +916,9 @@ export default function FenceCalculator() {
                       step="any"
                       value={pricePicket}
                       onChange={(e) =>
-                        setPricePicket(e.target.value)
+                        setPricePicket(
+                          e.target.value,
+                        )
                       }
                       className={inputClass}
                       placeholder="Optional"
@@ -707,7 +936,9 @@ export default function FenceCalculator() {
                       step="any"
                       value={pricePanel}
                       onChange={(e) =>
-                        setPricePanel(e.target.value)
+                        setPricePanel(
+                          e.target.value,
+                        )
                       }
                       className={inputClass}
                       placeholder="Optional"
@@ -728,7 +959,9 @@ export default function FenceCalculator() {
                     step="any"
                     value={priceLinePost}
                     onChange={(e) =>
-                      setPriceLinePost(e.target.value)
+                      setPriceLinePost(
+                        e.target.value,
+                      )
                     }
                     className={inputClass}
                     placeholder="Optional"
@@ -744,7 +977,9 @@ export default function FenceCalculator() {
                     step="any"
                     value={priceTerminalPost}
                     onChange={(e) =>
-                      setPriceTerminalPost(e.target.value)
+                      setPriceTerminalPost(
+                        e.target.value,
+                      )
                     }
                     className={inputClass}
                     placeholder="Optional"
@@ -760,7 +995,9 @@ export default function FenceCalculator() {
                     step="any"
                     value={priceChainFabricFt}
                     onChange={(e) =>
-                      setPriceChainFabricFt(e.target.value)
+                      setPriceChainFabricFt(
+                        e.target.value,
+                      )
                     }
                     className={inputClass}
                     placeholder="Optional"
@@ -776,7 +1013,9 @@ export default function FenceCalculator() {
                     step="any"
                     value={priceTopRailFt}
                     onChange={(e) =>
-                      setPriceTopRailFt(e.target.value)
+                      setPriceTopRailFt(
+                        e.target.value,
+                      )
                     }
                     className={inputClass}
                     placeholder="Optional"
@@ -794,7 +1033,9 @@ export default function FenceCalculator() {
                 step="any"
                 value={priceConcreteBag}
                 onChange={(e) =>
-                  setPriceConcreteBag(e.target.value)
+                  setPriceConcreteBag(
+                    e.target.value,
+                  )
                 }
                 className={inputClass}
                 placeholder="Optional"
@@ -810,7 +1051,9 @@ export default function FenceCalculator() {
                 step="any"
                 value={pricePaintGallon}
                 onChange={(e) =>
-                  setPricePaintGallon(e.target.value)
+                  setPricePaintGallon(
+                    e.target.value,
+                  )
                 }
                 className={inputClass}
                 placeholder="Optional"
@@ -829,8 +1072,8 @@ export default function FenceCalculator() {
           </button>
 
           <p className="mt-3 text-center text-xs text-slate-500">
-            Estimates are based on the dimensions and material settings
-            entered above.
+            Results update automatically as you change the
+            measurements and settings.
           </p>
         </div>
 
@@ -846,15 +1089,16 @@ export default function FenceCalculator() {
             </h2>
 
             <p className="mt-1 text-sm text-slate-500">
-              Review the estimated quantities below.
+              Estimated quantities based on your project dimensions.
             </p>
           </div>
 
-          {/* Main results */}
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <Result
               label="Fence Area"
-              value={`${result.fenceArea.toFixed(0)} sq ft`}
+              value={`${result.fenceAreaSqFt.toFixed(
+                0,
+              )} sq ft`}
               highlight
             />
 
@@ -919,8 +1163,10 @@ export default function FenceCalculator() {
                 />
 
                 <Result
-                  label="Fabric"
-                  value={`${result.chainFabricFt.toFixed(1)} ft`}
+                  label="Chain-Link Fabric"
+                  value={`${result.chainFabricFt.toFixed(
+                    1,
+                  )} ft`}
                 />
 
                 <Result
@@ -931,7 +1177,9 @@ export default function FenceCalculator() {
 
                 <Result
                   label="Top Rail"
-                  value={`${result.topRailFt.toFixed(1)} ft`}
+                  value={`${result.topRailFt.toFixed(
+                    1,
+                  )} ft`}
                 />
               </>
             )}
@@ -944,18 +1192,22 @@ export default function FenceCalculator() {
             </h3>
 
             <p className="mt-1 text-sm text-slate-500">
-              Based on your post-hole dimensions and number of posts.
+              Based on your post-hole dimensions and total post count.
             </p>
 
             <div className="mt-4 grid gap-4 sm:grid-cols-3">
               <Result
                 label="Concrete / Post"
-                value={`${result.concretePerPost.toFixed(2)} cu ft`}
+                value={`${result.concretePerPostCuFt.toFixed(
+                  2,
+                )} cu ft`}
               />
 
               <Result
                 label="Total Concrete"
-                value={`${result.totalConcreteCuFt.toFixed(2)} cu ft`}
+                value={`${result.concreteTotalCuFt.toFixed(
+                  2,
+                )} cu ft`}
               />
 
               <Result
@@ -975,26 +1227,29 @@ export default function FenceCalculator() {
             <div className="mt-4">
               <Result
                 label="Paint Needed"
-                value={`${result.paintGallons.toFixed(2)} gallons`}
+                value={`${result.paintGallons.toFixed(
+                  2,
+                )} gallons`}
                 highlight
               />
             </div>
           </div>
 
           {/* Cost */}
-          {result.totalCost !== null && (
+          {result.estimatedCost !== null && (
             <div className="mt-5 rounded-2xl border border-blue-200 bg-blue-50 p-5">
               <div className="text-sm font-semibold uppercase tracking-wide text-blue-600">
                 Estimated Material Cost
               </div>
 
               <div className="mt-1 text-3xl font-bold text-slate-900">
-                ${result.totalCost.toFixed(2)}
+                ${result.estimatedCost.toFixed(2)}
               </div>
 
               <p className="mt-2 text-xs text-slate-600">
-                Cost is based only on the optional material prices you
-                entered. Labor and local taxes are not included.
+                Based on the material prices you entered.
+                Labor, permits, delivery charges and taxes are
+                not included.
               </p>
             </div>
           )}
