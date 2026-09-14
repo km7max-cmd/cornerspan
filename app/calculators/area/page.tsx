@@ -41,5 +41,67 @@ export const metadata: Metadata = {
 };
 
 export default function AreaPage() {
-  return <AreaCalculator />;
+  return (
+    <>
+      <AreaCalculator />
+
+      {/* Related Construction Calculators */}
+      <section className="mx-auto max-w-4xl px-5 pb-10 sm:px-6">
+        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+          <h2 className="text-2xl font-black text-slate-950">
+            Related Construction Calculators
+          </h2>
+
+          <p className="mt-3 text-base leading-7 text-slate-600">
+            Use the area calculation as the starting point for estimating
+            materials and quantities for your construction project.
+          </p>
+
+          <div className="mt-6 grid gap-3 sm:grid-cols-2">
+            <a
+              href="/calculators/square-footage"
+              className="rounded-xl border border-slate-200 p-4 font-semibold text-blue-700 transition hover:bg-slate-50"
+            >
+              Square Footage Calculator
+            </a>
+
+            <a
+              href="/calculators/concrete"
+              className="rounded-xl border border-slate-200 p-4 font-semibold text-blue-700 transition hover:bg-slate-50"
+            >
+              Concrete Calculator
+            </a>
+
+            <a
+              href="/calculators/paint"
+              className="rounded-xl border border-slate-200 p-4 font-semibold text-blue-700 transition hover:bg-slate-50"
+            >
+              Paint Calculator
+            </a>
+
+            <a
+              href="/calculators/tile"
+              className="rounded-xl border border-slate-200 p-4 font-semibold text-blue-700 transition hover:bg-slate-50"
+            >
+              Tile Calculator
+            </a>
+
+            <a
+              href="/calculators/paver"
+              className="rounded-xl border border-slate-200 p-4 font-semibold text-blue-700 transition hover:bg-slate-50"
+            >
+              Paver Calculator
+            </a>
+
+            <a
+              href="/calculators/fence"
+              className="rounded-xl border border-slate-200 p-4 font-semibold text-blue-700 transition hover:bg-slate-50"
+            >
+              Fence Calculator
+            </a>
+          </div>
+        </div>
+      </section>
+    </>
+  );
 }
