@@ -8,85 +8,59 @@ import {
   type ConcreteBagSize,
 } from "./calculations";
 
-type ResultProps = {
+type ResultCardProps = {
   label: string;
   value: string;
-  highlight?: boolean;
+  primary?: boolean;
 };
 
-function Result({
+function ResultCard({
   label,
   value,
-  highlight = false,
-}: ResultProps) {
+  primary = false,
+}: ResultCardProps) {
   return (
     <div
       className={`rounded-xl border p-4 ${
-        highlight
+        primary
           ? "border-blue-200 bg-blue-50"
           : "border-slate-200 bg-white"
       }`}
     >
-      <div className="text-xs font-medium uppercase tracking-wide text-slate-500">
+      <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
         {label}
-      </div>
+      </p>
 
-      <div
-        className={`mt-1 text-xl font-bold ${
-          highlight ? "text-blue-700" : "text-slate-900"
+      <p
+        className={`mt-1 text-2xl font-bold tracking-tight ${
+          primary ? "text-blue-700" : "text-slate-900"
         }`}
       >
         {value}
-      </div>
+      </p>
     </div>
   );
 }
 
-function SectionHeader({
-  number,
-  title,
-  description,
-}: {
-  number: number;
-  title: string;
-  description?: string;
-}) {
-  return (
-    <div className="mb-5 flex items-start gap-3">
-      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-slate-900 text-sm font-bold text-white">
-        {number}
-      </div>
-
-      <div>
-        <h2 className="text-lg font-bold text-slate-900">
-          {title}
-        </h2>
-
-        {description && (
-          <p className="mt-1 text-sm text-slate-500">
-            {description}
-          </p>
-        )}
-      </div>
-    </div>
-  );
-}
-
-function InputLabel({
+function Field({
   label,
+  children,
   hint,
 }: {
   label: string;
+  children: React.ReactNode;
   hint?: string;
 }) {
   return (
-    <div className="mb-2">
-      <label className="block text-sm font-semibold text-slate-700">
+    <div>
+      <label className="mb-2 block text-sm font-semibold text-slate-700">
         {label}
       </label>
 
+      {children}
+
       {hint && (
-        <p className="mt-0.5 text-xs text-slate-500">
+        <p className="mt-1 text-xs text-slate-500">
           {hint}
         </p>
       )}
@@ -95,10 +69,10 @@ function InputLabel({
 }
 
 const inputClass =
-  "w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100";
+  "w-full rounded-lg border border-slate-300 bg-white px-3 py-3 text-sm text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100";
 
 const selectClass =
-  "w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100";
+  "w-full rounded-lg border border-slate-300 bg-white px-3 py-3 text-sm text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100";
 
 export default function FenceCalculator() {
   const [mode, setMode] =
@@ -197,13 +171,20 @@ export default function FenceCalculator() {
 
       unit: projectUnit,
 
-      fenceLength: Number(projectLength) || 0,
-      fenceHeight: Number(projectHeight) || 0,
+      fenceLength:
+        Number(projectLength) || 0,
 
-      postSpacing: Number(postSpacing) || 0,
+      fenceHeight:
+        Number(projectHeight) || 0,
 
-      gates: Number(gateCount) || 0,
-      gateWidth: Number(gateWidth) || 0,
+      postSpacing:
+        Number(postSpacing) || 0,
+
+      gates:
+        Number(gateCount) || 0,
+
+      gateWidth:
+        Number(gateWidth) || 0,
 
       railsPerSection:
         Number(railsPerSection) || 0,
@@ -332,927 +313,894 @@ export default function FenceCalculator() {
     mode === "wood-panel";
 
   return (
-    <div className="mx-auto w-full max-w-5xl">
-      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+    <div className="mx-auto w-full max-w-6xl">
+      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-lg">
 
-        {/* Header */}
-        <div className="border-b border-slate-200 bg-slate-50 px-5 py-6 sm:px-8">
-          <div className="text-sm font-semibold uppercase tracking-wide text-blue-600">
-            Construction Calculator
+        {/* Calculator header */}
+        <div className="border-b border-slate-200 px-5 py-6 sm:px-8">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-600 text-lg text-white">
+              📐
+            </div>
+
+            <div>
+              <p className="text-xs font-bold uppercase tracking-wider text-blue-600">
+                Construction Calculator
+              </p>
+
+              <h2 className="text-xl font-bold text-slate-900 sm:text-2xl">
+                Fence Material Calculator
+              </h2>
+            </div>
           </div>
 
-          <h2 className="mt-1 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
-            Fence Calculator
-          </h2>
-
-          <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600 sm:text-base">
-            Estimate fence posts, rails, pickets, panels,
-            concrete, chain-link fabric, paint and material
-            costs for your project.
+          <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-600">
+            Enter your fence dimensions to estimate the materials
+            needed for your project.
           </p>
         </div>
 
-        {/* Fence Type */}
-        <div className="border-b border-slate-200 px-5 py-6 sm:px-8">
-          <SectionHeader
-            number={1}
-            title="Choose Fence Type"
-            description="Select the fence system you are planning to build."
-          />
+        {/* Main calculator area */}
+        <div className="grid lg:grid-cols-2">
 
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-            <button
-              type="button"
-              onClick={() =>
-                setMode("wood-picket")
-              }
-              className={`rounded-xl border-2 p-4 text-left transition ${
-                mode === "wood-picket"
-                  ? "border-blue-600 bg-blue-50"
-                  : "border-slate-200 bg-white hover:border-slate-300"
-              }`}
-            >
-              <div className="font-bold text-slate-900">
-                Wood / Picket
-              </div>
+          {/* LEFT — INPUTS */}
+          <div className="border-b border-slate-200 lg:border-b-0 lg:border-r">
+            <div className="px-5 py-6 sm:px-8">
 
-              <div className="mt-1 text-xs text-slate-500">
-                Posts, rails and individual pickets
-              </div>
-            </button>
-
-            <button
-              type="button"
-              onClick={() =>
-                setMode("wood-panel")
-              }
-              className={`rounded-xl border-2 p-4 text-left transition ${
-                mode === "wood-panel"
-                  ? "border-blue-600 bg-blue-50"
-                  : "border-slate-200 bg-white hover:border-slate-300"
-              }`}
-            >
-              <div className="font-bold text-slate-900">
-                Fence Panels
-              </div>
-
-              <div className="mt-1 text-xs text-slate-500">
-                Pre-built panels between posts
-              </div>
-            </button>
-
-            <button
-              type="button"
-              onClick={() =>
-                setMode("chain-link")
-              }
-              className={`rounded-xl border-2 p-4 text-left transition ${
-                mode === "chain-link"
-                  ? "border-blue-600 bg-blue-50"
-                  : "border-slate-200 bg-white hover:border-slate-300"
-              }`}
-            >
-              <div className="font-bold text-slate-900">
-                Chain Link
-              </div>
-
-              <div className="mt-1 text-xs text-slate-500">
-                Fabric, line posts and terminal posts
-              </div>
-            </button>
-          </div>
-        </div>
-
-        {/* Dimensions */}
-        <div className="border-b border-slate-200 px-5 py-6 sm:px-8">
-          <SectionHeader
-            number={2}
-            title="Project Dimensions"
-            description="Enter the total length and height of your fence."
-          />
-
-          <div className="grid gap-5 sm:grid-cols-3">
-            <div>
-              <InputLabel label="Fence Length" />
-
-              <input
-                type="number"
-                min="0"
-                step="any"
-                value={projectLength}
-                onChange={(e) =>
-                  setProjectLength(e.target.value)
-                }
-                className={inputClass}
-                placeholder="Enter length"
-              />
-            </div>
-
-            <div>
-              <InputLabel label="Fence Height" />
-
-              <input
-                type="number"
-                min="0"
-                step="any"
-                value={projectHeight}
-                onChange={(e) =>
-                  setProjectHeight(e.target.value)
-                }
-                className={inputClass}
-                placeholder="Enter height"
-              />
-            </div>
-
-            <div>
-              <InputLabel label="Measurement Unit" />
-
-              <select
-                value={projectUnit}
-                onChange={(e) =>
-                  setProjectUnit(
-                    e.target.value as FenceUnit,
-                  )
-                }
-                className={selectClass}
-              >
-                <option value="ft">
-                  Feet
-                </option>
-
-                <option value="m">
-                  Meters
-                </option>
-
-                <option value="in">
-                  Inches
-                </option>
-
-                <option value="cm">
-                  Centimeters
-                </option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        {/* Fence Settings */}
-        <div className="border-b border-slate-200 px-5 py-6 sm:px-8">
-          <SectionHeader
-            number={3}
-            title="Fence Settings"
-            description="Set post spacing and material dimensions."
-          />
-
-          <div className="grid gap-5 sm:grid-cols-2">
-            <div>
-              <InputLabel
-                label="Post Spacing"
-                hint="Typical residential spacing is around 6–8 ft."
-              />
-
-              <input
-                type="number"
-                min="0"
-                step="any"
-                value={postSpacing}
-                onChange={(e) =>
-                  setPostSpacing(e.target.value)
-                }
-                className={inputClass}
-              />
-            </div>
-
-            {!isChainLink && (
+              {/* Fence type */}
               <div>
-                <InputLabel label="Rails Per Section" />
+                <p className="mb-3 text-sm font-bold text-slate-900">
+                  Fence Type
+                </p>
 
-                <input
-                  type="number"
-                  min="0"
-                  step="1"
-                  value={railsPerSection}
-                  onChange={(e) =>
-                    setRailsPerSection(
-                      e.target.value,
-                    )
-                  }
-                  className={inputClass}
-                />
+                <div className="grid grid-cols-3 gap-2">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setMode("wood-picket")
+                    }
+                    className={`rounded-lg border-2 px-3 py-3 text-sm font-semibold transition ${
+                      mode === "wood-picket"
+                        ? "border-blue-600 bg-blue-50 text-blue-700"
+                        : "border-slate-200 text-slate-700 hover:border-slate-300"
+                    }`}
+                  >
+                    Wood / Picket
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setMode("wood-panel")
+                    }
+                    className={`rounded-lg border-2 px-3 py-3 text-sm font-semibold transition ${
+                      mode === "wood-panel"
+                        ? "border-blue-600 bg-blue-50 text-blue-700"
+                        : "border-slate-200 text-slate-700 hover:border-slate-300"
+                    }`}
+                  >
+                    Panels
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setMode("chain-link")
+                    }
+                    className={`rounded-lg border-2 px-3 py-3 text-sm font-semibold transition ${
+                      mode === "chain-link"
+                        ? "border-blue-600 bg-blue-50 text-blue-700"
+                        : "border-slate-200 text-slate-700 hover:border-slate-300"
+                    }`}
+                  >
+                    Chain Link
+                  </button>
+                </div>
               </div>
-            )}
 
-            {mode === "wood-picket" && (
-              <>
-                <div>
-                  <InputLabel label="Picket Width (in)" />
+              {/* Primary dimensions */}
+              <div className="mt-7">
+                <p className="mb-3 text-sm font-bold text-slate-900">
+                  Fence Dimensions
+                </p>
 
+                <div className="grid gap-4 sm:grid-cols-3">
+                  <Field label="Fence Length">
+                    <input
+                      type="number"
+                      min="0"
+                      step="any"
+                      value={projectLength}
+                      onChange={(e) =>
+                        setProjectLength(
+                          e.target.value,
+                        )
+                      }
+                      className={inputClass}
+                      placeholder="100"
+                    />
+                  </Field>
+
+                  <Field label="Fence Height">
+                    <input
+                      type="number"
+                      min="0"
+                      step="any"
+                      value={projectHeight}
+                      onChange={(e) =>
+                        setProjectHeight(
+                          e.target.value,
+                        )
+                      }
+                      className={inputClass}
+                      placeholder="6"
+                    />
+                  </Field>
+
+                  <Field label="Unit">
+                    <select
+                      value={projectUnit}
+                      onChange={(e) =>
+                        setProjectUnit(
+                          e.target.value as FenceUnit,
+                        )
+                      }
+                      className={selectClass}
+                    >
+                      <option value="ft">
+                        Feet
+                      </option>
+
+                      <option value="m">
+                        Meters
+                      </option>
+
+                      <option value="in">
+                        Inches
+                      </option>
+
+                      <option value="cm">
+                        Centimeters
+                      </option>
+                    </select>
+                  </Field>
+                </div>
+              </div>
+
+              {/* Post spacing */}
+              <div className="mt-5">
+                <Field
+                  label="Post Spacing"
+                  hint="Common residential spacing is approximately 6–8 ft."
+                >
                   <input
                     type="number"
                     min="0"
                     step="any"
-                    value={picketWidth}
+                    value={postSpacing}
                     onChange={(e) =>
-                      setPicketWidth(
+                      setPostSpacing(
                         e.target.value,
                       )
                     }
                     className={inputClass}
                   />
+                </Field>
+              </div>
+
+              {/* Calculate button */}
+              <div className="mt-6">
+                <button
+                  type="button"
+                  className="w-full rounded-xl bg-blue-600 px-6 py-4 text-base font-bold text-white shadow-sm transition hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-100"
+                >
+                  Calculate Fence Materials
+                </button>
+
+                <p className="mt-2 text-center text-xs text-slate-500">
+                  Results update automatically as you change your inputs.
+                </p>
+              </div>
+
+              {/* Advanced options */}
+              <details className="mt-6 overflow-hidden rounded-xl border border-slate-200">
+                <summary className="cursor-pointer list-none px-4 py-4 text-sm font-bold text-slate-900">
+                  <span className="flex items-center justify-between">
+                    <span>More Fence Options</span>
+                    <span className="text-slate-400">
+                      +
+                    </span>
+                  </span>
+                </summary>
+
+                <div className="border-t border-slate-200 px-4 py-5">
+
+                  {/* Material settings */}
+                  <div>
+                    <h3 className="text-sm font-bold text-slate-900">
+                      Material Settings
+                    </h3>
+
+                    <div className="mt-4 grid gap-4 sm:grid-cols-2">
+
+                      {!isChainLink && (
+                        <Field label="Rails Per Section">
+                          <input
+                            type="number"
+                            min="0"
+                            step="1"
+                            value={railsPerSection}
+                            onChange={(e) =>
+                              setRailsPerSection(
+                                e.target.value,
+                              )
+                            }
+                            className={inputClass}
+                          />
+                        </Field>
+                      )}
+
+                      {mode === "wood-picket" && (
+                        <>
+                          <Field label="Picket Width (in)">
+                            <input
+                              type="number"
+                              min="0"
+                              step="any"
+                              value={picketWidth}
+                              onChange={(e) =>
+                                setPicketWidth(
+                                  e.target.value,
+                                )
+                              }
+                              className={inputClass}
+                            />
+                          </Field>
+
+                          <Field label="Picket Gap (in)">
+                            <input
+                              type="number"
+                              min="0"
+                              step="any"
+                              value={picketGap}
+                              onChange={(e) =>
+                                setPicketGap(
+                                  e.target.value,
+                                )
+                              }
+                              className={inputClass}
+                            />
+                          </Field>
+                        </>
+                      )}
+
+                      {isPanel && (
+                        <Field label="Panel Width">
+                          <input
+                            type="number"
+                            min="0"
+                            step="any"
+                            value={panelWidth}
+                            onChange={(e) =>
+                              setPanelWidth(
+                                e.target.value,
+                              )
+                            }
+                            className={inputClass}
+                          />
+                        </Field>
+                      )}
+
+                      {isChainLink && (
+                        <>
+                          <Field
+                            label="Chain-Link Roll Length (ft)"
+                            hint="Length of one fabric roll."
+                          >
+                            <input
+                              type="number"
+                              min="0"
+                              step="any"
+                              value={chainRollLength}
+                              onChange={(e) =>
+                                setChainRollLength(
+                                  e.target.value,
+                                )
+                              }
+                              className={inputClass}
+                            />
+                          </Field>
+
+                          <Field label="Corners">
+                            <input
+                              type="number"
+                              min="0"
+                              step="1"
+                              value={chainCorners}
+                              onChange={(e) =>
+                                setChainCorners(
+                                  e.target.value,
+                                )
+                              }
+                              className={inputClass}
+                            />
+                          </Field>
+                        </>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Gates */}
+                  <div className="mt-7 border-t border-slate-200 pt-6">
+                    <h3 className="text-sm font-bold text-slate-900">
+                      Gates
+                    </h3>
+
+                    <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                      <Field label="Number of Gates">
+                        <input
+                          type="number"
+                          min="0"
+                          step="1"
+                          value={gateCount}
+                          onChange={(e) =>
+                            setGateCount(
+                              e.target.value,
+                            )
+                          }
+                          className={inputClass}
+                        />
+                      </Field>
+
+                      <Field label="Gate Width">
+                        <input
+                          type="number"
+                          min="0"
+                          step="any"
+                          value={gateWidth}
+                          onChange={(e) =>
+                            setGateWidth(
+                              e.target.value,
+                            )
+                          }
+                          className={inputClass}
+                        />
+                      </Field>
+                    </div>
+                  </div>
+
+                  {/* Concrete */}
+                  <div className="mt-7 border-t border-slate-200 pt-6">
+                    <h3 className="text-sm font-bold text-slate-900">
+                      Post Hole & Concrete
+                    </h3>
+
+                    <div className="mt-4 grid gap-4 sm:grid-cols-3">
+                      <Field label="Hole Diameter (in)">
+                        <input
+                          type="number"
+                          min="0"
+                          step="any"
+                          value={holeDiameter}
+                          onChange={(e) =>
+                            setHoleDiameter(
+                              e.target.value,
+                            )
+                          }
+                          className={inputClass}
+                        />
+                      </Field>
+
+                      <Field label="Hole Depth (in)">
+                        <input
+                          type="number"
+                          min="0"
+                          step="any"
+                          value={holeDepth}
+                          onChange={(e) =>
+                            setHoleDepth(
+                              e.target.value,
+                            )
+                          }
+                          className={inputClass}
+                        />
+                      </Field>
+
+                      <Field label="Concrete Bag">
+                        <select
+                          value={concreteBagSize}
+                          onChange={(e) =>
+                            setConcreteBagSize(
+                              e.target.value as ConcreteBagSize,
+                            )
+                          }
+                          className={selectClass}
+                        >
+                          <option value="50">
+                            50 lb
+                          </option>
+
+                          <option value="60">
+                            60 lb
+                          </option>
+
+                          <option value="80">
+                            80 lb
+                          </option>
+                        </select>
+                      </Field>
+                    </div>
+                  </div>
+
+                  {/* Waste */}
+                  <div className="mt-7 border-t border-slate-200 pt-6">
+                    <h3 className="text-sm font-bold text-slate-900">
+                      Waste Allowance
+                    </h3>
+
+                    <div className="mt-4 max-w-xs">
+                      <Field
+                        label="Waste Percentage"
+                        hint="10% is a common starting point for material estimates."
+                      >
+                        <input
+                          type="number"
+                          min="0"
+                          step="1"
+                          value={wastePercent}
+                          onChange={(e) =>
+                            setWastePercent(
+                              e.target.value,
+                            )
+                          }
+                          className={inputClass}
+                        />
+                      </Field>
+                    </div>
+                  </div>
+
+                  {/* Paint */}
+                  <div className="mt-7 border-t border-slate-200 pt-6">
+                    <h3 className="text-sm font-bold text-slate-900">
+                      Paint or Stain
+                    </h3>
+
+                    <div className="mt-4 grid gap-4 sm:grid-cols-3">
+                      <Field label="Coverage / Gallon">
+                        <input
+                          type="number"
+                          min="0"
+                          step="any"
+                          value={paintCoverage}
+                          onChange={(e) =>
+                            setPaintCoverage(
+                              e.target.value,
+                            )
+                          }
+                          className={inputClass}
+                        />
+                      </Field>
+
+                      <Field label="Coats">
+                        <input
+                          type="number"
+                          min="0"
+                          step="1"
+                          value={paintCoats}
+                          onChange={(e) =>
+                            setPaintCoats(
+                              e.target.value,
+                            )
+                          }
+                          className={inputClass}
+                        />
+                      </Field>
+
+                      <Field label="Sides">
+                        <select
+                          value={paintSides}
+                          onChange={(e) =>
+                            setPaintSides(
+                              Number(
+                                e.target.value,
+                              ) as 1 | 2,
+                            )
+                          }
+                          className={selectClass}
+                        >
+                          <option value="1">
+                            1 side
+                          </option>
+
+                          <option value="2">
+                            2 sides
+                          </option>
+                        </select>
+                      </Field>
+                    </div>
+                  </div>
+
+                  {/* Pricing */}
+                  <div className="mt-7 border-t border-slate-200 pt-6">
+                    <h3 className="text-sm font-bold text-slate-900">
+                      Material Pricing
+                    </h3>
+
+                    <p className="mt-1 text-xs text-slate-500">
+                      Optional. Enter your local material prices.
+                    </p>
+
+                    <div className="mt-4 grid gap-4 sm:grid-cols-2">
+
+                      {!isChainLink && (
+                        <>
+                          <Field label="Price / Post">
+                            <input
+                              type="number"
+                              min="0"
+                              step="any"
+                              value={pricePost}
+                              onChange={(e) =>
+                                setPricePost(
+                                  e.target.value,
+                                )
+                              }
+                              className={inputClass}
+                              placeholder="Optional"
+                            />
+                          </Field>
+
+                          {!isPanel && (
+                            <Field label="Price / Rail">
+                              <input
+                                type="number"
+                                min="0"
+                                step="any"
+                                value={priceRail}
+                                onChange={(e) =>
+                                  setPriceRail(
+                                    e.target.value,
+                                  )
+                                }
+                                className={inputClass}
+                                placeholder="Optional"
+                              />
+                            </Field>
+                          )}
+
+                          {mode === "wood-picket" && (
+                            <Field label="Price / Picket">
+                              <input
+                                type="number"
+                                min="0"
+                                step="any"
+                                value={pricePicket}
+                                onChange={(e) =>
+                                  setPricePicket(
+                                    e.target.value,
+                                  )
+                                }
+                                className={inputClass}
+                                placeholder="Optional"
+                              />
+                            </Field>
+                          )}
+
+                          {isPanel && (
+                            <Field label="Price / Panel">
+                              <input
+                                type="number"
+                                min="0"
+                                step="any"
+                                value={pricePanel}
+                                onChange={(e) =>
+                                  setPricePanel(
+                                    e.target.value,
+                                  )
+                                }
+                                className={inputClass}
+                                placeholder="Optional"
+                              />
+                            </Field>
+                          )}
+                        </>
+                      )}
+
+                      {isChainLink && (
+                        <>
+                          <Field label="Price / Line Post">
+                            <input
+                              type="number"
+                              min="0"
+                              step="any"
+                              value={priceLinePost}
+                              onChange={(e) =>
+                                setPriceLinePost(
+                                  e.target.value,
+                                )
+                              }
+                              className={inputClass}
+                              placeholder="Optional"
+                            />
+                          </Field>
+
+                          <Field label="Price / Terminal Post">
+                            <input
+                              type="number"
+                              min="0"
+                              step="any"
+                              value={priceTerminalPost}
+                              onChange={(e) =>
+                                setPriceTerminalPost(
+                                  e.target.value,
+                                )
+                              }
+                              className={inputClass}
+                              placeholder="Optional"
+                            />
+                          </Field>
+
+                          <Field label="Price / ft Fabric">
+                            <input
+                              type="number"
+                              min="0"
+                              step="any"
+                              value={priceChainFabricFt}
+                              onChange={(e) =>
+                                setPriceChainFabricFt(
+                                  e.target.value,
+                                )
+                              }
+                              className={inputClass}
+                              placeholder="Optional"
+                            />
+                          </Field>
+
+                          <Field label="Price / ft Top Rail">
+                            <input
+                              type="number"
+                              min="0"
+                              step="any"
+                              value={priceTopRailFt}
+                              onChange={(e) =>
+                                setPriceTopRailFt(
+                                  e.target.value,
+                                )
+                              }
+                              className={inputClass}
+                              placeholder="Optional"
+                            />
+                          </Field>
+                        </>
+                      )}
+
+                      <Field label="Price / Concrete Bag">
+                        <input
+                          type="number"
+                          min="0"
+                          step="any"
+                          value={priceConcreteBag}
+                          onChange={(e) =>
+                            setPriceConcreteBag(
+                              e.target.value,
+                            )
+                          }
+                          className={inputClass}
+                          placeholder="Optional"
+                        />
+                      </Field>
+
+                      <Field label="Price / Gallon Paint">
+                        <input
+                          type="number"
+                          min="0"
+                          step="any"
+                          value={pricePaintGallon}
+                          onChange={(e) =>
+                            setPricePaintGallon(
+                              e.target.value,
+                            )
+                          }
+                          className={inputClass}
+                          placeholder="Optional"
+                        />
+                      </Field>
+                    </div>
+                  </div>
                 </div>
+              </details>
+            </div>
+          </div>
 
-                <div>
-                  <InputLabel
-                    label="Gap Between Pickets (in)"
-                    hint="Use 0 for a solid fence."
-                  />
-
-                  <input
-                    type="number"
-                    min="0"
-                    step="any"
-                    value={picketGap}
-                    onChange={(e) =>
-                      setPicketGap(
-                        e.target.value,
-                      )
-                    }
-                    className={inputClass}
-                  />
-                </div>
-              </>
-            )}
-
-            {isPanel && (
+          {/* RIGHT — RESULTS */}
+          <div className="bg-slate-50 px-5 py-6 sm:px-8">
+            <div className="flex items-start justify-between gap-4">
               <div>
-                <InputLabel label="Panel Width" />
-
-                <input
-                  type="number"
-                  min="0"
-                  step="any"
-                  value={panelWidth}
-                  onChange={(e) =>
-                    setPanelWidth(
-                      e.target.value,
-                    )
-                  }
-                  className={inputClass}
-                />
-              </div>
-            )}
-
-            {isChainLink && (
-              <>
-                <div>
-                  <InputLabel
-                    label="Chain-Link Roll Length (ft)"
-                    hint="Length of one fabric roll."
-                  />
-
-                  <input
-                    type="number"
-                    min="0"
-                    step="any"
-                    value={chainRollLength}
-                    onChange={(e) =>
-                      setChainRollLength(
-                        e.target.value,
-                      )
-                    }
-                    className={inputClass}
-                  />
-                </div>
-
-                <div>
-                  <InputLabel
-                    label="Corners"
-                    hint="Number of corner positions."
-                  />
-
-                  <input
-                    type="number"
-                    min="0"
-                    step="1"
-                    value={chainCorners}
-                    onChange={(e) =>
-                      setChainCorners(
-                        e.target.value,
-                      )
-                    }
-                    className={inputClass}
-                  />
-                </div>
-              </>
-            )}
-          </div>
-        </div>
-
-        {/* Gates */}
-        <div className="border-b border-slate-200 px-5 py-6 sm:px-8">
-          <SectionHeader
-            number={4}
-            title="Gates"
-            description="Add gates if your fence layout includes them."
-          />
-
-          <div className="grid gap-5 sm:grid-cols-2">
-            <div>
-              <InputLabel label="Number of Gates" />
-
-              <input
-                type="number"
-                min="0"
-                step="1"
-                value={gateCount}
-                onChange={(e) =>
-                  setGateCount(
-                    e.target.value,
-                  )
-                }
-                className={inputClass}
-              />
-            </div>
-
-            <div>
-              <InputLabel label="Gate Width" />
-
-              <input
-                type="number"
-                min="0"
-                step="any"
-                value={gateWidth}
-                onChange={(e) =>
-                  setGateWidth(
-                    e.target.value,
-                  )
-                }
-                className={inputClass}
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Concrete */}
-        <div className="border-b border-slate-200 px-5 py-6 sm:px-8">
-          <SectionHeader
-            number={5}
-            title="Post Hole & Concrete"
-            description="Estimate concrete required for your fence posts."
-          />
-
-          <div className="grid gap-5 sm:grid-cols-3">
-            <div>
-              <InputLabel label="Hole Diameter (in)" />
-
-              <input
-                type="number"
-                min="0"
-                step="any"
-                value={holeDiameter}
-                onChange={(e) =>
-                  setHoleDiameter(
-                    e.target.value,
-                  )
-                }
-                className={inputClass}
-              />
-            </div>
-
-            <div>
-              <InputLabel label="Hole Depth (in)" />
-
-              <input
-                type="number"
-                min="0"
-                step="any"
-                value={holeDepth}
-                onChange={(e) =>
-                  setHoleDepth(
-                    e.target.value,
-                  )
-                }
-                className={inputClass}
-              />
-            </div>
-
-            <div>
-              <InputLabel label="Concrete Bag Size" />
-
-              <select
-                value={concreteBagSize}
-                onChange={(e) =>
-                  setConcreteBagSize(
-                    e.target.value as ConcreteBagSize,
-                  )
-                }
-                className={selectClass}
-              >
-                <option value="50">
-                  50 lb
-                </option>
-
-                <option value="60">
-                  60 lb
-                </option>
-
-                <option value="80">
-                  80 lb
-                </option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        {/* Waste */}
-        <div className="border-b border-slate-200 px-5 py-6 sm:px-8">
-          <SectionHeader
-            number={6}
-            title="Waste Allowance"
-            description="Allow extra material for cuts, damage and installation waste."
-          />
-
-          <div className="max-w-sm">
-            <InputLabel label="Waste Percentage" />
-
-            <input
-              type="number"
-              min="0"
-              step="1"
-              value={wastePercent}
-              onChange={(e) =>
-                setWastePercent(
-                  e.target.value,
-                )
-              }
-              className={inputClass}
-            />
-          </div>
-        </div>
-
-        {/* Paint */}
-        <div className="border-b border-slate-200 px-5 py-6 sm:px-8">
-          <SectionHeader
-            number={7}
-            title="Paint or Stain"
-            description="Optional estimate for painting or staining your fence."
-          />
-
-          <div className="grid gap-5 sm:grid-cols-3">
-            <div>
-              <InputLabel label="Coverage (sq ft / gallon)" />
-
-              <input
-                type="number"
-                min="0"
-                step="any"
-                value={paintCoverage}
-                onChange={(e) =>
-                  setPaintCoverage(
-                    e.target.value,
-                  )
-                }
-                className={inputClass}
-              />
-            </div>
-
-            <div>
-              <InputLabel label="Number of Coats" />
-
-              <input
-                type="number"
-                min="0"
-                step="1"
-                value={paintCoats}
-                onChange={(e) =>
-                  setPaintCoats(
-                    e.target.value,
-                  )
-                }
-                className={inputClass}
-              />
-            </div>
-
-            <div>
-              <InputLabel label="Sides to Paint" />
-
-              <select
-                value={paintSides}
-                onChange={(e) =>
-                  setPaintSides(
-                    Number(e.target.value) as 1 | 2,
-                  )
-                }
-                className={selectClass}
-              >
-                <option value="1">
-                  1 side
-                </option>
-
-                <option value="2">
-                  2 sides
-                </option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        {/* Pricing */}
-        <div className="border-b border-slate-200 px-5 py-6 sm:px-8">
-          <SectionHeader
-            number={8}
-            title="Optional Material Pricing"
-            description="Enter unit prices to estimate material cost."
-          />
-
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {!isChainLink && (
-              <>
-                <div>
-                  <InputLabel label="Price per Post" />
-
-                  <input
-                    type="number"
-                    min="0"
-                    step="any"
-                    value={pricePost}
-                    onChange={(e) =>
-                      setPricePost(
-                        e.target.value,
-                      )
-                    }
-                    className={inputClass}
-                    placeholder="Optional"
-                  />
-                </div>
-
-                {!isPanel && (
-                  <div>
-                    <InputLabel label="Price per Rail" />
-
-                    <input
-                      type="number"
-                      min="0"
-                      step="any"
-                      value={priceRail}
-                      onChange={(e) =>
-                        setPriceRail(
-                          e.target.value,
-                        )
-                      }
-                      className={inputClass}
-                      placeholder="Optional"
-                    />
-                  </div>
-                )}
-
-                {mode === "wood-picket" && (
-                  <div>
-                    <InputLabel label="Price per Picket" />
-
-                    <input
-                      type="number"
-                      min="0"
-                      step="any"
-                      value={pricePicket}
-                      onChange={(e) =>
-                        setPricePicket(
-                          e.target.value,
-                        )
-                      }
-                      className={inputClass}
-                      placeholder="Optional"
-                    />
-                  </div>
-                )}
-
-                {isPanel && (
-                  <div>
-                    <InputLabel label="Price per Panel" />
-
-                    <input
-                      type="number"
-                      min="0"
-                      step="any"
-                      value={pricePanel}
-                      onChange={(e) =>
-                        setPricePanel(
-                          e.target.value,
-                        )
-                      }
-                      className={inputClass}
-                      placeholder="Optional"
-                    />
-                  </div>
-                )}
-              </>
-            )}
-
-            {isChainLink && (
-              <>
-                <div>
-                  <InputLabel label="Price per Line Post" />
-
-                  <input
-                    type="number"
-                    min="0"
-                    step="any"
-                    value={priceLinePost}
-                    onChange={(e) =>
-                      setPriceLinePost(
-                        e.target.value,
-                      )
-                    }
-                    className={inputClass}
-                    placeholder="Optional"
-                  />
-                </div>
-
-                <div>
-                  <InputLabel label="Price per Terminal Post" />
-
-                  <input
-                    type="number"
-                    min="0"
-                    step="any"
-                    value={priceTerminalPost}
-                    onChange={(e) =>
-                      setPriceTerminalPost(
-                        e.target.value,
-                      )
-                    }
-                    className={inputClass}
-                    placeholder="Optional"
-                  />
-                </div>
-
-                <div>
-                  <InputLabel label="Price per ft of Fabric" />
-
-                  <input
-                    type="number"
-                    min="0"
-                    step="any"
-                    value={priceChainFabricFt}
-                    onChange={(e) =>
-                      setPriceChainFabricFt(
-                        e.target.value,
-                      )
-                    }
-                    className={inputClass}
-                    placeholder="Optional"
-                  />
-                </div>
-
-                <div>
-                  <InputLabel label="Price per ft of Top Rail" />
-
-                  <input
-                    type="number"
-                    min="0"
-                    step="any"
-                    value={priceTopRailFt}
-                    onChange={(e) =>
-                      setPriceTopRailFt(
-                        e.target.value,
-                      )
-                    }
-                    className={inputClass}
-                    placeholder="Optional"
-                  />
-                </div>
-              </>
-            )}
-
-            <div>
-              <InputLabel label="Price per Concrete Bag" />
-
-              <input
-                type="number"
-                min="0"
-                step="any"
-                value={priceConcreteBag}
-                onChange={(e) =>
-                  setPriceConcreteBag(
-                    e.target.value,
-                  )
-                }
-                className={inputClass}
-                placeholder="Optional"
-              />
-            </div>
-
-            <div>
-              <InputLabel label="Price per Gallon of Paint" />
-
-              <input
-                type="number"
-                min="0"
-                step="any"
-                value={pricePaintGallon}
-                onChange={(e) =>
-                  setPricePaintGallon(
-                    e.target.value,
-                  )
-                }
-                className={inputClass}
-                placeholder="Optional"
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Calculate */}
-        <div className="border-b border-slate-200 bg-slate-50 px-5 py-6 sm:px-8">
-          <button
-            type="button"
-            className="w-full rounded-xl bg-blue-600 px-6 py-3.5 text-base font-bold text-white shadow-sm transition hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-100"
-          >
-            Calculate Fence Estimate
-          </button>
-
-          <p className="mt-3 text-center text-xs text-slate-500">
-            Results update automatically as you change the
-            measurements and settings.
-          </p>
-        </div>
-
-        {/* Results */}
-        <div className="bg-slate-50 px-5 py-7 sm:px-8">
-          <div className="mb-6">
-            <div className="text-sm font-semibold uppercase tracking-wide text-blue-600">
-              Your Estimate
-            </div>
-
-            <h2 className="mt-1 text-2xl font-bold text-slate-900">
-              Fence Material Results
-            </h2>
-
-            <p className="mt-1 text-sm text-slate-500">
-              Estimated quantities based on your project dimensions.
-            </p>
-          </div>
-
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            <Result
-              label="Fence Area"
-              value={`${result.fenceAreaSqFt.toFixed(
-                0,
-              )} sq ft`}
-              highlight
-            />
-
-            <Result
-              label="Fence Sections"
-              value={`${result.sections}`}
-            />
-
-            <Result
-              label="Posts Needed"
-              value={`${result.posts}`}
-              highlight
-            />
-
-            {!isChainLink && (
-              <Result
-                label="Rails Needed"
-                value={`${result.rails}`}
-              />
-            )}
-
-            {mode === "wood-picket" && (
-              <>
-                <Result
-                  label="Pickets Exact"
-                  value={`${result.picketsExact}`}
-                />
-
-                <Result
-                  label="Pickets to Order"
-                  value={`${result.picketsToOrder}`}
-                  highlight
-                />
-              </>
-            )}
-
-            {isPanel && (
-              <>
-                <Result
-                  label="Panels Exact"
-                  value={`${result.panelsExact}`}
-                />
-
-                <Result
-                  label="Panels to Order"
-                  value={`${result.panelsToOrder}`}
-                  highlight
-                />
-              </>
-            )}
-
-            {isChainLink && (
-              <>
-                <Result
-                  label="Line Posts"
-                  value={`${result.linePosts}`}
-                />
-
-                <Result
-                  label="Terminal Posts"
-                  value={`${result.terminalPosts}`}
-                />
-
-                <Result
-                  label="Chain-Link Fabric"
-                  value={`${result.chainFabricFt.toFixed(
-                    1,
-                  )} ft`}
-                />
-
-                <Result
-                  label="Fabric Rolls"
-                  value={`${result.chainRolls}`}
-                  highlight
-                />
-
-                <Result
-                  label="Top Rail"
-                  value={`${result.topRailFt.toFixed(
-                    1,
-                  )} ft`}
-                />
-              </>
-            )}
-          </div>
-
-          {/* Concrete */}
-          <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-5">
-            <h3 className="text-lg font-bold text-slate-900">
-              Concrete Estimate
-            </h3>
-
-            <p className="mt-1 text-sm text-slate-500">
-              Based on your post-hole dimensions and total post count.
-            </p>
-
-            <div className="mt-4 grid gap-4 sm:grid-cols-3">
-              <Result
-                label="Concrete / Post"
-                value={`${result.concretePerPostCuFt.toFixed(
-                  2,
-                )} cu ft`}
-              />
-
-              <Result
-                label="Total Concrete"
-                value={`${result.concreteTotalCuFt.toFixed(
-                  2,
-                )} cu ft`}
-              />
-
-              <Result
-                label={`${concreteBagSize}-lb Bags`}
-                value={`${result.concreteBags}`}
-                highlight
-              />
-            </div>
-          </div>
-
-          {/* Paint */}
-          <div className="mt-5 rounded-2xl border border-slate-200 bg-white p-5">
-            <h3 className="text-lg font-bold text-slate-900">
-              Paint or Stain Estimate
-            </h3>
-
-            <div className="mt-4">
-              <Result
-                label="Paint Needed"
-                value={`${result.paintGallons.toFixed(
-                  2,
-                )} gallons`}
-                highlight
-              />
-            </div>
-          </div>
-
-          {/* Cost */}
-          {result.estimatedCost !== null && (
-            <div className="mt-5 rounded-2xl border border-blue-200 bg-blue-50 p-5">
-              <div className="text-sm font-semibold uppercase tracking-wide text-blue-600">
-                Estimated Material Cost
+                <p className="text-xs font-bold uppercase tracking-wider text-blue-600">
+                  Your Estimate
+                </p>
+
+                <h2 className="mt-1 text-2xl font-bold text-slate-900">
+                  Materials Needed
+                </h2>
               </div>
 
-              <div className="mt-1 text-3xl font-bold text-slate-900">
-                ${result.estimatedCost.toFixed(2)}
+              <div className="rounded-lg bg-white px-3 py-2 text-xs font-semibold text-slate-500 shadow-sm">
+                {projectUnit.toUpperCase()}
               </div>
+            </div>
 
-              <p className="mt-2 text-xs text-slate-600">
-                Based on the material prices you entered.
-                Labor, permits, delivery charges and taxes are
-                not included.
+            {/* Primary result */}
+            <div className="mt-6 rounded-2xl border border-blue-200 bg-white p-5 shadow-sm">
+              <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+                Fence Area
+              </p>
+
+              <p className="mt-1 text-4xl font-bold tracking-tight text-blue-700">
+                {result.fenceAreaSqFt.toFixed(0)}
+              </p>
+
+              <p className="mt-1 text-sm text-slate-500">
+                square feet
               </p>
             </div>
-          )}
+
+            {/* Main materials */}
+            <div className="mt-5 grid gap-3 sm:grid-cols-2">
+              <ResultCard
+                label="Fence Sections"
+                value={`${result.sections}`}
+              />
+
+              <ResultCard
+                label="Posts Needed"
+                value={`${result.posts}`}
+                primary
+              />
+
+              {!isChainLink && (
+                <ResultCard
+                  label="Rails Needed"
+                  value={`${result.rails}`}
+                />
+              )}
+
+              {mode === "wood-picket" && (
+                <>
+                  <ResultCard
+                    label="Pickets Exact"
+                    value={`${result.picketsExact}`}
+                  />
+
+                  <ResultCard
+                    label="Pickets to Order"
+                    value={`${result.picketsToOrder}`}
+                    primary
+                  />
+                </>
+              )}
+
+              {isPanel && (
+                <>
+                  <ResultCard
+                    label="Panels Exact"
+                    value={`${result.panelsExact}`}
+                  />
+
+                  <ResultCard
+                    label="Panels to Order"
+                    value={`${result.panelsToOrder}`}
+                    primary
+                  />
+                </>
+              )}
+
+              {isChainLink && (
+                <>
+                  <ResultCard
+                    label="Line Posts"
+                    value={`${result.linePosts}`}
+                  />
+
+                  <ResultCard
+                    label="Terminal Posts"
+                    value={`${result.terminalPosts}`}
+                  />
+
+                  <ResultCard
+                    label="Fabric"
+                    value={`${result.chainFabricFt.toFixed(
+                      1,
+                    )} ft`}
+                  />
+
+                  <ResultCard
+                    label="Fabric Rolls"
+                    value={`${result.chainRolls}`}
+                    primary
+                  />
+
+                  <ResultCard
+                    label="Top Rail"
+                    value={`${result.topRailFt.toFixed(
+                      1,
+                    )} ft`}
+                  />
+                </>
+              )}
+            </div>
+
+            {/* Concrete */}
+            <div className="mt-5 rounded-2xl border border-slate-200 bg-white p-5">
+              <h3 className="font-bold text-slate-900">
+                Concrete
+              </h3>
+
+              <div className="mt-4 grid gap-3 sm:grid-cols-3">
+                <ResultCard
+                  label="Per Post"
+                  value={`${result.concretePerPostCuFt.toFixed(
+                    2,
+                  )} cu ft`}
+                />
+
+                <ResultCard
+                  label="Total"
+                  value={`${result.concreteTotalCuFt.toFixed(
+                    2,
+                  )} cu ft`}
+                />
+
+                <ResultCard
+                  label={`${concreteBagSize}-lb Bags`}
+                  value={`${result.concreteBags}`}
+                  primary
+                />
+              </div>
+            </div>
+
+            {/* Paint */}
+            <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-5">
+              <h3 className="font-bold text-slate-900">
+                Paint / Stain
+              </h3>
+
+              <div className="mt-4">
+                <ResultCard
+                  label="Estimated Paint"
+                  value={`${result.paintGallons.toFixed(
+                    2,
+                  )} gal`}
+                  primary
+                />
+              </div>
+            </div>
+
+            {/* Cost */}
+            {result.estimatedCost !== null && (
+              <div className="mt-4 rounded-2xl border border-blue-200 bg-blue-50 p-5">
+                <p className="text-xs font-bold uppercase tracking-wide text-blue-600">
+                  Estimated Material Cost
+                </p>
+
+                <p className="mt-1 text-3xl font-bold text-slate-900">
+                  ${result.estimatedCost.toFixed(2)}
+                </p>
+
+                <p className="mt-2 text-xs leading-5 text-slate-600">
+                  Based on the prices entered above. Labor,
+                  delivery, permits and taxes are not included.
+                </p>
+              </div>
+            )}
+
+            {/* Small note */}
+            <p className="mt-5 text-xs leading-5 text-slate-500">
+              Estimates are for planning purposes. Actual material
+              requirements can vary with fence layout, terrain,
+              installation method and local requirements.
+            </p>
+          </div>
         </div>
       </div>
     </div>
