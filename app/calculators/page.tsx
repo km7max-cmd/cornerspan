@@ -63,14 +63,6 @@ function getIcon(slug: string): string {
   return iconMap[slug] ?? "🧮";
 }
 
-/*
- * Calculator list is generated automatically from:
- * data/calculators.ts
- *
- * The generator scans app/calculators/*/page.tsx
- * so new calculators can appear here without manually
- * adding them to this page.
- */
 const calculatorList: Calculator[] = calculators.map(
   (calculator) => ({
     ...calculator,
@@ -115,16 +107,12 @@ export default function CalculatorsPage() {
           .toLowerCase()
           .includes(search);
 
-      return (
-        matchesCategory &&
-        matchesSearch
-      );
+      return matchesCategory && matchesSearch;
     });
   }, [query, activeCategory]);
 
   return (
     <main className="min-h-screen bg-slate-50">
-      {/* Hero */}
       <section className="bg-gradient-to-b from-blue-50 via-white to-slate-50">
         <div className="mx-auto max-w-4xl px-5 pb-10 pt-10 text-center sm:px-6 sm:pb-12 sm:pt-14">
           <span className="inline-flex rounded-full border border-blue-100 bg-white px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-blue-700 shadow-sm sm:text-xs">
@@ -143,7 +131,6 @@ export default function CalculatorsPage() {
             everyday construction work.
           </p>
 
-          {/* Search */}
           <div className="relative mx-auto mt-6 max-w-xl">
             <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-lg text-slate-400">
               🔍
@@ -163,7 +150,6 @@ export default function CalculatorsPage() {
         </div>
       </section>
 
-      {/* Calculator Directory */}
       <section className="px-5 py-8 sm:px-6 sm:py-12">
         <div className="mx-auto max-w-4xl">
           <div className="mb-5 flex items-end justify-between gap-4">
@@ -183,7 +169,6 @@ export default function CalculatorsPage() {
             </div>
           </div>
 
-          {/* Categories */}
           <div className="mb-6 flex gap-2 overflow-x-auto pb-2">
             {categories.map((category) => (
               <button
@@ -203,7 +188,6 @@ export default function CalculatorsPage() {
             ))}
           </div>
 
-          {/* Results */}
           <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
             {filteredCalculators.length > 0 ? (
               <div className="divide-y divide-slate-100">
