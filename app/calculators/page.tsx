@@ -20,10 +20,18 @@ function getCategory(slug: string): string {
     tile: "Tile",
     paver: "Pavers",
     fence: "Fencing",
-    square-footage: "General",
+    "square-footage": "General",
     area: "General",
     volume: "General",
     length: "General",
+    roofing: "Roofing",
+    flooring: "Finishing",
+    plaster: "Finishing",
+    cement: "Materials",
+    sand: "Materials",
+    gravel: "Materials",
+    block: "Masonry",
+    excavation: "Site Work",
   };
 
   return categoryMap[slug] ?? "Construction";
@@ -55,6 +63,14 @@ function getIcon(slug: string): string {
   return iconMap[slug] ?? "🧮";
 }
 
+/*
+ * Calculator list is generated automatically from:
+ * data/calculators.ts
+ *
+ * The generator scans app/calculators/*/page.tsx
+ * so new calculators can appear here without manually
+ * adding them to this page.
+ */
 const calculatorList: Calculator[] = calculators.map(
   (calculator) => ({
     ...calculator,
@@ -81,9 +97,7 @@ export default function CalculatorsPage() {
     const search = query.trim().toLowerCase();
 
     return calculatorList.filter((calculator) => {
-      const category = getCategory(
-        calculator.slug,
-      );
+      const category = getCategory(calculator.slug);
 
       const matchesCategory =
         activeCategory === "All" ||
