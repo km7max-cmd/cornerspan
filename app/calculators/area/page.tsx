@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import AreaCalculator from "./AreaCalculator";
 
 export const metadata: Metadata = {
@@ -31,18 +32,42 @@ export const metadata: Metadata = {
       "Calculate area for rectangles, squares, circles, triangles and other common shapes in square feet, square meters, square yards and acres.",
     url: "https://www.cornerspan.com/calculators/area",
     type: "website",
+    images: [
+      {
+        url: "/cornerspan-area-calculator-hero.webp",
+        width: 1672,
+        height: 941,
+        alt: "CornerSpan Area Calculator",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Area Calculator | Calculate Area in Square Feet & Meters",
     description:
       "Calculate area for common shapes in square feet, square meters, square yards and acres.",
+    images: ["/cornerspan-area-calculator-hero.webp"],
   },
 };
 
 export default function AreaPage() {
   return (
     <>
+      {/* Area Calculator Hero Image */}
+      <section className="mx-auto max-w-4xl px-5 pt-6 sm:px-6 sm:pt-8">
+        <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+          <Image
+            src="/cornerspan-area-calculator-hero.webp"
+            alt="CornerSpan Area Calculator for calculating construction area"
+            width={1672}
+            height={941}
+            priority
+            className="h-auto w-full"
+          />
+        </div>
+      </section>
+
+      {/* Calculator */}
       <AreaCalculator />
 
       {/* Related Construction Calculators */}
