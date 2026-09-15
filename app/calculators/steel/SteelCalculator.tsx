@@ -45,11 +45,17 @@ export default function SteelCalculator() {
       unit === "ft" ? inputLength * 0.3048 : inputLength;
 
     const weightPerMeter = (dia * dia) / 162;
+
     const weightPerBar = weightPerMeter * lengthMeters;
+
     const totalLengthMeters = lengthMeters * numberOfBars;
+
     const exactWeight = weightPerBar * numberOfBars;
+
     const wasteWeight = exactWeight * (wastePercent / 100);
+
     const totalOrderWeight = exactWeight + wasteWeight;
+
     const totalTonnes = totalOrderWeight / 1000;
 
     const estimatedCost =
@@ -89,7 +95,7 @@ export default function SteelCalculator() {
           Steel Calculator
         </h1>
 
-        <p className="mt-3 max-w-3xl text-base leading-7 text-slate-600">
+        <p className="mt-3 max-w-3xl text-base leading-7 text-slate-600 sm:text-lg">
           Calculate rebar weight, total steel quantity, waste and estimated
           material cost for reinforcement bars.
         </p>
@@ -126,10 +132,9 @@ export default function SteelCalculator() {
 
         {/* Calculator Body */}
         <div className="p-5 sm:p-7">
-          {/* Diameter */}
+          {/* Bar Diameter */}
           <div>
             <label
-              htmlFor="steel-diameter"
               className="mb-2 block text-sm font-bold text-slate-800"
             >
               Bar Diameter
@@ -158,27 +163,9 @@ export default function SteelCalculator() {
                 );
               })}
             </div>
-
-            <select
-              id="steel-diameter"
-              value={diameter}
-              onChange={(e) => {
-                setDiameter(e.target.value);
-                setCalculated(false);
-              }}
-              className="sr-only"
-              aria-hidden="true"
-              tabIndex={-1}
-            >
-              {BAR_SIZES.map((size) => (
-                <option key={size} value={size}>
-                  {size} mm
-                </option>
-              ))}
-            </select>
           </div>
 
-          {/* Main Inputs */}
+          {/* Inputs */}
           <div className="mt-6 grid gap-5 sm:grid-cols-2">
             {/* Length */}
             <div>
@@ -202,7 +189,7 @@ export default function SteelCalculator() {
                     setLength(e.target.value);
                     setCalculated(false);
                   }}
-                  className="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3.5 text-lg font-semibold outline-none transition focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100"
+                  className="w-full min-w-0 rounded-xl border border-slate-300 bg-slate-50 px-4 py-3.5 text-lg font-semibold outline-none transition focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100"
                 />
 
                 <select
@@ -219,7 +206,7 @@ export default function SteelCalculator() {
               </div>
             </div>
 
-            {/* Bars */}
+            {/* Number of Bars */}
             <div>
               <label
                 htmlFor="steel-bars"
@@ -310,7 +297,7 @@ export default function SteelCalculator() {
             </div>
           </div>
 
-          {/* Calculate */}
+          {/* Calculate Button */}
           <button
             type="button"
             onClick={handleCalculate}
@@ -333,7 +320,9 @@ export default function SteelCalculator() {
 
           <p className="mt-1 text-sm text-slate-500">
             {result
-              ? `${diameter} mm × ${bars} bars × ${unit}`
+              ? `${diameter} mm × ${bars} bars × ${
+                  unit === "ft" ? "feet" : "meters"
+                }`
               : "Your calculated steel quantity will appear here."}
           </p>
         </div>
@@ -361,58 +350,55 @@ export default function SteelCalculator() {
               </p>
             </div>
 
-            {/* Breakdown */}
+            {/* Result Breakdown */}
             <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               <ResultCard
                 label="Weight per Meter"
-                value={`${formatNumber(result.weightPerMeter, 3)} kg`}
+                value={`${formatNumber(
+                  result.weightPerMeter,
+                  3
+                )} kg`}
               />
 
               <ResultCard
                 label="Weight per Bar"
-                value={`${formatNumber(result.weightPerBar)} kg`}
+                value={`${formatNumber(
+                  result.weightPerBar
+                )} kg`}
               />
 
               <ResultCard
                 label="Total Bar Length"
-                value={`${formatNumber(result.totalLengthMeters)} m`}
+                value={`${formatNumber(
+                  result.totalLengthMeters
+                )} m`}
               />
 
               <ResultCard
                 label="Exact Steel Weight"
-                value={`${formatNumber(result.exactWeight)} kg`}
+                value={`${formatNumber(
+                  result.exactWeight
+                )} kg`}
               />
 
               <ResultCard
                 label="Waste Quantity"
-                value={`${formatNumber(result.wasteWeight)} kg`}
+                value={`${formatNumber(
+                  result.wasteWeight
+                )} kg`}
               />
 
               {result.estimatedCost !== null && (
                 <ResultCard
                   label="Estimated Cost"
-                  value={`₹${formatNumber(result.estimatedCost)}`}
+                  value={`₹${formatNumber(
+                    result.estimatedCost
+                  )}`}
                 />
               )}
             </div>
           </>
         )}
-      </section>
-
-      {/* Formula */}
-      <section className="mt-8 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
-        <h2 className="text-2xl font-bold text-slate-900">
-          Steel Weight Formula
-        </h2>
-
-        <div className="my-5 rounded-2xl bg-slate-900 px-4 py-6 text-center text-lg font-bold text-white sm:text-2xl">
-          Weight (kg/m) = D² ÷ 162
-        </div>
-
-        <p className="leading-7 text-slate-600">
-          D is the steel bar diameter in millimeters. The formula gives the
-          approximate theoretical weight of reinforcing steel per meter.
-        </p>
       </section>
     </main>
   );
@@ -427,9 +413,13 @@ function ResultCard({
 }) {
   return (
     <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
-      <p className="text-sm font-medium text-slate-500">{label}</p>
+      <p className="text-sm font-medium text-slate-500">
+        {label}
+      </p>
 
-      <p className="mt-2 text-xl font-bold text-slate-900">{value}</p>
+      <p className="mt-2 text-xl font-bold text-slate-900">
+        {value}
+      </p>
     </div>
   );
 }
