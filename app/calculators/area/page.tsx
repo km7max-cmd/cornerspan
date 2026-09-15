@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import AreaCalculator from "./AreaCalculator";
 
 export const metadata: Metadata = {
@@ -53,21 +52,7 @@ export const metadata: Metadata = {
 export default function AreaPage() {
   return (
     <>
-      {/* Area Calculator Hero Image */}
-      <section className="mx-auto max-w-4xl px-5 pt-6 sm:px-6 sm:pt-8">
-        <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-          <Image
-            src="/cornerspan-area-calculator-hero.webp"
-            alt="CornerSpan Area Calculator for calculating construction area"
-            width={1672}
-            height={941}
-            priority
-            className="h-auto w-full"
-          />
-        </div>
-      </section>
-
-      {/* Calculator */}
+      {/* Area Calculator */}
       <AreaCalculator />
 
       {/* Related Construction Calculators */}
