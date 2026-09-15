@@ -165,24 +165,14 @@ export default function TileCalculator() {
           </p>
 
           <div className="mt-3 rounded-2xl bg-slate-800 px-5 py-4">
-            <p className="text-xs font-medium text-slate-400">
-              {calculated && result
-                ? "TILES REQUIRED"
-                : "ENTER YOUR VALUES"}
-            </p>
+  <p className="text-xs font-medium uppercase tracking-wider text-slate-400">
+    Calculate Your Tile Quantity
+  </p>
 
-            <p className="mt-1 text-3xl font-bold text-white sm:text-4xl">
-              {calculated && result
-                ? `${result.boxes} Boxes`
-                : "Tile Quantity"}
-            </p>
-
-            {calculated && result && (
-              <p className="mt-1 text-sm text-slate-400">
-                {result.finalTiles} tiles
-              </p>
-            )}
-          </div>
+  <p className="mt-1 text-2xl font-bold text-white sm:text-3xl">
+    Enter your project details below
+  </p>
+</div>
         </div>
 
         {/* Calculator Body */}
