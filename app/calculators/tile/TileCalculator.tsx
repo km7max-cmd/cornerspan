@@ -1,17 +1,29 @@
 "use client";
 
+import Image from "next/image";
 import { useMemo, useState } from "react";
 import Breadcrumb from "../../../components/Breadcrumb";
 
-type Unit = "ft" | "m";
+type SurfaceType = "floor" | "wall";
+type AreaUnit = "ft" | "m";
+type TileUnit = "in" | "cm";
 
-const TILE_SIZES = [
+const FLOOR_TILE_SIZES = [
   "12×12",
   "12×24",
-  "16×16",
   "18×18",
   "24×24",
   "24×48",
+  "36×36",
+];
+
+const WALL_TILE_SIZES = [
+  "4×4",
+  "3×6",
+  "4×12",
+  "6×6",
+  "6×24",
+  "12×24",
 ];
 
 function formatNumber(value: number, decimals = 2) {
@@ -21,38 +33,84 @@ function formatNumber(value: number, decimals = 2) {
   }).format(value);
 }
 
+function ResultCard({
+  label,
+  value,
+}: {
+  label: string;
+  value: string;
+}) {
+  return (
+    <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+      <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+        {label}
+      </p>
+
+      <p className="mt-2 text-lg font-bold text-slate-900">
+        {value}
+      </p>
+    </div>
+  );
+}
+
 export default function TileCalculator() {
-  const [roomLength, setRoomLength] = useState("");
-  const [roomWidth, setRoomWidth] = useState("");
-  const [roomUnit, setRoomUnit] = useState<Unit>("ft");
+  const [surfaceType, setSurfaceType] =
+    useState<SurfaceType>("floor");
 
-  const [tileLength, setTileLength] = useState("24");
-  const [tileWidth, setTileWidth] = useState("24");
+  const [surfaceLength, setSurfaceLength] =
+    useState("");
 
-  const [tilesPerBox, setTilesPerBox] = useState("4");
-  const [waste, setWaste] = useState("10");
-  const [boxPrice, setBoxPrice] = useState("");
+  const [surfaceWidth, setSurfaceWidth] =
+    useState("");
 
-  const [calculated, setCalculated] = useState(false);
+  const [areaUnit, setAreaUnit] =
+    useState<AreaUnit>("ft");
+
+  const [tileLength, setTileLength] =
+    useState("24");
+
+  const [tileWidth, setTileWidth] =
+    useState("24");
+
+  const [tileUnit, setTileUnit] =
+    useState<TileUnit>("in");
+
+  const [tilesPerBox, setTilesPerBox] =
+    useState("4");
+
+  const [waste, setWaste] =
+    useState("10");
+
+  const [boxPrice, setBoxPrice] =
+    useState("");
+
+  const [calculated, setCalculated] =
+    useState(false);
 
   const result = useMemo(() => {
-    const rLength = Number(roomLength);
-    const rWidth = Number(roomWidth);
-    const tLength = Number(tileLength);
-    const tWidth = Number(tileWidth);
+    const length = Number(surfaceLength);
+    const width = Number(surfaceWidth);
+
+    const tileL = Number(tileLength);
+    const tileW = Number(tileWidth);
+
     const boxTiles = Number(tilesPerBox);
-    const wastePercent = Number(waste) || 0;
-    const price = Number(boxPrice) || 0;
+
+    const wastePercent =
+      Number(waste) || 0;
+
+    const price =
+      Number(boxPrice) || 0;
 
     if (
-      !Number.isFinite(rLength) ||
-      rLength <= 0 ||
-      !Number.isFinite(rWidth) ||
-      rWidth <= 0 ||
-      !Number.isFinite(tLength) ||
-      tLength <= 0 ||
-      !Number.isFinite(tWidth) ||
-      tWidth <= 0 ||
+      !Number.isFinite(length) ||
+      length <= 0 ||
+      !Number.isFinite(width) ||
+      width <= 0 ||
+      !Number.isFinite(tileL) ||
+      tileL <= 0 ||
+      !Number.isFinite(tileW) ||
+      tileW <= 0 ||
       !Number.isFinite(boxTiles) ||
       boxTiles <= 0 ||
       !Number.isFinite(wastePercent) ||
@@ -61,58 +119,112 @@ export default function TileCalculator() {
       return null;
     }
 
-    const roomLengthFeet =
-      roomUnit === "ft" ? rLength : rLength * 3.280839895;
+    /*
+     * Convert project dimensions to square feet.
+     */
+    const lengthFeet =
+      areaUnit === "ft"
+        ? length
+        : length * 3.280839895;
 
-    const roomWidthFeet =
-      roomUnit === "ft" ? rWidth : rWidth * 3.280839895;
+    const widthFeet =
+      areaUnit === "ft"
+        ? width
+        : width * 3.280839895;
 
-    const roomArea = roomLengthFeet * roomWidthFeet;
+    const surfaceArea =
+      lengthFeet * widthFeet;
 
-    // Tile dimensions are entered in inches.
-    const tileArea = (tLength * tWidth) / 144;
+    /*
+     * Convert tile dimensions to inches.
+     */
+    const tileLengthInches =
+      tileUnit === "in"
+        ? tileL
+        : tileL / 2.54;
 
-    const exactTiles = roomArea / tileArea;
+    const tileWidthInches =
+      tileUnit === "in"
+        ? tileW
+        : tileW / 2.54;
+
+    /*
+     * One tile area in square feet.
+     */
+    const tileArea =
+      (tileLengthInches *
+        tileWidthInches) /
+      144;
+
+    const exactTiles =
+      surfaceArea / tileArea;
 
     const areaWithWaste =
-      roomArea * (1 + wastePercent / 100);
+      surfaceArea *
+      (1 + wastePercent / 100);
 
-    const tilesWithWaste = Math.ceil(
-      areaWithWaste / tileArea
-    );
+    const tilesWithWaste =
+      Math.ceil(
+        areaWithWaste / tileArea
+      );
 
-    const boxes = Math.ceil(
-      tilesWithWaste / boxTiles
-    );
+    /*
+     * Boxes must always be rounded up.
+     */
+    const boxes =
+      Math.ceil(
+        tilesWithWaste / boxTiles
+      );
 
-    const finalTiles = boxes * boxTiles;
+    const tilesToOrder =
+      boxes * boxTiles;
 
-    const actualCoverage = finalTiles * tileArea;
+    const actualCoverage =
+      tilesToOrder * tileArea;
 
-    const extraTiles =
-      finalTiles - Math.ceil(exactTiles);
+    const exactTilesRounded =
+      Math.ceil(exactTiles);
+
+    const wasteTiles =
+      Math.max(
+        0,
+        tilesWithWaste -
+          exactTilesRounded
+      );
+
+    const boxRoundingExtra =
+      Math.max(
+        0,
+        tilesToOrder -
+          tilesWithWaste
+      );
 
     const estimatedCost =
-      price > 0 ? boxes * price : null;
+      price > 0
+        ? boxes * price
+        : null;
 
     return {
-      roomArea,
+      surfaceArea,
       tileArea,
       exactTiles,
+      exactTilesRounded,
       areaWithWaste,
       tilesWithWaste,
       boxes,
-      finalTiles,
+      tilesToOrder,
       actualCoverage,
-      extraTiles,
+      wasteTiles,
+      boxRoundingExtra,
       estimatedCost,
     };
   }, [
-    roomLength,
-    roomWidth,
-    roomUnit,
+    surfaceLength,
+    surfaceWidth,
+    areaUnit,
     tileLength,
     tileWidth,
+    tileUnit,
     tilesPerBox,
     waste,
     boxPrice,
@@ -131,71 +243,174 @@ export default function TileCalculator() {
     }, 50);
   };
 
-  const applyTileSize = (size: string) => {
-    const [lengthValue, widthValue] =
+  const applyTileSize = (
+    size: string
+  ) => {
+    const [length, width] =
       size.split("×");
 
-    setTileLength(lengthValue);
-    setTileWidth(widthValue);
+    setTileLength(length);
+    setTileWidth(width);
     setCalculated(false);
   };
+
+  const handleSurfaceChange = (
+    type: SurfaceType
+  ) => {
+    setSurfaceType(type);
+
+    /*
+     * Use common tile defaults for
+     * each surface.
+     */
+    if (type === "floor") {
+      setTileLength("24");
+      setTileWidth("24");
+    } else {
+      setTileLength("4");
+      setTileWidth("12");
+    }
+
+    setCalculated(false);
+  };
+
+  const tileSizes =
+    surfaceType === "floor"
+      ? FLOOR_TILE_SIZES
+      : WALL_TILE_SIZES;
+
+  const inputClass =
+    "w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3.5 text-lg font-semibold outline-none transition focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100";
+
+  const selectClass =
+    "w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3.5 font-semibold outline-none transition focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100";
 
   return (
     <main className="mx-auto max-w-4xl px-4 py-6 sm:px-6">
       <Breadcrumb current="Tile Calculator" />
 
-      {/* Heading */}
+      {/* Page Heading */}
       <section className="mb-7">
         <h1 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
           Tile Calculator
         </h1>
 
         <p className="mt-3 max-w-3xl text-base leading-7 text-slate-600 sm:text-lg">
-          Calculate how many tiles and boxes you need for floors,
-          walls and other tiling projects.
+          Calculate how many tiles and boxes you need for
+          floors, walls and other tile installation projects.
         </p>
+      </section>
+
+      {/* Hero Image */}
+      <section className="mb-8 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <Image
+          src="/cornerspan-tile-calculator-hero.webp"
+          alt="Tile Calculator for estimating tile quantity, boxes, waste and cost"
+          width={1774}
+          height={887}
+          priority
+          className="h-auto w-full"
+        />
       </section>
 
       {/* Calculator */}
       <section className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-lg">
+
         {/* Display */}
         <div className="bg-slate-900 px-5 py-5 sm:px-7">
           <p className="text-sm font-semibold uppercase tracking-wider text-slate-400">
             Tile Quantity Calculator
           </p>
 
-          <div className="mt-3 rounded-2xl bg-slate-800 px-5 py-4">
-  <p className="text-xs font-medium uppercase tracking-wider text-slate-400">
-    Calculate Your Tile Quantity
-  </p>
+          <div className="mt-3 rounded-2xl bg-slate-800 px-5 py-5">
+            <p className="text-xs font-medium uppercase tracking-wider text-slate-400">
+              {calculated && result
+                ? "Tiles Required"
+                : "Calculate Your Tile Quantity"}
+            </p>
 
-  <p className="mt-1 text-2xl font-bold text-white sm:text-3xl">
-    Enter your project details below
-  </p>
-</div>
+            <p className="mt-1 text-2xl font-bold text-white sm:text-3xl">
+              {calculated && result
+                ? `${result.tilesToOrder} Tiles · ${result.boxes} Boxes`
+                : "Enter your project details below"}
+            </p>
+          </div>
         </div>
 
         {/* Calculator Body */}
         <div className="p-5 sm:p-7">
-          {/* Room Dimensions */}
+
+          {/* Surface Type */}
           <div>
             <label className="mb-2 block text-sm font-bold text-slate-800">
-              Room Dimensions
+              Surface Type
             </label>
 
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() =>
+                  handleSurfaceChange("floor")
+                }
+                className={`rounded-xl border px-4 py-3.5 text-base font-bold transition ${
+                  surfaceType === "floor"
+                    ? "border-blue-600 bg-blue-600 text-white shadow-sm"
+                    : "border-slate-200 bg-slate-50 text-slate-700 hover:border-blue-300 hover:bg-blue-50"
+                }`}
+              >
+                Floor
+              </button>
+
+              <button
+                type="button"
+                onClick={() =>
+                  handleSurfaceChange("wall")
+                }
+                className={`rounded-xl border px-4 py-3.5 text-base font-bold transition ${
+                  surfaceType === "wall"
+                    ? "border-blue-600 bg-blue-600 text-white shadow-sm"
+                    : "border-slate-200 bg-slate-50 text-slate-700 hover:border-blue-300 hover:bg-blue-50"
+                }`}
+              >
+                Wall
+              </button>
+            </div>
+          </div>
+
+          {/* Surface Dimensions */}
+          <div className="mt-6">
+            <label className="mb-2 block text-sm font-bold text-slate-800">
+              {surfaceType === "floor"
+                ? "Floor Dimensions"
+                : "Wall Dimensions"}
+            </label>
+
+            <p className="mb-3 text-xs text-slate-500">
+              {surfaceType === "floor"
+                ? "Enter the floor length and width."
+                : "Enter the wall height and width."}
+            </p>
+
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-[1fr_1fr_110px]">
+
               <input
                 type="number"
                 min="0"
                 step="any"
                 inputMode="decimal"
-                placeholder="Length"
-                value={roomLength}
+                placeholder={
+                  surfaceType === "floor"
+                    ? "Length"
+                    : "Height"
+                }
+                value={surfaceLength}
                 onChange={(e) => {
-                  setRoomLength(e.target.value);
+                  setSurfaceLength(
+                    e.target.value
+                  );
                   setCalculated(false);
                 }}
-                className="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3.5 text-lg font-semibold outline-none transition focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100"
+                className={inputClass}
               />
 
               <input
@@ -203,101 +418,165 @@ export default function TileCalculator() {
                 min="0"
                 step="any"
                 inputMode="decimal"
-                placeholder="Width"
-                value={roomWidth}
+                placeholder={
+                  surfaceType === "floor"
+                    ? "Width"
+                    : "Width"
+                }
+                value={surfaceWidth}
                 onChange={(e) => {
-                  setRoomWidth(e.target.value);
+                  setSurfaceWidth(
+                    e.target.value
+                  );
                   setCalculated(false);
                 }}
-                className="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3.5 text-lg font-semibold outline-none transition focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100"
+                className={inputClass}
               />
 
               <select
-                value={roomUnit}
+                value={areaUnit}
                 onChange={(e) => {
-                  setRoomUnit(e.target.value as Unit);
+                  setAreaUnit(
+                    e.target.value as AreaUnit
+                  );
                   setCalculated(false);
                 }}
-                className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-3.5 font-semibold outline-none focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100"
+                className={selectClass}
               >
-                <option value="ft">Feet</option>
-                <option value="m">Meters</option>
+                <option value="ft">
+                  Feet
+                </option>
+
+                <option value="m">
+                  Meters
+                </option>
               </select>
+            </div>
+          </div>
+
+          {/* Tile Unit */}
+          <div className="mt-6">
+            <label className="mb-2 block text-sm font-bold text-slate-800">
+              Tile Measurement Unit
+            </label>
+
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() => {
+                  setTileUnit("in");
+                  setCalculated(false);
+                }}
+                className={`rounded-xl border px-4 py-3 font-bold transition ${
+                  tileUnit === "in"
+                    ? "border-blue-600 bg-blue-600 text-white"
+                    : "border-slate-200 bg-slate-50 text-slate-700"
+                }`}
+              >
+                Inches
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setTileUnit("cm");
+                  setCalculated(false);
+                }}
+                className={`rounded-xl border px-4 py-3 font-bold transition ${
+                  tileUnit === "cm"
+                    ? "border-blue-600 bg-blue-600 text-white"
+                    : "border-slate-200 bg-slate-50 text-slate-700"
+                }`}
+              >
+                Centimeters
+              </button>
             </div>
           </div>
 
           {/* Tile Size */}
           <div className="mt-6">
             <label className="mb-2 block text-sm font-bold text-slate-800">
-              Tile Size
-              <span className="ml-2 font-normal text-slate-400">
-                Inches
-              </span>
+              {surfaceType === "floor"
+                ? "Common Floor Tile Sizes"
+                : "Common Wall Tile Sizes"}
             </label>
 
             <div className="grid grid-cols-3 gap-2 sm:grid-cols-6">
-              {TILE_SIZES.map((size) => {
-                const [l, w] = size.split("×");
+              {tileSizes.map((size) => {
+                const [length, width] =
+                  size.split("×");
 
                 const active =
-                  tileLength === l &&
-                  tileWidth === w;
+                  tileLength === length &&
+                  tileWidth === width;
 
                 return (
                   <button
                     key={size}
                     type="button"
-                    onClick={() => applyTileSize(size)}
+                    onClick={() =>
+                      applyTileSize(size)
+                    }
                     className={`rounded-xl border px-2 py-3 text-sm font-bold transition ${
                       active
                         ? "border-blue-600 bg-blue-600 text-white shadow-sm"
                         : "border-slate-200 bg-slate-50 text-slate-700 hover:border-blue-300 hover:bg-blue-50"
                     }`}
                   >
-                    {size}"
+                    {size}
+                    {tileUnit === "in"
+                      ? '"'
+                      : " cm"}
                   </button>
                 );
               })}
             </div>
 
-            {/* Custom Size */}
-            <div className="mt-3 grid grid-cols-2 gap-3">
-              <input
-                type="number"
-                min="0"
-                step="any"
-                inputMode="decimal"
-                placeholder="Tile length"
-                value={tileLength}
-                onChange={(e) => {
-                  setTileLength(e.target.value);
-                  setCalculated(false);
-                }}
-                className="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3.5 font-semibold outline-none focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100"
-              />
+            {/* Custom Tile Size */}
+            <div className="mt-3">
+              <p className="mb-2 text-xs font-medium text-slate-500">
+                Or enter a custom tile size:
+              </p>
 
-              <input
-                type="number"
-                min="0"
-                step="any"
-                inputMode="decimal"
-                placeholder="Tile width"
-                value={tileWidth}
-                onChange={(e) => {
-                  setTileWidth(e.target.value);
-                  setCalculated(false);
-                }}
-                className="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3.5 font-semibold outline-none focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100"
-              />
+              <div className="grid grid-cols-2 gap-3">
+                <input
+                  type="number"
+                  min="0"
+                  step="any"
+                  inputMode="decimal"
+                  placeholder="Tile length"
+                  value={tileLength}
+                  onChange={(e) => {
+                    setTileLength(
+                      e.target.value
+                    );
+                    setCalculated(false);
+                  }}
+                  className={inputClass}
+                />
+
+                <input
+                  type="number"
+                  min="0"
+                  step="any"
+                  inputMode="decimal"
+                  placeholder="Tile width"
+                  value={tileWidth}
+                  onChange={(e) => {
+                    setTileWidth(
+                      e.target.value
+                    );
+                    setCalculated(false);
+                  }}
+                  className={inputClass}
+                />
+              </div>
             </div>
-
-            <p className="mt-2 text-xs leading-5 text-slate-500">
-              Enter custom tile dimensions if your tile size is not listed.
-            </p>
           </div>
 
-          {/* Box + Waste */}
+          {/* Boxes + Waste */}
           <div className="mt-6 grid gap-5 sm:grid-cols-2">
+
             <div>
               <label
                 htmlFor="tiles-per-box"
@@ -315,11 +594,17 @@ export default function TileCalculator() {
                 placeholder="Example: 4"
                 value={tilesPerBox}
                 onChange={(e) => {
-                  setTilesPerBox(e.target.value);
+                  setTilesPerBox(
+                    e.target.value
+                  );
                   setCalculated(false);
                 }}
-                className="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3.5 text-lg font-semibold outline-none focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100"
+                className={inputClass}
               />
+
+              <p className="mt-2 text-xs text-slate-500">
+                Check your tile carton for the exact number.
+              </p>
             </div>
 
             <div>
@@ -337,17 +622,20 @@ export default function TileCalculator() {
                   setWaste(e.target.value);
                   setCalculated(false);
                 }}
-                className="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3.5 text-base font-semibold outline-none focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100"
+                className={selectClass}
               >
                 <option value="0">
                   0% — Exact
                 </option>
+
                 <option value="5">
                   5% — Simple layout
                 </option>
+
                 <option value="10">
                   10% — Recommended
                 </option>
+
                 <option value="15">
                   15% — Diagonal / complex
                 </option>
@@ -369,7 +657,7 @@ export default function TileCalculator() {
 
             <div className="relative max-w-md">
               <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 font-bold text-slate-500">
-                ₹
+                $
               </span>
 
               <input
@@ -378,22 +666,24 @@ export default function TileCalculator() {
                 min="0"
                 step="0.01"
                 inputMode="decimal"
-                placeholder="Example: 850"
+                placeholder="Example: 45"
                 value={boxPrice}
                 onChange={(e) => {
-                  setBoxPrice(e.target.value);
+                  setBoxPrice(
+                    e.target.value
+                  );
                   setCalculated(false);
                 }}
-                className="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3.5 pl-9 text-lg font-semibold outline-none focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100"
+                className={`${inputClass} pl-9`}
               />
             </div>
 
             <p className="mt-2 text-xs text-slate-500">
-              Leave blank if you only want the tile quantity.
+              Optional. Used to estimate total tile material cost.
             </p>
           </div>
 
-          {/* Calculate Button */}
+          {/* Calculate */}
           <button
             type="button"
             onClick={handleCalculate}
@@ -416,9 +706,7 @@ export default function TileCalculator() {
 
           <p className="mt-1 text-sm text-slate-500">
             {result
-              ? `${roomLength} × ${roomWidth} ${
-                  roomUnit === "ft" ? "ft" : "m"
-                } · ${tileLength}" × ${tileWidth}"`
+              ? `${surfaceType === "floor" ? "Floor" : "Wall"} · ${surfaceLength} × ${surfaceWidth} ${areaUnit === "ft" ? "ft" : "m"} · ${tileLength} × ${tileWidth} ${tileUnit}`
               : "Your tile quantity will appear here."}
           </p>
         </div>
@@ -426,7 +714,7 @@ export default function TileCalculator() {
         {!result ? (
           <div className="rounded-2xl bg-slate-50 px-5 py-10 text-center">
             <p className="text-base font-medium text-slate-500">
-              Enter room and tile dimensions to calculate.
+              Enter your project and tile dimensions to calculate.
             </p>
           </div>
         ) : (
@@ -434,33 +722,39 @@ export default function TileCalculator() {
             {/* Main Result */}
             <div className="rounded-2xl bg-slate-900 p-6 text-center">
               <p className="text-sm font-semibold uppercase tracking-wider text-slate-400">
-                Boxes Needed
+                Tiles To Order
               </p>
 
               <p className="mt-2 text-4xl font-bold text-white sm:text-5xl">
-                {result.boxes} Boxes
+                {result.tilesToOrder} Tiles
               </p>
 
               <p className="mt-2 text-base text-slate-400">
-                {result.finalTiles} tiles
+                {result.boxes} Boxes
               </p>
             </div>
 
-            {/* Result Breakdown */}
+            {/* Breakdown */}
             <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+
               <ResultCard
-                label="Room Area"
-                value={`${formatNumber(result.roomArea)} sq ft`}
+                label="Surface Area"
+                value={`${formatNumber(
+                  result.surfaceArea
+                )} sq ft`}
               />
 
               <ResultCard
                 label="Tile Area"
-                value={`${formatNumber(result.tileArea, 3)} sq ft`}
+                value={`${formatNumber(
+                  result.tileArea,
+                  3
+                )} sq ft`}
               />
 
               <ResultCard
                 label="Exact Tiles"
-                value={`${Math.ceil(result.exactTiles)} pcs`}
+                value={`${result.exactTilesRounded} pcs`}
               />
 
               <ResultCard
@@ -471,8 +765,15 @@ export default function TileCalculator() {
               />
 
               <ResultCard
-                label="Tiles To Order"
-                value={`${result.finalTiles} pcs`}
+                label="Tiles With Waste"
+                value={`${result.tilesWithWaste} pcs`}
+              />
+
+              <ResultCard
+                label="Tiles Per Box"
+                value={`${Number(
+                  tilesPerBox
+                )} pcs`}
               />
 
               <ResultCard
@@ -481,64 +782,99 @@ export default function TileCalculator() {
                   result.actualCoverage
                 )} sq ft`}
               />
+
+              <ResultCard
+                label="Waste Tiles"
+                value={`${result.wasteTiles} pcs`}
+              />
+
+              <ResultCard
+                label="Box Rounding Extra"
+                value={`${result.boxRoundingExtra} pcs`}
+              />
+
+              {result.estimatedCost !== null && (
+                <ResultCard
+                  label="Estimated Cost"
+                  value={`$${formatNumber(
+                    result.estimatedCost
+                  )}`}
+                />
+              )}
             </div>
 
-            {/* Extra Tiles */}
-            <div className="mt-4 rounded-2xl border border-amber-200 bg-amber-50 p-5">
-              <p className="text-sm font-semibold text-amber-800">
-                Extra Tiles
-              </p>
+            {/* Summary */}
+            <div className="mt-6 rounded-2xl border border-blue-100 bg-blue-50 p-5">
+              <h3 className="text-lg font-bold text-slate-900">
+                Calculation Summary
+              </h3>
 
-              <p className="mt-1 text-2xl font-bold text-slate-900">
-                {result.extraTiles} pcs
-              </p>
+              <div className="mt-3 space-y-2 text-sm leading-6 text-slate-700">
 
-              <p className="mt-1 text-xs leading-5 text-slate-600">
-                Extra quantity included because tiles are purchased
-                in complete boxes.
-              </p>
-            </div>
-
-            {/* Cost */}
-            {result.estimatedCost !== null && (
-              <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-                <p className="text-sm font-medium text-slate-500">
-                  Estimated Tile Cost
+                <p>
+                  Surface area:{" "}
+                  <strong>
+                    {formatNumber(
+                      result.surfaceArea
+                    )} sq ft
+                  </strong>
                 </p>
 
-                <p className="mt-2 text-3xl font-bold text-slate-900">
-                  ₹{formatNumber(result.estimatedCost)}
+                <p>
+                  Tile area:{" "}
+                  <strong>
+                    {formatNumber(
+                      result.tileArea,
+                      3
+                    )} sq ft
+                  </strong>
                 </p>
 
-                <p className="mt-1 text-sm text-slate-500">
-                  {result.boxes} boxes × ₹
-                  {formatNumber(Number(boxPrice))}
+                <p>
+                  Waste allowance:{" "}
+                  <strong>
+                    {waste}%
+                  </strong>
                 </p>
+
+                <p>
+                  Tiles to order:{" "}
+                  <strong>
+                    {result.tilesToOrder} tiles
+                  </strong>
+                </p>
+
+                <p>
+                  Boxes required:{" "}
+                  <strong>
+                    {result.boxes} boxes
+                  </strong>
+                </p>
+
+                {result.estimatedCost !== null && (
+                  <p>
+                    Estimated material cost:{" "}
+                    <strong>
+                      $
+                      {formatNumber(
+                        result.estimatedCost
+                      )}
+                    </strong>
+                  </p>
+                )}
               </div>
-            )}
+            </div>
           </>
         )}
       </section>
+
+      {/* Note */}
+      <p className="mt-6 text-xs leading-5 text-slate-500">
+        This calculator provides an estimate for planning and
+        material purchasing. Actual tile requirements may vary
+        because of room shape, cuts, layout pattern, damaged
+        tiles, grout joints and installation conditions.
+      </p>
     </main>
-  );
-}
-
-function ResultCard({
-  label,
-  value,
-}: {
-  label: string;
-  value: string;
-}) {
-  return (
-    <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
-      <p className="text-sm font-medium text-slate-500">
-        {label}
-      </p>
-
-      <p className="mt-2 text-xl font-bold text-slate-900">
-        {value}
-      </p>
-    </div>
   );
 }
