@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 
 type Unit = "feet" | "inches" | "yards" | "meters";
@@ -128,6 +129,7 @@ function ShapeDiagram({
           <span className="absolute -bottom-7 left-1/2 -translate-x-1/2 text-xs text-slate-500">
             length
           </span>
+
           <span className="absolute -right-12 top-1/2 -translate-y-1/2 rotate-90 text-xs text-slate-500">
             width
           </span>
@@ -395,6 +397,18 @@ export default function AreaCalculator() {
             square yards, square meters and acres.
           </p>
         </section>
+
+        {/* Area Calculator Hero Image */}
+        <div className="mb-8 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+          <Image
+            src="/cornerspan-area-calculator-hero.webp"
+            alt="CornerSpan Area Calculator for calculating construction area"
+            width={1672}
+            height={941}
+            priority
+            className="h-auto w-full"
+          />
+        </div>
 
         {/* Calculator */}
         <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
@@ -788,6 +802,7 @@ export default function AreaCalculator() {
               <h3 className="font-bold text-slate-900">
                 Rectangle
               </h3>
+
               <p className="mt-2 text-sm text-slate-600">
                 Area = Length × Width
               </p>
@@ -797,6 +812,7 @@ export default function AreaCalculator() {
               <h3 className="font-bold text-slate-900">
                 Square
               </h3>
+
               <p className="mt-2 text-sm text-slate-600">
                 Area = Side²
               </p>
@@ -806,6 +822,7 @@ export default function AreaCalculator() {
               <h3 className="font-bold text-slate-900">
                 Circle
               </h3>
+
               <p className="mt-2 text-sm text-slate-600">
                 Area = π × r²
               </p>
@@ -815,6 +832,7 @@ export default function AreaCalculator() {
               <h3 className="font-bold text-slate-900">
                 Triangle
               </h3>
+
               <p className="mt-2 text-sm text-slate-600">
                 Area = ½ × Base × Height
               </p>
@@ -824,6 +842,7 @@ export default function AreaCalculator() {
               <h3 className="font-bold text-slate-900">
                 Trapezoid
               </h3>
+
               <p className="mt-2 text-sm text-slate-600">
                 Area = ½ × (Base 1 + Base 2) × Height
               </p>
@@ -833,6 +852,7 @@ export default function AreaCalculator() {
               <h3 className="font-bold text-slate-900">
                 Parallelogram
               </h3>
+
               <p className="mt-2 text-sm text-slate-600">
                 Area = Base × Height
               </p>
@@ -851,6 +871,7 @@ export default function AreaCalculator() {
               <h3 className="font-bold text-slate-900">
                 Flooring
               </h3>
+
               <p className="mt-2 text-sm leading-6 text-slate-600">
                 Calculate floor area before estimating
                 tile, flooring or other materials.
@@ -861,6 +882,7 @@ export default function AreaCalculator() {
               <h3 className="font-bold text-slate-900">
                 Painting
               </h3>
+
               <p className="mt-2 text-sm leading-6 text-slate-600">
                 Determine the surface area of walls,
                 ceilings and other surfaces.
@@ -871,6 +893,7 @@ export default function AreaCalculator() {
               <h3 className="font-bold text-slate-900">
                 Concrete
               </h3>
+
               <p className="mt-2 text-sm leading-6 text-slate-600">
                 Find surface area before using a concrete
                 volume calculator.
@@ -881,6 +904,7 @@ export default function AreaCalculator() {
               <h3 className="font-bold text-slate-900">
                 Land & Property
               </h3>
+
               <p className="mt-2 text-sm leading-6 text-slate-600">
                 Convert measured dimensions into square
                 feet, square meters or acres.
