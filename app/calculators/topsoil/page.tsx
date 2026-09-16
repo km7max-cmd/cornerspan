@@ -234,7 +234,7 @@ export default function TopsoilPage() {
         </section>
 
         <section className="mx-auto mt-12 max-w-4xl">
-          <RelatedCalculators currentSlug="topsoil" />
+          <RelatedCalculators />
         </section>
 
         <section className="mx-auto mt-10 max-w-4xl rounded-2xl border border-amber-200 bg-amber-50 p-5">
