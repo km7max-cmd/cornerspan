@@ -65,7 +65,9 @@ function getDepthUnits(unit: ProjectUnit): DepthUnit[] {
   return ["cm", "m"];
 }
 
-function getDefaultDepthUnit(unit: ProjectUnit): DepthUnit {
+function getDefaultDepthUnit(
+  unit: ProjectUnit
+): DepthUnit {
   if (unit === "m") {
     return "cm";
   }
@@ -73,7 +75,13 @@ function getDefaultDepthUnit(unit: ProjectUnit): DepthUnit {
   return "in";
 }
 
-function toFeet(value: number, unit: ProjectUnit) {
+/*
+ * Convert any supported length unit to feet.
+ */
+function lengthToFeet(
+  value: number,
+  unit: ProjectUnit
+): number {
   if (unit === "ft") {
     return value;
   }
@@ -85,7 +93,13 @@ function toFeet(value: number, unit: ProjectUnit) {
   return value * 3.280839895013123;
 }
 
-function depthToFeet(value: number, unit: DepthUnit) {
+/*
+ * Convert any supported depth unit to feet.
+ */
+function depthToFeet(
+  value: number,
+  unit: DepthUnit
+): number {
   if (unit === "in") {
     return value / 12;
   }
@@ -105,12 +119,74 @@ function depthToFeet(value: number, unit: DepthUnit) {
   return value * 3.280839895013123;
 }
 
-function formatNumber(value: number, decimals = 2) {
+/*
+ * Convert feet into project units.
+ */
+function feetToProjectUnit(
+  feet: number,
+  unit: ProjectUnit
+): number {
+  if (unit === "ft") {
+    return feet;
+  }
+
+  if (unit === "yd") {
+    return feet / 3;
+  }
+
+  return feet / 3.280839895013123;
+}
+
+/*
+ * Convert feet into depth units.
+ */
+function feetToDepthUnit(
+  feet: number,
+  unit: DepthUnit
+): number {
+  if (unit === "in") {
+    return feet * 12;
+  }
+
+  if (unit === "ft") {
+    return feet;
+  }
+
+  if (unit === "yd") {
+    return feet / 3;
+  }
+
+  if (unit === "cm") {
+    return feet * 30.48;
+  }
+
+  return feet / 3.280839895013123;
+}
+
+/*
+ * Prevent values such as:
+ * 6.666666666666667
+ */
+function cleanInputValue(value: number): string {
+  if (!Number.isFinite(value)) {
+    return "";
+  }
+
+  return String(
+    Number(value.toFixed(4))
+  );
+}
+
+function formatNumber(
+  value: number,
+  decimals = 2
+) {
   if (!Number.isFinite(value)) {
     return "0";
   }
 
   return value.toLocaleString("en-US", {
+    minimumFractionDigits: 0,
     maximumFractionDigits: decimals,
   });
 }
@@ -144,6 +220,179 @@ export default function GravelCalculator() {
   const [calculated, setCalculated] =
     useState(false);
 
+  /*
+   * Change Feet / Yards / Meters while preserving
+   * the same physical project dimensions.
+   */
+  function handleProjectUnitChange(
+    newUnit: ProjectUnit
+  ) {
+    if (newUnit === projectUnit) {
+      return;
+    }
+
+    const currentLength = Number(length);
+    const currentWidth = Number(width);
+    const currentDepth = Number(depth);
+
+    /*
+     * Convert length and width through feet.
+     */
+    if (
+      Number.isFinite(currentLength) &&
+      currentLength > 0
+    ) {
+      const lengthFt =
+        lengthToFeet(
+          currentLength,
+          projectUnit
+        );
+
+      const convertedLength =
+        feetToProjectUnit(
+          lengthFt,
+          newUnit
+        );
+
+      setLength(
+        cleanInputValue(
+          convertedLength
+        )
+      );
+    }
+
+    if (
+      Number.isFinite(currentWidth) &&
+      currentWidth > 0
+    ) {
+      const widthFt =
+        lengthToFeet(
+          currentWidth,
+          projectUnit
+        );
+
+      const convertedWidth =
+        feetToProjectUnit(
+          widthFt,
+          newUnit
+        );
+
+      setWidth(
+        cleanInputValue(
+          convertedWidth
+        )
+      );
+    }
+
+    /*
+     * Preserve depth physically as well.
+     *
+     * Example:
+     * 4 in -> 10.16 cm
+     * 10.16 cm -> 4 in
+     */
+    if (
+      Number.isFinite(currentDepth) &&
+      currentDepth > 0
+    ) {
+      const depthFt =
+        depthToFeet(
+          currentDepth,
+          depthUnit
+        );
+
+      const allowedDepthUnits =
+        getDepthUnits(newUnit);
+
+      let newDepthUnit = depthUnit;
+
+      if (
+        !allowedDepthUnits.includes(
+          newDepthUnit
+        )
+      ) {
+        newDepthUnit =
+          getDefaultDepthUnit(
+            newUnit
+          );
+      }
+
+      const convertedDepth =
+        feetToDepthUnit(
+          depthFt,
+          newDepthUnit
+        );
+
+      setDepthUnit(
+        newDepthUnit
+      );
+
+      setDepth(
+        cleanInputValue(
+          convertedDepth
+        )
+      );
+    } else {
+      const allowedDepthUnits =
+        getDepthUnits(newUnit);
+
+      if (
+        !allowedDepthUnits.includes(
+          depthUnit
+        )
+      ) {
+        setDepthUnit(
+          getDefaultDepthUnit(
+            newUnit
+          )
+        );
+      }
+    }
+
+    setProjectUnit(newUnit);
+
+    /*
+     * Results should disappear because the
+     * user has changed the inputs.
+     */
+    setCalculated(false);
+  }
+
+  function handleGravelChange(
+    value: string
+  ) {
+    setGravelType(value);
+
+    const selected =
+      GRAVEL_TYPES.find(
+        (item) =>
+          item.name === value
+      );
+
+    if (selected) {
+      setDensity(
+        String(selected.density)
+      );
+    }
+
+    setCalculated(false);
+  }
+
+  function calculate() {
+    setCalculated(true);
+
+    setTimeout(() => {
+      document
+        .getElementById(
+          "gravel-results"
+        )
+        ?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+    }, 50);
+  }
+
   const result = useMemo(() => {
     const l = Number(length);
     const w = Number(width);
@@ -171,18 +420,37 @@ export default function GravelCalculator() {
       return null;
     }
 
+    /*
+     * Convert all dimensions to feet
+     * before calculating.
+     */
     const lengthFt =
-      toFeet(l, projectUnit);
+      lengthToFeet(
+        l,
+        projectUnit
+      );
 
     const widthFt =
-      toFeet(w, projectUnit);
+      lengthToFeet(
+        w,
+        projectUnit
+      );
 
     const depthFt =
-      depthToFeet(d, depthUnit);
+      depthToFeet(
+        d,
+        depthUnit
+      );
 
+    /*
+     * Surface area.
+     */
     const areaSqFt =
       lengthFt * widthFt;
 
+    /*
+     * Volume.
+     */
     const volumeCuFt =
       areaSqFt * depthFt;
 
@@ -190,30 +458,52 @@ export default function GravelCalculator() {
       volumeCuFt / 27;
 
     const volumeCuM =
-      volumeCuFt * 0.028316846592;
+      volumeCuFt *
+      0.028316846592;
+
+    /*
+     * Waste allowance.
+     */
+    const safeWaste =
+      Number.isFinite(wastePct) &&
+      wastePct > 0
+        ? wastePct
+        : 0;
 
     const wasteMultiplier =
-      1 +
-      Math.max(0, wastePct || 0) / 100;
+      1 + safeWaste / 100;
 
     const orderCuFt =
-      volumeCuFt * wasteMultiplier;
+      volumeCuFt *
+      wasteMultiplier;
 
     const orderCuYd =
-      volumeCuYd * wasteMultiplier;
+      volumeCuYd *
+      wasteMultiplier;
 
     const orderCuM =
-      volumeCuM * wasteMultiplier;
+      volumeCuM *
+      wasteMultiplier;
 
+    /*
+     * Weight.
+     *
+     * Density is tons per cubic yard.
+     */
     const exactTons =
-      volumeCuYd * densityValue;
+      volumeCuYd *
+      densityValue;
 
     const orderTons =
-      orderCuYd * densityValue;
+      orderCuYd *
+      densityValue;
 
     const wasteTons =
       orderTons - exactTons;
 
+    /*
+     * Optional cost.
+     */
     const cost =
       Number.isFinite(price) &&
       price > 0
@@ -244,58 +534,15 @@ export default function GravelCalculator() {
     pricePerTon,
   ]);
 
-  function handleProjectUnitChange(
-    newUnit: ProjectUnit
-  ) {
-    setProjectUnit(newUnit);
-
-    const allowedUnits =
-      getDepthUnits(newUnit);
-
-    if (!allowedUnits.includes(depthUnit)) {
-      const newDepthUnit =
-        getDefaultDepthUnit(newUnit);
-
-      setDepthUnit(newDepthUnit);
-    }
-  }
-
-  function handleGravelChange(
-    value: string
-  ) {
-    setGravelType(value);
-
-    const selected =
-      GRAVEL_TYPES.find(
-        (item) => item.name === value
-      );
-
-    if (selected) {
-      setDensity(
-        String(selected.density)
-      );
-    }
-  }
-
-  function calculate() {
-    setCalculated(true);
-
-    setTimeout(() => {
-      document
-        .getElementById("gravel-results")
-        ?.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
-    }, 50);
-  }
-
   const availableDepthUnits =
-    getDepthUnits(projectUnit);
+    getDepthUnits(
+      projectUnit
+    );
 
   return (
     <section className="w-full">
       {/* Calculator Header */}
+
       <div className="overflow-hidden rounded-2xl border border-slate-800 bg-slate-950 shadow-xl">
         <div className="px-5 py-5 sm:px-7">
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">
@@ -314,9 +561,12 @@ export default function GravelCalculator() {
         </div>
 
         {/* Calculator Body */}
+
         <div className="bg-slate-100 p-4 sm:p-6">
           <div className="space-y-4">
+
             {/* Project Unit */}
+
             <div>
               <label className="mb-2 block text-sm font-bold text-slate-800">
                 Project Unit
@@ -324,7 +574,11 @@ export default function GravelCalculator() {
 
               <div className="grid grid-cols-3 gap-2">
                 {(
-                  ["ft", "yd", "m"] as ProjectUnit[]
+                  [
+                    "ft",
+                    "yd",
+                    "m",
+                  ] as ProjectUnit[]
                 ).map((unit) => (
                   <button
                     key={unit}
@@ -340,29 +594,39 @@ export default function GravelCalculator() {
                         : "border-slate-300 bg-white text-slate-700 hover:bg-slate-50"
                     }`}
                   >
-                    {projectUnitLabel(unit)}
+                    {projectUnitLabel(
+                      unit
+                    )}
                   </button>
                 ))}
               </div>
             </div>
 
-            {/* Project Dimensions */}
+            {/* Dimensions */}
+
             <div className="rounded-xl border border-slate-200 bg-white p-4">
               <h2 className="mb-3 text-sm font-extrabold text-slate-900">
                 Project Dimensions
               </h2>
 
               <div className="grid gap-3 sm:grid-cols-3">
+
                 <InputField
                   label={`Length (${projectUnit})`}
                   value={length}
-                  onChange={setLength}
+                  onChange={(value) => {
+                    setLength(value);
+                    setCalculated(false);
+                  }}
                 />
 
                 <InputField
                   label={`Width (${projectUnit})`}
                   value={width}
-                  onChange={setWidth}
+                  onChange={(value) => {
+                    setWidth(value);
+                    setCalculated(false);
+                  }}
                 />
 
                 <div>
@@ -371,27 +635,34 @@ export default function GravelCalculator() {
                   </label>
 
                   <div className="flex overflow-hidden rounded-xl border border-slate-300 bg-white">
+
                     <input
                       type="number"
                       min="0"
                       step="any"
                       value={depth}
-                      onChange={(e) =>
+                      onChange={(e) => {
                         setDepth(
                           e.target.value
-                        )
-                      }
+                        );
+                        setCalculated(
+                          false
+                        );
+                      }}
                       className="min-w-0 flex-1 px-3 py-3 text-sm font-semibold outline-none"
                     />
 
                     <select
                       value={depthUnit}
-                      onChange={(e) =>
+                      onChange={(e) => {
                         setDepthUnit(
                           e.target
                             .value as DepthUnit
-                        )
-                      }
+                        );
+                        setCalculated(
+                          false
+                        );
+                      }}
                       className="border-l border-slate-200 bg-slate-50 px-2 text-sm font-bold outline-none"
                     >
                       {availableDepthUnits.map(
@@ -405,18 +676,22 @@ export default function GravelCalculator() {
                         )
                       )}
                     </select>
+
                   </div>
                 </div>
+
               </div>
             </div>
 
             {/* Gravel Material */}
+
             <div className="rounded-xl border border-slate-200 bg-white p-4">
               <h2 className="mb-3 text-sm font-extrabold text-slate-900">
                 Gravel Material
               </h2>
 
               <div className="grid gap-3 sm:grid-cols-2">
+
                 <div>
                   <label className="mb-1.5 block text-xs font-bold text-slate-600">
                     Gravel Type
@@ -447,12 +722,19 @@ export default function GravelCalculator() {
                 <InputField
                   label="Density (tons / cubic yard)"
                   value={density}
-                  onChange={setDensity}
+                  onChange={(value) => {
+                    setDensity(value);
+                    setCalculated(
+                      false
+                    );
+                  }}
                 />
+
               </div>
             </div>
 
             {/* Waste */}
+
             <div>
               <label className="mb-2 block text-sm font-bold text-slate-800">
                 Waste / Extra Allowance
@@ -469,9 +751,12 @@ export default function GravelCalculator() {
                   <button
                     key={value}
                     type="button"
-                    onClick={() =>
-                      setWaste(value)
-                    }
+                    onClick={() => {
+                      setWaste(value);
+                      setCalculated(
+                        false
+                      );
+                    }}
                     className={`rounded-lg border px-2 py-2.5 text-xs font-bold sm:text-sm ${
                       waste === value
                         ? "border-blue-600 bg-blue-600 text-white"
@@ -485,8 +770,10 @@ export default function GravelCalculator() {
             </div>
 
             {/* Cost */}
+
             <div className="rounded-xl border border-slate-200 bg-white p-4">
               <div className="grid gap-3 sm:grid-cols-2">
+
                 <div>
                   <label className="mb-1.5 block text-xs font-bold text-slate-600">
                     Currency
@@ -494,12 +781,15 @@ export default function GravelCalculator() {
 
                   <select
                     value={currency}
-                    onChange={(e) =>
+                    onChange={(e) => {
                       setCurrency(
                         e.target
                           .value as Currency
-                      )
-                    }
+                      );
+                      setCalculated(
+                        false
+                      );
+                    }}
                     className="w-full rounded-xl border border-slate-300 bg-white px-3 py-3 text-sm font-semibold outline-none"
                   >
                     {(
@@ -525,13 +815,22 @@ export default function GravelCalculator() {
                 <InputField
                   label="Price per Ton (optional)"
                   value={pricePerTon}
-                  onChange={setPricePerTon}
+                  onChange={(value) => {
+                    setPricePerTon(
+                      value
+                    );
+                    setCalculated(
+                      false
+                    );
+                  }}
                   placeholder="e.g. 55"
                 />
+
               </div>
             </div>
 
-            {/* Calculate Button */}
+            {/* Calculate */}
+
             <button
               type="button"
               onClick={calculate}
@@ -539,23 +838,29 @@ export default function GravelCalculator() {
             >
               Calculate Gravel
             </button>
+
           </div>
         </div>
       </div>
 
       {/* Results */}
+
       {calculated && result && (
         <div
           id="gravel-results"
           className="mt-5 scroll-mt-24 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-lg"
         >
+
           {/* Main Result */}
+
           <div className="bg-slate-950 px-5 py-5 text-white sm:px-7">
+
             <p className="text-xs font-bold uppercase tracking-wider text-slate-400">
               GRAVEL TO ORDER
             </p>
 
             <div className="mt-1 flex flex-wrap items-end gap-x-3 gap-y-1">
+
               <span className="text-4xl font-black tracking-tight">
                 {formatNumber(
                   result.orderTons
@@ -565,6 +870,7 @@ export default function GravelCalculator() {
               <span className="pb-1 text-lg font-bold text-slate-300">
                 tons
               </span>
+
             </div>
 
             <p className="mt-2 text-sm text-slate-400">
@@ -575,10 +881,13 @@ export default function GravelCalculator() {
               cubic yards including{" "}
               {waste}% allowance.
             </p>
+
           </div>
 
           {/* Result Cards */}
+
           <div className="grid grid-cols-2 gap-3 bg-slate-50 p-4 sm:grid-cols-4 sm:p-5">
+
             <ResultBox
               label="Cubic Yards"
               value={formatNumber(
@@ -604,21 +913,25 @@ export default function GravelCalculator() {
             />
 
             <ResultBox
-              label="Area"
+              label="Area (ft²)"
               value={formatNumber(
                 result.areaSqFt
               )}
               unit="ft²"
             />
+
           </div>
 
           {/* Breakdown */}
+
           <div className="border-t border-slate-200 p-5 sm:p-7">
+
             <h2 className="text-lg font-extrabold text-slate-900">
               Calculation Breakdown
             </h2>
 
             <div className="mt-4 space-y-3 text-sm">
+
               <BreakdownRow
                 label="Exact gravel volume"
                 value={`${formatNumber(
@@ -664,10 +977,12 @@ export default function GravelCalculator() {
                   strong
                 />
               )}
+
             </div>
           </div>
 
           {/* Density Note */}
+
           <div className="border-t border-slate-200 bg-slate-50 px-5 py-4 text-xs leading-5 text-slate-500 sm:px-7">
             Gravel density varies by material,
             moisture and compaction. Use the
@@ -675,16 +990,20 @@ export default function GravelCalculator() {
             supplier for a more accurate tonnage
             estimate.
           </div>
+
         </div>
       )}
 
       {/* Formula */}
+
       <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
+
         <h2 className="text-xl font-extrabold text-slate-900">
           Gravel Calculation Formula
         </h2>
 
         <div className="mt-4 space-y-3 text-sm leading-7 text-slate-600">
+
           <p>
             <strong>
               Volume (cubic feet)
@@ -713,11 +1032,14 @@ export default function GravelCalculator() {
             = Exact quantity × (1 + waste ÷
             100)
           </p>
+
         </div>
       </div>
 
       {/* Example */}
+
       <div className="mt-5 rounded-2xl border border-blue-100 bg-blue-50 p-5 sm:p-7">
+
         <h2 className="text-lg font-extrabold text-slate-900">
           Example: 20 × 10 ft Gravel Area
         </h2>
@@ -730,16 +1052,20 @@ export default function GravelCalculator() {
           per cubic yard, the recommended order
           is about 3.81 tons.
         </p>
+
       </div>
 
       {/* Important Note */}
+
       <div className="mt-5 rounded-2xl border border-amber-200 bg-amber-50 p-5 text-sm leading-6 text-amber-900">
+
         <strong>Important:</strong> This calculator
         provides an estimate. Actual gravel
         requirements can vary because of
         compaction, moisture, grading and the
         specific material used. Confirm final
         quantities with your supplier.
+
       </div>
     </section>
   );
@@ -792,6 +1118,7 @@ function ResultBox({
 }) {
   return (
     <div className="rounded-xl border border-slate-200 bg-white p-3">
+
       <p className="text-[11px] font-bold uppercase tracking-wide text-slate-500">
         {label}
       </p>
@@ -803,6 +1130,7 @@ function ResultBox({
           {unit}
         </span>
       </p>
+
     </div>
   );
 }
@@ -820,6 +1148,7 @@ function BreakdownRow({
 }) {
   return (
     <div className="flex items-center justify-between gap-4 border-b border-slate-100 py-2.5 last:border-0">
+
       <span className="text-slate-600">
         {label}
       </span>
@@ -833,6 +1162,7 @@ function BreakdownRow({
       >
         {value}
       </span>
+
     </div>
   );
 }
