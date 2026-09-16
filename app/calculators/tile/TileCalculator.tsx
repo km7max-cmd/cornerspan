@@ -5,256 +5,190 @@ import { useMemo, useState } from "react";
 import Breadcrumb from "../../../components/Breadcrumb";
 
 type SurfaceType = "floor" | "wall";
-type AreaUnit = "ft" | "m";
+type ProjectUnit = "ft" | "m";
 type TileUnit = "in" | "cm";
 
 type Currency = {
   code: string;
   symbol: string;
+  name: string;
 };
 
 const CURRENCIES: Currency[] = [
-  { code: "USD", symbol: "$" },
-  { code: "EUR", symbol: "€" },
-  { code: "GBP", symbol: "£" },
-  { code: "CAD", symbol: "C$" },
-  { code: "AUD", symbol: "A$" },
-  { code: "NZD", symbol: "NZ$" },
-  { code: "INR", symbol: "₹" },
-  { code: "JPY", symbol: "¥" },
-  { code: "CNY", symbol: "¥" },
-  { code: "SGD", symbol: "S$" },
-  { code: "AED", symbol: "د.إ" },
-  { code: "SAR", symbol: "﷼" },
-  { code: "ZAR", symbol: "R" },
-  { code: "CHF", symbol: "CHF" },
+  { code: "USD", symbol: "$", name: "US Dollar" },
+  { code: "EUR", symbol: "€", name: "Euro" },
+  { code: "GBP", symbol: "£", name: "British Pound" },
+  { code: "CAD", symbol: "C$", name: "Canadian Dollar" },
+  { code: "AUD", symbol: "A$", name: "Australian Dollar" },
+  { code: "NZD", symbol: "NZ$", name: "New Zealand Dollar" },
+  { code: "INR", symbol: "₹", name: "Indian Rupee" },
+  { code: "JPY", symbol: "¥", name: "Japanese Yen" },
+  { code: "CNY", symbol: "¥", name: "Chinese Yuan" },
+  { code: "SGD", symbol: "S$", name: "Singapore Dollar" },
+  { code: "AED", symbol: "د.إ", name: "UAE Dirham" },
+  { code: "SAR", symbol: "﷼", name: "Saudi Riyal" },
+  { code: "ZAR", symbol: "R", name: "South African Rand" },
+  { code: "CHF", symbol: "CHF", name: "Swiss Franc" },
 ];
 
 const FLOOR_TILE_SIZES = [
-  "12×12",
-  "12×24",
-  "18×18",
-  "24×24",
-  "24×48",
-  "36×36",
-];
+  [12, 12],
+  [12, 24],
+  [18, 18],
+  [24, 24],
+  [24, 48],
+  [36, 36],
+] as const;
 
 const WALL_TILE_SIZES = [
-  "4×4",
-  "3×6",
-  "4×12",
-  "6×6",
-  "6×24",
-  "12×24",
-];
+  [4, 4],
+  [3, 6],
+  [4, 12],
+  [6, 6],
+  [6, 24],
+  [12, 24],
+] as const;
 
-function formatNumber(
-  value: number,
-  decimals = 2
-) {
-  return new Intl.NumberFormat("en-US", {
-    minimumFractionDigits: decimals,
+function toFeet(value: number, unit: ProjectUnit) {
+  return unit === "m" ? value * 3.280839895013123 : value;
+}
+
+function tileToInches(value: number, unit: TileUnit) {
+  return unit === "cm" ? value / 2.54 : value;
+}
+
+function formatNumber(value: number, decimals = 2) {
+  if (!Number.isFinite(value)) return "0";
+
+  return value.toLocaleString("en-US", {
+    minimumFractionDigits: 0,
     maximumFractionDigits: decimals,
-  }).format(value);
-}
-
-function formatCurrency(
-  value: number,
-  currency: Currency
-) {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: currency.code,
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(value);
-}
-
-function MiniResult({
-  label,
-  value,
-}: {
-  label: string;
-  value: string;
-}) {
-  return (
-    <div className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5">
-      <p className="text-[10px] font-bold uppercase tracking-wide text-slate-500">
-        {label}
-      </p>
-
-      <p className="mt-0.5 text-sm font-bold text-slate-900 sm:text-base">
-        {value}
-      </p>
-    </div>
-  );
+  });
 }
 
 export default function TileCalculator() {
-  const [surfaceType, setSurfaceType] =
-    useState<SurfaceType>("floor");
+  const [surfaceType, setSurfaceType] = useState<SurfaceType>("floor");
 
-  const [surfaceLength, setSurfaceLength] =
-    useState("");
+  const [roomLength, setRoomLength] = useState("12");
+  const [roomWidth, setRoomWidth] = useState("10");
+  const [roomUnit, setRoomUnit] = useState<ProjectUnit>("ft");
 
-  const [surfaceWidth, setSurfaceWidth] =
-    useState("");
+  const [tileLength, setTileLength] = useState("24");
+  const [tileWidth, setTileWidth] = useState("24");
+  const [tileUnit, setTileUnit] = useState<TileUnit>("in");
 
-  const [areaUnit, setAreaUnit] =
-    useState<AreaUnit>("ft");
+  const [tilesPerBox, setTilesPerBox] = useState("4");
+  const [waste, setWaste] = useState("10");
 
-  const [tileLength, setTileLength] =
-    useState("24");
+  const [currencyCode, setCurrencyCode] = useState("USD");
+  const [boxPrice, setBoxPrice] = useState("");
 
-  const [tileWidth, setTileWidth] =
-    useState("24");
+  const [calculated, setCalculated] = useState(false);
 
-  const [tileUnit, setTileUnit] =
-    useState<TileUnit>("in");
+  const selectedCurrency = useMemo(
+    () =>
+      CURRENCIES.find((currency) => currency.code === currencyCode) ??
+      CURRENCIES[0],
+    [currencyCode]
+  );
 
-  const [tilesPerBox, setTilesPerBox] =
-    useState("4");
-
-  const [waste, setWaste] =
-    useState("10");
-
-  const [boxPrice, setBoxPrice] =
-    useState("");
-
-  const [currencyCode, setCurrencyCode] =
-    useState("USD");
-
-  const [calculated, setCalculated] =
-    useState(false);
-
-  const selectedCurrency =
-    CURRENCIES.find(
-      (currency) =>
-        currency.code === currencyCode
-    ) ?? CURRENCIES[0];
+  const availableTileSizes =
+    surfaceType === "floor" ? FLOOR_TILE_SIZES : WALL_TILE_SIZES;
 
   const result = useMemo(() => {
-    const length = Number(surfaceLength);
-    const width = Number(surfaceWidth);
+    const length = Number(roomLength);
+    const width = Number(roomWidth);
 
     const tileL = Number(tileLength);
     const tileW = Number(tileWidth);
 
-    const boxTiles = Number(tilesPerBox);
-
-    const wastePercent =
-      Number(waste) || 0;
-
-    const price =
-      Number(boxPrice) || 0;
+    const perBox = Number(tilesPerBox);
+    const wastePercent = Number(waste);
 
     if (
       !Number.isFinite(length) ||
-      length <= 0 ||
       !Number.isFinite(width) ||
+      length <= 0 ||
       width <= 0 ||
       !Number.isFinite(tileL) ||
-      tileL <= 0 ||
       !Number.isFinite(tileW) ||
+      tileL <= 0 ||
       tileW <= 0 ||
-      !Number.isFinite(boxTiles) ||
-      boxTiles <= 0 ||
-      !Number.isFinite(wastePercent) ||
-      wastePercent < 0
+      !Number.isFinite(perBox) ||
+      perBox <= 0
     ) {
       return null;
     }
 
-    const lengthFeet =
-      areaUnit === "ft"
-        ? length
-        : length * 3.280839895;
+    const lengthFt = toFeet(length, roomUnit);
+    const widthFt = toFeet(width, roomUnit);
 
-    const widthFeet =
-      areaUnit === "ft"
-        ? width
-        : width * 3.280839895;
+    const surfaceArea = lengthFt * widthFt;
 
-    const surfaceArea =
-      lengthFeet * widthFeet;
+    const tileLengthIn = tileToInches(tileL, tileUnit);
+    const tileWidthIn = tileToInches(tileW, tileUnit);
 
-    const tileLengthInches =
-      tileUnit === "in"
-        ? tileL
-        : tileL / 2.54;
+    const tileAreaSqFt =
+      (tileLengthIn * tileWidthIn) / 144;
 
-    const tileWidthInches =
-      tileUnit === "in"
-        ? tileW
-        : tileW / 2.54;
+    if (tileAreaSqFt <= 0) {
+      return null;
+    }
 
-    const tileArea =
-      (tileLengthInches *
-        tileWidthInches) /
-      144;
+    const exactTiles = surfaceArea / tileAreaSqFt;
 
-    const exactTiles =
-      surfaceArea / tileArea;
+    const safeWaste =
+      Number.isFinite(wastePercent) && wastePercent >= 0
+        ? wastePercent
+        : 0;
 
     const areaWithWaste =
-      surfaceArea *
-      (1 + wastePercent / 100);
+      surfaceArea * (1 + safeWaste / 100);
 
     const tilesWithWaste =
-      Math.ceil(
-        areaWithWaste / tileArea
-      );
+      Math.ceil(exactTiles * (1 + safeWaste / 100));
 
-    const boxes =
-      Math.ceil(
-        tilesWithWaste / boxTiles
-      );
+    const boxesRequired =
+      Math.ceil(tilesWithWaste / perBox);
 
     const tilesToOrder =
-      boxes * boxTiles;
+      boxesRequired * perBox;
 
     const actualCoverage =
-      tilesToOrder * tileArea;
-
-    const exactTilesRounded =
-      Math.ceil(exactTiles);
-
-    const wasteTiles =
-      Math.max(
-        0,
-        tilesWithWaste -
-          exactTilesRounded
-      );
+      tilesToOrder * tileAreaSqFt;
 
     const boxRoundingExtra =
-      Math.max(
-        0,
-        tilesToOrder -
-          tilesWithWaste
-      );
+      Math.max(0, tilesToOrder - tilesWithWaste);
+
+    const wasteTiles =
+      Math.max(0, tilesWithWaste - Math.ceil(exactTiles));
+
+    const price = Number(boxPrice);
 
     const estimatedCost =
-      price > 0
-        ? boxes * price
+      Number.isFinite(price) && price > 0
+        ? boxesRequired * price
         : null;
 
     return {
       surfaceArea,
-      tileArea,
-      exactTilesRounded,
+      tileAreaSqFt,
+      exactTiles,
       areaWithWaste,
       tilesWithWaste,
-      boxes,
+      boxesRequired,
       tilesToOrder,
       actualCoverage,
-      wasteTiles,
       boxRoundingExtra,
+      wasteTiles,
       estimatedCost,
+      perBox,
+      safeWaste,
     };
   }, [
-    surfaceLength,
-    surfaceWidth,
-    areaUnit,
+    roomLength,
+    roomWidth,
+    roomUnit,
     tileLength,
     tileWidth,
     tileUnit,
@@ -263,63 +197,69 @@ export default function TileCalculator() {
     boxPrice,
   ]);
 
-  const applyTileSize = (
-    size: string
-  ) => {
-    const [length, width] =
-      size.split("×");
+  function selectTileSize(length: number, width: number) {
+    setTileLength(String(length));
+    setTileWidth(String(width));
+    setTileUnit("in");
+  }
 
-    setTileLength(length);
-    setTileWidth(width);
-    setCalculated(false);
-  };
-
-  const handleSurfaceChange = (
-    type: SurfaceType
-  ) => {
+  function handleSurfaceChange(type: SurfaceType) {
     setSurfaceType(type);
 
     if (type === "floor") {
       setTileLength("24");
       setTileWidth("24");
+      setTileUnit("in");
     } else {
       setTileLength("4");
       setTileWidth("12");
+      setTileUnit("in");
     }
 
     setCalculated(false);
-  };
+  }
 
-  const tileSizes =
-    surfaceType === "floor"
-      ? FLOOR_TILE_SIZES
-      : WALL_TILE_SIZES;
+  function handleCalculate() {
+    if (result) {
+      setCalculated(true);
+    }
+  }
 
-  const inputClass =
-    "w-full rounded-lg border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm font-semibold outline-none transition focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100 sm:px-3.5 sm:py-3";
-
-  const selectClass =
-    "w-full rounded-lg border border-slate-300 bg-slate-50 px-3 py-2.5 text-sm font-semibold outline-none transition focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100 sm:px-3.5 sm:py-3";
+  function formatCurrency(value: number) {
+    try {
+      return new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: selectedCurrency.code,
+        maximumFractionDigits: 2,
+      }).format(value);
+    } catch {
+      return `${selectedCurrency.symbol}${formatNumber(value)}`;
+    }
+  }
 
   return (
-    <main className="mx-auto max-w-4xl px-3 py-4 sm:px-6 sm:py-6">
-
-      <Breadcrumb current="Tile Calculator" />
+    <main className="mx-auto max-w-5xl px-4 pb-10 sm:px-6">
+      <Breadcrumb
+        items={[
+          { label: "Calculators", href: "/calculators" },
+          { label: "Tile Calculator" },
+        ]}
+      />
 
       {/* Heading */}
-      <section className="mb-4 sm:mb-6">
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-4xl">
+      <section className="mb-6">
+        <h1 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
           Tile Calculator
         </h1>
 
-        <p className="mt-2 text-sm leading-6 text-slate-600 sm:text-base">
-          Calculate tiles, boxes, waste and material cost
-          for floors and walls.
+        <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600 sm:text-base">
+          Calculate how many tiles and boxes you need for floors or walls,
+          including waste and optional material cost.
         </p>
       </section>
 
       {/* Hero */}
-      <section className="mb-4 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm sm:mb-6 sm:rounded-2xl">
+      <section className="mb-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
         <Image
           src="/cornerspan-tile-calculator-hero.webp"
           alt="Tile Calculator for estimating tile quantity, boxes, waste and cost"
@@ -330,282 +270,243 @@ export default function TileCalculator() {
         />
       </section>
 
-      {/* SINGLE CALCULATOR BOX */}
-      <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-lg">
+      {/* Calculator */}
+      <section className="overflow-hidden rounded-2xl border border-slate-200 bg-slate-100 shadow-lg">
+        {/* Calculator Header */}
+        <div className="bg-slate-900 px-4 py-4 text-white sm:px-5">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+                CornerSpan
+              </p>
 
-        {/* Header / Display */}
-        <div className="bg-slate-900 px-4 py-3.5 sm:px-6 sm:py-4">
+              <h2 className="mt-0.5 text-lg font-bold sm:text-xl">
+                TILE QUANTITY CALCULATOR
+              </h2>
+            </div>
 
-          <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
-            Tile Quantity Calculator
-          </p>
+            <div className="rounded-lg border border-slate-700 bg-slate-800 px-2.5 py-1.5 text-right">
+              <p className="text-[9px] uppercase tracking-wide text-slate-400">
+                Surface
+              </p>
 
-          <div className="mt-2 rounded-xl bg-slate-800 px-3 py-3 sm:px-4">
-
-            <p className="text-[10px] font-medium uppercase tracking-wider text-slate-400">
-              {calculated && result
-                ? "Tiles Required"
-                : "Enter Project Details"}
-            </p>
-
-            <p className="mt-0.5 text-lg font-bold text-white sm:text-2xl">
-              {calculated && result
-                ? `${result.tilesToOrder} Tiles · ${result.boxes} Boxes`
-                : "Calculate Your Tile Quantity"}
-            </p>
-
+              <p className="text-xs font-semibold">
+                {surfaceType === "floor" ? "Floor" : "Wall"}
+              </p>
+            </div>
           </div>
         </div>
 
-        {/* Compact Calculator */}
-        <div className="p-3.5 sm:p-5">
+        {/* Calculator Body */}
+        <div className="bg-slate-100 p-3.5 sm:p-5">
+          {/* Surface Type */}
+          <div className="mb-4">
+            <label className="mb-1.5 block text-xs font-semibold text-slate-700">
+              Surface Type
+            </label>
 
-          {/* Floor / Wall */}
-          <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={() => handleSurfaceChange("floor")}
+                className={`rounded-xl border px-3 py-2.5 text-sm font-semibold transition ${
+                  surfaceType === "floor"
+                    ? "border-slate-900 bg-slate-900 text-white"
+                    : "border-slate-300 bg-white text-slate-700 hover:bg-slate-50"
+                }`}
+              >
+                Floor Tiles
+              </button>
 
-            <button
-              type="button"
-              onClick={() =>
-                handleSurfaceChange("floor")
-              }
-              className={`rounded-lg border px-3 py-2.5 text-sm font-bold transition ${
-                surfaceType === "floor"
-                  ? "border-blue-600 bg-blue-600 text-white"
-                  : "border-slate-200 bg-slate-50 text-slate-700"
-              }`}
-            >
-              Floor
-            </button>
-
-            <button
-              type="button"
-              onClick={() =>
-                handleSurfaceChange("wall")
-              }
-              className={`rounded-lg border px-3 py-2.5 text-sm font-bold transition ${
-                surfaceType === "wall"
-                  ? "border-blue-600 bg-blue-600 text-white"
-                  : "border-slate-200 bg-slate-50 text-slate-700"
-              }`}
-            >
-              Wall
-            </button>
-
+              <button
+                type="button"
+                onClick={() => handleSurfaceChange("wall")}
+                className={`rounded-xl border px-3 py-2.5 text-sm font-semibold transition ${
+                  surfaceType === "wall"
+                    ? "border-slate-900 bg-slate-900 text-white"
+                    : "border-slate-300 bg-white text-slate-700 hover:bg-slate-50"
+                }`}
+              >
+                Wall Tiles
+              </button>
+            </div>
           </div>
 
-          {/* Dimensions */}
-          <div className="mt-3">
-
-            <label className="mb-1.5 block text-xs font-bold text-slate-700">
-              {surfaceType === "floor"
-                ? "Floor Dimensions"
-                : "Wall Dimensions"}
+          {/* Surface Dimensions */}
+          <div className="mb-4">
+            <label className="mb-1.5 block text-xs font-semibold text-slate-700">
+              {surfaceType === "wall"
+                ? "Wall Height × Width"
+                : "Room / Surface Length × Width"}
             </label>
 
             <div className="grid grid-cols-[1fr_1fr_82px] gap-2">
-
               <input
                 type="number"
                 min="0"
                 step="any"
-                inputMode="decimal"
-                placeholder={
-                  surfaceType === "floor"
-                    ? "Length"
-                    : "Height"
-                }
-                value={surfaceLength}
+                value={roomLength}
                 onChange={(e) => {
-                  setSurfaceLength(
-                    e.target.value
-                  );
+                  setRoomLength(e.target.value);
                   setCalculated(false);
                 }}
-                className={inputClass}
+                placeholder={
+                  surfaceType === "wall" ? "Height" : "Length"
+                }
+                className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-900"
               />
 
               <input
                 type="number"
                 min="0"
                 step="any"
-                inputMode="decimal"
-                placeholder="Width"
-                value={surfaceWidth}
+                value={roomWidth}
                 onChange={(e) => {
-                  setSurfaceWidth(
-                    e.target.value
-                  );
+                  setRoomWidth(e.target.value);
                   setCalculated(false);
                 }}
-                className={inputClass}
+                placeholder="Width"
+                className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-900"
               />
 
               <select
-                value={areaUnit}
+                value={roomUnit}
                 onChange={(e) => {
-                  setAreaUnit(
-                    e.target.value as AreaUnit
-                  );
+                  setRoomUnit(e.target.value as ProjectUnit);
                   setCalculated(false);
                 }}
-                className={selectClass}
+                className="w-full rounded-xl border border-slate-300 bg-white px-2 py-2.5 text-sm font-medium text-slate-900 outline-none focus:border-slate-900"
               >
-                <option value="ft">ft</option>
-                <option value="m">m</option>
+                <option value="ft">Feet</option>
+                <option value="m">Meters</option>
               </select>
-
             </div>
           </div>
 
-          {/* Tile Unit */}
-          <div className="mt-3">
+          {/* Tile Dimensions */}
+          <div className="mb-4">
+            <div className="mb-1.5 flex items-center justify-between gap-2">
+              <label className="text-xs font-semibold text-slate-700">
+                Tile Size
+              </label>
+
+              <div className="flex overflow-hidden rounded-lg border border-slate-300 bg-white">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setTileUnit("in");
+                    setCalculated(false);
+                  }}
+                  className={`px-2.5 py-1 text-[10px] font-semibold ${
+                    tileUnit === "in"
+                      ? "bg-slate-900 text-white"
+                      : "text-slate-600"
+                  }`}
+                >
+                  Inches
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setTileUnit("cm");
+                    setCalculated(false);
+                  }}
+                  className={`px-2.5 py-1 text-[10px] font-semibold ${
+                    tileUnit === "cm"
+                      ? "bg-slate-900 text-white"
+                      : "text-slate-600"
+                  }`}
+                >
+                  cm
+                </button>
+              </div>
+            </div>
 
             <div className="grid grid-cols-2 gap-2">
-
-              <button
-                type="button"
-                onClick={() => {
-                  setTileUnit("in");
+              <input
+                type="number"
+                min="0"
+                step="any"
+                value={tileLength}
+                onChange={(e) => {
+                  setTileLength(e.target.value);
                   setCalculated(false);
                 }}
-                className={`rounded-lg border px-3 py-2 text-xs font-bold ${
-                  tileUnit === "in"
-                    ? "border-blue-600 bg-blue-600 text-white"
-                    : "border-slate-200 bg-slate-50 text-slate-700"
-                }`}
-              >
-                Inches
-              </button>
+                placeholder={
+                  surfaceType === "wall" ? "Height" : "Length"
+                }
+                className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none placeholder:text-slate-400 focus:border-slate-900"
+              />
 
-              <button
-                type="button"
-                onClick={() => {
-                  setTileUnit("cm");
+              <input
+                type="number"
+                min="0"
+                step="any"
+                value={tileWidth}
+                onChange={(e) => {
+                  setTileWidth(e.target.value);
                   setCalculated(false);
                 }}
-                className={`rounded-lg border px-3 py-2 text-xs font-bold ${
-                  tileUnit === "cm"
-                    ? "border-blue-600 bg-blue-600 text-white"
-                    : "border-slate-200 bg-slate-50 text-slate-700"
-                }`}
-              >
-                Centimeters
-              </button>
-
+                placeholder="Width"
+                className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none placeholder:text-slate-400 focus:border-slate-900"
+              />
             </div>
           </div>
 
-          {/* Tile Sizes */}
-          <div className="mt-3">
-
-            <label className="mb-1.5 block text-xs font-bold text-slate-700">
-              {surfaceType === "floor"
-                ? "Common Floor Tile Sizes"
-                : "Common Wall Tile Sizes"}
+          {/* Common Tile Sizes */}
+          <div className="mb-4">
+            <label className="mb-1.5 block text-xs font-semibold text-slate-700">
+              Common {surfaceType === "floor" ? "Floor" : "Wall"} Tile Sizes
             </label>
 
             <div className="grid grid-cols-3 gap-1.5 sm:grid-cols-6">
-
-              {tileSizes.map((size) => {
-
-                const [length, width] =
-                  size.split("×");
-
+              {availableTileSizes.map(([length, width]) => {
                 const active =
-                  tileLength === length &&
-                  tileWidth === width;
+                  tileUnit === "in" &&
+                  Number(tileLength) === length &&
+                  Number(tileWidth) === width;
 
                 return (
                   <button
-                    key={size}
+                    key={`${length}-${width}`}
                     type="button"
-                    onClick={() =>
-                      applyTileSize(size)
-                    }
-                    className={`rounded-lg border px-1 py-2 text-xs font-bold transition ${
+                    onClick={() => selectTileSize(length, width)}
+                    className={`rounded-lg border px-1 py-2 text-[11px] font-semibold transition ${
                       active
-                        ? "border-blue-600 bg-blue-600 text-white"
-                        : "border-slate-200 bg-slate-50 text-slate-700"
+                        ? "border-slate-900 bg-slate-900 text-white"
+                        : "border-slate-300 bg-white text-slate-700 hover:bg-slate-50"
                     }`}
                   >
-                    {size}
-                    {tileUnit === "in"
-                      ? '"'
-                      : " cm"}
+                    {length}×{width}
                   </button>
                 );
               })}
-
-            </div>
-
-            {/* Custom */}
-            <div className="mt-2 grid grid-cols-2 gap-2">
-
-              <input
-                type="number"
-                min="0"
-                step="any"
-                inputMode="decimal"
-                placeholder="Tile length"
-                value={tileLength}
-                onChange={(e) => {
-                  setTileLength(
-                    e.target.value
-                  );
-                  setCalculated(false);
-                }}
-                className={inputClass}
-              />
-
-              <input
-                type="number"
-                min="0"
-                step="any"
-                inputMode="decimal"
-                placeholder="Tile width"
-                value={tileWidth}
-                onChange={(e) => {
-                  setTileWidth(
-                    e.target.value
-                  );
-                  setCalculated(false);
-                }}
-                className={inputClass}
-              />
-
             </div>
           </div>
 
           {/* Box + Waste */}
-          <div className="mt-3 grid grid-cols-2 gap-2">
-
+          <div className="mb-4 grid grid-cols-2 gap-2">
             <div>
-
-              <label className="mb-1.5 block text-xs font-bold text-slate-700">
-                Tiles / Box
+              <label className="mb-1.5 block text-xs font-semibold text-slate-700">
+                Tiles per Box
               </label>
 
               <input
                 type="number"
                 min="1"
                 step="1"
-                inputMode="numeric"
-                placeholder="Example: 4"
                 value={tilesPerBox}
                 onChange={(e) => {
-                  setTilesPerBox(
-                    e.target.value
-                  );
+                  setTilesPerBox(e.target.value);
                   setCalculated(false);
                 }}
-                className={inputClass}
+                className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-slate-900"
               />
-
             </div>
 
             <div>
-
-              <label className="mb-1.5 block text-xs font-bold text-slate-700">
+              <label className="mb-1.5 block text-xs font-semibold text-slate-700">
                 Waste
               </label>
 
@@ -615,271 +516,228 @@ export default function TileCalculator() {
                   setWaste(e.target.value);
                   setCalculated(false);
                 }}
-                className={selectClass}
+                className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm font-medium text-slate-900 outline-none focus:border-slate-900"
               >
                 <option value="0">0%</option>
                 <option value="5">5%</option>
                 <option value="10">10%</option>
                 <option value="15">15%</option>
+                <option value="20">20%</option>
               </select>
-
             </div>
-
           </div>
 
           {/* Currency + Price */}
-          <div className="mt-3">
-
-            <label className="mb-1.5 block text-xs font-bold text-slate-700">
-              Price Per Box
-              <span className="ml-1 font-normal text-slate-400">
-                Optional
-              </span>
-            </label>
-
-            <div className="grid grid-cols-[100px_1fr] gap-2">
+          <div className="mb-4 grid grid-cols-2 gap-2">
+            <div>
+              <label className="mb-1.5 block text-xs font-semibold text-slate-700">
+                Currency
+              </label>
 
               <select
                 value={currencyCode}
-                onChange={(e) => {
-                  setCurrencyCode(
-                    e.target.value
-                  );
-                  setCalculated(false);
-                }}
-                className={selectClass}
-                aria-label="Currency"
+                onChange={(e) => setCurrencyCode(e.target.value)}
+                className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm font-medium text-slate-900 outline-none focus:border-slate-900"
               >
-                {CURRENCIES.map(
-                  (currency) => (
-                    <option
-                      key={currency.code}
-                      value={currency.code}
-                    >
-                      {currency.code}
-                    </option>
-                  )
-                )}
+                {CURRENCIES.map((currency) => (
+                  <option
+                    key={currency.code}
+                    value={currency.code}
+                  >
+                    {currency.code} — {currency.symbol}
+                  </option>
+                ))}
               </select>
+            </div>
+
+            <div>
+              <label className="mb-1.5 block text-xs font-semibold text-slate-700">
+                Price per Box
+              </label>
 
               <div className="relative">
-
-                <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm font-bold text-slate-500">
+                <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm text-slate-500">
                   {selectedCurrency.symbol}
                 </span>
 
                 <input
                   type="number"
                   min="0"
-                  step="0.01"
-                  inputMode="decimal"
-                  placeholder="Price per box"
+                  step="any"
                   value={boxPrice}
                   onChange={(e) => {
-                    setBoxPrice(
-                      e.target.value
-                    );
+                    setBoxPrice(e.target.value);
                     setCalculated(false);
                   }}
-                  className={`${inputClass} pl-8`}
+                  placeholder="Optional"
+                  className="w-full rounded-xl border border-slate-300 bg-white py-2.5 pl-8 pr-3 text-sm text-slate-900 outline-none placeholder:text-slate-400 focus:border-slate-900"
                 />
-
               </div>
-
             </div>
-
           </div>
 
-          {/* Calculate */}
+          {/* Calculate Button */}
           <button
             type="button"
-            onClick={() =>
-              setCalculated(true)
-            }
-            className="mt-3 w-full rounded-xl bg-blue-600 px-4 py-3 text-base font-bold text-white shadow-sm transition hover:bg-blue-700 active:scale-[0.99]"
+            onClick={handleCalculate}
+            className="w-full rounded-xl bg-slate-900 px-4 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-slate-800 active:scale-[0.99]"
           >
-            Calculate Tiles
+            Calculate Tile Quantity
           </button>
 
-          {/* INLINE RESULTS */}
-          {calculated && (
-            <div className="mt-4 border-t border-slate-200 pt-4">
+          {/* Results */}
+          {calculated && result && (
+            <div
+              id="tile-results"
+              className="mt-4 overflow-hidden rounded-2xl border border-slate-300 bg-white"
+            >
+              {/* Result Header */}
+              <div className="border-b border-slate-200 bg-slate-50 px-3 py-2.5">
+                <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500">
+                  Calculation Results
+                </p>
+              </div>
 
-              {result ? (
-
-                <>
-                  {/* Main Results */}
-                  <div className="grid grid-cols-2 gap-2">
-
-                    <div className="rounded-xl bg-slate-900 px-3 py-3 text-center">
-
-                      <p className="text-[10px] font-bold uppercase tracking-wide text-slate-400">
-                        Tiles To Order
-                      </p>
-
-                      <p className="mt-1 text-2xl font-bold text-white">
-                        {result.tilesToOrder}
-                      </p>
-
-                      <p className="text-xs text-slate-400">
-                        tiles
-                      </p>
-
-                    </div>
-
-                    <div className="rounded-xl bg-slate-900 px-3 py-3 text-center">
-
-                      <p className="text-[10px] font-bold uppercase tracking-wide text-slate-400">
-                        Boxes Required
-                      </p>
-
-                      <p className="mt-1 text-2xl font-bold text-white">
-                        {result.boxes}
-                      </p>
-
-                      <p className="text-xs text-slate-400">
-                        boxes
-                      </p>
-
-                    </div>
-
-                  </div>
-
-                  {/* Result Grid */}
-                  <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-3">
-
-                    <MiniResult
-                      label="Surface Area"
-                      value={`${formatNumber(
-                        result.surfaceArea
-                      )} sq ft`}
-                    />
-
-                    <MiniResult
-                      label="Tile Area"
-                      value={`${formatNumber(
-                        result.tileArea,
-                        3
-                      )} sq ft`}
-                    />
-
-                    <MiniResult
-                      label="Exact Tiles"
-                      value={`${result.exactTilesRounded}`}
-                    />
-
-                    <MiniResult
-                      label="Area + Waste"
-                      value={`${formatNumber(
-                        result.areaWithWaste
-                      )} sq ft`}
-                    />
-
-                    <MiniResult
-                      label="Waste Tiles"
-                      value={`${result.wasteTiles}`}
-                    />
-
-                    <MiniResult
-                      label="Box Extra"
-                      value={`${result.boxRoundingExtra}`}
-                    />
-
-                    <MiniResult
-                      label="Coverage"
-                      value={`${formatNumber(
-                        result.actualCoverage
-                      )} sq ft`}
-                    />
-
-                    <MiniResult
-                      label="Tiles / Box"
-                      value={`${Number(
-                        tilesPerBox
-                      )}`}
-                    />
-
-                    {result.estimatedCost !== null && (
-                      <MiniResult
-                        label={`Cost · ${currencyCode}`}
-                        value={formatCurrency(
-                          result.estimatedCost,
-                          selectedCurrency
-                        )}
-                      />
-                    )}
-
-                  </div>
-
-                  {/* Compact Summary */}
-                  <div className="mt-2 rounded-xl border border-blue-100 bg-blue-50 px-3 py-2.5">
-
-                    <p className="text-xs leading-5 text-slate-700">
-
-                      <strong>
-                        {result.tilesToOrder} tiles
-                      </strong>{" "}
-                      in{" "}
-                      <strong>
-                        {result.boxes} boxes
-                      </strong>{" "}
-                      are needed for{" "}
-                      <strong>
-                        {formatNumber(
-                          result.surfaceArea
-                        )} sq ft
-                      </strong>{" "}
-                      with{" "}
-                      <strong>
-                        {waste}% waste
-                      </strong>.
-
-                      {result.estimatedCost !== null && (
-                        <>
-                          {" "}
-                          Estimated material cost:{" "}
-                          <strong>
-                            {formatCurrency(
-                              result.estimatedCost,
-                              selectedCurrency
-                            )}
-                          </strong>
-                          .
-                        </>
-                      )}
-
-                    </p>
-
-                  </div>
-
-                </>
-
-              ) : (
-
-                <div className="rounded-xl border border-red-100 bg-red-50 px-3 py-3 text-center">
-
-                  <p className="text-sm font-semibold text-red-700">
-                    Please enter valid project and tile dimensions.
+              {/* Main Results */}
+              <div className="grid grid-cols-2 gap-2 p-3">
+                <div className="rounded-xl bg-slate-900 p-3 text-white">
+                  <p className="text-[10px] uppercase tracking-wide text-slate-400">
+                    Tiles to Order
                   </p>
 
+                  <p className="mt-1 text-2xl font-bold">
+                    {formatNumber(result.tilesToOrder, 0)}
+                  </p>
+
+                  <p className="mt-0.5 text-[10px] text-slate-400">
+                    tiles
+                  </p>
                 </div>
 
-              )}
+                <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+                  <p className="text-[10px] uppercase tracking-wide text-slate-500">
+                    Boxes Required
+                  </p>
 
+                  <p className="mt-1 text-2xl font-bold text-slate-900">
+                    {formatNumber(result.boxesRequired, 0)}
+                  </p>
+
+                  <p className="mt-0.5 text-[10px] text-slate-500">
+                    boxes × {result.perBox} tiles
+                  </p>
+                </div>
+              </div>
+
+              {/* Breakdown */}
+              <div className="grid grid-cols-2 gap-2 px-3 pb-3 sm:grid-cols-3">
+                <ResultItem
+                  label="Surface Area"
+                  value={`${formatNumber(result.surfaceArea)} ft²`}
+                />
+
+                <ResultItem
+                  label="Tile Area"
+                  value={`${formatNumber(result.tileAreaSqFt, 3)} ft²`}
+                />
+
+                <ResultItem
+                  label="Exact Tiles"
+                  value={formatNumber(result.exactTiles, 1)}
+                />
+
+                <ResultItem
+                  label="Area + Waste"
+                  value={`${formatNumber(result.areaWithWaste)} ft²`}
+                />
+
+                <ResultItem
+                  label="Waste Tiles"
+                  value={formatNumber(result.wasteTiles, 0)}
+                />
+
+                <ResultItem
+                  label="Box Rounding Extra"
+                  value={formatNumber(result.boxRoundingExtra, 0)}
+                />
+
+                <ResultItem
+                  label="Actual Coverage"
+                  value={`${formatNumber(result.actualCoverage)} ft²`}
+                />
+
+                <ResultItem
+                  label="Waste Allowance"
+                  value={`${formatNumber(result.safeWaste, 0)}%`}
+                />
+
+                {result.estimatedCost !== null && (
+                  <ResultItem
+                    label="Estimated Cost"
+                    value={formatCurrency(result.estimatedCost)}
+                  />
+                )}
+              </div>
+
+              {/* Summary */}
+              <div className="mx-3 mb-3 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5">
+                <p className="text-xs leading-5 text-slate-600">
+                  For a{" "}
+                  <strong className="text-slate-900">
+                    {formatNumber(result.surfaceArea)} ft²
+                  </strong>{" "}
+                  {surfaceType} using{" "}
+                  <strong className="text-slate-900">
+                    {tileLength} × {tileWidth}{" "}
+                    {tileUnit === "in" ? "in" : "cm"}
+                  </strong>{" "}
+                  tiles with{" "}
+                  <strong className="text-slate-900">
+                    {result.safeWaste}% waste
+                  </strong>
+                  , order{" "}
+                  <strong className="text-slate-900">
+                    {result.tilesToOrder} tiles
+                  </strong>{" "}
+                  or{" "}
+                  <strong className="text-slate-900">
+                    {result.boxesRequired} boxes
+                  </strong>
+                  .
+                </p>
+              </div>
             </div>
           )}
-
         </div>
       </section>
 
-      {/* Note */}
-      <p className="mt-3 text-[11px] leading-5 text-slate-500 sm:mt-4 sm:text-xs">
-        This calculator provides an estimate for planning and
-        material purchasing. Actual tile requirements may vary
-        because of room shape, cuts, layout pattern, damaged
-        tiles, grout joints and installation conditions.
+      {/* Compact Note */}
+      <div className="mt-4 rounded-xl border border-slate-200 bg-white px-4 py-3 text-xs leading-5 text-slate-600">
+        <strong className="text-slate-900">Tip:</strong> 10% waste is a
+        common starting point for many straight-layout tile projects.
+        More waste may be needed for diagonal, herringbone, irregular
+        layouts, or rooms with many cuts.
+      </div>
+    </main>
+  );
+}
+
+function ResultItem({
+  label,
+  value,
+}: {
+  label: string;
+  value: string;
+}) {
+  return (
+    <div className="rounded-xl border border-slate-200 bg-white px-3 py-2.5">
+      <p className="text-[10px] font-medium text-slate-500">
+        {label}
       </p>
 
-    </main>
+      <p className="mt-0.5 text-sm font-bold text-slate-900">
+        {value}
+      </p>
+    </div>
   );
 }
