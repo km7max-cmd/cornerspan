@@ -2,9 +2,10 @@ import type { Metadata } from "next";
 import TileCalculator from "./TileCalculator";
 
 export const metadata: Metadata = {
-  title: "Tile Calculator | Tiles & Boxes Needed",
+  title: "Tile Calculator | Tiles, Boxes, Waste & Cost",
   description:
-    "Free tile calculator to estimate how many tiles and boxes you need for floors and walls. Calculate tile quantity, waste, coverage and material cost.",
+    "Free tile calculator to estimate tiles, boxes, waste and material cost for floors and walls. Calculate tile quantity using room dimensions, tile size and tiles per box.",
+
   keywords: [
     "tile calculator",
     "tile quantity calculator",
@@ -26,36 +27,33 @@ export const metadata: Metadata = {
     "tile coverage calculator",
     "square footage tile calculator",
   ],
+
   alternates: {
-    canonical:
-      "https://www.cornerspan.com/calculators/tile",
+    canonical: "https://www.cornerspan.com/calculators/tile",
   },
+
   openGraph: {
-    title:
-      "Tile Calculator | Tiles & Boxes Needed",
+    title: "Tile Calculator | Tiles, Boxes, Waste & Cost",
     description:
-      "Calculate tile quantity, boxes, waste, coverage and material cost for floors and walls.",
-    url:
-      "https://www.cornerspan.com/calculators/tile",
+      "Calculate tile quantity, boxes, waste and material cost for floors and walls.",
+    url: "https://www.cornerspan.com/calculators/tile",
     siteName: "CornerSpan",
     type: "website",
     images: [
       {
-        url:
-          "https://www.cornerspan.com/cornerspan-tile-calculator-hero.webp",
+        url: "https://www.cornerspan.com/cornerspan-tile-calculator-hero.webp",
         width: 1774,
         height: 887,
-        alt:
-          "CornerSpan Tile Calculator",
+        alt: "CornerSpan Tile Calculator",
       },
     ],
   },
+
   twitter: {
     card: "summary_large_image",
-    title:
-      "Tile Calculator | Tiles & Boxes Needed",
+    title: "Tile Calculator | Tiles, Boxes, Waste & Cost",
     description:
-      "Calculate tiles, boxes, waste, coverage and material cost for floor and wall tile projects.",
+      "Calculate tiles, boxes, waste and material cost for floor and wall tile projects.",
     images: [
       "https://www.cornerspan.com/cornerspan-tile-calculator-hero.webp",
     ],
@@ -64,40 +62,34 @@ export const metadata: Metadata = {
 
 const faqs = [
   {
-    question:
-      "How do I calculate how many tiles I need?",
+    question: "How do I calculate how many tiles I need?",
     answer:
-      "Calculate the surface area, calculate the area of one tile, divide the surface area by the tile area, and add a waste allowance. If tiles are sold by the box, round up to the next full box.",
+      "Calculate the surface area first, then divide it by the area covered by one tile. Add a waste allowance and round up to full boxes.",
   },
   {
-    question:
-      "How much tile waste should I allow?",
+    question: "How much tile waste should I allow?",
     answer:
-      "A 10% allowance is commonly used for straightforward layouts. More waste may be needed for diagonal, complex or heavily cut installations.",
+      "A 10% waste allowance is a common starting point for straightforward layouts. Diagonal, herringbone, irregular rooms and projects with many cuts may require more.",
   },
   {
-    question:
-      "How many 24×24 tiles do I need for 100 square feet?",
+    question: "How many 24 × 24 tiles do I need for 120 square feet?",
     answer:
-      "A 24×24 inch tile covers 4 square feet. For 100 square feet, the exact requirement is 25 tiles before waste. With 10% waste, the estimate becomes 28 tiles before box-packaging adjustments.",
+      "A 24 × 24 inch tile covers 4 square feet. For 120 square feet, the exact requirement is 30 tiles before waste.",
   },
   {
-    question:
-      "How do I calculate boxes of tile?",
+    question: "How do I calculate tile boxes?",
     answer:
-      "First calculate the number of tiles required including waste. Then divide by the number of tiles in each box and round up to the next whole box.",
+      "Divide the number of tiles required by the number of tiles in each box and round up to the next whole box.",
   },
   {
-    question:
-      "Can I use this calculator for wall tile?",
+    question: "Can this calculator estimate wall tiles?",
     answer:
-      "Yes. Select Wall and enter the wall height and width. The calculator estimates the surface area, tile quantity, waste and boxes required.",
+      "Yes. Select Wall Tiles and enter the wall height and width. You can then select a common wall tile size or enter a custom size.",
   },
   {
-    question:
-      "Should I buy extra tiles?",
+    question: "Should I buy extra tiles?",
     answer:
-      "Yes. Extra tiles can help cover cutting waste, breakage, future repairs and differences between tile batches.",
+      "Yes. Extra tiles help cover cutting, breakage, future repairs and pattern matching. The appropriate amount depends on the project and layout.",
   },
 ];
 
@@ -107,189 +99,224 @@ export default function TileCalculatorPage() {
       <TileCalculator />
 
       <main className="mx-auto max-w-5xl px-4 pb-12 sm:px-6">
-
-        <section className="mt-12">
-          <h2 className="text-2xl font-bold text-slate-900 sm:text-3xl">
+        {/* How to Calculate */}
+        <section className="mt-10">
+          <h2 className="text-2xl font-bold text-slate-900">
             How to Calculate Tile Quantity
           </h2>
 
           <p className="mt-3 leading-7 text-slate-600">
-            To estimate tile quantity, first calculate the
-            total surface area. Then calculate the area of
-            one tile and divide the project area by the tile
-            area. Finally, add an appropriate waste allowance
-            and round up to complete boxes.
+            Start by calculating the surface area of the floor or wall.
+            Then calculate the area covered by one tile. Divide the
+            project area by the tile area and add an appropriate waste
+            allowance.
           </p>
 
-          <div className="mt-5 rounded-2xl border border-slate-200 bg-slate-50 p-5">
-            <p className="font-semibold text-slate-900">
-              Tiles Needed = Surface Area ÷ Tile Area
-            </p>
+          <div className="mt-5 grid gap-4 sm:grid-cols-2">
+            <div className="rounded-2xl border border-slate-200 bg-white p-5">
+              <h3 className="font-semibold text-slate-900">
+                Surface Area
+              </h3>
 
-            <p className="mt-2 text-sm text-slate-600">
-              Tile Area = Tile Length × Tile Width
+              <p className="mt-2 text-sm leading-6 text-slate-600">
+                Area = Length × Width
+              </p>
+            </div>
+
+            <div className="rounded-2xl border border-slate-200 bg-white p-5">
+              <h3 className="font-semibold text-slate-900">
+                Tile Quantity
+              </h3>
+
+              <p className="mt-2 text-sm leading-6 text-slate-600">
+                Tiles Needed = Project Area ÷ Tile Area
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Tile Area */}
+        <section className="mt-10">
+          <h2 className="text-2xl font-bold text-slate-900">
+            Tile Area Formula
+          </h2>
+
+          <p className="mt-3 leading-7 text-slate-600">
+            When tile dimensions are given in inches, calculate tile
+            area in square feet using:
+          </p>
+
+          <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-5">
+            <p className="font-mono text-sm font-semibold text-slate-900 sm:text-base">
+              Tile Area (sq ft) = Tile Length (in) × Tile Width (in) ÷ 144
             </p>
           </div>
         </section>
 
+        {/* Example */}
         <section className="mt-10">
           <h2 className="text-2xl font-bold text-slate-900">
             Tile Calculator Example
           </h2>
 
           <p className="mt-3 leading-7 text-slate-600">
-            Suppose a floor is 12 feet long and 10 feet
-            wide. The total floor area is 120 square feet.
-            With 24 × 24 inch tiles, each tile covers
-            4 square feet.
+            Suppose a room is 12 ft × 10 ft and you are installing
+            24 × 24 inch tiles.
           </p>
 
-          <div className="mt-4 space-y-2 text-sm leading-6 text-slate-700">
-            <p>
-              Floor area: <strong>120 sq ft</strong>
-            </p>
+          <div className="mt-4 overflow-hidden rounded-2xl border border-slate-200 bg-white">
+            <div className="grid grid-cols-2 divide-x divide-slate-200 sm:grid-cols-4">
+              <div className="p-4">
+                <p className="text-xs text-slate-500">Room Area</p>
+                <p className="mt-1 font-bold text-slate-900">
+                  120 ft²
+                </p>
+              </div>
 
-            <p>
-              Tile size: <strong>24 × 24 in</strong>
-            </p>
+              <div className="p-4">
+                <p className="text-xs text-slate-500">Tile Area</p>
+                <p className="mt-1 font-bold text-slate-900">
+                  4 ft²
+                </p>
+              </div>
 
-            <p>
-              Tile coverage: <strong>4 sq ft</strong>
-            </p>
+              <div className="p-4">
+                <p className="text-xs text-slate-500">Exact Tiles</p>
+                <p className="mt-1 font-bold text-slate-900">
+                  30
+                </p>
+              </div>
 
-            <p>
-              Exact tiles: <strong>30</strong>
-            </p>
-
-            <p>
-              With 10% waste: <strong>33 tiles</strong>
-            </p>
-
-            <p>
-              If the carton contains 4 tiles:
-              <strong> 9 boxes / 36 tiles</strong>
-            </p>
+              <div className="p-4">
+                <p className="text-xs text-slate-500">With 10% Waste</p>
+                <p className="mt-1 font-bold text-slate-900">
+                  33 tiles
+                </p>
+              </div>
+            </div>
           </div>
         </section>
 
+        {/* Common Uses */}
         <section className="mt-10">
           <h2 className="text-2xl font-bold text-slate-900">
             Common Tile Calculator Uses
           </h2>
 
-          <ul className="mt-4 grid gap-3 sm:grid-cols-2">
-            <li className="rounded-xl border border-slate-200 p-4">
-              Floor tile projects
-            </li>
-
-            <li className="rounded-xl border border-slate-200 p-4">
-              Bathroom and shower walls
-            </li>
-
-            <li className="rounded-xl border border-slate-200 p-4">
-              Kitchen backsplashes
-            </li>
-
-            <li className="rounded-xl border border-slate-200 p-4">
-              Patio and outdoor tile projects
-            </li>
-
-            <li className="rounded-xl border border-slate-200 p-4">
-              Ceramic tile installations
-            </li>
-
-            <li className="rounded-xl border border-slate-200 p-4">
-              Porcelain tile installations
-            </li>
-          </ul>
-        </section>
-
-        <section className="mt-10">
-          <h2 className="text-2xl font-bold text-slate-900">
-            Frequently Asked Questions
-          </h2>
-
-          <div className="mt-5 space-y-5">
-            {faqs.map((faq) => (
+          <div className="mt-4 grid gap-3 sm:grid-cols-2">
+            {[
+              "Floor tile quantity",
+              "Wall tile quantity",
+              "Bathroom tile estimates",
+              "Shower wall tile estimates",
+              "Kitchen backsplash tile",
+              "Patio and outdoor tile",
+              "Ceramic tile estimates",
+              "Porcelain tile estimates",
+            ].map((item) => (
               <div
-                key={faq.question}
-                className="border-b border-slate-200 pb-5"
+                key={item}
+                className="rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700"
               >
-                <h3 className="font-bold text-slate-900">
-                  {faq.question}
-                </h3>
-
-                <p className="mt-2 text-sm leading-6 text-slate-600">
-                  {faq.answer}
-                </p>
+                {item}
               </div>
             ))}
           </div>
         </section>
 
-        <section className="mt-10 rounded-2xl border border-amber-200 bg-amber-50 p-5">
+        {/* FAQ */}
+        <section className="mt-10">
+          <h2 className="text-2xl font-bold text-slate-900">
+            Tile Calculator FAQ
+          </h2>
+
+          <div className="mt-5 space-y-4">
+            {faqs.map((faq) => (
+              <details
+                key={faq.question}
+                className="group rounded-2xl border border-slate-200 bg-white p-5"
+              >
+                <summary className="cursor-pointer list-none font-semibold text-slate-900">
+                  {faq.question}
+                </summary>
+
+                <p className="mt-3 text-sm leading-6 text-slate-600">
+                  {faq.answer}
+                </p>
+              </details>
+            ))}
+          </div>
+        </section>
+
+        {/* Important Note */}
+        <section className="mt-10 rounded-2xl border border-slate-200 bg-slate-50 p-5">
           <h2 className="font-bold text-slate-900">
             Important Note
           </h2>
 
-          <p className="mt-2 text-sm leading-6 text-slate-700">
-            Tile quantities are estimates. Actual requirements
-            can change because of room shape, cuts, grout
-            joints, installation pattern, damaged tiles and
-            product packaging.
+          <p className="mt-2 text-sm leading-6 text-slate-600">
+            This calculator provides an estimate for material planning.
+            Actual tile requirements can vary based on room shape,
+            openings, cuts, grout joints, layout pattern, tile
+            availability and installation conditions.
           </p>
         </section>
 
+        {/* Related Calculators */}
         <section className="mt-10">
           <h2 className="text-2xl font-bold text-slate-900">
             Related Construction Calculators
           </h2>
 
-          <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <p className="mt-3 text-sm leading-6 text-slate-600">
+            Continue your project estimate with other CornerSpan
+            construction calculators.
+          </p>
+
+          <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             <a
               href="/calculators/square-footage"
-              className="rounded-xl border border-slate-200 p-4 font-semibold text-slate-800 hover:border-blue-400 hover:text-blue-600"
+              className="rounded-xl border border-slate-200 bg-white p-4 font-semibold text-slate-900 hover:border-slate-400"
             >
               Square Footage Calculator
             </a>
 
             <a
               href="/calculators/area"
-              className="rounded-xl border border-slate-200 p-4 font-semibold text-slate-800 hover:border-blue-400 hover:text-blue-600"
+              className="rounded-xl border border-slate-200 bg-white p-4 font-semibold text-slate-900 hover:border-slate-400"
             >
               Area Calculator
             </a>
 
             <a
               href="/calculators/concrete"
-              className="rounded-xl border border-slate-200 p-4 font-semibold text-slate-800 hover:border-blue-400 hover:text-blue-600"
+              className="rounded-xl border border-slate-200 bg-white p-4 font-semibold text-slate-900 hover:border-slate-400"
             >
               Concrete Calculator
             </a>
 
             <a
               href="/calculators/paint"
-              className="rounded-xl border border-slate-200 p-4 font-semibold text-slate-800 hover:border-blue-400 hover:text-blue-600"
+              className="rounded-xl border border-slate-200 bg-white p-4 font-semibold text-slate-900 hover:border-slate-400"
             >
               Paint Calculator
             </a>
 
             <a
               href="/calculators/paver"
-              className="rounded-xl border border-slate-200 p-4 font-semibold text-slate-800 hover:border-blue-400 hover:text-blue-600"
+              className="rounded-xl border border-slate-200 bg-white p-4 font-semibold text-slate-900 hover:border-slate-400"
             >
               Paver Calculator
             </a>
 
             <a
               href="/calculators/fence"
-              className="rounded-xl border border-slate-200 p-4 font-semibold text-slate-800 hover:border-blue-400 hover:text-blue-600"
+              className="rounded-xl border border-slate-200 bg-white p-4 font-semibold text-slate-900 hover:border-slate-400"
             >
               Fence Calculator
             </a>
           </div>
         </section>
-
       </main>
     </>
   );
