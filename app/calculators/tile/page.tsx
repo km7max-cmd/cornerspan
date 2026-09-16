@@ -53,12 +53,9 @@ export const metadata: Metadata = {
       {
         url:
           "https://www.cornerspan.com/cornerspan-tile-calculator-hero.webp",
-
         width: 1774,
         height: 887,
-
-        alt:
-          "CornerSpan Tile Calculator",
+        alt: "CornerSpan Tile Calculator",
       },
     ],
   },
@@ -322,65 +319,6 @@ export default function TileCalculatorPage() {
             pattern, tile availability and installation conditions.
           </p>
 
-        </section>
-
-        {/* Related Construction Calculators */}
-        <section className="mt-10">
-
-          <h2 className="text-2xl font-bold text-slate-900">
-            Related Construction Calculators
-          </h2>
-
-          <p className="mt-3 text-sm leading-6 text-slate-600">
-            Continue your project estimate with other
-            CornerSpan construction calculators.
-          </p>
-
-          <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-
-            <a
-              href="/calculators/square-footage"
-              className="rounded-xl border border-slate-200 bg-white p-4 font-semibold text-slate-900 hover:border-slate-400"
-            >
-              Square Footage Calculator
-            </a>
-
-            <a
-              href="/calculators/area"
-              className="rounded-xl border border-slate-200 bg-white p-4 font-semibold text-slate-900 hover:border-slate-400"
-            >
-              Area Calculator
-            </a>
-
-            <a
-              href="/calculators/concrete"
-              className="rounded-xl border border-slate-200 bg-white p-4 font-semibold text-slate-900 hover:border-slate-400"
-            >
-              Concrete Calculator
-            </a>
-
-            <a
-              href="/calculators/paint"
-              className="rounded-xl border border-slate-200 bg-white p-4 font-semibold text-slate-900 hover:border-slate-400"
-            >
-              Paint Calculator
-            </a>
-
-            <a
-              href="/calculators/paver"
-              className="rounded-xl border border-slate-200 bg-white p-4 font-semibold text-slate-900 hover:border-slate-400"
-            >
-              Paver Calculator
-            </a>
-
-            <a
-              href="/calculators/fence"
-              className="rounded-xl border border-slate-200 bg-white p-4 font-semibold text-slate-900 hover:border-slate-400"
-            >
-              Fence Calculator
-            </a>
-
-          </div>
         </section>
 
       </main>
