@@ -2,7 +2,8 @@
 
 import { useMemo, useState } from "react";
 
-type Unit = "ft" | "m";
+type ProjectUnit = "ft" | "yd" | "m";
+type DepthUnit = "in" | "ft" | "yd" | "cm" | "m";
 
 type Currency =
   | "USD"
@@ -46,8 +47,62 @@ const GRAVEL_TYPES = [
   },
 ];
 
-function toFeet(value: number, unit: Unit) {
-  return unit === "ft" ? value : value * 3.280839895;
+function projectUnitLabel(unit: ProjectUnit) {
+  if (unit === "ft") return "Feet (ft)";
+  if (unit === "yd") return "Yards (yd)";
+  return "Meters (m)";
+}
+
+function getDepthUnits(unit: ProjectUnit): DepthUnit[] {
+  if (unit === "ft") {
+    return ["in", "ft"];
+  }
+
+  if (unit === "yd") {
+    return ["in", "ft", "yd"];
+  }
+
+  return ["cm", "m"];
+}
+
+function getDefaultDepthUnit(unit: ProjectUnit): DepthUnit {
+  if (unit === "m") {
+    return "cm";
+  }
+
+  return "in";
+}
+
+function toFeet(value: number, unit: ProjectUnit) {
+  if (unit === "ft") {
+    return value;
+  }
+
+  if (unit === "yd") {
+    return value * 3;
+  }
+
+  return value * 3.280839895013123;
+}
+
+function depthToFeet(value: number, unit: DepthUnit) {
+  if (unit === "in") {
+    return value / 12;
+  }
+
+  if (unit === "ft") {
+    return value;
+  }
+
+  if (unit === "yd") {
+    return value * 3;
+  }
+
+  if (unit === "cm") {
+    return value / 30.48;
+  }
+
+  return value * 3.280839895013123;
 }
 
 function formatNumber(value: number, decimals = 2) {
@@ -65,23 +120,29 @@ export default function GravelCalculator() {
   const [width, setWidth] = useState("10");
   const [depth, setDepth] = useState("4");
 
-  const [depthUnit, setDepthUnit] = useState<"in" | "ft">("in");
+  const [projectUnit, setProjectUnit] =
+    useState<ProjectUnit>("ft");
 
-  const [unit, setUnit] = useState<Unit>("ft");
+  const [depthUnit, setDepthUnit] =
+    useState<DepthUnit>("in");
 
   const [gravelType, setGravelType] =
     useState("Crushed Stone");
 
-  const [density, setDensity] = useState("1.4");
+  const [density, setDensity] =
+    useState("1.4");
 
-  const [waste, setWaste] = useState("10");
+  const [waste, setWaste] =
+    useState("10");
 
   const [currency, setCurrency] =
     useState<Currency>("USD");
 
-  const [pricePerTon, setPricePerTon] = useState("");
+  const [pricePerTon, setPricePerTon] =
+    useState("");
 
-  const [calculated, setCalculated] = useState(false);
+  const [calculated, setCalculated] =
+    useState(false);
 
   const result = useMemo(() => {
     const l = Number(length);
@@ -110,19 +171,14 @@ export default function GravelCalculator() {
       return null;
     }
 
-    const lengthFt = toFeet(l, unit);
-    const widthFt = toFeet(w, unit);
+    const lengthFt =
+      toFeet(l, projectUnit);
 
-    let depthFt = 0;
+    const widthFt =
+      toFeet(w, projectUnit);
 
-    if (depthUnit === "in") {
-      depthFt = d / 12;
-    } else {
-      depthFt =
-        unit === "ft"
-          ? d
-          : d * 3.280839895;
-    }
+    const depthFt =
+      depthToFeet(d, depthUnit);
 
     const areaSqFt =
       lengthFt * widthFt;
@@ -134,10 +190,11 @@ export default function GravelCalculator() {
       volumeCuFt / 27;
 
     const volumeCuM =
-      volumeCuFt * 0.0283168466;
+      volumeCuFt * 0.028316846592;
 
     const wasteMultiplier =
-      1 + Math.max(0, wastePct || 0) / 100;
+      1 +
+      Math.max(0, wastePct || 0) / 100;
 
     const orderCuFt =
       volumeCuFt * wasteMultiplier;
@@ -158,7 +215,8 @@ export default function GravelCalculator() {
       orderTons - exactTons;
 
     const cost =
-      Number.isFinite(price) && price > 0
+      Number.isFinite(price) &&
+      price > 0
         ? orderTons * price
         : null;
 
@@ -179,12 +237,45 @@ export default function GravelCalculator() {
     length,
     width,
     depth,
+    projectUnit,
     depthUnit,
-    unit,
     density,
     waste,
     pricePerTon,
   ]);
+
+  function handleProjectUnitChange(
+    newUnit: ProjectUnit
+  ) {
+    setProjectUnit(newUnit);
+
+    const allowedUnits =
+      getDepthUnits(newUnit);
+
+    if (!allowedUnits.includes(depthUnit)) {
+      const newDepthUnit =
+        getDefaultDepthUnit(newUnit);
+
+      setDepthUnit(newDepthUnit);
+    }
+  }
+
+  function handleGravelChange(
+    value: string
+  ) {
+    setGravelType(value);
+
+    const selected =
+      GRAVEL_TYPES.find(
+        (item) => item.name === value
+      );
+
+    if (selected) {
+      setDensity(
+        String(selected.density)
+      );
+    }
+  }
 
   function calculate() {
     setCalculated(true);
@@ -199,20 +290,8 @@ export default function GravelCalculator() {
     }, 50);
   }
 
-  function handleGravelChange(value: string) {
-    setGravelType(value);
-
-    const selected =
-      GRAVEL_TYPES.find(
-        (item) => item.name === value
-      );
-
-    if (selected) {
-      setDensity(
-        String(selected.density)
-      );
-    }
-  }
+  const availableDepthUnits =
+    getDepthUnits(projectUnit);
 
   return (
     <section className="w-full">
@@ -243,31 +322,31 @@ export default function GravelCalculator() {
                 Project Unit
               </label>
 
-              <div className="grid grid-cols-2 gap-2">
-                {(["ft", "m"] as Unit[]).map(
-                  (value) => (
-                    <button
-                      key={value}
-                      type="button"
-                      onClick={() =>
-                        setUnit(value)
-                      }
-                      className={`rounded-xl border px-4 py-3 text-sm font-bold transition ${
-                        unit === value
-                          ? "border-blue-600 bg-blue-600 text-white"
-                          : "border-slate-300 bg-white text-slate-700 hover:bg-slate-50"
-                      }`}
-                    >
-                      {value === "ft"
-                        ? "Feet (ft)"
-                        : "Meters (m)"}
-                    </button>
-                  )
-                )}
+              <div className="grid grid-cols-3 gap-2">
+                {(
+                  ["ft", "yd", "m"] as ProjectUnit[]
+                ).map((unit) => (
+                  <button
+                    key={unit}
+                    type="button"
+                    onClick={() =>
+                      handleProjectUnitChange(
+                        unit
+                      )
+                    }
+                    className={`rounded-xl border px-2 py-3 text-sm font-bold transition ${
+                      projectUnit === unit
+                        ? "border-blue-600 bg-blue-600 text-white"
+                        : "border-slate-300 bg-white text-slate-700 hover:bg-slate-50"
+                    }`}
+                  >
+                    {projectUnitLabel(unit)}
+                  </button>
+                ))}
               </div>
             </div>
 
-            {/* Dimensions */}
+            {/* Project Dimensions */}
             <div className="rounded-xl border border-slate-200 bg-white p-4">
               <h2 className="mb-3 text-sm font-extrabold text-slate-900">
                 Project Dimensions
@@ -275,13 +354,13 @@ export default function GravelCalculator() {
 
               <div className="grid gap-3 sm:grid-cols-3">
                 <InputField
-                  label={`Length (${unit})`}
+                  label={`Length (${projectUnit})`}
                   value={length}
                   onChange={setLength}
                 />
 
                 <InputField
-                  label={`Width (${unit})`}
+                  label={`Width (${projectUnit})`}
                   value={width}
                   onChange={setWidth}
                 />
@@ -309,20 +388,22 @@ export default function GravelCalculator() {
                       value={depthUnit}
                       onChange={(e) =>
                         setDepthUnit(
-                          e.target.value as
-                            | "in"
-                            | "ft"
+                          e.target
+                            .value as DepthUnit
                         )
                       }
                       className="border-l border-slate-200 bg-slate-50 px-2 text-sm font-bold outline-none"
                     >
-                      <option value="in">
-                        in
-                      </option>
-
-                      <option value="ft">
-                        ft
-                      </option>
+                      {availableDepthUnits.map(
+                        (item) => (
+                          <option
+                            key={item}
+                            value={item}
+                          >
+                            {item}
+                          </option>
+                        )
+                      )}
                     </select>
                   </div>
                 </div>
