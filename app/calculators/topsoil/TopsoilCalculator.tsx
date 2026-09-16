@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useMemo, useState } from "react";
 
 type ProjectUnit = "ft" | "yd" | "m";
@@ -92,6 +93,7 @@ export default function TopsoilCalculator() {
     const depthFt = depthToFeet(d, depthUnit);
 
     const areaSqFt = lengthFt * widthFt;
+
     const volumeCuFt = areaSqFt * depthFt;
     const volumeCuYd = volumeCuFt / 27;
     const volumeCuM = volumeCuFt * 0.0283168;
@@ -135,12 +137,18 @@ export default function TopsoilCalculator() {
 
     if (length) {
       const valueFt = toFeet(Number(length), projectUnit);
-      setLength(String(Number(fromFeet(valueFt, newUnit).toFixed(4))));
+
+      setLength(
+        String(Number(fromFeet(valueFt, newUnit).toFixed(4)))
+      );
     }
 
     if (width) {
       const valueFt = toFeet(Number(width), projectUnit);
-      setWidth(String(Number(fromFeet(valueFt, newUnit).toFixed(4))));
+
+      setWidth(
+        String(Number(fromFeet(valueFt, newUnit).toFixed(4)))
+      );
     }
 
     const availableDepthUnits = getDepthUnits(newUnit);
@@ -150,20 +158,29 @@ export default function TopsoilCalculator() {
 
       let newDepthUnit: DepthUnit = availableDepthUnits[0];
 
-      if (newUnit === "ft") newDepthUnit = depthUnit === "ft" ? "ft" : "in";
+      if (newUnit === "ft") {
+        newDepthUnit = depthUnit === "ft" ? "ft" : "in";
+      }
+
       if (newUnit === "yd") {
         newDepthUnit =
-          depthUnit === "yd" || depthUnit === "ft" || depthUnit === "in"
+          depthUnit === "yd" ||
+          depthUnit === "ft" ||
+          depthUnit === "in"
             ? depthUnit
             : "ft";
       }
+
       if (newUnit === "m") {
         newDepthUnit = valueFt >= 1 ? "m" : "cm";
       }
 
       setDepthUnit(newDepthUnit);
+
       setDepth(
-        String(Number(feetToDepth(valueFt, newDepthUnit).toFixed(4)))
+        String(
+          Number(feetToDepth(valueFt, newDepthUnit).toFixed(4))
+        )
       );
     } else {
       setDepthUnit(availableDepthUnits[0]);
@@ -173,10 +190,27 @@ export default function TopsoilCalculator() {
     setCalculated(false);
   }
 
+  function handleDepthUnitChange(unit: DepthUnit) {
+    if (unit === depthUnit) return;
+
+    if (depth) {
+      const feet = depthToFeet(Number(depth), depthUnit);
+
+      setDepth(
+        String(Number(feetToDepth(feet, unit).toFixed(4)))
+      );
+    }
+
+    setDepthUnit(unit);
+    setCalculated(false);
+  }
+
   function handleSoilTypeChange(name: string) {
     setSoilType(name);
 
-    const soil = SOIL_TYPES.find((item) => item.name === name);
+    const soil = SOIL_TYPES.find(
+      (item) => item.name === name
+    );
 
     if (soil) {
       setDensity(soil.density);
@@ -191,7 +225,10 @@ export default function TopsoilCalculator() {
     setTimeout(() => {
       document
         .getElementById("topsoil-results")
-        ?.scrollIntoView({ behavior: "smooth", block: "start" });
+        ?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
     }, 50);
   }
 
@@ -207,9 +244,23 @@ export default function TopsoilCalculator() {
         </h1>
 
         <p className="mt-2 text-sm leading-6 text-slate-300 sm:text-base">
-          Estimate cubic yards, tons and bags of topsoil for lawns, gardens
-          and landscaping projects.
+          Estimate cubic yards, tons and bags of topsoil for
+          lawns, gardens and landscaping projects.
         </p>
+      </div>
+
+      {/* Hero Image */}
+      <div className="bg-white px-3 pt-3 sm:px-4 sm:pt-4">
+        <div className="relative overflow-hidden rounded-xl">
+          <Image
+            src="/cornerspan-topsoil-calculator-hero.webp"
+            alt="Topsoil Calculator for lawns, gardens and landscaping projects"
+            width={1536}
+            height={1024}
+            priority
+            className="h-auto w-full object-cover"
+          />
+        </div>
       </div>
 
       <div className="bg-slate-100 p-4 sm:p-6">
@@ -224,7 +275,9 @@ export default function TopsoilCalculator() {
               <button
                 key={unit.value}
                 type="button"
-                onClick={() => handleProjectUnitChange(unit.value)}
+                onClick={() =>
+                  handleProjectUnitChange(unit.value)
+                }
                 className={`rounded-xl px-3 py-3 text-sm font-semibold transition ${
                   projectUnit === unit.value
                     ? "bg-blue-600 text-white shadow-sm"
@@ -313,17 +366,9 @@ export default function TopsoilCalculator() {
                 <button
                   key={unit}
                   type="button"
-                  onClick={() => {
-                    if (depth && depthUnit !== unit) {
-                      const feet = depthToFeet(Number(depth), depthUnit);
-                      setDepth(
-                        String(Number(feetToDepth(feet, unit).toFixed(4)))
-                      );
-                    }
-
-                    setDepthUnit(unit);
-                    setCalculated(false);
-                  }}
+                  onClick={() =>
+                    handleDepthUnitChange(unit)
+                  }
                   className={`rounded-lg px-4 py-2 text-sm font-semibold ${
                     depthUnit === unit
                       ? "bg-slate-900 text-white"
@@ -350,11 +395,16 @@ export default function TopsoilCalculator() {
 
             <select
               value={soilType}
-              onChange={(e) => handleSoilTypeChange(e.target.value)}
+              onChange={(e) =>
+                handleSoilTypeChange(e.target.value)
+              }
               className={inputClass}
             >
               {SOIL_TYPES.map((soil) => (
-                <option key={soil.name} value={soil.name}>
+                <option
+                  key={soil.name}
+                  value={soil.name}
+                >
                   {soil.name}
                 </option>
               ))}
@@ -408,7 +458,7 @@ export default function TopsoilCalculator() {
           </div>
         </div>
 
-        {/* Bags */}
+        {/* Bag Size */}
         <div className="mt-4 rounded-2xl bg-white p-4 shadow-sm">
           <label className="mb-2 block text-sm font-semibold text-slate-800">
             Bag Size
@@ -422,11 +472,25 @@ export default function TopsoilCalculator() {
             }}
             className={inputClass}
           >
-            <option value={0.5}>0.5 cubic feet</option>
-            <option value={0.75}>0.75 cubic feet</option>
-            <option value={1}>1 cubic foot</option>
-            <option value={1.5}>1.5 cubic feet</option>
-            <option value={2}>2 cubic feet</option>
+            <option value={0.5}>
+              0.5 cubic feet
+            </option>
+
+            <option value={0.75}>
+              0.75 cubic feet
+            </option>
+
+            <option value={1}>
+              1 cubic foot
+            </option>
+
+            <option value={1.5}>
+              1.5 cubic feet
+            </option>
+
+            <option value={2}>
+              2 cubic feet
+            </option>
           </select>
         </div>
 
@@ -439,9 +503,12 @@ export default function TopsoilCalculator() {
           Calculate Topsoil
         </button>
 
-        {/* Result */}
+        {/* Results */}
         {calculated && result && (
-          <div id="topsoil-results" className="mt-4 scroll-mt-24">
+          <div
+            id="topsoil-results"
+            className="mt-4 scroll-mt-24"
+          >
             <div className="rounded-2xl bg-slate-950 p-5 text-white shadow-lg">
               <p className="text-sm font-medium text-slate-300">
                 Estimated Order Quantity
@@ -452,6 +519,7 @@ export default function TopsoilCalculator() {
                   <div className="text-2xl font-bold">
                     {formatNumber(result.orderCuYd)}
                   </div>
+
                   <div className="mt-1 text-xs text-slate-300">
                     Cubic Yards
                   </div>
@@ -461,20 +529,27 @@ export default function TopsoilCalculator() {
                   <div className="text-2xl font-bold">
                     {formatNumber(result.orderTons)}
                   </div>
-                  <div className="mt-1 text-xs text-slate-300">Tons</div>
+
+                  <div className="mt-1 text-xs text-slate-300">
+                    Tons
+                  </div>
                 </div>
 
                 <div className="rounded-xl bg-white/10 p-4">
                   <div className="text-2xl font-bold">
                     {formatNumber(result.orderCuFt)}
                   </div>
+
                   <div className="mt-1 text-xs text-slate-300">
                     Cubic Feet
                   </div>
                 </div>
 
                 <div className="rounded-xl bg-blue-600 p-4">
-                  <div className="text-2xl font-bold">{result.bags}</div>
+                  <div className="text-2xl font-bold">
+                    {result.bags}
+                  </div>
+
                   <div className="mt-1 text-xs text-blue-100">
                     Bags ({bagSize} ft³)
                   </div>
@@ -483,11 +558,14 @@ export default function TopsoilCalculator() {
 
               {/* Breakdown */}
               <div className="mt-5 rounded-xl bg-white p-4 text-slate-900">
-                <h3 className="font-bold">Calculation Breakdown</h3>
+                <h3 className="font-bold">
+                  Calculation Breakdown
+                </h3>
 
                 <div className="mt-3 space-y-2 text-sm">
                   <div className="flex justify-between gap-4">
                     <span>Project Area</span>
+
                     <strong>
                       {formatNumber(result.areaSqFt)} ft²
                     </strong>
@@ -495,6 +573,7 @@ export default function TopsoilCalculator() {
 
                   <div className="flex justify-between gap-4">
                     <span>Exact Volume</span>
+
                     <strong>
                       {formatNumber(result.volumeCuYd)} yd³
                     </strong>
@@ -502,11 +581,13 @@ export default function TopsoilCalculator() {
 
                   <div className="flex justify-between gap-4">
                     <span>Waste Allowance</span>
+
                     <strong>{waste}%</strong>
                   </div>
 
                   <div className="flex justify-between gap-4 border-t pt-2">
                     <span>Order Volume</span>
+
                     <strong>
                       {formatNumber(result.orderCuYd)} yd³
                     </strong>
@@ -514,6 +595,7 @@ export default function TopsoilCalculator() {
 
                   <div className="flex justify-between gap-4">
                     <span>Estimated Weight</span>
+
                     <strong>
                       {formatNumber(result.orderTons)} tons
                     </strong>
@@ -521,6 +603,7 @@ export default function TopsoilCalculator() {
 
                   <div className="flex justify-between gap-4">
                     <span>Volume in Metric</span>
+
                     <strong>
                       {formatNumber(result.orderCuM)} m³
                     </strong>
@@ -529,9 +612,10 @@ export default function TopsoilCalculator() {
               </div>
 
               <p className="mt-4 text-xs leading-5 text-slate-400">
-                Soil density varies with moisture, organic content and
-                compaction. For purchasing, use the density supplied by your
-                local soil supplier whenever available.
+                Soil density varies with moisture, organic content
+                and compaction. For purchasing, use the density
+                supplied by your local soil supplier whenever
+                available.
               </p>
             </div>
           </div>
