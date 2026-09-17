@@ -5,25 +5,28 @@ import RelatedCalculators from "../../../components/RelatedCalculators";
 import AsphaltCalculator from "./AsphaltCalculator";
 
 export const metadata: Metadata = {
-  title: "Asphalt Calculator | Tons, Cubic Yards & Cost",
+  title:
+    "Asphalt Calculator | Tons, Tonnes, Cubic Yards & Cost",
 
   description:
-    "Free asphalt calculator to estimate hot-mix asphalt tons, cubic yards, volume and material cost for driveways, parking lots, paths and paving projects.",
+    "Free asphalt calculator with Imperial and Metric units. Estimate asphalt tons, tonnes, cubic yards, cubic meters, volume and material cost for driveways, parking lots, roads and paving projects.",
 
   keywords: [
     "asphalt calculator",
     "asphalt ton calculator",
+    "asphalt tonne calculator",
     "asphalt driveway calculator",
     "asphalt cost calculator",
-    "how much asphalt do I need",
-    "hot mix asphalt calculator",
-    "asphalt cubic yards calculator",
     "asphalt volume calculator",
     "asphalt weight calculator",
+    "hot mix asphalt calculator",
+    "asphalt cubic yards calculator",
+    "asphalt cubic meters calculator",
+    "how much asphalt do I need",
     "asphalt paving calculator",
     "driveway asphalt calculator",
     "parking lot asphalt calculator",
-    "asphalt material calculator",
+    "metric asphalt calculator",
   ],
 
   alternates: {
@@ -33,6 +36,7 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
+
     googleBot: {
       index: true,
       follow: true,
@@ -43,12 +47,14 @@ export const metadata: Metadata = {
   },
 
   openGraph: {
-    title: "Asphalt Calculator | Tons, Cubic Yards & Cost",
+    title:
+      "Asphalt Calculator | Tons, Tonnes, Cubic Yards & Cost",
 
     description:
-      "Calculate asphalt tons, cubic yards, volume and estimated material cost for paving projects.",
+      "Calculate asphalt quantity, weight, volume and estimated material cost in Imperial or Metric units.",
 
-    url: "https://www.cornerspan.com/calculators/asphalt",
+    url:
+      "https://www.cornerspan.com/calculators/asphalt",
 
     siteName: "CornerSpan",
 
@@ -56,10 +62,14 @@ export const metadata: Metadata = {
 
     images: [
       {
-        url: "/cornerspan-asphalt-calculator-hero.webp",
+        url:
+          "/cornerspan-asphalt-calculator-hero.webp",
+
         width: 1536,
         height: 1024,
-        alt: "Asphalt Calculator",
+
+        alt:
+          "Asphalt Calculator",
       },
     ],
   },
@@ -67,56 +77,73 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
 
-    title: "Asphalt Calculator | Tons, Cubic Yards & Cost",
+    title:
+      "Asphalt Calculator | Tons, Tonnes, Cubic Yards & Cost",
 
     description:
-      "Free asphalt calculator for tons, cubic yards, volume and material cost.",
+      "Free asphalt calculator with Imperial and Metric units.",
 
-    images: ["/cornerspan-asphalt-calculator-hero.webp"],
+    images: [
+      "/cornerspan-asphalt-calculator-hero.webp",
+    ],
   },
 };
 
 const faqs = [
   {
-    question: "How do I calculate how much asphalt I need?",
+    question:
+      "How do I calculate how much asphalt I need?",
+
     answer:
-      "Measure the length and width of the paving area, multiply them to find the square footage, then multiply the area by the compacted asphalt thickness. Convert the resulting volume to weight using the asphalt density.",
+      "Measure the paving length and width, multiply them to find the area, then multiply by the final compacted thickness. Convert the resulting volume to weight using the asphalt mix density. This calculator supports both Imperial and Metric units.",
   },
 
   {
-    question: "How many tons of asphalt do I need?",
+    question:
+      "What is the difference between a US ton and a metric tonne?",
+
     answer:
-      "The required tons depend on the project area, compacted thickness and asphalt mix density. This calculator converts the project volume into estimated tons and adds the selected waste or overage percentage.",
+      "A US short ton equals 2,000 pounds, while a metric tonne equals 1,000 kilograms. The calculator labels these separately so the result matches the selected unit system.",
   },
 
   {
-    question: "What density should I use for asphalt?",
+    question:
+      "What density should I use for asphalt?",
+
     answer:
-      "A common estimating value is about 145 pounds per cubic foot for asphalt. Actual density varies by asphalt mix and project specifications, so use the density supplied by your asphalt producer or contractor when available.",
+      "A common estimating value is about 145 lb/ft³, which is approximately 2,320 kg/m³. Actual asphalt mix density varies by mix and project specifications, so use the density supplied by your producer or contractor when available.",
   },
 
   {
-    question: "Should asphalt thickness be entered before or after compaction?",
+    question:
+      "Should asphalt thickness be entered before or after compaction?",
+
     answer:
       "Enter the final compacted thickness required for the pavement. Loose asphalt placed before rolling can occupy more volume than the final compacted layer.",
   },
 
   {
-    question: "How much asphalt do I need for a driveway?",
+    question:
+      "How much asphalt do I need for a driveway?",
+
     answer:
-      "Measure the driveway length and width, determine the required compacted pavement thickness, then calculate the volume and estimated tons. Base preparation and pavement specifications should be determined for the specific driveway project.",
+      "Measure the driveway dimensions, determine the required compacted pavement thickness, then calculate the volume and estimated weight. Base preparation and pavement specifications depend on the project.",
   },
 
   {
-    question: "Does the asphalt calculator include waste?",
+    question:
+      "Does the asphalt calculator include waste?",
+
     answer:
-      "Yes. You can select an overage percentage of 0%, 5%, 10%, 15% or 20%. The calculator applies that percentage to the base asphalt quantity to estimate an order quantity.",
+      "Yes. You can select 0%, 5%, 10%, 15% or 20% waste or overage. The selected percentage is added to the base quantity for ordering.",
   },
 
   {
-    question: "Can I calculate asphalt cost?",
+    question:
+      "Can I calculate asphalt cost in my local currency?",
+
     answer:
-      "Yes. Enter the price per ton in US dollars and the calculator will estimate the material cost using the calculated order quantity.",
+      "Yes. Select a supported currency and enter the local price per US ton or metric tonne. Currency selection changes the cost display only; the calculator does not perform live exchange-rate conversion.",
   },
 ];
 
@@ -129,7 +156,8 @@ export default function AsphaltPage() {
 
         <AsphaltCalculator />
 
-        {/* How to Calculate */}
+        {/* HOW TO CALCULATE */}
+
         <section className="mt-8 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
 
           <p className="text-xs font-bold uppercase tracking-wider text-blue-600">
@@ -141,10 +169,10 @@ export default function AsphaltPage() {
           </h2>
 
           <p className="mt-3 text-sm leading-7 text-slate-600">
-            Asphalt quantity is based on the paving area, the final
-            compacted thickness and the density of the asphalt mix.
-            The calculator converts the volume into cubic feet, cubic
-            yards, pounds and estimated tons.
+            Asphalt quantity is based on paving area,
+            final compacted thickness and asphalt mix density.
+            Use Imperial units for feet, inches and US short tons,
+            or Metric units for meters, centimeters and metric tonnes.
           </p>
 
           <div className="mt-5 grid gap-4 sm:grid-cols-3">
@@ -158,20 +186,21 @@ export default function AsphaltPage() {
             <FormulaCard
               title="2. Volume"
               formula="Area × Thickness"
-              description="Multiply the area by the compacted asphalt depth."
+              description="Multiply the area by the final compacted asphalt depth."
             />
 
             <FormulaCard
               title="3. Weight"
               formula="Volume × Density"
-              description="Convert asphalt volume into pounds and tons."
+              description="Convert asphalt volume into the selected weight unit."
             />
 
           </div>
 
         </section>
 
-        {/* Example */}
+        {/* EXAMPLE */}
+
         <section className="mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-5 sm:p-7">
 
           <h2 className="text-xl font-extrabold text-slate-900">
@@ -179,52 +208,18 @@ export default function AsphaltPage() {
           </h2>
 
           <p className="mt-3 text-sm leading-7 text-slate-600">
-            Suppose a driveway is 20 ft long and 30 ft wide with a
-            final compacted asphalt thickness of 3 inches. Using a
-            density of 145 lb/ft³ and 5% overage:
+            Example: a 20 ft × 30 ft driveway with
+            3 inches of compacted asphalt, 145 lb/ft³ density
+            and 5% overage gives about 11.42 US tons to order.
+            Switch to Metric in the calculator to work directly
+            in meters, centimeters, kilograms per cubic meter
+            and metric tonnes.
           </p>
-
-          <div className="mt-4 overflow-hidden rounded-xl border border-slate-200 bg-white">
-
-            <div className="grid grid-cols-2 text-sm">
-
-              <ExampleRow
-                label="Project area"
-                value="600 ft²"
-              />
-
-              <ExampleRow
-                label="Compacted thickness"
-                value="3 inches"
-              />
-
-              <ExampleRow
-                label="Exact volume"
-                value="150 ft³"
-              />
-
-              <ExampleRow
-                label="Exact volume"
-                value="5.56 yd³"
-              />
-
-              <ExampleRow
-                label="Base asphalt"
-                value="10.88 tons"
-              />
-
-              <ExampleRow
-                label="5% overage"
-                value="11.42 tons"
-              />
-
-            </div>
-
-          </div>
 
         </section>
 
-        {/* Common Uses */}
+        {/* COMMON USES */}
+
         <section className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
 
           <h2 className="text-xl font-extrabold text-slate-900">
@@ -256,7 +251,8 @@ export default function AsphaltPage() {
 
         </section>
 
-        {/* Formula */}
+        {/* FORMULA */}
+
         <section className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
 
           <h2 className="text-xl font-extrabold text-slate-900">
@@ -265,20 +261,29 @@ export default function AsphaltPage() {
 
           <div className="mt-4 space-y-2 rounded-xl bg-slate-950 p-5 font-mono text-sm leading-7 text-slate-200">
 
-            <p>Area = Length × Width</p>
-
-            <p>Thickness (ft) = Thickness (in) ÷ 12</p>
-
-            <p>Volume (ft³) = Area × Thickness</p>
-
-            <p>Volume (yd³) = Volume (ft³) ÷ 27</p>
-
-            <p>Weight (lb) = Volume (ft³) × Density</p>
-
-            <p>Tons = Weight (lb) ÷ 2,000</p>
+            <p>
+              Area = Length × Width
+            </p>
 
             <p>
-              Order Tons = Base Tons × (1 + Overage ÷ 100)
+              Volume = Area × Compacted Thickness
+            </p>
+
+            <p>
+              Weight = Volume × Density
+            </p>
+
+            <p>
+              Order Quantity = Base Quantity ×
+              (1 + Overage ÷ 100)
+            </p>
+
+            <p>
+              1 US short ton = 2,000 lb
+            </p>
+
+            <p>
+              1 metric tonne = 1,000 kg
             </p>
 
           </div>
@@ -286,6 +291,7 @@ export default function AsphaltPage() {
         </section>
 
         {/* FAQ */}
+
         <section className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
 
           <h2 className="text-xl font-extrabold text-slate-900">
@@ -299,6 +305,7 @@ export default function AsphaltPage() {
                 key={faq.question}
                 className="group py-4"
               >
+
                 <summary className="cursor-pointer list-none pr-8 text-sm font-bold text-slate-900">
                   {faq.question}
                 </summary>
@@ -306,6 +313,7 @@ export default function AsphaltPage() {
                 <p className="mt-2 text-sm leading-6 text-slate-600">
                   {faq.answer}
                 </p>
+
               </details>
             ))}
 
@@ -313,10 +321,12 @@ export default function AsphaltPage() {
 
         </section>
 
-        {/* Related */}
+        {/* RELATED CALCULATORS */}
+
         <RelatedCalculators />
 
-        {/* Important Note */}
+        {/* IMPORTANT NOTE */}
+
         <section className="mt-6 rounded-2xl border border-amber-200 bg-amber-50 p-5 sm:p-6">
 
           <h2 className="text-base font-extrabold text-amber-900">
@@ -324,12 +334,12 @@ export default function AsphaltPage() {
           </h2>
 
           <p className="mt-2 text-sm leading-6 text-amber-900/80">
-            Asphalt quantity is an estimate for planning and material
-            ordering. Actual asphalt density, mix design, compaction,
-            pavement thickness and site conditions can affect the
-            final quantity required. For a final order, confirm the
-            mix density and required tonnage with your asphalt
-            supplier or paving contractor.
+            Asphalt quantity is an estimate for planning and
+            material ordering. Actual mix density, compaction,
+            pavement thickness and site conditions can change
+            the final quantity. Confirm the mix density and
+            required tonnage with your local asphalt supplier
+            or paving contractor before placing a final order.
           </p>
 
         </section>
@@ -362,28 +372,6 @@ function FormulaCard({
       <p className="mt-1 text-sm leading-6 text-slate-600">
         {description}
       </p>
-
-    </div>
-  );
-}
-
-function ExampleRow({
-  label,
-  value,
-}: {
-  label: string;
-  value: string;
-}) {
-  return (
-    <div className="flex items-center justify-between gap-3 border-b border-slate-100 px-4 py-3 last:border-0">
-
-      <span className="text-slate-600">
-        {label}
-      </span>
-
-      <span className="font-bold text-slate-800">
-        {value}
-      </span>
 
     </div>
   );
