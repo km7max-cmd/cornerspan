@@ -13,9 +13,9 @@ type Calculator = {
 };
 
 
-/* -------------------------------------------------
+/* =================================================
    CATEGORY MAP
-------------------------------------------------- */
+================================================= */
 
 const categoryMap: Record<string, string> = {
   area: "General",
@@ -48,9 +48,9 @@ const categoryMap: Record<string, string> = {
 };
 
 
-/* -------------------------------------------------
-   DESCRIPTIONS
-------------------------------------------------- */
+/* =================================================
+   CALCULATOR DESCRIPTIONS
+================================================= */
 
 const descriptionMap: Record<string, string> = {
   area:
@@ -97,14 +97,18 @@ const descriptionMap: Record<string, string> = {
 };
 
 
-/* -------------------------------------------------
-   SVG ICONS
-------------------------------------------------- */
+/* =================================================
+   SVG ICON TYPES
+================================================= */
 
 type IconProps = {
   className?: string;
 };
 
+
+/* =================================================
+   CALCULATOR ICONS
+================================================= */
 
 function CalculatorIcon({
   slug,
@@ -133,7 +137,9 @@ function CalculatorIcon({
   switch (slug) {
 
 
-    /* BRICK */
+    /* ---------------------------------------------
+       BRICK
+    --------------------------------------------- */
 
     case "brick":
 
@@ -142,7 +148,9 @@ function CalculatorIcon({
 
           <path d="M3 5.5h18v13H3z" />
 
-          <path d="M3 9.8h18M3 14.2h18" />
+          <path d="M3 9.8h18" />
+
+          <path d="M3 14.2h18" />
 
           <path d="M9 5.5v4.3" />
 
@@ -154,7 +162,9 @@ function CalculatorIcon({
       );
 
 
-    /* CONCRETE */
+    /* ---------------------------------------------
+       CONCRETE
+    --------------------------------------------- */
 
     case "concrete":
 
@@ -173,7 +183,9 @@ function CalculatorIcon({
       );
 
 
-    /* ROOFING */
+    /* ---------------------------------------------
+       ROOFING
+    --------------------------------------------- */
 
     case "roofing":
 
@@ -190,7 +202,9 @@ function CalculatorIcon({
       );
 
 
-    /* STEEL */
+    /* ---------------------------------------------
+       STEEL / REBAR
+    --------------------------------------------- */
 
     case "steel":
 
@@ -213,7 +227,9 @@ function CalculatorIcon({
       );
 
 
-    /* PAINT */
+    /* ---------------------------------------------
+       PAINT
+    --------------------------------------------- */
 
     case "paint":
 
@@ -232,7 +248,9 @@ function CalculatorIcon({
       );
 
 
-    /* TILE */
+    /* ---------------------------------------------
+       TILE
+    --------------------------------------------- */
 
     case "tile":
 
@@ -275,7 +293,9 @@ function CalculatorIcon({
       );
 
 
-    /* PAVER */
+    /* ---------------------------------------------
+       PAVER
+    --------------------------------------------- */
 
     case "paver":
 
@@ -294,7 +314,9 @@ function CalculatorIcon({
       );
 
 
-    /* FENCE */
+    /* ---------------------------------------------
+       FENCE
+    --------------------------------------------- */
 
     case "fence":
 
@@ -311,7 +333,9 @@ function CalculatorIcon({
       );
 
 
-    /* GRAVEL */
+    /* ---------------------------------------------
+       GRAVEL
+    --------------------------------------------- */
 
     case "gravel":
 
@@ -342,7 +366,9 @@ function CalculatorIcon({
       );
 
 
-    /* TOPSOIL */
+    /* ---------------------------------------------
+       TOPSOIL
+    --------------------------------------------- */
 
     case "topsoil":
 
@@ -363,7 +389,9 @@ function CalculatorIcon({
       );
 
 
-    /* SOD / TURF */
+    /* ---------------------------------------------
+       SOD / TURF
+    --------------------------------------------- */
 
     case "sod-turf":
 
@@ -382,7 +410,9 @@ function CalculatorIcon({
       );
 
 
-    /* ASPHALT */
+    /* ---------------------------------------------
+       ASPHALT
+    --------------------------------------------- */
 
     case "asphalt":
 
@@ -399,7 +429,9 @@ function CalculatorIcon({
       );
 
 
-    /* SQUARE FOOTAGE */
+    /* ---------------------------------------------
+       SQUARE FOOTAGE
+    --------------------------------------------- */
 
     case "square-footage":
 
@@ -416,7 +448,9 @@ function CalculatorIcon({
       );
 
 
-    /* AREA */
+    /* ---------------------------------------------
+       AREA
+    --------------------------------------------- */
 
     case "area":
 
@@ -437,7 +471,9 @@ function CalculatorIcon({
       );
 
 
-    /* FALLBACK */
+    /* ---------------------------------------------
+       FALLBACK
+    --------------------------------------------- */
 
     default:
 
@@ -454,37 +490,40 @@ function CalculatorIcon({
 
         </svg>
       );
-
   }
 }
 
 
-/* -------------------------------------------------
+/* =================================================
    HELPERS
-------------------------------------------------- */
+================================================= */
 
 function getCategory(slug: string) {
-
   return categoryMap[slug] ?? "Construction";
-
 }
 
 
 function getDescription(slug: string) {
-
   return (
     descriptionMap[slug] ??
     "A practical construction calculator for project estimates."
   );
-
 }
 
+
+/* =================================================
+   CALCULATOR LIST
+================================================= */
 
 const calculatorList: Calculator[] =
   calculators.map((calculator) => ({
     ...calculator,
   }));
 
+
+/* =================================================
+   CATEGORIES
+================================================= */
 
 const categories = [
   "All",
@@ -499,17 +538,22 @@ const categories = [
 ];
 
 
-/* -------------------------------------------------
-   COMPONENT
-------------------------------------------------- */
+/* =================================================
+   MAIN COMPONENT
+================================================= */
 
 export default function CalculatorDirectory() {
 
-  const [query, setQuery] = useState("");
+  const [query, setQuery] =
+    useState("");
 
   const [activeCategory, setActiveCategory] =
     useState("All");
 
+
+  /* -----------------------------------------------
+     FILTER CALCULATORS
+  ----------------------------------------------- */
 
   const filteredCalculators = useMemo(() => {
 
@@ -517,38 +561,43 @@ export default function CalculatorDirectory() {
       query.trim().toLowerCase();
 
 
-    return calculatorList.filter((calculator) => {
+    return calculatorList.filter(
+      (calculator) => {
 
-      const category =
-        getCategory(calculator.slug);
-
-
-      const matchesCategory =
-        activeCategory === "All" ||
-        category === activeCategory;
+        const category =
+          getCategory(calculator.slug);
 
 
-      const haystack = [
-
-        calculator.title,
-
-        calculator.slug,
-
-        category,
-
-        getDescription(calculator.slug),
-
-      ]
-        .join(" ")
-        .toLowerCase();
+        const matchesCategory =
+          activeCategory === "All" ||
+          category === activeCategory;
 
 
-      return (
-        matchesCategory &&
-        (!search || haystack.includes(search))
-      );
+        const haystack = [
 
-    });
+          calculator.title,
+
+          calculator.slug,
+
+          category,
+
+          getDescription(
+            calculator.slug
+          ),
+
+        ]
+          .join(" ")
+          .toLowerCase();
+
+
+        return (
+          matchesCategory &&
+          (!search ||
+            haystack.includes(search))
+        );
+
+      }
+    );
 
   }, [query, activeCategory]);
 
@@ -557,14 +606,16 @@ export default function CalculatorDirectory() {
 
     <section
       id="calculators"
-      aria-labelledby="all-calculators-heading"
+      aria-labelledby="calculator-heading"
       className="border-y border-slate-200 bg-slate-50 px-5 py-10 sm:px-6 sm:py-14"
     >
 
       <div className="mx-auto max-w-6xl">
 
 
-        {/* SECTION HEADER */}
+        {/* =========================================
+           HEADING
+        ========================================= */}
 
         <div className="mx-auto max-w-3xl text-center">
 
@@ -573,15 +624,15 @@ export default function CalculatorDirectory() {
           </p>
 
 
-          <h2
-            id="all-calculators-heading"
-            className="mt-2 text-2xl font-black tracking-tight text-slate-950 sm:text-3xl"
+          <h1
+            id="calculator-heading"
+            className="mt-2 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl"
           >
-            All Construction Calculators
-          </h2>
+            Construction Calculators
+          </h1>
 
 
-          <p className="mt-2 text-sm leading-6 text-slate-500">
+          <p className="mt-3 text-sm leading-6 text-slate-500 sm:text-base">
             Find the calculator you need for materials,
             measurements, quantities and project estimates.
           </p>
@@ -589,7 +640,9 @@ export default function CalculatorDirectory() {
         </div>
 
 
-        {/* SEARCH */}
+        {/* =========================================
+           SEARCH
+        ========================================= */}
 
         <div className="mx-auto mt-7 max-w-2xl">
 
@@ -602,6 +655,8 @@ export default function CalculatorDirectory() {
 
 
           <div className="relative">
+
+            {/* SEARCH ICON */}
 
             <svg
               className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400"
@@ -640,97 +695,112 @@ export default function CalculatorDirectory() {
         </div>
 
 
-        {/* CATEGORIES */}
+        {/* =========================================
+           CATEGORIES
+        ========================================= */}
 
         <div
           className="mt-5 flex gap-2 overflow-x-auto pb-2"
           aria-label="Calculator categories"
         >
 
-          {categories.map((category) => (
+          {categories.map(
+            (category) => (
 
-            <button
-              key={category}
-              type="button"
-              onClick={() =>
-                setActiveCategory(category)
-              }
-              aria-pressed={
-                activeCategory === category
-              }
-              className={
-                activeCategory === category
-                  ? "whitespace-nowrap rounded-full bg-blue-600 px-4 py-2 text-xs font-bold text-white shadow-sm"
-                  : "whitespace-nowrap rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-600 transition hover:border-blue-200 hover:text-blue-600"
-              }
-            >
-              {category}
-            </button>
+              <button
+                key={category}
+                type="button"
+                onClick={() =>
+                  setActiveCategory(category)
+                }
+                aria-pressed={
+                  activeCategory === category
+                }
+                className={
+                  activeCategory === category
+                    ? "whitespace-nowrap rounded-full bg-blue-600 px-4 py-2 text-xs font-bold text-white shadow-sm"
+                    : "whitespace-nowrap rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-600 transition hover:border-blue-200 hover:text-blue-600"
+                }
+              >
+                {category}
+              </button>
 
-          ))}
+            )
+          )}
 
         </div>
 
 
-        {/* CALCULATOR GRID */}
+        {/* =========================================
+           CALCULATOR GRID
+        ========================================= */}
 
         <div className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
 
-          {filteredCalculators.map((calculator) => (
+          {filteredCalculators.map(
+            (calculator) => (
 
-            <Link
-              key={calculator.slug}
-              href={calculator.href}
-              className="group flex min-h-28 items-center gap-4 rounded-2xl border border-slate-200 bg-white px-4 py-4 shadow-sm transition hover:-translate-y-0.5 hover:border-blue-200 hover:shadow-md"
-            >
-
-              {/* ICON */}
-
-              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-700 transition group-hover:bg-blue-600 group-hover:text-white">
-
-                <CalculatorIcon
-                  slug={calculator.slug}
-                />
-
-              </span>
-
-
-              {/* CONTENT */}
-
-              <span className="min-w-0 flex-1">
-
-                <span className="block font-bold leading-5 text-slate-900 group-hover:text-blue-600">
-                  {calculator.title}
-                </span>
-
-
-                <span className="mt-1 block text-xs leading-5 text-slate-500">
-                  {getDescription(calculator.slug)}
-                </span>
-
-
-                <span className="mt-1.5 block text-[10px] font-semibold uppercase tracking-wide text-slate-400">
-                  {getCategory(calculator.slug)}
-                </span>
-
-              </span>
-
-
-              {/* ARROW */}
-
-              <span
-                aria-hidden="true"
-                className="text-lg text-slate-300 transition group-hover:translate-x-0.5 group-hover:text-blue-500"
+              <Link
+                key={calculator.slug}
+                href={calculator.href}
+                className="group flex min-h-28 items-center gap-4 rounded-2xl border border-slate-200 bg-white px-4 py-4 shadow-sm transition hover:-translate-y-0.5 hover:border-blue-200 hover:shadow-md"
               >
-                →
-              </span>
-
-            </Link>
-
-          ))}
 
 
-          {/* NO RESULTS */}
+                {/* ICON */}
+
+                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-700 transition group-hover:bg-blue-600 group-hover:text-white">
+
+                  <CalculatorIcon
+                    slug={calculator.slug}
+                  />
+
+                </span>
+
+
+                {/* CONTENT */}
+
+                <span className="min-w-0 flex-1">
+
+                  <span className="block font-bold leading-5 text-slate-900 group-hover:text-blue-600">
+                    {calculator.title}
+                  </span>
+
+
+                  <span className="mt-1 block text-xs leading-5 text-slate-500">
+                    {getDescription(
+                      calculator.slug
+                    )}
+                  </span>
+
+
+                  <span className="mt-1.5 block text-[10px] font-semibold uppercase tracking-wide text-slate-400">
+                    {getCategory(
+                      calculator.slug
+                    )}
+                  </span>
+
+                </span>
+
+
+                {/* ARROW */}
+
+                <span
+                  aria-hidden="true"
+                  className="text-lg text-slate-300 transition group-hover:translate-x-0.5 group-hover:text-blue-500"
+                >
+                  →
+                </span>
+
+              </Link>
+
+            )
+          )}
+
+
+          {/* =======================================
+             NO RESULTS
+          ======================================= */}
 
           {filteredCalculators.length === 0 && (
 
@@ -756,9 +826,9 @@ export default function CalculatorDirectory() {
               </svg>
 
 
-              <h3 className="mt-3 font-bold text-slate-900">
+              <h2 className="mt-3 font-bold text-slate-900">
                 No calculator found
-              </h3>
+              </h2>
 
 
               <p className="mt-1 text-sm text-slate-500">
@@ -784,7 +854,9 @@ export default function CalculatorDirectory() {
         </div>
 
 
-        {/* RESULT COUNT */}
+        {/* =========================================
+           RESULT COUNT
+        ========================================= */}
 
         <p className="mt-5 text-center text-xs text-slate-400">
           {filteredCalculators.length}{" "}
@@ -799,5 +871,4 @@ export default function CalculatorDirectory() {
     </section>
 
   );
-
 }
