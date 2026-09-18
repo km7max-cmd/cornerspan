@@ -1,3 +1,4 @@
+import Image from "next/image";
 import type { Metadata } from "next";
 
 import CalculatorDirectory from "./CalculatorDirectory";
@@ -18,6 +19,7 @@ export const metadata: Metadata = {
     "concrete calculator",
     "brick calculator",
     "steel calculator",
+    "rebar calculator",
     "roofing calculator",
     "fence calculator",
     "gravel calculator",
@@ -44,27 +46,52 @@ export const metadata: Metadata = {
 
   openGraph: {
     title: "Construction Calculators | Free Online Calculators",
+
     description:
       "Free calculators for construction measurements, material quantities, waste and project cost estimates.",
+
     url: pageUrl,
+
     type: "website",
-    images: ["/og-image.png"],
+
+    siteName: "CornerSpan",
+
+    locale: "en_US",
+
+    images: [
+      {
+        url: "/construction-calculators-guide.svg",
+        width: 1200,
+        height: 630,
+        alt:
+          "Construction calculators for building materials and project estimates",
+      },
+    ],
   },
 
   twitter: {
     card: "summary_large_image",
+
     title: "Construction Calculators | Free Online Calculators",
+
     description:
       "Free construction calculators for materials, measurements and project estimates.",
-    images: ["/og-image.png"],
+
+    images: ["/construction-calculators-guide.svg"],
   },
 };
 
 export default function CalculatorsPage() {
   return (
     <main className="min-h-screen bg-white">
+
+      {/* HERO */}
+
       <section className="bg-gradient-to-b from-blue-50 via-white to-slate-50">
+
         <div className="mx-auto max-w-6xl px-5 pb-10 pt-6 sm:px-6 sm:pb-14 sm:pt-8">
+
+          {/* Breadcrumb */}
 
           <nav
             aria-label="Breadcrumb"
@@ -72,69 +99,148 @@ export default function CalculatorsPage() {
           >
             <a
               href="/"
-              className="hover:text-blue-600"
+              className="transition hover:text-blue-600"
             >
               Home
             </a>
 
-            <span className="mx-2">/</span>
+            <span className="mx-2">
+              /
+            </span>
 
             <span className="font-medium text-slate-900">
               Calculators
             </span>
           </nav>
 
-          <div className="mx-auto max-w-3xl pt-6 text-center sm:pt-10">
-            <span className="inline-flex rounded-full border border-blue-100 bg-white px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-blue-700 shadow-sm sm:text-xs">
-              CORNERSPAN CALCULATORS
-            </span>
 
-            <h1 className="mt-4 text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">
-              Construction Calculators
-            </h1>
+          {/* Hero Content */}
 
-            <p className="mx-auto mt-4 max-w-2xl text-sm leading-6 text-slate-600 sm:text-base">
-              Free online calculators for construction measurements,
-              material quantities, waste and project cost estimates.
-              Choose a calculator, enter your project dimensions and
-              get a practical estimate.
-            </p>
+          <div className="grid items-center gap-8 pt-3 lg:grid-cols-[1.05fr_0.95fr] lg:gap-12 lg:pt-8">
+
+            <div className="max-w-3xl">
+
+              <span className="inline-flex rounded-full border border-blue-100 bg-white px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-blue-700 shadow-sm sm:text-xs">
+                CORNERSPAN CALCULATORS
+              </span>
+
+
+              <h1 className="mt-4 text-4xl font-black tracking-tight text-slate-950 sm:text-5xl lg:text-6xl">
+                Construction Calculators
+              </h1>
+
+
+              <p className="mt-4 max-w-2xl text-sm leading-6 text-slate-600 sm:text-base sm:leading-7">
+                Free online construction calculators for measuring areas,
+                estimating materials, planning projects and calculating
+                construction costs. Choose a calculator and get a practical
+                estimate in seconds.
+              </p>
+
+
+              {/* Trust / Scope */}
+
+              <div className="mt-5 flex flex-wrap gap-2 text-xs font-semibold text-slate-500">
+
+                <span className="rounded-full bg-white px-3 py-1.5 shadow-sm ring-1 ring-slate-200">
+                  US &amp; Metric
+                </span>
+
+                <span className="rounded-full bg-white px-3 py-1.5 shadow-sm ring-1 ring-slate-200">
+                  Material Estimates
+                </span>
+
+                <span className="rounded-full bg-white px-3 py-1.5 shadow-sm ring-1 ring-slate-200">
+                  Free to Use
+                </span>
+
+              </div>
+
+            </div>
+
+
+            {/* Desktop Illustration */}
+
+            <div className="hidden lg:block">
+
+              <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+
+                <Image
+                  src="/construction-calculators-guide.svg"
+                  alt="Construction calculator tools for concrete, brick, roofing, steel, landscaping and material estimates"
+                  width={1200}
+                  height={630}
+                  priority
+                  className="h-auto w-full"
+                />
+
+              </div>
+
+            </div>
+
           </div>
+
         </div>
+
       </section>
+
+
+      {/* CALCULATOR DIRECTORY */}
 
       <CalculatorDirectory />
 
+
+      {/* SEO CONTENT */}
+
       <section className="px-5 py-12 sm:px-6 sm:py-16">
+
         <div className="mx-auto max-w-4xl">
+
           <h2 className="text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">
             Construction Calculators for Real Projects
           </h2>
 
+
           <div className="mt-5 space-y-4 text-sm leading-7 text-slate-600">
-            <p>
-              CornerSpan calculators are designed for practical estimating
-              tasks such as measuring areas, calculating concrete and brick
-              quantities, estimating roofing materials, planning fences and
-              landscaping projects, and checking material costs.
-            </p>
 
             <p>
-              Depending on the calculator, you can work with common Imperial
-              or Metric measurements and enter your own waste allowance,
-              coverage, density or material price. Results are estimates;
-              actual quantities can vary with site conditions, product
-              specifications and installation methods.
+              CornerSpan provides practical calculators for common
+              construction and outdoor projects, including concrete,
+              brick, roofing, steel, fencing, asphalt, pavers, tile,
+              paint and landscaping materials.
             </p>
 
+
             <p>
-              For detailed calculation guidance, open the relevant calculator
-              and review its formula, worked example and project notes before
-              ordering materials.
+              Depending on the calculator, you can use Imperial measurements
+              such as feet, inches, square feet, pounds and tons, or Metric
+              measurements such as meters, centimeters, kilograms and tonnes.
+              You can also adjust values such as waste allowance, coverage,
+              density and material price where supported.
             </p>
+
+
+            <p>
+              These calculators are designed to help homeowners, contractors,
+              builders, estimators and DIY users make quick material
+              estimates before purchasing supplies. Results are estimates
+              based on the information entered and the formulas shown on
+              each calculator.
+            </p>
+
+
+            <p>
+              For the most accurate project estimate, always compare the
+              calculator result with product specifications, site conditions
+              and the installation method being used.
+            </p>
+
           </div>
+
         </div>
+
       </section>
+
     </main>
   );
 }
