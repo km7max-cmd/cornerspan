@@ -1,11 +1,12 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import Image from "next/image";
+import { useState } from "react";
 
 type UnitSystem = "imperial" | "metric";
 type Currency = "USD" | "EUR" | "GBP" | "CAD" | "AUD" | "INR";
 
-const currencySymbols: Record<Currency, string> = {
+const currencySymbol: Record<Currency, string> = {
   USD: "$",
   EUR: "€",
   GBP: "£",
@@ -14,654 +15,440 @@ const currencySymbols: Record<Currency, string> = {
   INR: "₹",
 };
 
+const FT2_TO_M2 = 0.09290304;
+
 function formatNumber(value: number, decimals = 2) {
-  if (!Number.isFinite(value)) return "0";
-
-  return value.toLocaleString("en-US", {
-    minimumFractionDigits: 0,
+  return new Intl.NumberFormat("en-US", {
     maximumFractionDigits: decimals,
-  });
-}
-
-function InputField({
-  label,
-  value,
-  onChange,
-  placeholder,
-  suffix,
-}: {
-  label: string;
-  value: string;
-  onChange: (value: string) => void;
-  placeholder: string;
-  suffix?: string;
-}) {
-  return (
-    <div>
-      <label className="mb-1.5 block text-xs font-bold text-slate-600">
-        {label}
-      </label>
-
-      <div className="flex overflow-hidden rounded-xl border border-slate-300 bg-white focus-within:border-blue-500">
-        <input
-          type="number"
-          min="0"
-          step="any"
-          value={value}
-          placeholder={placeholder}
-          onChange={(e) => onChange(e.target.value)}
-          className="min-w-0 flex-1 px-3 py-3 text-sm font-semibold text-slate-900 outline-none"
-        />
-
-        {suffix && (
-          <span className="flex items-center border-l border-slate-200 bg-slate-50 px-3 text-xs font-bold text-slate-500">
-            {suffix}
-          </span>
-        )}
-      </div>
-    </div>
-  );
-}
-
-function ResultItem({
-  label,
-  value,
-}: {
-  label: string;
-  value: string;
-}) {
-  return (
-    <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
-      <p className="text-xs font-bold text-slate-500">
-        {label}
-      </p>
-
-      <p className="mt-1 text-lg font-black text-slate-900">
-        {value}
-      </p>
-    </div>
-  );
+  }).format(value);
 }
 
 export default function SodTurfCalculator() {
-  const [unitSystem, setUnitSystem] =
-    useState<UnitSystem>("imperial");
-
-  const [currency, setCurrency] =
-    useState<Currency>("USD");
+  const [unitSystem, setUnitSystem] = useState<UnitSystem>("imperial");
 
   const [length, setLength] = useState("");
   const [width, setWidth] = useState("");
 
-  const [sodSize, setSodSize] =
-    useState("9");
+  const [coverage, setCoverage] = useState("");
+  const [waste, setWaste] = useState("10");
 
-  const [waste, setWaste] =
-    useState("10");
+  const [pricePerArea, setPricePerArea] = useState("");
+  const [currency, setCurrency] = useState<Currency>("USD");
 
-  const [price, setPrice] =
-    useState("");
+  const [result, setResult] = useState<{
+    area: number;
+    orderArea: number;
+    sodPieces: number;
+    wasteAmount: number;
+    cost: number | null;
+  } | null>(null);
 
-  const isMetric =
-    unitSystem === "metric";
+  const areaUnit = unitSystem === "imperial" ? "ft²" : "m²";
 
-  const currencySymbol =
-    currencySymbols[currency];
+  const handleUnitChange = (nextUnit: UnitSystem) => {
+    if (nextUnit === unitSystem) return;
 
-  const result = useMemo(() => {
+    if (length) {
+      const value = Number(length);
+
+      if (Number.isFinite(value)) {
+        setLength(
+          nextUnit === "metric"
+            ? String(value * 0.3048)
+            : String(value / 0.3048)
+        );
+      }
+    }
+
+    if (width) {
+      const value = Number(width);
+
+      if (Number.isFinite(value)) {
+        setWidth(
+          nextUnit === "metric"
+            ? String(value * 0.3048)
+            : String(value / 0.3048)
+        );
+      }
+    }
+
+    if (coverage) {
+      const value = Number(coverage);
+
+      if (Number.isFinite(value)) {
+        setCoverage(
+          nextUnit === "metric"
+            ? String(value * FT2_TO_M2)
+            : String(value / FT2_TO_M2)
+        );
+      }
+    }
+
+    if (pricePerArea) {
+      const value = Number(pricePerArea);
+
+      if (Number.isFinite(value)) {
+        setPricePerArea(
+          nextUnit === "metric"
+            ? String(value / FT2_TO_M2)
+            : String(value * FT2_TO_M2)
+        );
+      }
+    }
+
+    setUnitSystem(nextUnit);
+    setResult(null);
+  };
+
+  const calculate = () => {
     const l = Number(length);
     const w = Number(width);
-    const sodSq = Number(sodSize);
-    const wastePct = Number(waste);
-    const enteredPrice = Number(price);
+    const coveragePerPiece = Number(coverage);
+    const wastePercent = Number(waste);
+    const price = Number(pricePerArea);
 
     if (
       !Number.isFinite(l) ||
       !Number.isFinite(w) ||
-      !Number.isFinite(sodSq) ||
+      !Number.isFinite(coveragePerPiece) ||
       l <= 0 ||
       w <= 0 ||
-      sodSq <= 0
+      coveragePerPiece <= 0
     ) {
-      return null;
+      setResult(null);
+      return;
     }
 
-    const area = l * w;
-
-    const safeWaste =
-      Number.isFinite(wastePct) &&
-      wastePct > 0
-        ? wastePct
-        : 0;
-
-    const multiplier =
-      1 + safeWaste / 100;
-
-    const orderArea =
-      area * multiplier;
-
-    const sodPieces =
-      Math.ceil(orderArea / sodSq);
+    const lawnArea = l * w;
+    const wasteAmount = lawnArea * (wastePercent / 100);
+    const orderArea = lawnArea + wasteAmount;
+    const sodPieces = Math.ceil(orderArea / coveragePerPiece);
 
     const cost =
-      Number.isFinite(enteredPrice) &&
-      enteredPrice > 0
-        ? sodPieces * enteredPrice
+      pricePerArea > 0
+        ? orderArea * price
         : null;
 
-    return {
-      area,
+    setResult({
+      area: lawnArea,
       orderArea,
       sodPieces,
+      wasteAmount,
       cost,
-    };
-  }, [
-    length,
-    width,
-    sodSize,
-    waste,
-    price,
-  ]);
+    });
 
-  function handleUnitChange(
-    next: UnitSystem
-  ) {
-    if (next === unitSystem) return;
-
-    const l = Number(length);
-    const w = Number(width);
-
-    if (
-      Number.isFinite(l) &&
-      l > 0
-    ) {
-      setLength(
-        String(
-          isMetric
-            ? (l * 3.280839895).toFixed(4)
-            : (l / 3.280839895).toFixed(4)
-        )
-      );
-    }
-
-    if (
-      Number.isFinite(w) &&
-      w > 0
-    ) {
-      setWidth(
-        String(
-          isMetric
-            ? (w * 3.280839895).toFixed(4)
-            : (w / 3.280839895).toFixed(4)
-        )
-      );
-    }
-
-    setUnitSystem(next);
-  }
+    setTimeout(() => {
+      document
+        .getElementById("sod-result")
+        ?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }, 50);
+  };
 
   return (
-    <section className="w-full">
+    <div className="mx-auto w-full max-w-3xl">
+      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+        {/* Header */}
+        <div className="bg-slate-900 px-5 py-5 text-white">
+          <div className="flex items-center gap-3">
+            <span className="text-3xl">🌿</span>
+            <div>
+              <h2 className="text-xl font-bold">
+                Sod & Turf Calculator
+              </h2>
+              <p className="mt-1 text-sm text-slate-300">
+                Calculate lawn area, sod quantity, waste and cost.
+              </p>
+            </div>
+          </div>
+        </div>
 
-      {/* HERO */}
+        {/* Body */}
+        <div className="space-y-5 bg-slate-50 p-4 sm:p-6">
+          {/* Unit System */}
+          <div>
+            <label className="mb-2 block text-sm font-semibold text-slate-700">
+              Unit System
+            </label>
 
-      <div className="mb-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-        <img
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={() => handleUnitChange("imperial")}
+                className={`rounded-xl border px-4 py-3 text-sm font-semibold transition ${
+                  unitSystem === "imperial"
+                    ? "border-blue-600 bg-blue-600 text-white"
+                    : "border-slate-300 bg-white text-slate-700"
+                }`}
+              >
+                US / Imperial
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleUnitChange("metric")}
+                className={`rounded-xl border px-4 py-3 text-sm font-semibold transition ${
+                  unitSystem === "metric"
+                    ? "border-blue-600 bg-blue-600 text-white"
+                    : "border-slate-300 bg-white text-slate-700"
+                }`}
+              >
+                Metric
+              </button>
+            </div>
+          </div>
+
+          {/* Dimensions */}
+          <div className="rounded-xl border border-slate-200 bg-white p-4">
+            <h3 className="mb-4 text-base font-bold text-slate-900">
+              Lawn Dimensions
+            </h3>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div>
+                <label className="mb-2 block text-sm font-medium text-slate-700">
+                  Length ({unitSystem === "imperial" ? "ft" : "m"})
+                </label>
+
+                <input
+                  type="number"
+                  inputMode="decimal"
+                  min="0"
+                  value={length}
+                  onChange={(e) => {
+                    setLength(e.target.value);
+                    setResult(null);
+                  }}
+                  placeholder={
+                    unitSystem === "imperial"
+                      ? "Enter length in feet"
+                      : "Enter length in meters"
+                  }
+                  className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-base outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                />
+              </div>
+
+              <div>
+                <label className="mb-2 block text-sm font-medium text-slate-700">
+                  Width ({unitSystem === "imperial" ? "ft" : "m"})
+                </label>
+
+                <input
+                  type="number"
+                  inputMode="decimal"
+                  min="0"
+                  value={width}
+                  onChange={(e) => {
+                    setWidth(e.target.value);
+                    setResult(null);
+                  }}
+                  placeholder={
+                    unitSystem === "imperial"
+                      ? "Enter width in feet"
+                      : "Enter width in meters"
+                  }
+                  className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-base outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Sod Coverage */}
+          <div className="rounded-xl border border-slate-200 bg-white p-4">
+            <label className="mb-2 block text-sm font-semibold text-slate-700">
+              Coverage per Sod Piece / Roll ({areaUnit})
+            </label>
+
+            <input
+              type="number"
+              inputMode="decimal"
+              min="0"
+              value={coverage}
+              onChange={(e) => {
+                setCoverage(e.target.value);
+                setResult(null);
+              }}
+              placeholder={
+                unitSystem === "imperial"
+                  ? "Example: 10"
+                  : "Example: 1"
+              }
+              className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-base outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+            />
+
+            <p className="mt-2 text-xs text-slate-500">
+              Enter the actual coverage printed on your sod piece,
+              slab or turf roll.
+            </p>
+          </div>
+
+          {/* Waste */}
+          <div className="rounded-xl border border-slate-200 bg-white p-4">
+            <label className="mb-2 block text-sm font-semibold text-slate-700">
+              Waste / Overage
+            </label>
+
+            <select
+              value={waste}
+              onChange={(e) => {
+                setWaste(e.target.value);
+                setResult(null);
+              }}
+              className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-base outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+            >
+              <option value="0">0%</option>
+              <option value="5">5%</option>
+              <option value="10">10%</option>
+              <option value="15">15%</option>
+              <option value="20">20%</option>
+            </select>
+          </div>
+
+          {/* Cost */}
+          <div className="rounded-xl border border-slate-200 bg-white p-4">
+            <h3 className="mb-4 text-base font-bold text-slate-900">
+              Optional Cost Estimate
+            </h3>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div>
+                <label className="mb-2 block text-sm font-medium text-slate-700">
+                  Currency
+                </label>
+
+                <select
+                  value={currency}
+                  onChange={(e) =>
+                    setCurrency(e.target.value as Currency)
+                  }
+                  className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-base outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                >
+                  <option value="USD">USD ($)</option>
+                  <option value="EUR">EUR (€)</option>
+                  <option value="GBP">GBP (£)</option>
+                  <option value="CAD">CAD (C$)</option>
+                  <option value="AUD">AUD (A$)</option>
+                  <option value="INR">INR (₹)</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="mb-2 block text-sm font-medium text-slate-700">
+                  Price per {areaUnit}
+                </label>
+
+                <input
+                  type="number"
+                  inputMode="decimal"
+                  min="0"
+                  value={pricePerArea}
+                  onChange={(e) => {
+                    setPricePerArea(e.target.value);
+                    setResult(null);
+                  }}
+                  placeholder="Optional"
+                  className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-base outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                />
+              </div>
+            </div>
+
+            <p className="mt-2 text-xs text-slate-500">
+              Enter your local supplier's price. This calculator does
+              not use live currency exchange rates.
+            </p>
+          </div>
+
+          {/* Calculate */}
+          <button
+            type="button"
+            onClick={calculate}
+            className="w-full rounded-xl bg-blue-600 px-5 py-4 text-base font-bold text-white shadow-sm transition hover:bg-blue-700 active:scale-[0.99]"
+          >
+            Calculate Sod / Turf
+          </button>
+
+          {/* Result */}
+          {result && (
+            <div
+              id="sod-result"
+              className="rounded-2xl border border-blue-200 bg-white p-5 shadow-sm"
+            >
+              <div className="mb-4 rounded-xl bg-slate-900 p-5 text-white">
+                <p className="text-sm text-slate-300">
+                  Sod / Turf to Order
+                </p>
+
+                <p className="mt-1 text-3xl font-extrabold">
+                  {formatNumber(result.sodPieces, 0)}
+                </p>
+
+                <p className="mt-1 text-sm text-slate-300">
+                  pieces / rolls
+                </p>
+              </div>
+
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div className="rounded-xl bg-slate-50 p-4">
+                  <p className="text-xs text-slate-500">
+                    Lawn Area
+                  </p>
+                  <p className="mt-1 text-lg font-bold text-slate-900">
+                    {formatNumber(result.area)} {areaUnit}
+                  </p>
+                </div>
+
+                <div className="rounded-xl bg-slate-50 p-4">
+                  <p className="text-xs text-slate-500">
+                    Order Area
+                  </p>
+                  <p className="mt-1 text-lg font-bold text-slate-900">
+                    {formatNumber(result.orderArea)} {areaUnit}
+                  </p>
+                </div>
+
+                <div className="rounded-xl bg-slate-50 p-4">
+                  <p className="text-xs text-slate-500">
+                    Waste / Overage
+                  </p>
+                  <p className="mt-1 text-lg font-bold text-slate-900">
+                    {formatNumber(result.wasteAmount)} {areaUnit}
+                  </p>
+                </div>
+
+                {result.cost !== null && (
+                  <div className="rounded-xl bg-slate-50 p-4">
+                    <p className="text-xs text-slate-500">
+                      Estimated Cost
+                    </p>
+                    <p className="mt-1 text-lg font-bold text-slate-900">
+                      {currencySymbol[currency]}
+                      {formatNumber(result.cost)}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+            <strong>Important:</strong> Sod and turf coverage varies
+            by supplier and product. Always use the coverage printed
+            on the actual product packaging or supplier specification.
+            Waste depends on lawn shape, seams, cuts and installation
+            method.
+          </div>
+        </div>
+      </div>
+
+      {/* Hero */}
+      <div className="mt-6 overflow-hidden rounded-2xl">
+        <Image
           src="/cornerspan-sod-turf-calculator-hero.webp"
-          alt="Sod and Turf Calculator for lawn area, sod quantity, waste and cost"
+          alt="Sod and turf calculator for lawn area and material planning"
           width={1536}
           height={1024}
-          fetchPriority="high"
           className="h-auto w-full object-cover"
         />
       </div>
-
-      {/* CALCULATOR */}
-
-      <div className="overflow-hidden rounded-2xl border border-slate-800 bg-slate-950 shadow-xl">
-
-        {/* HEADER */}
-
-        <div className="px-5 py-5 sm:px-7">
-
-          <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">
-            SOD / TURF CALCULATOR
-          </p>
-
-          <h1 className="mt-1 text-2xl font-black tracking-tight text-white sm:text-3xl">
-            Sod / Turf Calculator
-          </h1>
-
-          <p className="mt-2 text-sm leading-6 text-slate-300">
-            Calculate lawn area, sod or turf quantity,
-            waste and estimated material cost.
-          </p>
-
-        </div>
-
-        {/* BODY */}
-
-        <div className="bg-slate-100 p-4 sm:p-6">
-
-          <div className="space-y-4">
-
-            {/* UNIT SYSTEM */}
-
-            <div className="rounded-xl border border-slate-200 bg-white p-4">
-
-              <h2 className="mb-3 text-sm font-extrabold text-slate-900">
-                Unit System
-              </h2>
-
-              <div className="grid gap-3 sm:grid-cols-2">
-
-                <button
-                  type="button"
-                  onClick={() =>
-                    handleUnitChange(
-                      "imperial"
-                    )
-                  }
-                  className={`rounded-xl border px-4 py-3 text-sm font-extrabold transition ${
-                    !isMetric
-                      ? "border-blue-600 bg-blue-600 text-white"
-                      : "border-slate-300 bg-white text-slate-700 hover:border-blue-400"
-                  }`}
-                >
-                  Imperial — ft / ft²
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() =>
-                    handleUnitChange(
-                      "metric"
-                    )
-                  }
-                  className={`rounded-xl border px-4 py-3 text-sm font-extrabold transition ${
-                    isMetric
-                      ? "border-blue-600 bg-blue-600 text-white"
-                      : "border-slate-300 bg-white text-slate-700 hover:border-blue-400"
-                  }`}
-                >
-                  Metric — m / m²
-                </button>
-
-              </div>
-
-            </div>
-
-            {/* LAWN DIMENSIONS */}
-
-            <div className="rounded-xl border border-slate-200 bg-white p-4">
-
-              <h2 className="mb-3 text-sm font-extrabold text-slate-900">
-                Lawn Dimensions
-              </h2>
-
-              <div className="grid gap-3 sm:grid-cols-2">
-
-                <InputField
-                  label={`Length (${isMetric ? "m" : "ft"})`}
-                  value={length}
-                  onChange={setLength}
-                  placeholder="Enter length"
-                  suffix={
-                    isMetric
-                      ? "m"
-                      : "ft"
-                  }
-                />
-
-                <InputField
-                  label={`Width (${isMetric ? "m" : "ft"})`}
-                  value={width}
-                  onChange={setWidth}
-                  placeholder="Enter width"
-                  suffix={
-                    isMetric
-                      ? "m"
-                      : "ft"
-                  }
-                />
-
-              </div>
-
-            </div>
-
-            {/* SOD MATERIAL */}
-
-            <div className="rounded-xl border border-slate-200 bg-white p-4">
-
-              <h2 className="mb-3 text-sm font-extrabold text-slate-900">
-                Sod / Turf Material
-              </h2>
-
-              <div className="grid gap-3 sm:grid-cols-2">
-
-                <div>
-
-                  <label className="mb-1.5 block text-xs font-bold text-slate-600">
-                    Sod Piece / Roll Coverage
-                  </label>
-
-                  <select
-                    value={sodSize}
-                    onChange={(e) =>
-                      setSodSize(
-                        e.target.value
-                      )
-                    }
-                    className="w-full rounded-xl border border-slate-300 bg-white px-3 py-3 text-sm font-semibold text-slate-900 outline-none focus:border-blue-500"
-                  >
-
-                    {isMetric ? (
-                      <>
-                        <option value="0.5">
-                          0.5 m²
-                        </option>
-
-                        <option value="1">
-                          1 m²
-                        </option>
-
-                        <option value="2">
-                          2 m²
-                        </option>
-
-                        <option value="5">
-                          5 m²
-                        </option>
-                      </>
-                    ) : (
-                      <>
-                        <option value="9">
-                          9 ft²
-                        </option>
-
-                        <option value="10">
-                          10 ft²
-                        </option>
-
-                        <option value="18">
-                          18 ft²
-                        </option>
-
-                        <option value="20">
-                          20 ft²
-                        </option>
-                      </>
-                    )}
-
-                  </select>
-
-                </div>
-
-                <div>
-
-                  <label className="mb-1.5 block text-xs font-bold text-slate-600">
-                    Waste / Overage
-                  </label>
-
-                  <select
-                    value={waste}
-                    onChange={(e) =>
-                      setWaste(
-                        e.target.value
-                      )
-                    }
-                    className="w-full rounded-xl border border-slate-300 bg-white px-3 py-3 text-sm font-semibold text-slate-900 outline-none focus:border-blue-500"
-                  >
-
-                    <option value="0">
-                      0%
-                    </option>
-
-                    <option value="5">
-                      5%
-                    </option>
-
-                    <option value="10">
-                      10%
-                    </option>
-
-                    <option value="15">
-                      15%
-                    </option>
-
-                    <option value="20">
-                      20%
-                    </option>
-
-                  </select>
-
-                </div>
-
-              </div>
-
-              <div className="mt-3 rounded-lg bg-slate-50 px-3 py-2.5">
-
-                <p className="text-xs leading-5 text-slate-600">
-                  Sod coverage varies by supplier.
-                  Select the coverage of the actual
-                  sod roll, piece or turf product you
-                  plan to purchase.
-                </p>
-
-              </div>
-
-            </div>
-
-            {/* COST */}
-
-            <div className="rounded-xl border border-slate-200 bg-white p-4">
-
-              <h2 className="mb-3 text-sm font-extrabold text-slate-900">
-                Optional Cost
-              </h2>
-
-              <div className="grid gap-3 sm:grid-cols-[1fr_150px]">
-
-                <InputField
-                  label={`Price per ${
-                    isMetric
-                      ? "piece / roll"
-                      : "piece / roll"
-                  }`}
-                  value={price}
-                  onChange={setPrice}
-                  placeholder="Enter price"
-                  suffix={
-                    currencySymbol
-                  }
-                />
-
-                <div>
-
-                  <label className="mb-1.5 block text-xs font-bold text-slate-600">
-                    Currency
-                  </label>
-
-                  <select
-                    value={currency}
-                    onChange={(e) =>
-                      setCurrency(
-                        e.target
-                          .value as Currency
-                      )
-                    }
-                    className="w-full rounded-xl border border-slate-300 bg-white px-3 py-3 text-sm font-semibold text-slate-900 outline-none focus:border-blue-500"
-                  >
-
-                    <option value="USD">
-                      USD — $
-                    </option>
-
-                    <option value="EUR">
-                      EUR — €
-                    </option>
-
-                    <option value="GBP">
-                      GBP — £
-                    </option>
-
-                    <option value="CAD">
-                      CAD — C$
-                    </option>
-
-                    <option value="AUD">
-                      AUD — A$
-                    </option>
-
-                    <option value="INR">
-                      INR — ₹
-                    </option>
-
-                  </select>
-
-                </div>
-
-              </div>
-
-              <p className="mt-3 text-xs leading-5 text-slate-500">
-                Currency changes the cost label only.
-                No live exchange-rate conversion is applied.
-              </p>
-
-            </div>
-
-            {/* CALCULATE */}
-
-            <button
-              type="button"
-              onClick={() =>
-                document
-                  .getElementById(
-                    "sod-results"
-                  )
-                  ?.scrollIntoView({
-                    behavior:
-                      "smooth",
-                    block: "start",
-                  })
-              }
-              className="w-full rounded-xl bg-blue-600 px-4 py-4 text-sm font-extrabold text-white shadow-sm transition hover:bg-blue-700 active:scale-[0.99]"
-            >
-              Calculate Sod / Turf
-            </button>
-
-            {/* RESULTS */}
-
-            {result && (
-              <div
-                id="sod-results"
-                className="scroll-mt-24 rounded-2xl border border-blue-200 bg-white p-4 shadow-sm sm:p-5"
-              >
-
-                <div className="rounded-xl bg-slate-950 p-5 text-center">
-
-                  <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-400">
-                    SOD / TURF TO ORDER
-                  </p>
-
-                  <p className="mt-2 text-4xl font-black tracking-tight text-white">
-
-                    {formatNumber(
-                      result.sodPieces
-                    )}
-
-                    {" "}
-
-                    {result.sodPieces === 1
-                      ? "piece"
-                      : "pieces"}
-
-                  </p>
-
-                  <p className="mt-2 text-xs text-slate-400">
-                    Includes {waste}% waste / overage
-                  </p>
-
-                </div>
-
-                <div className="mt-4 grid gap-3 sm:grid-cols-2">
-
-                  <ResultItem
-                    label="Lawn Area"
-                    value={`${formatNumber(
-                      result.area
-                    )} ${
-                      isMetric
-                        ? "m²"
-                        : "ft²"
-                    }`}
-                  />
-
-                  <ResultItem
-                    label="Sod / Turf to Order"
-                    value={`${formatNumber(
-                      result.orderArea
-                    )} ${
-                      isMetric
-                        ? "m²"
-                        : "ft²"
-                    }`}
-                  />
-
-                  <ResultItem
-                    label="Waste / Overage"
-                    value={`${waste}%`}
-                  />
-
-                  <ResultItem
-                    label="Sod Pieces / Rolls"
-                    value={`${formatNumber(
-                      result.sodPieces
-                    )}`}
-                  />
-
-                  {result.cost !== null && (
-                    <ResultItem
-                      label="Estimated Material Cost"
-                      value={`${currencySymbol}${formatNumber(
-                        result.cost
-                      )}`}
-                    />
-                  )}
-
-                </div>
-
-                <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4">
-
-                  <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
-                    Calculation
-                  </p>
-
-                  <p className="mt-2 text-sm leading-6 text-slate-700">
-                    Lawn Area = Length × Width
-                  </p>
-
-                  <p className="text-sm leading-6 text-slate-700">
-                    Order Area = Lawn Area ×
-                    (1 + Waste ÷ 100)
-                  </p>
-
-                  <p className="text-sm leading-6 text-slate-700">
-                    Pieces = Ceiling(
-                    Order Area ÷ Sod Coverage)
-                  </p>
-
-                </div>
-
-              </div>
-            )}
-
-          </div>
-
-        </div>
-
-      </div>
-
-    </section>
+    </div>
   );
 }
