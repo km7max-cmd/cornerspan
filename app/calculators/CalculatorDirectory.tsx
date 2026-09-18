@@ -18,7 +18,6 @@ type Calculator = {
 ------------------------------------------------- */
 
 const categoryMap: Record<string, string> = {
-
   area: "General",
 
   "square-footage": "General",
@@ -46,7 +45,6 @@ const categoryMap: Record<string, string> = {
   "sod-turf": "Landscaping",
 
   roofing: "Roofing",
-
 };
 
 
@@ -55,7 +53,6 @@ const categoryMap: Record<string, string> = {
 ------------------------------------------------- */
 
 const descriptionMap: Record<string, string> = {
-
   area:
     "Calculate area for common geometric shapes.",
 
@@ -97,12 +94,11 @@ const descriptionMap: Record<string, string> = {
 
   roofing:
     "Estimate roof area, roofing squares, bundles and cost.",
-
 };
 
 
 /* -------------------------------------------------
-   SVG ICON
+   SVG ICONS
 ------------------------------------------------- */
 
 type IconProps = {
@@ -116,7 +112,6 @@ function CalculatorIcon({
 }: IconProps & { slug: string }) {
 
   const common = {
-
     className,
 
     viewBox: "0 0 24 24",
@@ -132,7 +127,6 @@ function CalculatorIcon({
     strokeLinejoin: "round" as const,
 
     "aria-hidden": true,
-
   };
 
 
@@ -245,13 +239,37 @@ function CalculatorIcon({
       return (
         <svg {...common}>
 
-          <rect x="4" y="4" width="7" height="7" rx="1" />
+          <rect
+            x="4"
+            y="4"
+            width="7"
+            height="7"
+            rx="1"
+          />
 
-          <rect x="13" y="4" width="7" height="7" rx="1" />
+          <rect
+            x="13"
+            y="4"
+            width="7"
+            height="7"
+            rx="1"
+          />
 
-          <rect x="4" y="13" width="7" height="7" rx="1" />
+          <rect
+            x="4"
+            y="13"
+            width="7"
+            height="7"
+            rx="1"
+          />
 
-          <rect x="13" y="13" width="7" height="7" rx="1" />
+          <rect
+            x="13"
+            y="13"
+            width="7"
+            height="7"
+            rx="1"
+          />
 
         </svg>
       );
@@ -302,11 +320,23 @@ function CalculatorIcon({
 
           <path d="M4 18c2-3 4-5 6-5 1.5 0 2.5 1 4 1 2.5 0 3-3 6-3" />
 
-          <circle cx="7" cy="8" r="1.6" />
+          <circle
+            cx="7"
+            cy="8"
+            r="1.6"
+          />
 
-          <circle cx="13" cy="6" r="1.3" />
+          <circle
+            cx="13"
+            cy="6"
+            r="1.3"
+          />
 
-          <circle cx="18" cy="15" r="1.5" />
+          <circle
+            cx="18"
+            cy="15"
+            r="1.5"
+          />
 
         </svg>
       );
@@ -457,7 +487,6 @@ const calculatorList: Calculator[] =
 
 
 const categories = [
-
   "All",
 
   ...Array.from(
@@ -467,7 +496,6 @@ const categories = [
       )
     )
   ).sort(),
-
 ];
 
 
