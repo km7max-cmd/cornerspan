@@ -114,7 +114,7 @@ export default function CalculatorsPage() {
           </nav>
 
 
-          {/* Hero Content */}
+          {/* HERO CONTENT */}
 
           <div className="grid items-center gap-8 pt-3 lg:grid-cols-[1.05fr_0.95fr] lg:gap-12 lg:pt-8">
 
@@ -125,11 +125,6 @@ export default function CalculatorsPage() {
               </span>
 
 
-              <h1 className="mt-4 text-4xl font-black tracking-tight text-slate-950 sm:text-5xl lg:text-6xl">
-                Construction Calculators
-              </h1>
-
-
               <p className="mt-4 max-w-2xl text-sm leading-6 text-slate-600 sm:text-base sm:leading-7">
                 Free online construction calculators for measuring areas,
                 estimating materials, planning projects and calculating
@@ -138,7 +133,7 @@ export default function CalculatorsPage() {
               </p>
 
 
-              {/* Trust / Scope */}
+              {/* TRUST / SCOPE */}
 
               <div className="mt-5 flex flex-wrap gap-2 text-xs font-semibold text-slate-500">
 
@@ -159,7 +154,7 @@ export default function CalculatorsPage() {
             </div>
 
 
-            {/* Desktop Illustration */}
+            {/* DESKTOP IMAGE */}
 
             <div className="hidden lg:block">
 
@@ -185,7 +180,7 @@ export default function CalculatorsPage() {
       </section>
 
 
-      {/* CALCULATOR DIRECTORY */}
+      {/* MAIN CALCULATOR DIRECTORY */}
 
       <CalculatorDirectory />
 
