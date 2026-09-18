@@ -1,0 +1,386 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 1200 630"
+  role="img"
+  aria-labelledby="title desc"
+>
+  <title id="title">Construction Calculators</title>
+
+  <desc id="desc">
+    Construction calculator tools for measuring, estimating materials,
+    roofing, brick, concrete, steel and landscaping projects.
+  </desc>
+
+  <defs>
+
+    <linearGradient
+      id="background"
+      x1="0"
+      y1="0"
+      x2="1"
+      y2="1"
+    >
+      <stop
+        offset="0"
+        stop-color="#eff6ff"
+      />
+
+      <stop
+        offset="1"
+        stop-color="#f8fafc"
+      />
+    </linearGradient>
+
+    <linearGradient
+      id="card"
+      x1="0"
+      y1="0"
+      x2="1"
+      y2="1"
+    >
+      <stop
+        offset="0"
+        stop-color="#ffffff"
+      />
+
+      <stop
+        offset="1"
+        stop-color="#f1f5f9"
+      />
+    </linearGradient>
+
+  </defs>
+
+
+  <!-- BACKGROUND -->
+
+  <rect
+    width="1200"
+    height="630"
+    rx="42"
+    fill="url(#background)"
+  />
+
+
+  <!-- BLUEPRINT GRID -->
+
+  <g
+    opacity=".28"
+    stroke="#93c5fd"
+    stroke-width="2"
+  >
+
+    <path d="M60 100H1140" />
+    <path d="M60 170H1140" />
+    <path d="M60 240H1140" />
+    <path d="M60 310H1140" />
+    <path d="M60 380H1140" />
+    <path d="M60 450H1140" />
+    <path d="M60 520H1140" />
+
+    <path d="M130 55V575" />
+    <path d="M230 55V575" />
+    <path d="M330 55V575" />
+    <path d="M430 55V575" />
+    <path d="M530 55V575" />
+    <path d="M630 55V575" />
+    <path d="M730 55V575" />
+    <path d="M830 55V575" />
+    <path d="M930 55V575" />
+    <path d="M1030 55V575" />
+
+  </g>
+
+
+  <!-- MAIN CARD -->
+
+  <rect
+    x="92"
+    y="82"
+    width="1016"
+    height="466"
+    rx="32"
+    fill="url(#card)"
+    stroke="#cbd5e1"
+    stroke-width="3"
+  />
+
+
+  <!-- CALCULATOR -->
+
+  <g transform="translate(155 142)">
+
+    <rect
+      width="285"
+      height="320"
+      rx="28"
+      fill="#0f172a"
+    />
+
+    <rect
+      x="35"
+      y="34"
+      width="215"
+      height="62"
+      rx="12"
+      fill="#e2e8f0"
+    />
+
+    <text
+      x="225"
+      y="76"
+      text-anchor="end"
+      font-family="Arial, sans-serif"
+      font-size="28"
+      font-weight="700"
+      fill="#0f172a"
+    >
+      1,475.8
+    </text>
+
+
+    <!-- BUTTONS -->
+
+    <g fill="#2563eb">
+
+      <rect
+        x="35"
+        y="125"
+        width="60"
+        height="42"
+        rx="9"
+      />
+
+      <rect
+        x="112"
+        y="125"
+        width="60"
+        height="42"
+        rx="9"
+      />
+
+      <rect
+        x="189"
+        y="125"
+        width="60"
+        height="42"
+        rx="9"
+      />
+
+      <rect
+        x="35"
+        y="182"
+        width="60"
+        height="42"
+        rx="9"
+      />
+
+      <rect
+        x="112"
+        y="182"
+        width="60"
+        height="42"
+        rx="9"
+      />
+
+      <rect
+        x="189"
+        y="182"
+        width="60"
+        height="42"
+        rx="9"
+      />
+
+      <rect
+        x="35"
+        y="239"
+        width="60"
+        height="42"
+        rx="9"
+      />
+
+      <rect
+        x="112"
+        y="239"
+        width="60"
+        height="42"
+        rx="9"
+      />
+
+      <rect
+        x="189"
+        y="239"
+        width="60"
+        height="42"
+        rx="9"
+      />
+
+    </g>
+
+
+    <g
+      fill="#ffffff"
+      font-family="Arial, sans-serif"
+      font-size="19"
+      font-weight="700"
+      text-anchor="middle"
+    >
+
+      <text x="65" y="153">
+        L
+      </text>
+
+      <text x="142" y="153">
+        W
+      </text>
+
+      <text x="219" y="153">
+        D
+      </text>
+
+      <text x="65" y="210">
+        ft
+      </text>
+
+      <text x="142" y="210">
+        in
+      </text>
+
+      <text x="219" y="210">
+        %
+      </text>
+
+      <text x="65" y="267">
+        +
+      </text>
+
+      <text x="142" y="267">
+        =
+      </text>
+
+      <text x="219" y="267">
+        ✓
+      </text>
+
+    </g>
+
+  </g>
+
+
+  <!-- HOUSE / BUILDING -->
+
+  <g
+    transform="translate(520 125)"
+    fill="none"
+    stroke="#1e3a8a"
+    stroke-width="8"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+
+    <path d="M20 150 150 35 280 150" />
+
+    <path d="M55 128v150h190V128" />
+
+    <path d="M125 278v-92h50v92" />
+
+    <path d="M85 168h30" />
+
+    <path d="M205 168h30" />
+
+  </g>
+
+
+  <!-- BRICKS -->
+
+  <g
+    transform="translate(850 145)"
+    fill="#dc2626"
+    stroke="#991b1b"
+    stroke-width="3"
+  >
+
+    <path d="M0 0h78v30H0z" />
+    <path d="M82 0h78v30H82z" />
+
+    <path d="M41 35h78v30H41z" />
+    <path d="M123 35h78v30h-78z" />
+
+    <path d="M0 70h78v30H0z" />
+    <path d="M82 70h78v30H82z" />
+
+    <path d="M41 105h78v30H41z" />
+    <path d="M123 105h78v30h-78z" />
+
+  </g>
+
+
+  <!-- MEASUREMENT LINE -->
+
+  <g
+    transform="translate(850 145)"
+    stroke="#94a3b8"
+    stroke-width="4"
+  >
+
+    <path d="M0 160h200" />
+
+    <path d="M0 180h200" />
+
+    <path d="M18 150v45" />
+    <path d="M52 150v45" />
+    <path d="M86 150v45" />
+    <path d="M120 150v45" />
+    <path d="M154 150v45" />
+    <path d="M188 150v45" />
+
+  </g>
+
+
+  <!-- TEXT -->
+
+  <g
+    font-family="Arial, sans-serif"
+    fill="#0f172a"
+  >
+
+    <text
+      x="520"
+      y="485"
+      font-size="34"
+      font-weight="800"
+    >
+      Measure • Estimate • Plan
+    </text>
+
+    <text
+      x="520"
+      y="522"
+      font-size="20"
+      fill="#475569"
+    >
+      Concrete · Brick · Roofing · Steel · Landscaping
+    </text>
+
+  </g>
+
+
+  <!-- CHECK -->
+
+  <circle
+    cx="1045"
+    cy="500"
+    r="22"
+    fill="#2563eb"
+  />
+
+  <path
+    d="m1035 500 7 7 14-16"
+    fill="none"
+    stroke="#ffffff"
+    stroke-width="5"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+
+</svg>
