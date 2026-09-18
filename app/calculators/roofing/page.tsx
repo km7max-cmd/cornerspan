@@ -149,9 +149,11 @@ export default function RoofingPage() {
 
       <main className="mx-auto w-full max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
 
-        {/* Calculator */}
+        {/* Page Introduction */}
         <section className="mx-auto max-w-4xl">
+
           <div className="mb-6">
+
             <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
               Roofing Calculator
             </h1>
@@ -163,9 +165,11 @@ export default function RoofingPage() {
               building dimensions and roof pitch to get a
               quick material estimate.
             </p>
+
           </div>
 
           <RoofingCalculator />
+
         </section>
 
         {/* How to Calculate */}
@@ -182,8 +186,9 @@ export default function RoofingPage() {
           <p className="mt-3 text-sm leading-7 text-slate-600">
             Roofing quantity depends on the building
             footprint, roof pitch, material coverage and
-            waste. A pitched roof has more surface area than
-            its flat footprint because the roof slopes upward.
+            waste. A pitched roof has more surface area
+            than its flat footprint because the roof slopes
+            upward.
           </p>
 
           <div className="mt-5 grid gap-4 sm:grid-cols-3">
@@ -207,6 +212,7 @@ export default function RoofingPage() {
             />
 
           </div>
+
         </section>
 
         {/* Formula */}
@@ -219,44 +225,57 @@ export default function RoofingPage() {
           <div className="mt-4 space-y-3 text-sm leading-7 text-slate-600">
 
             <p>
-              <strong>Building Footprint</strong> =
-              Length × Width
+              <strong>
+                Building Footprint
+              </strong>{" "}
+              = Length × Width
             </p>
 
             <p>
-              <strong>Pitch Multiplier</strong> =
-              √(1 + (Rise ÷ 12)²)
+              <strong>
+                Pitch Multiplier
+              </strong>{" "}
+              = √(1 + (Rise ÷ 12)²)
             </p>
 
             <p>
-              <strong>Roof Surface Area</strong> =
-              Footprint × Pitch Multiplier
+              <strong>
+                Roof Surface Area
+              </strong>{" "}
+              = Footprint × Pitch Multiplier
             </p>
 
             <p>
-              <strong>Order Area</strong> =
-              Roof Area × (1 + Waste ÷ 100)
+              <strong>
+                Order Area
+              </strong>{" "}
+              = Roof Area × (1 + Waste ÷ 100)
             </p>
 
             <p>
-              <strong>Roofing Squares</strong> =
-              Order Area ÷ 100 ft²
+              <strong>
+                Roofing Squares
+              </strong>{" "}
+              = Order Area ÷ 100 ft²
             </p>
 
             <p>
-              <strong>Shingle Bundles</strong> =
-              Order Area ÷ Bundle Coverage
+              <strong>
+                Shingle Bundles
+              </strong>{" "}
+              = Order Area ÷ Bundle Coverage
             </p>
 
             <p>
-              Bundle quantities are rounded up to the next
-              whole bundle.
+              Bundle quantities are rounded up to the
+              next whole bundle.
             </p>
 
           </div>
+
         </section>
 
-        {/* Example */}
+        {/* Worked Example */}
         <section className="mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-5 sm:p-7">
 
           <h2 className="text-xl font-extrabold text-slate-900">
@@ -309,7 +328,9 @@ export default function RoofingPage() {
               />
 
             </div>
+
           </div>
+
         </section>
 
         {/* Common Uses */}
@@ -341,6 +362,7 @@ export default function RoofingPage() {
             ))}
 
           </div>
+
         </section>
 
         {/* FAQ */}
@@ -357,6 +379,7 @@ export default function RoofingPage() {
                 key={faq.question}
                 className="group py-4"
               >
+
                 <summary className="cursor-pointer list-none pr-8 text-sm font-bold text-slate-900">
                   {faq.question}
                 </summary>
@@ -364,10 +387,12 @@ export default function RoofingPage() {
                 <p className="mt-2 text-sm leading-6 text-slate-600">
                   {faq.answer}
                 </p>
+
               </details>
             ))}
 
           </div>
+
         </section>
 
         {/* Related Calculators */}
@@ -385,8 +410,9 @@ export default function RoofingPage() {
             estimate. Actual roofing quantities depend on
             roof geometry, overhangs, valleys, hips, dormers,
             penetrations, product coverage and installation
-            waste. Confirm the final quantity with your roofing
-            supplier or a qualified roofing professional.
+            waste. Confirm the final quantity with your
+            roofing supplier or a qualified roofing
+            professional.
           </p>
 
         </section>
