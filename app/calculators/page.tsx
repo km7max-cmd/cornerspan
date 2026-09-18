@@ -1,259 +1,137 @@
-"use client";
+import type { Metadata } from "next";
 
-import Link from "next/link";
-import { useMemo, useState } from "react";
+import CalculatorDirectory from "./CalculatorDirectory";
 
-import { calculators } from "../../data/calculators";
+const pageUrl = "https://www.cornerspan.com/calculators";
 
-type Calculator = {
-  slug: string;
-  title: string;
-  href: string;
+export const metadata: Metadata = {
+  title: "Construction Calculators | Free Online Calculators",
+
+  description:
+    "Free construction calculators for concrete, brick, steel, roofing, fence, gravel, topsoil, asphalt, tile, paint, pavers, area and square footage. Calculate materials, quantities and costs.",
+
+  keywords: [
+    "construction calculators",
+    "construction calculator",
+    "building calculator",
+    "free construction calculators",
+    "concrete calculator",
+    "brick calculator",
+    "steel calculator",
+    "roofing calculator",
+    "fence calculator",
+    "gravel calculator",
+    "topsoil calculator",
+    "asphalt calculator",
+    "tile calculator",
+    "paint calculator",
+    "paver calculator",
+    "area calculator",
+    "square footage calculator",
+  ],
+
+  alternates: {
+    canonical: pageUrl,
+  },
+
+  robots: {
+    index: true,
+    follow: true,
+    "max-image-preview": "large",
+    "max-snippet": -1,
+    "max-video-preview": -1,
+  },
+
+  openGraph: {
+    title: "Construction Calculators | Free Online Calculators",
+    description:
+      "Free calculators for construction measurements, material quantities, waste and project cost estimates.",
+    url: pageUrl,
+    type: "website",
+    images: ["/og-image.png"],
+  },
+
+  twitter: {
+    card: "summary_large_image",
+    title: "Construction Calculators | Free Online Calculators",
+    description:
+      "Free construction calculators for materials, measurements and project estimates.",
+    images: ["/og-image.png"],
+  },
 };
 
-function getCategory(slug: string): string {
-  const categoryMap: Record<string, string> = {
-    concrete: "Concrete",
-    brick: "Brick",
-    steel: "Steel",
-    paint: "Paint",
-    tile: "Tile",
-    paver: "Pavers",
-    fence: "Fencing",
-    "square-footage": "General",
-    area: "General",
-    volume: "General",
-    length: "General",
-    roofing: "Roofing",
-    flooring: "Finishing",
-    plaster: "Finishing",
-    cement: "Materials",
-    sand: "Materials",
-    gravel: "Materials",
-    block: "Masonry",
-    excavation: "Site Work",
-  };
-
-  return categoryMap[slug] ?? "Construction";
-}
-
-function getIcon(slug: string): string {
-  const iconMap: Record<string, string> = {
-    concrete: "🧱",
-    brick: "🧱",
-    steel: "🔩",
-    paint: "🎨",
-    tile: "▦",
-    paver: "⬛",
-    fence: "🪵",
-    "square-footage": "📐",
-    area: "📏",
-    volume: "📦",
-    length: "📐",
-    roofing: "🏠",
-    flooring: "📐",
-    plaster: "🪣",
-    cement: "🏗️",
-    sand: "⛰️",
-    gravel: "🪨",
-    block: "⬜",
-    excavation: "🚜",
-  };
-
-  return iconMap[slug] ?? "🧮";
-}
-
-const calculatorList: Calculator[] = calculators.map(
-  (calculator) => ({
-    ...calculator,
-  }),
-);
-
-const categories = [
-  "All",
-  ...Array.from(
-    new Set(
-      calculatorList.map((calculator) =>
-        getCategory(calculator.slug),
-      ),
-    ),
-  ).sort(),
-];
-
 export default function CalculatorsPage() {
-  const [query, setQuery] = useState("");
-  const [activeCategory, setActiveCategory] =
-    useState("All");
-
-  const filteredCalculators = useMemo(() => {
-    const search = query.trim().toLowerCase();
-
-    return calculatorList.filter((calculator) => {
-      const category = getCategory(calculator.slug);
-
-      const matchesCategory =
-        activeCategory === "All" ||
-        category === activeCategory;
-
-      const matchesSearch =
-        !search ||
-        calculator.title
-          .toLowerCase()
-          .includes(search) ||
-        calculator.slug
-          .toLowerCase()
-          .includes(search) ||
-        category
-          .toLowerCase()
-          .includes(search);
-
-      return matchesCategory && matchesSearch;
-    });
-  }, [query, activeCategory]);
-
   return (
-    <main className="min-h-screen bg-slate-50">
+    <main className="min-h-screen bg-white">
       <section className="bg-gradient-to-b from-blue-50 via-white to-slate-50">
-        <div className="mx-auto max-w-4xl px-5 pb-10 pt-10 text-center sm:px-6 sm:pb-12 sm:pt-14">
-          <span className="inline-flex rounded-full border border-blue-100 bg-white px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-blue-700 shadow-sm sm:text-xs">
-            CORNERSPAN CALCULATORS
-          </span>
+        <div className="mx-auto max-w-6xl px-5 pb-10 pt-6 sm:px-6 sm:pb-14 sm:pt-8">
 
-          <h1 className="mt-4 text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">
-            Construction
-            <span className="block text-blue-600">
+          <nav
+            aria-label="Breadcrumb"
+            className="mb-6 text-sm text-slate-500"
+          >
+            <a
+              href="/"
+              className="hover:text-blue-600"
+            >
+              Home
+            </a>
+
+            <span className="mx-2">/</span>
+
+            <span className="font-medium text-slate-900">
               Calculators
             </span>
-          </h1>
+          </nav>
 
-          <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-slate-600 sm:text-base">
-            Fast and practical calculators for
-            everyday construction work.
-          </p>
-
-          <div className="relative mx-auto mt-6 max-w-xl">
-            <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-lg text-slate-400">
-              🔍
+          <div className="mx-auto max-w-3xl pt-6 text-center sm:pt-10">
+            <span className="inline-flex rounded-full border border-blue-100 bg-white px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-blue-700 shadow-sm sm:text-xs">
+              CORNERSPAN CALCULATORS
             </span>
 
-            <input
-              type="text"
-              value={query}
-              onChange={(e) =>
-                setQuery(e.target.value)
-              }
-              placeholder="Search calculators..."
-              className="h-13 w-full rounded-xl border border-slate-200 bg-white pl-12 pr-4 text-sm text-slate-800 shadow-sm outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
-              aria-label="Search calculators"
-            />
+            <h1 className="mt-4 text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">
+              Construction Calculators
+            </h1>
+
+            <p className="mx-auto mt-4 max-w-2xl text-sm leading-6 text-slate-600 sm:text-base">
+              Free online calculators for construction measurements,
+              material quantities, waste and project cost estimates.
+              Choose a calculator, enter your project dimensions and
+              get a practical estimate.
+            </p>
           </div>
         </div>
       </section>
 
-      <section className="px-5 py-8 sm:px-6 sm:py-12">
+      <CalculatorDirectory />
+
+      <section className="px-5 py-12 sm:px-6 sm:py-16">
         <div className="mx-auto max-w-4xl">
-          <div className="mb-5 flex items-end justify-between gap-4">
-            <div>
-              <h2 className="text-2xl font-black text-slate-950 sm:text-3xl">
-                Calculator Directory
-              </h2>
+          <h2 className="text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">
+            Construction Calculators for Real Projects
+          </h2>
 
-              <p className="mt-1 text-sm text-slate-500">
-                {filteredCalculators.length}{" "}
-                calculator
-                {filteredCalculators.length === 1
-                  ? ""
-                  : "s"}{" "}
-                available
-              </p>
-            </div>
-          </div>
+          <div className="mt-5 space-y-4 text-sm leading-7 text-slate-600">
+            <p>
+              CornerSpan calculators are designed for practical estimating
+              tasks such as measuring areas, calculating concrete and brick
+              quantities, estimating roofing materials, planning fences and
+              landscaping projects, and checking material costs.
+            </p>
 
-          <div className="mb-6 flex gap-2 overflow-x-auto pb-2">
-            {categories.map((category) => (
-              <button
-                key={category}
-                type="button"
-                onClick={() =>
-                  setActiveCategory(category)
-                }
-                className={`whitespace-nowrap rounded-full px-4 py-2 text-xs font-bold transition ${
-                  activeCategory === category
-                    ? "bg-blue-600 text-white"
-                    : "border border-slate-200 bg-white text-slate-600 hover:border-blue-200 hover:text-blue-600"
-                }`}
-              >
-                {category}
-              </button>
-            ))}
-          </div>
+            <p>
+              Depending on the calculator, you can work with common Imperial
+              or Metric measurements and enter your own waste allowance,
+              coverage, density or material price. Results are estimates;
+              actual quantities can vary with site conditions, product
+              specifications and installation methods.
+            </p>
 
-          <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-            {filteredCalculators.length > 0 ? (
-              <div className="divide-y divide-slate-100">
-                {filteredCalculators.map(
-                  (calculator) => {
-                    const category =
-                      getCategory(
-                        calculator.slug,
-                      );
-
-                    return (
-                      <Link
-                        key={calculator.slug}
-                        href={calculator.href}
-                        className="flex items-center gap-4 px-5 py-4 text-sm font-semibold text-slate-800 transition hover:bg-blue-50 hover:text-blue-600 sm:px-6"
-                      >
-                        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-lg">
-                          {getIcon(
-                            calculator.slug,
-                          )}
-                        </span>
-
-                        <span className="min-w-0 flex-1">
-                          <span className="block">
-                            {calculator.title}
-                          </span>
-
-                          <span className="mt-0.5 block text-xs font-medium text-slate-400">
-                            {category}
-                          </span>
-                        </span>
-
-                        <span className="text-slate-300">
-                          →
-                        </span>
-                      </Link>
-                    );
-                  },
-                )}
-              </div>
-            ) : (
-              <div className="px-5 py-12 text-center">
-                <div className="text-3xl">
-                  🔎
-                </div>
-
-                <h3 className="mt-3 font-bold text-slate-900">
-                  No calculator found
-                </h3>
-
-                <p className="mt-1 text-sm text-slate-500">
-                  Try another calculator name.
-                </p>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    setQuery("");
-                    setActiveCategory("All");
-                  }}
-                  className="mt-4 rounded-lg bg-blue-600 px-4 py-2 text-xs font-bold text-white hover:bg-blue-700"
-                >
-                  Clear Search
-                </button>
-              </div>
-            )}
+            <p>
+              For detailed calculation guidance, open the relevant calculator
+              and review its formula, worked example and project notes before
+              ordering materials.
+            </p>
           </div>
         </div>
       </section>
