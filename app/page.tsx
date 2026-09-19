@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 import Hero from "../components/Hero";
 import HowItWorks from "../components/HowItWorks";
-import Stats from "../components/Stats";
+
 import Features from "../components/Features";
 import FAQ from "../components/FAQ";
 import CTA from "../components/CTA";
@@ -135,7 +135,7 @@ export default function Home() {
       />
 
       <Hero />
-      <Stats />
+      
       <PopularCalculators />
       <Features />
       <HowItWorks />
