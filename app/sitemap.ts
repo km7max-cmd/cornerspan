@@ -1,106 +1,111 @@
 import type { MetadataRoute } from "next";
-import fs from "fs";
-import path from "path";
+import fs from "node:fs";
+import path from "node:path";
+
 import { blogPosts } from "../data/blog";
 
 const BASE_URL = "https://www.cornerspan.com";
 
-function getRoutes(
-  directory: string,
-  currentRoute = ""
-): string[] {
-  const routes: string[] = [];
+const calculatorSlugs = [
+  "area",
+  "asphalt",
+  "brick",
+  "concrete",
+  "fence",
+  "gravel",
+  "paint",
+  "paver",
+  "roofing",
+  "sod-turf",
+  "square-footage",
+  "steel",
+  "tile",
+  "topsoil",
+];
 
-  if (!fs.existsSync(directory)) {
-    return routes;
+function getCalculatorRoutes(): string[] {
+  const calculatorsDirectory = path.join(
+    process.cwd(),
+    "app",
+    "calculators"
+  );
+
+  if (!fs.existsSync(calculatorsDirectory)) {
+    return [];
   }
 
-  const entries = fs.readdirSync(directory, {
-    withFileTypes: true,
-  });
+  return calculatorSlugs
+    .filter((slug) =>
+      fs.existsSync(
+        path.join(
+          calculatorsDirectory,
+          slug,
+          "page.tsx"
+        )
+      )
+    )
+    .map((slug) => `/calculators/${slug}`);
+}
 
-  for (const entry of entries) {
-    const name = entry.name;
+function getGuideRoutes(): string[] {
+  const guidesDirectory = path.join(
+    process.cwd(),
+    "app",
+    "guides"
+  );
 
-    if (
-      name.startsWith("_") ||
-      name.startsWith(".") ||
-      name === "api"
-    ) {
-      continue;
-    }
-
-    const fullPath = path.join(directory, name);
-
-    if (entry.isDirectory()) {
-      if (name.startsWith("(")) {
-        routes.push(...getRoutes(fullPath, currentRoute));
-      } else if (
-        !name.startsWith("[") &&
-        !name.startsWith("@")
-      ) {
-        routes.push(
-          ...getRoutes(
-            fullPath,
-            `${currentRoute}/${name}`
-          )
-        );
-      }
-    }
-
-    if (
-      entry.isFile() &&
-      /^page\.(tsx|ts|jsx|js)$/.test(name)
-    ) {
-      routes.push(currentRoute || "/");
-    }
+  if (!fs.existsSync(guidesDirectory)) {
+    return [];
   }
 
-  return routes;
+  return fs
+    .readdirSync(guidesDirectory, {
+      withFileTypes: true,
+    })
+    .filter((entry) => entry.isDirectory())
+    .filter((entry) =>
+      fs.existsSync(
+        path.join(
+          guidesDirectory,
+          entry.name,
+          "page.tsx"
+        )
+      )
+    )
+    .map((entry) => `/guides/${entry.name}`);
 }
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const appDirectory = path.join(process.cwd(), "app");
+  const calculatorRoutes = getCalculatorRoutes();
+  const guideRoutes = getGuideRoutes();
 
-  const staticRoutes = getRoutes(appDirectory);
-
-  const postRoutes = blogPosts.map(
+  const blogRoutes = blogPosts.map(
     (post) => `/blog/${post.slug}`
   );
 
-  const categoryRoutes = [
-    ...new Set(
-      blogPosts.map(
-        (post) => `/blog/category/${post.category.toLowerCase()}`
-      )
-    ),
+  const staticRoutes = [
+    "/",
+    "/calculators",
+    "/guides",
+    "/blog",
+    "/about",
+    "/contact",
   ];
 
-  const tagRoutes = [
-    ...new Set(
-      blogPosts.flatMap((post) =>
-        post.tags.map(
-          (tag) => `/blog/tag/${tag.toLowerCase()}`
-        )
-      )
-    ),
-  ];
-
-  const allRoutes = [
+  const routes = [
     ...staticRoutes,
-    ...postRoutes,
-    ...categoryRoutes,
-    ...tagRoutes,
+    ...calculatorRoutes,
+    ...guideRoutes,
+    ...blogRoutes,
   ];
 
-  const uniqueRoutes = [...new Set(allRoutes)];
+  const uniqueRoutes = [...new Set(routes)];
 
   return uniqueRoutes.map((route) => ({
-    url: `${BASE_URL}${route === "/" ? "" : route}`,
-    lastModified: new Date(),
+    url: `${BASE_URL}${route}`,
     changeFrequency:
       route === "/" ? "weekly" : "monthly",
     priority:
-      route === "/" ? 1 : 0.7,
+      route === "/" ? 1 : route === "/calculators" ? 0.9 : 0.7,
   }));
 }
