@@ -1,59 +1,82 @@
+const features = [
+  {
+    title: "Fast Calculations",
+    description:
+      "Enter your project dimensions and get material estimates quickly.",
+    icon: (
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        className="h-6 w-6"
+        aria-hidden="true"
+      >
+        <path d="M13 2 4 14h7l-1 8 9-12h-7z" />
+      </svg>
+    ),
+  },
+  {
+    title: "Practical Estimates",
+    description:
+      "Use standard construction formulas to estimate quantities for real projects.",
+    icon: (
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        className="h-6 w-6"
+        aria-hidden="true"
+      >
+        <circle cx="12" cy="12" r="9" />
+        <path d="m8 12 2.5 2.5L16 9" />
+      </svg>
+    ),
+  },
+  {
+    title: "Free to Use",
+    description:
+      "Access CornerSpan calculators without registration or a paid subscription.",
+    icon: (
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        className="h-6 w-6"
+        aria-hidden="true"
+      >
+        <path d="M12 3v18M16 7.5c-.8-1-2.1-1.5-4-1.5-2.2 0-3.5 1.1-3.5 2.8 0 4.2 7.5 1.7 7.5 5.6 0 1.7-1.4 2.8-4 2.8-1.8 0-3.2-.5-4-1.6" />
+      </svg>
+    ),
+  },
+];
+
 export default function Features() {
-  const features = [
-    {
-      icon: "⚡",
-      title: "Fast",
-      description: "Quick calculations",
-    },
-    {
-      icon: "🎯",
-      title: "Accurate",
-      description: "Reliable results",
-    },
-    {
-      icon: "🆓",
-      title: "Free",
-      description: "Always free",
-    },
-  ];
-
   return (
-    <section className="bg-slate-50 px-4 py-7 sm:px-6 sm:py-9">
-      <div className="mx-auto max-w-5xl">
-
-        {/* Heading */}
-        <div className="mb-5 text-center">
-          <span className="inline-flex rounded-full border border-blue-100 bg-blue-50 px-3 py-1 text-[10px] font-bold tracking-[0.15em] text-blue-600">
-            WHY CORNERSPAN
-          </span>
-
-          <h2 className="mt-2 text-xl font-black tracking-tight text-slate-900 sm:text-2xl">
-            Simple. Accurate. Free.
-          </h2>
-        </div>
-
-        {/* Compact Features */}
-        <div className="grid grid-cols-3 gap-2.5 sm:gap-4">
+    <section className="border-t border-slate-200 bg-slate-50 py-16">
+      <div className="mx-auto max-w-7xl px-6">
+        <div className="grid gap-6 md:grid-cols-3">
           {features.map((feature) => (
             <div
               key={feature.title}
-              className="rounded-xl border border-slate-200 bg-white px-2 py-4 text-center shadow-sm sm:rounded-2xl sm:px-4 sm:py-5"
+              className="rounded-2xl border border-slate-200 bg-white p-6"
             >
-              <div className="mx-auto flex h-9 w-9 items-center justify-center rounded-lg bg-blue-50 text-lg sm:h-11 sm:w-11 sm:text-xl">
+              <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
                 {feature.icon}
               </div>
 
-              <h3 className="mt-2.5 text-sm font-bold text-slate-900 sm:text-base">
+              <h2 className="text-lg font-semibold text-slate-900">
                 {feature.title}
-              </h3>
+              </h2>
 
-              <p className="mt-1 text-[10px] leading-4 text-slate-500 sm:text-xs">
+              <p className="mt-2 text-sm leading-6 text-slate-600">
                 {feature.description}
               </p>
             </div>
           ))}
         </div>
-
       </div>
     </section>
   );
