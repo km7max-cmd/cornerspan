@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 import Hero from "../components/Hero";
 import HowItWorks from "../components/HowItWorks";
-
+import { homepageFaq } from "../data/homepage-faq";
 import Features from "../components/Features";
 import FAQ from "../components/FAQ";
 import CTA from "../components/CTA";
