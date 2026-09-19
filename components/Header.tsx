@@ -78,7 +78,7 @@ export default function Header() {
           </Link>
 
           <Link
-            href="/#categories"
+            href="/calculators#categories"
             className="text-sm font-semibold text-slate-600 transition hover:text-blue-600"
           >
             Categories
@@ -194,7 +194,7 @@ export default function Header() {
             </Link>
 
             <Link
-              href="/#categories"
+              href="/calculators#categories"
               onClick={closeMenu}
               className="rounded-xl px-4 py-3 font-semibold text-slate-700 transition hover:bg-blue-50 hover:text-blue-600"
             >
