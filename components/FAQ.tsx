@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 
-type FAQItem = {
-  question: string;
-  answer: string;
-};
+import {
+  homepageFaq,
+  type HomepageFAQItem,
+} from "../data/homepage-faq";
 
 type Props = {
   items?: FAQItem[];
@@ -42,7 +42,7 @@ const defaultFaqItems: FAQItem[] = [
 export default function FAQ({ items }: Props) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
-  const faqItems = items ?? defaultFaqItems;
+  const faqItems = items ?? homepageFaq;
 
   return (
     <section className="bg-white px-4 py-8 sm:px-6 sm:py-10">
