@@ -700,9 +700,10 @@ export default function CalculatorDirectory() {
         ========================================= */}
 
         <div
-          className="mt-5 flex gap-2 overflow-x-auto pb-2"
-          aria-label="Calculator categories"
-        >
+  id="categories"
+  className="mt-5 flex gap-2 overflow-x-auto pb-2"
+  aria-label="Calculator categories"
+>
 
           {categories.map(
             (category) => (
