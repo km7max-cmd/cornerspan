@@ -1,43 +1,14 @@
 "use client";
 
 import { useState } from "react";
-
 import {
   homepageFaq,
   type HomepageFAQItem,
 } from "../data/homepage-faq";
 
 type Props = {
-  items?: FAQItem[];
+  items?: HomepageFAQItem[];
 };
-
-const defaultFaqItems: FAQItem[] = [
-  {
-    question: "Are CornerSpan calculators free?",
-    answer:
-      "Yes. CornerSpan calculators are free to use and do not require registration.",
-  },
-  {
-    question: "Can I use CornerSpan on my mobile phone?",
-    answer:
-      "Yes. CornerSpan is designed to work on smartphones, tablets, laptops and desktop devices.",
-  },
-  {
-    question: "Are the calculator results accurate?",
-    answer:
-      "The calculators use standard estimation formulas. Always verify final quantities with your project specifications.",
-  },
-  {
-    question: "What construction calculations are available?",
-    answer:
-      "CornerSpan provides calculators for concrete, brick, steel, paint, tile, roofing and other construction requirements.",
-  },
-  {
-    question: "Do I need an account to use the calculators?",
-    answer:
-      "No. You can use the available calculators without creating an account.",
-  },
-];
 
 export default function FAQ({ items }: Props) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
@@ -47,7 +18,6 @@ export default function FAQ({ items }: Props) {
   return (
     <section className="bg-white px-4 py-8 sm:px-6 sm:py-10">
       <div className="mx-auto max-w-4xl">
-
         <div className="mb-6 text-center">
           <span className="inline-flex rounded-full border border-blue-100 bg-blue-50 px-3 py-1 text-[10px] font-bold tracking-[0.15em] text-blue-600">
             FAQ
@@ -108,7 +78,6 @@ export default function FAQ({ items }: Props) {
             );
           })}
         </div>
-
       </div>
     </section>
   );
