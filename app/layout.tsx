@@ -64,6 +64,11 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
+
+  // Google AdSense site verification
+  other: {
+    "google-adsense-account": "ca-pub-1340785109939571",
+  },
 };
 
 export const viewport: Viewport = {
