@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Construction Guides | CornerSpan",
   description:
-    "Practical guides for concrete volume, brick quantity and steel weight calculations. Learn the formulas and use the right construction calculator.",
+    "Practical construction guides for concrete, brick dimensions, brick quantity and steel weight calculations. Learn the formulas and use the right construction calculator.",
   alternates: {
     canonical: "/guides",
   },
@@ -30,6 +30,13 @@ const guides = [
     href: "/guides/brick-calculation",
   },
   {
+    category: "BRICK",
+    title: "US Brick Sizes & Dimensions",
+    description:
+      "Compare common US brick dimensions, sizes, mortar joints and bricks per square foot.",
+    href: "/guides/us-brick-sizes",
+  },
+  {
     category: "STEEL",
     title: "Steel Weight Guide",
     description:
@@ -43,7 +50,6 @@ export default function GuidesPage() {
     <main className="min-h-screen bg-white pt-[80px]">
 
       {/* Intro */}
-
       <section className="border-b border-slate-200 bg-slate-50">
         <div className="mx-auto max-w-5xl px-5 py-10 sm:px-6 sm:py-12">
 
@@ -63,9 +69,7 @@ export default function GuidesPage() {
         </div>
       </section>
 
-
       {/* Guides */}
-
       <section className="px-5 py-9 sm:px-6 sm:py-12">
         <div className="mx-auto max-w-5xl">
 
@@ -78,7 +82,6 @@ export default function GuidesPage() {
               Learn the calculation method, then use the relevant calculator.
             </p>
           </div>
-
 
           <div className="divide-y divide-slate-200 overflow-hidden rounded-2xl border border-slate-200 bg-white">
 
@@ -121,9 +124,7 @@ export default function GuidesPage() {
         </div>
       </section>
 
-
       {/* Why Guides */}
-
       <section className="border-y border-slate-200 bg-slate-50 px-5 py-9 sm:px-6 sm:py-12">
         <div className="mx-auto max-w-5xl">
 
@@ -149,7 +150,6 @@ export default function GuidesPage() {
               </p>
             </div>
 
-
             <div className="border-l-2 border-blue-600 pl-4">
               <h3 className="font-bold text-slate-950">
                 Follow an example
@@ -159,7 +159,6 @@ export default function GuidesPage() {
                 See how the calculation works with practical measurements.
               </p>
             </div>
-
 
             <div className="border-l-2 border-blue-600 pl-4">
               <h3 className="font-bold text-slate-950">
@@ -176,9 +175,7 @@ export default function GuidesPage() {
         </div>
       </section>
 
-
       {/* Calculator Links */}
-
       <section className="px-5 py-9 sm:px-6 sm:py-12">
         <div className="mx-auto max-w-5xl">
 
