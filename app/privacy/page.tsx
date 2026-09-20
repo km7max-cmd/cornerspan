@@ -143,11 +143,20 @@ export default function PrivacyPage() {
               </p>
 
               <p className="mt-3 text-sm leading-7 text-slate-600">
-                Google provides controls that allow users to manage certain
-                advertising preferences, including personalized advertising.
-                Users can review Google's advertising settings and available
-                privacy controls through Google's services.
-              </p>
+  Google provides controls that allow users to manage certain
+  advertising preferences, including personalized advertising.
+  Users can review and change available advertising personalization
+  settings through{" "}
+  <a
+    href="https://adssettings.google.com/"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="font-semibold text-blue-600 underline underline-offset-2 hover:text-blue-700"
+  >
+    Google Ads Settings
+  </a>
+  .
+</p>
             </section>
 
             {/* 6 */}
