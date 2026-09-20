@@ -76,5 +76,9 @@ export const guideRoutes: string[] = ${JSON.stringify(
 fs.writeFileSync(outputFile, fileContent, "utf8");
 
 console.log(
-  \`Generated \${calculators.length} calculators and \${guides.length} guides\`
+  "Generated " +
+    calculators.length +
+    " calculators and " +
+    guides.length +
+    " guides"
 );
