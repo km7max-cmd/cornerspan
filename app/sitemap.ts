@@ -1,80 +1,46 @@
-import fs from "node:fs";
-import path from "node:path";
+import type { MetadataRoute } from "next";
 
-const rootDir = process.cwd();
+import { blogPosts } from "../data/blog";
+import { calculators, guideRoutes } from "../data/calculators";
 
-const calculatorsDir = path.join(rootDir, "app", "calculators");
-const guidesDir = path.join(rootDir, "app", "guides");
+const BASE_URL = "https://www.cornerspan.com";
 
-const outputDir = path.join(rootDir, "data");
-const outputFile = path.join(outputDir, "calculators.ts");
+export default function sitemap(): MetadataRoute.Sitemap {
+  const calculatorRoutes = calculators.map(
+    (calculator) => calculator.href
+  );
 
-function toTitle(slug) {
-  return slug
-    .split("-")
-    .map((word) => {
-      if (word.toLowerCase() === "sq") return "Sq";
+  const blogRoutes = blogPosts.map(
+    (post) => `/blog/${post.slug}`
+  );
 
-      return word.charAt(0).toUpperCase() + word.slice(1);
-    })
-    .join(" ");
+  const staticRoutes = [
+    "/",
+    "/calculators",
+    "/guides",
+    "/blog",
+    "/about",
+    "/contact",
+  ];
+
+  const routes = [
+    ...staticRoutes,
+    ...calculatorRoutes,
+    ...guideRoutes,
+    ...blogRoutes,
+  ];
+
+  const uniqueRoutes = [...new Set(routes)];
+
+  return uniqueRoutes.map((route) => ({
+    url: `${BASE_URL}${route}`,
+    changeFrequency:
+      route === "/" ? "weekly" : "monthly",
+    priority:
+      route === "/"
+        ? 1
+        : route === "/calculators"
+          ? 0.9
+          : 0.7,
+  }));
 }
-
-if (!fs.existsSync(calculatorsDir)) {
-  throw new Error(`Calculators directory not found: ${calculatorsDir}`);
-}
-
-const calculators = fs
-  .readdirSync(calculatorsDir, { withFileTypes: true })
-  .filter((entry) => entry.isDirectory())
-  .filter((entry) =>
-    fs.existsSync(
-      path.join(calculatorsDir, entry.name, "page.tsx")
-    )
-  )
-  .map((entry) => ({
-    slug: entry.name,
-    title: `${toTitle(entry.name)} Calculator`,
-    href: `/calculators/${entry.name}`,
-  }))
-  .sort((a, b) => a.title.localeCompare(b.title));
-
-const guides = fs.existsSync(guidesDir)
-  ? fs
-      .readdirSync(guidesDir, { withFileTypes: true })
-      .filter((entry) => entry.isDirectory())
-      .filter((entry) =>
-        fs.existsSync(
-          path.join(guidesDir, entry.name, "page.tsx")
-        )
-      )
-      .map((entry) => `/guides/${entry.name}`)
-      .sort()
-  : [];
-
-fs.mkdirSync(outputDir, { recursive: true });
-
-const fileContent = `export type CalculatorItem = {
-  slug: string;
-  title: string;
-  href: string;
-};
-
-export const calculators: CalculatorItem[] = ${JSON.stringify(
-  calculators,
-  null,
-  2
-)};
-
-export const guideRoutes: string[] = ${JSON.stringify(
-  guides,
-  null,
-  2
-)};
-`;
-
-fs.writeFileSync(outputFile, fileContent, "utf8");
-
-console.log(
-  `Generated ${calculators.length} calculators and ${guides.length} guides`
-);
