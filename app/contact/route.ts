@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
 
+const GOOGLE_SCRIPT_URL =
+  "https://script.google.com/macros/s/AKfycbwHEBaR7yQKtJEFqvpZWyP1kH5dXmIC4Uyqrz6Lsh8EweqEMZ-hpSYq8Zul9PoUb5viAQ/exec";
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();
@@ -10,72 +13,57 @@ export async function POST(request: Request) {
 
     if (!name || !email || !message) {
       return NextResponse.json(
-        { error: "All fields are required." },
+        { success: false, error: "All fields are required." },
         { status: 400 }
       );
     }
 
-    if (!email.includes("@")) {
-      return NextResponse.json(
-        { error: "Please enter a valid email address." },
-        { status: 400 }
-      );
-    }
+    const response = await fetch(GOOGLE_SCRIPT_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name,
+        email,
+        message,
+      }),
+      cache: "no-store",
+    });
 
-    const apiKey = process.env.RESEND_API_KEY;
-
-    if (!apiKey) {
+    if (!response.ok) {
       return NextResponse.json(
-        { error: "Email service is not configured." },
+        {
+          success: false,
+          error: "Unable to send message.",
+        },
         { status: 500 }
       );
     }
 
-    const response = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        from: "CornerSpan Contact <onboarding@resend.dev>",
-        to: ["km7max@gmail.com"],
-        reply_to: email,
-        subject: `New Contact Message from ${name}`,
-        text: `
+    const result = await response.json();
 
-New message from CornerSpan contact form
-
-Name: ${name}
-Email: ${email}
-
-Message:
-${message}
-
-        `.trim(),
-      }),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.text();
-
-      console.error("Resend error:", errorData);
-
+    if (!result.success) {
       return NextResponse.json(
-        { error: "Unable to send message." },
+        {
+          success: false,
+          error: result.error || "Unable to send message.",
+        },
         { status: 500 }
       );
     }
 
     return NextResponse.json({
       success: true,
-      message: "Message sent successfully.",
     });
   } catch (error) {
     console.error("Contact API error:", error);
 
     return NextResponse.json(
-      { error: "Something went wrong." },
+      {
+        success: false,
+        error: "Something went wrong. Please try again.",
+      },
       { status: 500 }
     );
   }
