@@ -2,10 +2,9 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title:
-    "US Brick Sizes & Dimensions Chart | Bricks Per Square Foot | CornerSpan",
+  title: "US Brick Dimensions & Sizes Chart | CornerSpan",
   description:
-    "US brick sizes and dimensions chart for common modular, Norman, Queen, King and Utility bricks. Learn bricks per square foot, mortar joint effects and how to calculate brick quantity.",
+    "US brick dimensions and sizes chart for common modular, Norman, Queen, King and Utility bricks. Compare brick measurements, mortar joints and bricks per square foot.",
   alternates: {
     canonical: "/guides/us-brick-sizes",
   },
@@ -14,9 +13,9 @@ export const metadata: Metadata = {
     follow: true,
   },
   openGraph: {
-    title: "US Brick Sizes & Dimensions Chart | CornerSpan",
+    title: "US Brick Dimensions & Sizes Chart | CornerSpan",
     description:
-      "A practical US brick size reference covering common brick dimensions, mortar joints and bricks per square foot.",
+      "A practical US brick dimensions reference covering common brick sizes, mortar joints and bricks per square foot.",
     url: "https://www.cornerspan.com/guides/us-brick-sizes",
     type: "article",
   },
