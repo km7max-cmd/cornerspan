@@ -75,7 +75,9 @@ export default function PrivacyPage() {
 
               <ul className="mt-3 space-y-2 text-sm leading-7 text-slate-600">
                 <li>• To operate and maintain the website.</li>
-                <li>• To provide and improve calculators and website features.</li>
+                <li>
+                  • To provide and improve calculators and website features.
+                </li>
                 <li>• To understand website usage and performance.</li>
                 <li>• To improve content and user experience.</li>
                 <li>• To detect errors, abuse or security issues.</li>
@@ -103,6 +105,12 @@ export default function PrivacyPage() {
               </p>
 
               <p className="mt-3 text-sm leading-7 text-slate-600">
+                Google Analytics may use cookies and similar technologies to
+                distinguish users, understand website interactions and
+                measure traffic and performance.
+              </p>
+
+              <p className="mt-3 text-sm leading-7 text-slate-600">
                 Third-party services used on the website may use cookies or
                 similar technologies according to their own privacy policies
                 and terms.
@@ -122,41 +130,72 @@ export default function PrivacyPage() {
               </p>
 
               <p className="mt-3 text-sm leading-7 text-slate-600">
-                Google and its advertising partners may use cookies and
-                similar technologies to serve, measure and improve
-                advertising displayed on CornerSpan.
+                Third-party vendors, including Google, may use cookies and
+                similar technologies to serve advertisements based on a
+                user&apos;s prior visits to CornerSpan or other websites.
               </p>
 
               <p className="mt-3 text-sm leading-7 text-slate-600">
-                Depending on applicable laws, user consent and advertising
-                settings, advertisements may be contextual or personalized.
-                Advertising technology may use information about a user's
-                visits to CornerSpan and other websites to provide relevant
-                advertising.
+                Google&apos;s use of advertising cookies enables Google and
+                its advertising partners to serve advertisements to users
+                based on their visits to CornerSpan and/or other websites
+                on the Internet.
+              </p>
+
+              <p className="mt-3 text-sm leading-7 text-slate-600">
+                Depending on the user&apos;s location, consent choices and
+                available advertising settings, advertisements may be
+                personalized or contextual. Advertising technologies may
+                process information such as cookie identifiers, advertising
+                identifiers, browser or device information, and information
+                about interactions with advertisements.
               </p>
 
               <p className="mt-3 text-sm leading-7 text-slate-600">
                 Google may use advertising cookies when advertising services
                 are enabled on the website. The availability and use of
-                personalized advertising may vary according to the user's
-                location, settings and applicable consent requirements.
+                personalized advertising may vary according to the
+                user&apos;s location, settings and applicable consent
+                requirements.
               </p>
 
               <p className="mt-3 text-sm leading-7 text-slate-600">
-  Google provides controls that allow users to manage certain
-  advertising preferences, including personalized advertising.
-  Users can review and change available advertising personalization
-  settings through{" "}
-  <a
-    href="https://adssettings.google.com/"
-    target="_blank"
-    rel="noopener noreferrer"
-    className="font-semibold text-blue-600 underline underline-offset-2 hover:text-blue-700"
-  >
-    Google Ads Settings
-  </a>
-  .
-</p>
+                Users may opt out of personalized advertising by visiting
+                Google&apos;s Ads Settings:
+              </p>
+
+              <p className="mt-2 text-sm leading-7 text-slate-600">
+                <a
+                  href="https://adssettings.google.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-semibold text-blue-600 underline underline-offset-2 hover:text-blue-700"
+                >
+                  Google Ads Settings
+                </a>
+              </p>
+
+              <p className="mt-3 text-sm leading-7 text-slate-600">
+                Users may also learn more about options for controlling
+                certain third-party advertising cookies through the
+                <a
+                  href="https://optout.aboutads.info/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="ml-1 font-semibold text-blue-600 underline underline-offset-2 hover:text-blue-700"
+                >
+                  AboutAds.info
+                </a>
+                opt-out resource.
+              </p>
+
+              <p className="mt-3 text-sm leading-7 text-slate-600">
+                The advertising services and technologies used on CornerSpan
+                may change over time. Where other third-party vendors or
+                advertising networks are used, this Privacy Policy may be
+                updated to identify the relevant services and provide
+                applicable privacy or opt-out information.
+              </p>
             </section>
 
             {/* 6 */}
@@ -166,21 +205,28 @@ export default function PrivacyPage() {
               </h2>
 
               <p className="mt-3 text-sm leading-7 text-slate-600">
-                Where applicable, CornerSpan may use a consent management
-                mechanism to request and record user choices regarding
-                cookies, analytics and advertising technologies.
+                Where applicable, CornerSpan may request user consent before
+                using cookies, local storage or other technologies for
+                analytics or advertising purposes.
               </p>
 
               <p className="mt-3 text-sm leading-7 text-slate-600">
-                The choices and consent options presented to visitors may
-                depend on their location, applicable privacy laws and the
+                Consent and privacy choices may vary depending on the
+                user&apos;s location, applicable privacy laws and the
                 services being used on the website.
               </p>
 
               <p className="mt-3 text-sm leading-7 text-slate-600">
-                Users may also manage certain advertising and privacy
-                preferences through controls provided by Google and other
-                applicable third-party services.
+                Where applicable, users may be presented with choices to
+                accept, reject or manage certain cookies and advertising
+                technologies.
+              </p>
+
+              <p className="mt-3 text-sm leading-7 text-slate-600">
+                Users may also manage certain Google advertising preferences
+                through Google Ads Settings. Additional privacy or consent
+                choices may be available through the consent mechanism used
+                by CornerSpan, where applicable.
               </p>
             </section>
 
@@ -197,10 +243,16 @@ export default function PrivacyPage() {
               </p>
 
               <p className="mt-3 text-sm leading-7 text-slate-600">
-                These third-party services may collect or process
-                information according to their own privacy policies and
-                terms. CornerSpan does not control the privacy practices of
-                third-party services.
+                These third-party services may collect or process information
+                according to their own privacy policies and terms. CornerSpan
+                does not control the privacy practices of third-party
+                services.
+              </p>
+
+              <p className="mt-3 text-sm leading-7 text-slate-600">
+                Examples of third-party services that may be used include
+                Google Analytics, Google AdSense and other services required
+                to operate or improve the website.
               </p>
             </section>
 
@@ -212,8 +264,8 @@ export default function PrivacyPage() {
 
               <p className="mt-3 text-sm leading-7 text-slate-600">
                 We take reasonable steps to protect information associated
-                with the website. However, no internet transmission or
-                online service can be guaranteed to be completely secure.
+                with the website. However, no internet transmission or online
+                service can be guaranteed to be completely secure.
               </p>
             </section>
 
