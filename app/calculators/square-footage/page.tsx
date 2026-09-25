@@ -122,16 +122,8 @@ export default function SquareFootagePage() {
 
       <main className="min-h-screen bg-slate-50">
         <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
-          <Breadcrumb
-            items={[
-              { label: "Home", href: "/" },
-              { label: "Calculators", href: "/calculators" },
-              {
-                label: "Square Footage Calculator",
-                href: "/calculators/square-footage",
-              },
-            ]}
-          />
+
+          <Breadcrumb current="Square Footage Calculator" />
 
           <header className="mt-6">
             <h1 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
@@ -187,6 +179,8 @@ export default function SquareFootagePage() {
 
           {/* Main Guide */}
           <article className="mt-12 max-w-4xl">
+
+            {/* Formula */}
             <section>
               <h2 className="text-2xl font-bold text-slate-900">
                 How to Calculate Square Footage
@@ -559,7 +553,10 @@ export default function SquareFootagePage() {
             </section>
 
             {/* Home / Property */}
-            <section className="mt-10" id="home-property-measurements">
+            <section
+              className="mt-10"
+              id="home-property-measurements"
+            >
               <h2 className="text-2xl font-bold text-slate-900">
                 Square Footage for Home and Property Measurements
               </h2>
@@ -595,6 +592,7 @@ export default function SquareFootagePage() {
                   <h3 className="font-semibold text-slate-900">
                     Floor Area
                   </h3>
+
                   <p className="mt-2 text-sm leading-6 text-slate-600">
                     Length × width for rooms, floors and other rectangular
                     surfaces.
@@ -605,6 +603,7 @@ export default function SquareFootagePage() {
                   <h3 className="font-semibold text-slate-900">
                     Wall Area
                   </h3>
+
                   <p className="mt-2 text-sm leading-6 text-slate-600">
                     Wall length × height, with openings subtracted when
                     appropriate.
@@ -615,6 +614,7 @@ export default function SquareFootagePage() {
                   <h3 className="font-semibold text-slate-900">
                     Floor Plan Area
                   </h3>
+
                   <p className="mt-2 text-sm leading-6 text-slate-600">
                     Calculate individual sections and combine their areas.
                   </p>
@@ -624,6 +624,7 @@ export default function SquareFootagePage() {
                   <h3 className="font-semibold text-slate-900">
                     Flooring Area
                   </h3>
+
                   <p className="mt-2 text-sm leading-6 text-slate-600">
                     Calculate the floor area and then account for project
                     material requirements.
@@ -652,6 +653,7 @@ export default function SquareFootagePage() {
                         <th className="px-4 py-3 font-semibold text-slate-900">
                           Conversion
                         </th>
+
                         <th className="px-4 py-3 font-semibold text-slate-900">
                           Approximate Value
                         </th>
@@ -759,19 +761,24 @@ export default function SquareFootagePage() {
                 <li>
                   Measure the actual space rather than estimating from memory.
                 </li>
+
                 <li>
                   Keep all measurements in the same unit before calculating.
                 </li>
+
                 <li>
                   Convert inches to feet when using a feet-based formula.
                 </li>
+
                 <li>
                   Divide irregular areas into smaller measurable sections.
                 </li>
+
                 <li>
                   Double-check measurements before ordering construction
                   materials.
                 </li>
+
                 <li>
                   Follow manufacturer coverage and installation guidance for
                   material purchasing.
@@ -793,6 +800,7 @@ export default function SquareFootagePage() {
                   <h3 className="font-semibold text-slate-900">
                     Area Calculator
                   </h3>
+
                   <p className="mt-2 text-sm leading-6 text-slate-600">
                     Calculate area for common shapes and measurements.
                   </p>
@@ -805,6 +813,7 @@ export default function SquareFootagePage() {
                   <h3 className="font-semibold text-slate-900">
                     Tile Calculator
                   </h3>
+
                   <p className="mt-2 text-sm leading-6 text-slate-600">
                     Estimate tile requirements from your calculated area.
                   </p>
@@ -817,6 +826,7 @@ export default function SquareFootagePage() {
                   <h3 className="font-semibold text-slate-900">
                     Concrete Calculator
                   </h3>
+
                   <p className="mt-2 text-sm leading-6 text-slate-600">
                     Calculate concrete volume for common construction shapes.
                   </p>
@@ -829,6 +839,7 @@ export default function SquareFootagePage() {
                   <h3 className="font-semibold text-slate-900">
                     Square Footage Calculation Guide
                   </h3>
+
                   <p className="mt-2 text-sm leading-6 text-slate-600">
                     Read the detailed guide to measuring and calculating square
                     footage.
@@ -844,6 +855,7 @@ export default function SquareFootagePage() {
               </h2>
 
               <div className="mt-5 space-y-4">
+
                 <details className="rounded-xl border border-slate-200 bg-white p-5">
                   <summary className="cursor-pointer font-semibold text-slate-900">
                     How do I calculate square footage?
@@ -932,6 +944,7 @@ export default function SquareFootagePage() {
                     subtract doors or windows when appropriate for the project.
                   </p>
                 </details>
+
               </div>
             </section>
 
@@ -959,7 +972,9 @@ export default function SquareFootagePage() {
 
             {/* Disclaimer */}
             <section className="mt-10 rounded-xl border border-amber-200 bg-amber-50 p-5">
-              <h2 className="font-semibold text-slate-900">Important Note</h2>
+              <h2 className="font-semibold text-slate-900">
+                Important Note
+              </h2>
 
               <p className="mt-2 text-sm leading-6 text-slate-700">
                 Calculator results are estimates based on the measurements and
@@ -970,11 +985,14 @@ export default function SquareFootagePage() {
                 beginning construction work.
               </p>
             </section>
+
           </article>
 
+          {/* Related Calculators */}
           <section className="mt-12">
-            <RelatedCalculators currentSlug="square-footage" />
+            <RelatedCalculators />
           </section>
+
         </div>
       </main>
     </>
