@@ -17,11 +17,16 @@ const nextConfig = {
       },
 
       // Concrete
-      {
-        source: "/calculators/concrete-calculator",
-        destination: "/calculators/concrete",
-        permanent: true,
-      },
+{
+  source: "/calculators/concrete-calculator",
+  destination: "/calculators/concrete",
+  permanent: true,
+},
+{
+  source: "/calculators/concrete-slab-calculator",
+  destination: "/calculators/concrete",
+  permanent: true,
+},
 
       // Paint
       {
