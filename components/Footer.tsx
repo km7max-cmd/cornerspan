@@ -14,7 +14,12 @@ const links = [
 
 function FacebookIcon() {
   return (
-    <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor">
+    <svg
+      viewBox="0 0 24 24"
+      className="h-5 w-5"
+      fill="currentColor"
+      aria-hidden="true"
+    >
       <path d="M13.5 22v-8h2.7l.4-3h-3.1V9.1c0-.9.3-1.5 1.6-1.5h1.7V4.9c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3V11H7.4v3h2.7v8h3.4Z" />
     </svg>
   );
@@ -28,6 +33,7 @@ function InstagramIcon() {
       fill="none"
       stroke="currentColor"
       strokeWidth="2"
+      aria-hidden="true"
     >
       <rect x="3" y="3" width="18" height="18" rx="5" />
       <circle cx="12" cy="12" r="4" />
@@ -42,36 +48,35 @@ function InstagramIcon() {
   );
 }
 
-function XIcon() {
+function PinterestIcon() {
   return (
-    <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor">
-      <path d="M18.9 2H22l-6.8 7.8L23.2 22h-6.3l-4.9-6.4L2.9 2h6.4l4.4 5.8L18.9 2Zm-1.1 17.9h1.7L8.3 4H6.5l11.3 15.9Z" />
-    </svg>
-  );
-}
-
-function YouTubeIcon() {
-  return (
-    <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor">
-      <path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.6 12 3.6 12 3.6s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1c.5-1.9.5-5.8-.5-5.8s0-3.9-.5-5.8ZM9.6 15.6V8.4l6.3 3.6-6.3 3.6Z" />
-    </svg>
-  );
-}
-
-function LinkedInIcon() {
-  return (
-    <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor">
-      <path d="M5.2 3.5A2.2 2.2 0 1 1 5.2 7.9 2.2 2.2 0 0 1 5.2 3.5ZM3.3 9h3.8v11.7H3.3V9Zm6.2 0h3.6v1.6h.1c.5-.9 1.7-2 3.6-2 3.8 0 4.5 2.5 4.5 5.8v6.3h-3.8v-5.6c0-1.3 0-3-1.9-3s-2.2 1.4-2.2 2.9v5.7H9.5V9Z" />
+    <svg
+      viewBox="0 0 24 24"
+      className="h-5 w-5"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      <path d="M12 2C6.48 2 3 5.95 3 10.35c0 3.4 1.9 6.05 4.65 7.1-.06-.6-.01-1.32.15-1.9l1.08-4.57s-.27-.55-.27-1.37c0-1.28.74-2.23 1.66-2.23.78 0 1.16.58 1.16 1.28 0 .78-.5 1.95-.76 3.03-.22.91.46 1.65 1.35 1.65 1.62 0 2.87-1.71 2.87-4.18 0-2.19-1.57-3.72-3.81-3.72-2.6 0-4.12 1.95-4.12 3.96 0 .78.3 1.62.68 2.08.08.1.09.19.07.29l-.25 1.02c-.04.16-.13.2-.3.12-1.1-.51-1.79-2.1-1.79-3.39 0-2.76 2-5.3 5.76-5.3 3.02 0 5.37 2.15 5.37 5.03 0 3-1.89 5.42-4.51 5.42-.88 0-1.71-.46-2-1l-.54 2.07c-.2.76-.74 1.71-1.1 2.29.83.25 1.71.39 2.63.39 5.52 0 9-3.95 9-8.35C21 5.95 17.52 2 12 2Z" />
     </svg>
   );
 }
 
 const socials = [
-  { name: "Facebook", icon: <FacebookIcon /> },
-  { name: "Instagram", icon: <InstagramIcon /> },
-  { name: "X", icon: <XIcon /> },
-  { name: "YouTube", icon: <YouTubeIcon /> },
-  { name: "LinkedIn", icon: <LinkedInIcon /> },
+  {
+    name: "Facebook",
+    href: "https://www.facebook.com/cornerspan",
+    icon: <FacebookIcon />,
+  },
+  {
+    name: "Instagram",
+    href: "https://www.instagram.com/cornerspan/",
+    icon: <InstagramIcon />,
+  },
+  {
+    name: "Pinterest",
+    href: "https://www.pinterest.com/cornerspan/",
+    icon: <PinterestIcon />,
+  },
 ];
 
 export default function Footer() {
@@ -106,12 +111,18 @@ export default function Footer() {
 
           {/* Social Icons */}
 
-          <div className="mt-5 flex items-center justify-center gap-5">
+          <div
+            className="mt-5 flex items-center justify-center gap-5"
+            aria-label="CornerSpan social media"
+          >
             {socials.map((social) => (
               <a
                 key={social.name}
-                href="#"
-                aria-label={social.name}
+                href={social.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`CornerSpan on ${social.name}`}
+                title={`CornerSpan on ${social.name}`}
                 className="text-slate-200 transition-all duration-200 hover:-translate-y-1 hover:text-blue-400"
               >
                 {social.icon}
