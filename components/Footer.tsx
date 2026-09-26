@@ -90,14 +90,14 @@ export default function Footer() {
           <Link
             href="/"
             aria-label="CornerSpan Home"
-            className="flex items-center justify-center"
+            className="flex h-[61px] w-[220px] items-center justify-center"
           >
             <img
               src="/logo-dark.webp?v=2"
               alt="CornerSpan - Construction Calculators"
               width={220}
               height={61}
-              className="h-auto w-[220px] max-w-full object-contain"
+              className="block h-[61px] w-[220px] object-contain"
             />
           </Link>
 
