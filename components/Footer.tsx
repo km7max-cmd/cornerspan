@@ -85,7 +85,6 @@ export default function Footer() {
       <div className="mx-auto max-w-7xl px-5 sm:px-6">
 
         {/* Logo + Description */}
-
         <div className="flex flex-col items-center py-8 text-center">
 
           <Link
@@ -96,6 +95,8 @@ export default function Footer() {
             <img
               src="/logo-dark.webp?v=2"
               alt="CornerSpan - Construction Calculators"
+              width={220}
+              height={61}
               className="h-auto w-[220px] max-w-full object-contain"
             />
           </Link>
@@ -110,7 +111,6 @@ export default function Footer() {
           </p>
 
           {/* Social Icons */}
-
           <div
             className="mt-5 flex items-center justify-center gap-5"
             aria-label="CornerSpan social media"
@@ -132,7 +132,6 @@ export default function Footer() {
         </div>
 
         {/* Footer Navigation */}
-
         <div className="border-y border-slate-700 py-5">
           <nav
             aria-label="Footer navigation"
@@ -151,7 +150,6 @@ export default function Footer() {
         </div>
 
         {/* Copyright */}
-
         <div className="py-5 text-center">
           <p className="text-xs font-medium text-slate-400 sm:text-sm">
             © {new Date().getFullYear()} CornerSpan. All rights reserved.
