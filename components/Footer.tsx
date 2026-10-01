@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 
 const links = [
@@ -83,20 +84,20 @@ export default function Footer() {
   return (
     <footer className="border-t border-slate-800 bg-slate-800">
       <div className="mx-auto max-w-7xl px-5 sm:px-6">
-
         {/* Logo + Description */}
         <div className="flex flex-col items-center py-8 text-center">
-
           <Link
             href="/"
             aria-label="CornerSpan Home"
-            className="flex h-[61px] w-[220px] items-center justify-center"
+            className="flex h-[61px] min-h-[61px] w-[220px] min-w-[220px] items-center justify-center"
           >
-            <img
-              src="/logo-dark.webp?v=2"
+            <Image
+              src="/logo-dark.webp"
               alt="CornerSpan - Construction Calculators"
               width={220}
               height={61}
+              sizes="220px"
+              quality={75}
               className="block h-[61px] w-[220px] object-contain"
             />
           </Link>
@@ -112,7 +113,7 @@ export default function Footer() {
 
           {/* Social Icons */}
           <div
-            className="mt-5 flex items-center justify-center gap-5"
+            className="mt-5 flex min-h-[20px] items-center justify-center gap-5"
             aria-label="CornerSpan social media"
           >
             {socials.map((social) => (
@@ -155,7 +156,6 @@ export default function Footer() {
             © {new Date().getFullYear()} CornerSpan. All rights reserved.
           </p>
         </div>
-
       </div>
     </footer>
   );
