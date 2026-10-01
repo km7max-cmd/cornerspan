@@ -20,6 +20,7 @@ function FacebookIcon() {
       className="h-5 w-5"
       fill="currentColor"
       aria-hidden="true"
+      focusable="false"
     >
       <path d="M13.5 22v-8h2.7l.4-3h-3.1V9.1c0-.9.3-1.5 1.6-1.5h1.7V4.9c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3V11H7.4v3h2.7v8h3.4Z" />
     </svg>
@@ -35,6 +36,7 @@ function InstagramIcon() {
       stroke="currentColor"
       strokeWidth="2"
       aria-hidden="true"
+      focusable="false"
     >
       <rect x="3" y="3" width="18" height="18" rx="5" />
       <circle cx="12" cy="12" r="4" />
@@ -56,6 +58,7 @@ function PinterestIcon() {
       className="h-5 w-5"
       fill="currentColor"
       aria-hidden="true"
+      focusable="false"
     >
       <path d="M12 2C6.48 2 3 5.95 3 10.35c0 3.4 1.9 6.05 4.65 7.1-.06-.6-.01-1.32.15-1.9l1.08-4.57s-.27-.55-.27-1.37c0-1.28.74-2.23 1.66-2.23.78 0 1.16.58 1.16 1.28 0 .78-.5 1.95-.76 3.03-.22.91.46 1.65 1.35 1.65 1.62 0 2.87-1.71 2.87-4.18 0-2.19-1.57-3.72-3.81-3.72-2.6 0-4.12 1.95-4.12 3.96 0 .78.3 1.62.68 2.08.08.1.09.19.07.29l-.25 1.02c-.04.16-.13.2-.3.12-1.1-.51-1.79-2.1-1.79-3.39 0-2.76 2-5.3 5.76-5.3 3.02 0 5.37 2.15 5.37 5.03 0 3-1.89 5.42-4.51 5.42-.88 0-1.71-.46-2-1l-.54 2.07c-.2.76-.74 1.71-1.1 2.29.83.25 1.71.39 2.63.39 5.52 0 9-3.95 9-8.35C21 5.95 17.52 2 12 2Z" />
     </svg>
@@ -82,23 +85,39 @@ const socials = [
 
 export default function Footer() {
   return (
-    <footer className="border-t border-slate-800 bg-slate-800">
+    <footer
+      className="border-t border-slate-800 bg-slate-800"
+      style={{ minHeight: "250px" }}
+    >
       <div className="mx-auto max-w-7xl px-5 sm:px-6">
+
         {/* Logo + Description */}
         <div className="flex flex-col items-center py-8 text-center">
+
+          {/* Fixed-size logo wrapper prevents CLS */}
           <Link
             href="/"
             aria-label="CornerSpan Home"
-            className="flex h-[61px] min-h-[61px] w-[220px] min-w-[220px] items-center justify-center"
+            className="flex shrink-0 items-center justify-center overflow-hidden"
+            style={{
+              width: "220px",
+              height: "61px",
+              aspectRatio: "220 / 61",
+            }}
           >
             <Image
-              src="/logo-dark.webp"
+              src="/logo-dark.webp?v=2"
               alt="CornerSpan - Construction Calculators"
               width={220}
               height={61}
               sizes="220px"
-              quality={75}
+              priority={false}
               className="block h-[61px] w-[220px] object-contain"
+              style={{
+                width: "220px",
+                height: "61px",
+                aspectRatio: "220 / 61",
+              }}
             />
           </Link>
 
@@ -124,7 +143,7 @@ export default function Footer() {
                 rel="noopener noreferrer"
                 aria-label={`CornerSpan on ${social.name}`}
                 title={`CornerSpan on ${social.name}`}
-                className="text-slate-200 transition-all duration-200 hover:-translate-y-1 hover:text-blue-400"
+                className="flex h-5 w-5 items-center justify-center text-slate-200 transition-transform duration-200 hover:-translate-y-1 hover:text-blue-400"
               >
                 {social.icon}
               </a>
@@ -156,6 +175,7 @@ export default function Footer() {
             © {new Date().getFullYear()} CornerSpan. All rights reserved.
           </p>
         </div>
+
       </div>
     </footer>
   );
