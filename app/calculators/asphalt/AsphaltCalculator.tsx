@@ -123,17 +123,13 @@ export default function AsphaltCalculator() {
 
       areaSqM = l * w;
 
-      volumeCuM =
-        areaSqM * (t / 100);
+      volumeCuM = areaSqM * (t / 100);
 
-      volumeCuFt =
-        volumeCuM * 35.3146667;
+      volumeCuFt = volumeCuM * 35.3146667;
 
-      areaSqFt =
-        areaSqM * 10.7639104;
+      areaSqFt = areaSqM * 10.7639104;
 
-      baseWeightKg =
-        volumeCuM * d;
+      baseWeightKg = volumeCuM * d;
     } else {
       /*
        * Imperial
@@ -145,14 +141,11 @@ export default function AsphaltCalculator() {
 
       areaSqFt = l * w;
 
-      volumeCuFt =
-        areaSqFt * (t / 12);
+      volumeCuFt = areaSqFt * (t / 12);
 
-      volumeCuM =
-        volumeCuFt * 0.0283168466;
+      volumeCuM = volumeCuFt * 0.0283168466;
 
-      areaSqM =
-        areaSqFt * 0.09290304;
+      areaSqM = areaSqFt * 0.09290304;
 
       baseWeightKg =
         volumeCuFt * d * 0.45359237;
@@ -231,21 +224,14 @@ export default function AsphaltCalculator() {
     const w = Number(width);
     const t = Number(thickness);
 
-    /*
-     * Preserve the physical dimensions
-     * when changing unit systems.
-     */
-
     if (Number.isFinite(l) && l > 0) {
       if (isMetric) {
-        // meters → feet
         setLength(
           String(
             (l * 3.280839895).toFixed(4)
           )
         );
       } else {
-        // feet → meters
         setLength(
           String(
             (l / 3.280839895).toFixed(4)
@@ -272,14 +258,12 @@ export default function AsphaltCalculator() {
 
     if (Number.isFinite(t) && t > 0) {
       if (isMetric) {
-        // cm → inches
         setThickness(
           String(
             (t / 2.54).toFixed(4)
           )
         );
       } else {
-        // inches → cm
         setThickness(
           String(
             (t * 2.54).toFixed(4)
@@ -322,7 +306,6 @@ export default function AsphaltCalculator() {
         {/* HEADER */}
 
         <div className="px-5 py-5 sm:px-7">
-
           <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-400">
             ASPHALT CALCULATOR
           </p>
@@ -332,10 +315,9 @@ export default function AsphaltCalculator() {
           </h1>
 
           <p className="mt-2 text-sm leading-6 text-slate-300">
-            Estimate asphalt volume, weight and material
-            cost using Imperial or Metric units.
+            Estimate asphalt volume, weight and material cost
+            using Imperial or Metric units.
           </p>
-
         </div>
 
         {/* BODY */}
@@ -347,13 +329,11 @@ export default function AsphaltCalculator() {
             {/* UNIT SYSTEM */}
 
             <div className="rounded-xl border border-slate-200 bg-white p-4">
-
               <h2 className="mb-3 text-sm font-extrabold text-slate-900">
                 Unit System
               </h2>
 
               <div className="grid gap-3 sm:grid-cols-2">
-
                 <button
                   type="button"
                   onClick={() =>
@@ -381,21 +361,17 @@ export default function AsphaltCalculator() {
                 >
                   Metric — m / cm / tonnes
                 </button>
-
               </div>
-
             </div>
 
             {/* PROJECT DIMENSIONS */}
 
             <div className="rounded-xl border border-slate-200 bg-white p-4">
-
               <h2 className="mb-3 text-sm font-extrabold text-slate-900">
                 Project Dimensions
               </h2>
 
               <div className="grid gap-3 sm:grid-cols-3">
-
                 <InputField
                   label={`Length (${isMetric ? "m" : "ft"})`}
                   value={length}
@@ -419,26 +395,22 @@ export default function AsphaltCalculator() {
                   placeholder="Enter thickness"
                   suffix={isMetric ? "cm" : "in"}
                 />
-
               </div>
 
               <p className="mt-3 text-xs leading-5 text-slate-500">
                 Enter the final compacted asphalt thickness,
                 not the loose material thickness.
               </p>
-
             </div>
 
             {/* ASPHALT MATERIAL */}
 
             <div className="rounded-xl border border-slate-200 bg-white p-4">
-
               <h2 className="mb-3 text-sm font-extrabold text-slate-900">
                 Asphalt Material
               </h2>
 
               <div className="grid gap-3 sm:grid-cols-2">
-
                 <InputField
                   label={`Asphalt Density (${
                     isMetric
@@ -456,7 +428,6 @@ export default function AsphaltCalculator() {
                 />
 
                 <div>
-
                   <label className="mb-1.5 block text-xs font-bold text-slate-600">
                     Waste / Overage
                   </label>
@@ -474,13 +445,10 @@ export default function AsphaltCalculator() {
                     <option value="15">15%</option>
                     <option value="20">20%</option>
                   </select>
-
                 </div>
-
               </div>
 
-              <div className="mt-3 rounded-lg bg-slate-50 px-3 py-2.5">
-
+              <div className="mt-3 rounded-lg bg-slate-50 px-3 py-3">
                 <p className="text-xs leading-5 text-slate-600">
                   Default density:{" "}
                   <strong>
@@ -488,25 +456,22 @@ export default function AsphaltCalculator() {
                       ? "2,320 kg/m³"
                       : "145 lb/ft³"}
                   </strong>
-                  . Actual asphalt mix density varies,
-                  so use your supplier&apos;s density
-                  when available.
+                  . Asphalt density can vary depending on
+                  the mix, aggregate and compaction. When
+                  available, use the density provided by your
+                  asphalt supplier for a more accurate estimate.
                 </p>
-
               </div>
-
             </div>
 
             {/* OPTIONAL COST */}
 
             <div className="rounded-xl border border-slate-200 bg-white p-4">
-
               <h2 className="mb-3 text-sm font-extrabold text-slate-900">
                 Optional Cost
               </h2>
 
               <div className="grid gap-3 sm:grid-cols-[1fr_150px]">
-
                 <InputField
                   label={`Price per ${
                     isMetric
@@ -524,7 +489,6 @@ export default function AsphaltCalculator() {
                 />
 
                 <div>
-
                   <label className="mb-1.5 block text-xs font-bold text-slate-600">
                     Currency
                   </label>
@@ -538,40 +502,20 @@ export default function AsphaltCalculator() {
                     }
                     className="w-full rounded-xl border border-slate-300 bg-white px-3 py-3 text-sm font-semibold text-slate-900 outline-none focus:border-blue-500"
                   >
-                    <option value="USD">
-                      USD — $
-                    </option>
-
-                    <option value="EUR">
-                      EUR — €
-                    </option>
-
-                    <option value="GBP">
-                      GBP — £
-                    </option>
-
-                    <option value="CAD">
-                      CAD — C$
-                    </option>
-
-                    <option value="AUD">
-                      AUD — A$
-                    </option>
-
-                    <option value="INR">
-                      INR — ₹
-                    </option>
+                    <option value="USD">USD — $</option>
+                    <option value="EUR">EUR — €</option>
+                    <option value="GBP">GBP — £</option>
+                    <option value="CAD">CAD — C$</option>
+                    <option value="AUD">AUD — A$</option>
+                    <option value="INR">INR — ₹</option>
                   </select>
-
                 </div>
-
               </div>
 
               <p className="mt-3 text-xs leading-5 text-slate-500">
                 Currency changes the cost label only.
                 No live exchange-rate conversion is applied.
               </p>
-
             </div>
 
             {/* CALCULATE BUTTON */}
@@ -602,37 +546,47 @@ export default function AsphaltCalculator() {
                 {/* PRIMARY RESULT */}
 
                 <div className="rounded-xl bg-slate-950 p-5 text-center">
-
                   <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-400">
                     ASPHALT TO ORDER
                   </p>
 
                   <p className="mt-2 text-4xl font-black tracking-tight text-white">
-
                     {formatNumber(
                       isMetric
                         ? result.orderMetricTonnes
                         : result.orderShortTons
-                    )}
-
-                    {" "}
-
+                    )}{" "}
                     {isMetric
                       ? "tonnes"
                       : "US tons"}
-
                   </p>
 
                   <p className="mt-2 text-xs text-slate-400">
                     Includes {waste}% waste / overage
                   </p>
+                </div>
 
+                {/* BOTH UNIT RESULTS */}
+
+                <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                  <ResultItem
+                    label="US Short Tons"
+                    value={`${formatNumber(
+                      result.orderShortTons
+                    )} US tons`}
+                  />
+
+                  <ResultItem
+                    label="Metric Tonnes"
+                    value={`${formatNumber(
+                      result.orderMetricTonnes
+                    )} tonnes`}
+                  />
                 </div>
 
                 {/* RESULT GRID */}
 
                 <div className="mt-4 grid gap-3 sm:grid-cols-2">
-
                   <ResultItem
                     label="Base Weight"
                     value={`${formatNumber(
@@ -707,13 +661,11 @@ export default function AsphaltCalculator() {
                       )}`}
                     />
                   )}
-
                 </div>
 
                 {/* FORMULA */}
 
                 <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4">
-
                   <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
                     Calculation
                   </p>
@@ -734,18 +686,12 @@ export default function AsphaltCalculator() {
                     Order Quantity = Base Quantity ×
                     (1 + Waste ÷ 100)
                   </p>
-
                 </div>
-
               </div>
             )}
-
           </div>
-
         </div>
-
       </div>
-
     </section>
   );
 }
@@ -759,7 +705,6 @@ function ResultItem({
 }) {
   return (
     <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
-
       <p className="text-xs font-bold text-slate-500">
         {label}
       </p>
@@ -767,7 +712,6 @@ function ResultItem({
       <p className="mt-1 text-lg font-black text-slate-900">
         {value}
       </p>
-
     </div>
   );
 }
