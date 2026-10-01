@@ -288,16 +288,19 @@ export default function AsphaltCalculator() {
 
       {/* HERO IMAGE */}
 
-      <div className="mb-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-        <img
-          src="/cornerspan-asphalt-calculator-hero.webp"
-          alt="Asphalt Calculator for estimating asphalt quantity, weight, volume and cost"
-          width={1536}
-          height={1024}
-          fetchPriority="high"
-          className="h-auto w-full object-cover"
-        />
-      </div>
+<div className="mb-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+  <div className="relative aspect-[3/2] w-full overflow-hidden">
+    <img
+      src="/cornerspan-asphalt-calculator-hero.webp"
+      alt="Asphalt Calculator for estimating asphalt quantity, weight, volume and cost"
+      width={1536}
+      height={1024}
+      fetchPriority="high"
+      decoding="async"
+      className="absolute inset-0 h-full w-full object-cover"
+    />
+  </div>
+</div>
 
       {/* CALCULATOR */}
 
