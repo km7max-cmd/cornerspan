@@ -35,6 +35,7 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
+
     googleBot: {
       index: true,
       follow: true,
@@ -46,11 +47,16 @@ export const metadata: Metadata = {
 
   openGraph: {
     title: "Asphalt Calculator | Tons, Tonnes, Cubic Yards & Cost",
+
     description:
       "Calculate asphalt quantity, weight, volume and estimated material cost in Imperial or Metric units.",
+
     url: "https://www.cornerspan.com/calculators/asphalt",
+
     siteName: "CornerSpan",
+
     type: "website",
+
     images: [
       {
         url: "/cornerspan-asphalt-calculator-hero.webp",
@@ -63,9 +69,12 @@ export const metadata: Metadata = {
 
   twitter: {
     card: "summary_large_image",
+
     title: "Asphalt Calculator | Tons, Tonnes, Cubic Yards & Cost",
+
     description:
       "Free asphalt calculator with Imperial and Metric units.",
+
     images: ["/cornerspan-asphalt-calculator-hero.webp"],
   },
 };
@@ -90,7 +99,8 @@ const faqs = [
   },
 
   {
-    question: "Should asphalt thickness be entered before or after compaction?",
+    question:
+      "Should asphalt thickness be entered before or after compaction?",
     answer:
       "Enter the final compacted thickness required for the pavement. Loose asphalt placed before rolling can occupy more volume than the final compacted layer.",
   },
@@ -120,17 +130,135 @@ const faqs = [
   },
 ];
 
+const structuredData = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "@id":
+        "https://www.cornerspan.com/calculators/asphalt#calculator",
+      name: "Asphalt Calculator",
+      url: "https://www.cornerspan.com/calculators/asphalt",
+      description:
+        "Free asphalt calculator for estimating asphalt volume, weight, quantity and material cost using Imperial and Metric units.",
+      applicationCategory: "UtilitiesApplication",
+      operatingSystem: "All",
+      browserRequirements: "Requires JavaScript",
+      isAccessibleForFree: true,
+      offers: {
+        "@type": "Offer",
+        price: "0",
+        priceCurrency: "USD",
+      },
+    },
+
+    {
+      "@type": "FAQPage",
+      "@id":
+        "https://www.cornerspan.com/calculators/asphalt#faq",
+      mainEntity: faqs.map((faq) => ({
+        "@type": "Question",
+        name: faq.question,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: faq.answer,
+        },
+      })),
+    },
+  ],
+};
+
 export default function AsphaltPage() {
   return (
     <>
       <Breadcrumb current="Asphalt Calculator" />
 
+      {/* STRUCTURED DATA */}
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(structuredData),
+        }}
+      />
+
       <main className="mx-auto w-full max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
+
         <AsphaltCalculator />
+
+        {/* TABLE OF CONTENTS */}
+
+        <nav
+          aria-label="Table of contents"
+          className="mt-8 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6"
+        >
+          <h2 className="text-lg font-extrabold text-slate-900">
+            On This Page
+          </h2>
+
+          <ul className="mt-3 grid gap-2 text-sm sm:grid-cols-2">
+            <li>
+              <a
+                href="#how-to-calculate"
+                className="font-semibold text-blue-600 hover:underline"
+              >
+                How to Calculate Asphalt
+              </a>
+            </li>
+
+            <li>
+              <a
+                href="#asphalt-example"
+                className="font-semibold text-blue-600 hover:underline"
+              >
+                Asphalt Calculator Example
+              </a>
+            </li>
+
+            <li>
+              <a
+                href="#common-uses"
+                className="font-semibold text-blue-600 hover:underline"
+              >
+                Common Asphalt Calculator Uses
+              </a>
+            </li>
+
+            <li>
+              <a
+                href="#asphalt-formula"
+                className="font-semibold text-blue-600 hover:underline"
+              >
+                Asphalt Calculation Formula
+              </a>
+            </li>
+
+            <li>
+              <a
+                href="#asphalt-faq"
+                className="font-semibold text-blue-600 hover:underline"
+              >
+                Asphalt Calculator FAQ
+              </a>
+            </li>
+
+            <li>
+              <a
+                href="#important-note"
+                className="font-semibold text-blue-600 hover:underline"
+              >
+                Important Note
+              </a>
+            </li>
+          </ul>
+        </nav>
 
         {/* HOW TO CALCULATE */}
 
-        <section className="mt-8 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
+        <section
+          id="how-to-calculate"
+          className="mt-6 scroll-mt-24 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7"
+        >
           <p className="text-xs font-bold uppercase tracking-wider text-blue-600">
             ASPHALT CALCULATION
           </p>
@@ -141,8 +269,8 @@ export default function AsphaltPage() {
 
           <p className="mt-3 text-sm leading-7 text-slate-600">
             Asphalt quantity is based on paving area, final compacted
-            thickness and asphalt mix density. Use Imperial units for feet,
-            inches and US short tons, or Metric units for meters,
+            thickness and asphalt mix density. Use Imperial units for
+            feet, inches and US short tons, or Metric units for meters,
             centimeters and metric tonnes.
           </p>
 
@@ -169,15 +297,18 @@ export default function AsphaltPage() {
 
         {/* EXAMPLE */}
 
-        <section className="mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-5 sm:p-7">
+        <section
+          id="asphalt-example"
+          className="mt-6 scroll-mt-24 rounded-2xl border border-slate-200 bg-slate-50 p-5 sm:p-7"
+        >
           <h2 className="text-xl font-extrabold text-slate-900">
             Asphalt Calculator Example
           </h2>
 
           <p className="mt-3 text-sm leading-7 text-slate-600">
-            Suppose a driveway is 20 ft long and 30 ft wide, with a final
-            compacted asphalt thickness of 3 inches. Using an estimated
-            asphalt density of 145 lb/ft³:
+            Suppose a driveway is 20 ft long and 30 ft wide, with a
+            final compacted asphalt thickness of 3 inches. Using an
+            estimated asphalt density of 145 lb/ft³:
           </p>
 
           <div className="mt-4 space-y-2 rounded-xl bg-white p-4 text-sm leading-7 text-slate-700">
@@ -207,15 +338,19 @@ export default function AsphaltPage() {
           </div>
 
           <p className="mt-4 text-sm leading-6 text-slate-600">
-            The actual quantity can vary with asphalt mix density, final
-            compaction and project specifications. Use the calculator above
-            with your supplier&apos;s density when available.
+            The actual quantity can vary with asphalt mix density,
+            final compaction and project specifications. Use the
+            calculator above with your supplier&apos;s density when
+            available.
           </p>
         </section>
 
         {/* COMMON USES */}
 
-        <section className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
+        <section
+          id="common-uses"
+          className="mt-6 scroll-mt-24 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7"
+        >
           <h2 className="text-xl font-extrabold text-slate-900">
             Common Asphalt Calculator Uses
           </h2>
@@ -244,7 +379,10 @@ export default function AsphaltPage() {
 
         {/* FORMULA */}
 
-        <section className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
+        <section
+          id="asphalt-formula"
+          className="mt-6 scroll-mt-24 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7"
+        >
           <h2 className="text-xl font-extrabold text-slate-900">
             Asphalt Calculation Formula
           </h2>
@@ -254,7 +392,8 @@ export default function AsphaltPage() {
             <p>Volume = Area × Compacted Thickness</p>
             <p>Weight = Volume × Density</p>
             <p>
-              Order Quantity = Base Quantity × (1 + Overage ÷ 100)
+              Order Quantity = Base Quantity ×
+              (1 + Overage ÷ 100)
             </p>
             <p>1 US short ton = 2,000 lb</p>
             <p>1 metric tonne = 1,000 kg</p>
@@ -263,14 +402,20 @@ export default function AsphaltPage() {
 
         {/* FAQ */}
 
-        <section className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
+        <section
+          id="asphalt-faq"
+          className="mt-6 scroll-mt-24 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7"
+        >
           <h2 className="text-xl font-extrabold text-slate-900">
             Asphalt Calculator FAQ
           </h2>
 
           <div className="mt-4 divide-y divide-slate-200">
             {faqs.map((faq) => (
-              <details key={faq.question} className="group py-4">
+              <details
+                key={faq.question}
+                className="group py-4"
+              >
                 <summary className="cursor-pointer list-none pr-8 text-sm font-bold text-slate-900">
                   {faq.question}
                 </summary>
@@ -287,21 +432,48 @@ export default function AsphaltPage() {
 
         <RelatedCalculators />
 
+        {/* EXTERNAL REFERENCE */}
+
+        <section className="mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-5 sm:p-6">
+          <h2 className="text-base font-extrabold text-slate-900">
+            Asphalt Technical Reference
+          </h2>
+
+          <p className="mt-2 text-sm leading-6 text-slate-600">
+            Asphalt density, compaction and pavement design can vary by
+            mix and project requirements. For technical asphalt guidance,
+            consult the Asphalt Institute&apos;s engineering resources.
+          </p>
+
+          <a
+            href="https://www.asphaltinstitute.org/engineering/engineering-faqs/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-3 inline-block text-sm font-bold text-blue-600 hover:underline"
+          >
+            View Asphalt Institute Engineering FAQs →
+          </a>
+        </section>
+
         {/* IMPORTANT NOTE */}
 
-        <section className="mt-6 rounded-2xl border border-amber-200 bg-amber-50 p-5 sm:p-6">
+        <section
+          id="important-note"
+          className="mt-6 scroll-mt-24 rounded-2xl border border-amber-200 bg-amber-50 p-5 sm:p-6"
+        >
           <h2 className="text-base font-extrabold text-amber-900">
             Important Note
           </h2>
 
           <p className="mt-2 text-sm leading-6 text-amber-900/80">
             Asphalt quantity is an estimate for planning and material
-            ordering. Actual mix density, compaction, pavement thickness and
-            site conditions can change the final quantity. Confirm the mix
-            density and required tonnage with your local asphalt supplier or
-            paving contractor before placing a final order.
+            ordering. Actual mix density, compaction, pavement thickness
+            and site conditions can change the final quantity. Confirm
+            the mix density and required tonnage with your local asphalt
+            supplier or paving contractor before placing a final order.
           </p>
         </section>
+
       </main>
     </>
   );
