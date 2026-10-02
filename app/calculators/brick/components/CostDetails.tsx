@@ -1,6 +1,8 @@
 "use client";
 
-import type { Currency } from "../types";
+import type {
+  Currency,
+} from "../types";
 
 import {
   CURRENCY_OPTIONS,
@@ -45,16 +47,23 @@ export default function CostDetails({
   const inputClass =
     "min-w-0 flex-1 bg-transparent px-3 text-base font-medium text-slate-900 outline-none";
 
+  const unitClass =
+    "flex h-12 shrink-0 items-center border-l border-slate-200 bg-slate-50 px-3 text-sm font-semibold text-slate-500";
+
   const labelClass =
     "mb-1.5 block text-sm font-medium text-slate-700";
 
-  const currencyOption =
+  const selectClass =
+    "h-12 w-full rounded-xl border border-slate-200 bg-white px-3 text-base font-semibold text-blue-700 outline-none transition focus:border-blue-500 focus:ring-4 focus:ring-blue-100";
+
+  const selectedCurrency =
     CURRENCY_OPTIONS.find(
-      (item) => item.value === currency
+      (option) =>
+        option.value === currency
     );
 
   const currencySymbol =
-    currencyOption?.symbol ?? "$";
+    selectedCurrency?.symbol ?? "$";
 
   return (
     <section className="border-b border-slate-100">
@@ -83,7 +92,7 @@ export default function CostDetails({
             </h2>
 
             <p className="mt-0.5 text-sm text-slate-500">
-              Enter material prices for an estimate
+              Brick, cement and sand prices
             </p>
 
           </div>
@@ -107,7 +116,7 @@ export default function CostDetails({
               CURRENCY
           ================================================= */}
 
-          <div className="mb-4">
+          <div>
 
             <label className={labelClass}>
               Currency
@@ -120,23 +129,7 @@ export default function CostDetails({
                   event.target.value as Currency
                 )
               }
-              className="
-                h-12
-                w-full
-                rounded-xl
-                border
-                border-slate-200
-                bg-white
-                px-3
-                text-base
-                font-semibold
-                text-blue-700
-                outline-none
-                transition
-                focus:border-blue-500
-                focus:ring-4
-                focus:ring-blue-100
-              "
+              className={selectClass}
               aria-label="Currency"
             >
               {CURRENCY_OPTIONS.map(
@@ -154,63 +147,69 @@ export default function CostDetails({
           </div>
 
           {/* =================================================
-              BRICK + CEMENT PRICE
+              BRICK PRICE
           ================================================= */}
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="mt-4">
 
-            {/* PRICE PER BRICK */}
+            <label className={labelClass}>
+              Price per Brick
+            </label>
 
-            <div className="min-w-0">
+            <div className={fieldClass}>
 
-              <label className={labelClass}>
-                Price / Brick
-              </label>
+              <span className={unitClass}>
+                {currencySymbol}
+              </span>
 
-              <div className={fieldClass}>
+              <input
+                type="number"
+                min="0"
+                step="0.01"
+                inputMode="decimal"
+                value={pricePerBrick}
+                onChange={(event) =>
+                  setPricePerBrick(
+                    event.target.value
+                  )
+                }
+                className={inputClass}
+                aria-label="Price per brick"
+                placeholder="0.00"
+              />
 
-                <span className="flex h-12 shrink-0 items-center px-2.5 text-base font-semibold text-slate-500">
-                  {currencySymbol}
-                </span>
-
-                <input
-                  type="number"
-                  min="0"
-                  step="any"
-                  inputMode="decimal"
-                  value={pricePerBrick}
-                  onChange={(event) =>
-                    setPricePerBrick(
-                      event.target.value
-                    )
-                  }
-                  placeholder="0.00"
-                  className={inputClass}
-                  aria-label="Price per brick"
-                />
-
-              </div>
+              <span className={unitClass}>
+                / brick
+              </span>
 
             </div>
 
-            {/* CEMENT PRICE */}
+          </div>
+
+          {/* =================================================
+              CEMENT + SAND
+          ================================================= */}
+
+          <div className="mt-4 grid grid-cols-2 gap-3">
+
+            {/* CEMENT */}
 
             <div className="min-w-0">
 
               <label className={labelClass}>
-                Cement / Bag
+                Cement Price
               </label>
 
               <div className={fieldClass}>
 
-                <span className="flex h-12 shrink-0 items-center px-2.5 text-base font-semibold text-slate-500">
+                <span className={unitClass}>
                   {currencySymbol}
                 </span>
 
                 <input
                   type="number"
                   min="0"
-                  step="any"
+                  step="0.01"
                   inputMode="decimal"
                   value={cementPrice}
                   onChange={(event) =>
@@ -218,89 +217,87 @@ export default function CostDetails({
                       event.target.value
                     )
                   }
-                  placeholder="0.00"
                   className={inputClass}
-                  aria-label="Cement price per bag"
+                  aria-label="Cement price"
+                  placeholder="0.00"
                 />
 
               </div>
 
+              <p className="mt-1.5 text-xs text-slate-500">
+                Per cement bag
+              </p>
+
+            </div>
+
+            {/* SAND */}
+
+            <div className="min-w-0">
+
+              <label className={labelClass}>
+                Sand Price
+              </label>
+
+              <div className={fieldClass}>
+
+                <span className={unitClass}>
+                  {currencySymbol}
+                </span>
+
+                <input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  inputMode="decimal"
+                  value={sandPrice}
+                  onChange={(event) =>
+                    setSandPrice(
+                      event.target.value
+                    )
+                  }
+                  className={inputClass}
+                  aria-label="Sand price"
+                  placeholder="0.00"
+                />
+
+              </div>
+
+              <p className="mt-1.5 text-xs text-slate-500">
+                Per m³
+              </p>
+
             </div>
 
           </div>
 
           {/* =================================================
-              SAND PRICE
-          ================================================= */}
-
-          <div className="mt-4">
-
-            <label className={labelClass}>
-              Sand Price / m³
-            </label>
-
-            <div className={fieldClass}>
-
-              <span className="flex h-12 shrink-0 items-center px-3 text-base font-semibold text-slate-500">
-                {currencySymbol}
-              </span>
-
-              <input
-                type="number"
-                min="0"
-                step="any"
-                inputMode="decimal"
-                value={sandPrice}
-                onChange={(event) =>
-                  setSandPrice(
-                    event.target.value
-                  )
-                }
-                placeholder="0.00"
-                className={inputClass}
-                aria-label="Sand price per cubic meter"
-              />
-
-            </div>
-
-          </div>
-
-          {/* =================================================
-              PRICE INFO
+              COST INFO
           ================================================= */}
 
           <div className="mt-4 rounded-xl bg-green-50 px-4 py-3">
 
             <div className="flex items-center justify-between gap-3">
 
-              <div className="min-w-0">
+              <div>
 
                 <p className="text-sm font-semibold text-green-700">
                   Cost Estimate
                 </p>
 
                 <p className="mt-0.5 text-xs leading-5 text-green-600">
-                  Uses the prices entered above
+                  Brick, cement and sand costs are
+                  calculated automatically.
                 </p>
 
               </div>
 
-              <span className="shrink-0 text-lg font-bold text-green-700">
-                {currencySymbol}
+              <span className="shrink-0 rounded-full bg-white px-2.5 py-1 text-xs font-bold text-green-700">
+                Auto
               </span>
 
             </div>
 
           </div>
-
-          {/* =================================================
-              NOTE
-          ================================================= */}
-
-          <p className="mt-3 text-xs leading-5 text-slate-500">
-            Material costs are estimates and can vary by
-            supplier, location, material quality and market price.
-          </p>
 
         </div>
       )}
