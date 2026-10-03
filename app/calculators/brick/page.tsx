@@ -89,11 +89,154 @@ export default function BrickCalculatorPage() {
       <section className="mx-auto mt-8 max-w-3xl px-5 pb-10 sm:px-6">
 
         {/* =================================================
+            TABLE OF CONTENTS
+        ================================================= */}
+
+        <nav
+          aria-label="Table of contents"
+          className="mb-6 rounded-2xl border border-slate-200 bg-slate-50 p-5"
+        >
+          <h2 className="text-lg font-bold text-slate-900">
+            On This Page
+          </h2>
+
+          <ul className="mt-3 grid gap-2 text-sm sm:grid-cols-2">
+            <li>
+              <a
+                href="#how-it-works"
+                className="text-blue-700 hover:underline"
+              >
+                How the Brick Calculator Works
+              </a>
+            </li>
+
+            <li>
+              <a
+                href="#brick-quantity"
+                className="text-blue-700 hover:underline"
+              >
+                How Many Bricks Do You Need?
+              </a>
+            </li>
+
+            <li>
+              <a
+                href="#us-brick-sizes"
+                className="text-blue-700 hover:underline"
+              >
+                Common US Brick Sizes
+              </a>
+            </li>
+
+            <li>
+              <a
+                href="#bricks-per-square-foot"
+                className="text-blue-700 hover:underline"
+              >
+                Bricks Per Square Foot
+              </a>
+            </li>
+
+            <li>
+              <a
+                href="#worked-example"
+                className="text-blue-700 hover:underline"
+              >
+                Worked Example
+              </a>
+            </li>
+
+            <li>
+              <a
+                href="#mortar-joint"
+                className="text-blue-700 hover:underline"
+              >
+                Mortar Joint and Brick Quantity
+              </a>
+            </li>
+
+            <li>
+              <a
+                href="#openings"
+                className="text-blue-700 hover:underline"
+              >
+                Deducting Doors and Windows
+              </a>
+            </li>
+
+            <li>
+              <a
+                href="#waste"
+                className="text-blue-700 hover:underline"
+              >
+                Brick Waste Allowance
+              </a>
+            </li>
+
+            <li>
+              <a
+                href="#cost"
+                className="text-blue-700 hover:underline"
+              >
+                Mortar and Material Cost
+              </a>
+            </li>
+
+            <li>
+              <a
+                href="#calculation-steps"
+                className="text-blue-700 hover:underline"
+              >
+                Brick Calculation Steps
+              </a>
+            </li>
+
+            <li>
+              <a
+                href="#methodology"
+                className="text-blue-700 hover:underline"
+              >
+                How We Calculate Brick Quantity
+              </a>
+            </li>
+
+            <li>
+              <a
+                href="#common-uses"
+                className="text-blue-700 hover:underline"
+              >
+                Common Uses
+              </a>
+            </li>
+
+            <li>
+              <a
+                href="#references"
+                className="text-blue-700 hover:underline"
+              >
+                Brick Size and Standards References
+              </a>
+            </li>
+
+            <li>
+              <a
+                href="#faq"
+                className="text-blue-700 hover:underline"
+              >
+                Brick Calculator FAQ
+              </a>
+            </li>
+          </ul>
+        </nav>
+
+        {/* =================================================
             HOW IT WORKS
         ================================================= */}
 
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-
+        <div
+          id="how-it-works"
+          className="scroll-mt-24 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+        >
           <h2 className="text-xl font-bold text-slate-900">
             How the Brick Calculator Works
           </h2>
@@ -117,15 +260,16 @@ export default function BrickCalculatorPage() {
             provides mortar and material cost estimates based on the
             information entered.
           </p>
-
         </div>
 
         {/* =================================================
             BRICK QUANTITY
         ================================================= */}
 
-        <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-
+        <div
+          id="brick-quantity"
+          className="mt-6 scroll-mt-24 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+        >
           <h2 className="text-xl font-bold text-slate-900">
             How Many Bricks Do You Need?
           </h2>
@@ -154,15 +298,16 @@ export default function BrickCalculatorPage() {
             doors and windows. The remaining wall area is used to estimate
             the required brick quantity.
           </p>
-
         </div>
 
         {/* =================================================
             US BRICK SIZES
         ================================================= */}
 
-        <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-
+        <div
+          id="us-brick-sizes"
+          className="mt-6 scroll-mt-24 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+        >
           <h2 className="text-xl font-bold text-slate-900">
             Common US Brick Sizes and Dimensions
           </h2>
@@ -175,9 +320,7 @@ export default function BrickCalculatorPage() {
           </p>
 
           <div className="mt-4 overflow-x-auto">
-
             <table className="w-full min-w-[520px] border-collapse text-sm">
-
               <thead>
                 <tr className="border-b border-slate-200 text-left">
                   <th className="px-3 py-3 font-semibold text-slate-900">
@@ -199,7 +342,6 @@ export default function BrickCalculatorPage() {
               </thead>
 
               <tbody>
-
                 <tr className="border-b border-slate-100">
                   <td className="px-3 py-3 font-medium text-slate-800">
                     Modular
@@ -289,11 +431,8 @@ export default function BrickCalculatorPage() {
                     3 5/8 in
                   </td>
                 </tr>
-
               </tbody>
-
             </table>
-
           </div>
 
           <p className="mt-4 text-xs leading-6 text-slate-500">
@@ -302,15 +441,16 @@ export default function BrickCalculatorPage() {
             size and applicable construction requirements before purchasing
             materials.
           </p>
-
         </div>
 
         {/* =================================================
             BRICKS PER SQUARE FOOT
         ================================================= */}
 
-        <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-
+        <div
+          id="bricks-per-square-foot"
+          className="mt-6 scroll-mt-24 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+        >
           <h2 className="text-xl font-bold text-slate-900">
             How Many Bricks Per Square Foot?
           </h2>
@@ -330,7 +470,6 @@ export default function BrickCalculatorPage() {
           </p>
 
           <div className="mt-4 rounded-xl bg-slate-50 p-4">
-
             <p className="font-semibold text-slate-900">
               Basic wall-area formula
             </p>
@@ -338,7 +477,6 @@ export default function BrickCalculatorPage() {
             <p className="mt-2 text-sm text-slate-700">
               Wall Area = Wall Length × Wall Height
             </p>
-
           </div>
 
           <p className="mt-4 text-sm leading-7 text-slate-600">
@@ -346,15 +484,16 @@ export default function BrickCalculatorPage() {
             dimensions and mortar joint thickness into the calculator
             instead of using a fixed bricks-per-square-foot assumption.
           </p>
-
         </div>
 
         {/* =================================================
             WORKED EXAMPLE
         ================================================= */}
 
-        <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-
+        <div
+          id="worked-example"
+          className="mt-6 scroll-mt-24 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+        >
           <h2 className="text-xl font-bold text-slate-900">
             Brick Calculator Worked Example
           </h2>
@@ -365,11 +504,9 @@ export default function BrickCalculatorPage() {
           </p>
 
           <div className="mt-4 rounded-xl bg-slate-50 p-4 text-center text-sm leading-7 text-slate-800">
-
             <p>
               20 ft × 8 ft = <strong>160 sq ft</strong>
             </p>
-
           </div>
 
           <p className="mt-4 text-sm leading-7 text-slate-600">
@@ -379,11 +516,9 @@ export default function BrickCalculatorPage() {
           </p>
 
           <div className="mt-4 rounded-xl bg-slate-50 p-4 text-center text-sm leading-7 text-slate-800">
-
             <p>
               160 sq ft − 20 sq ft = <strong>140 sq ft net wall area</strong>
             </p>
-
           </div>
 
           <p className="mt-4 text-sm leading-7 text-slate-600">
@@ -399,15 +534,16 @@ export default function BrickCalculatorPage() {
             thickness and wall openings can vary from one project to
             another.
           </p>
-
         </div>
 
         {/* =================================================
             MORTAR JOINT
         ================================================= */}
 
-        <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-
+        <div
+          id="mortar-joint"
+          className="mt-6 scroll-mt-24 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+        >
           <h2 className="text-xl font-bold text-slate-900">
             Mortar Joint and Brick Quantity
           </h2>
@@ -424,15 +560,16 @@ export default function BrickCalculatorPage() {
             actual joint thickness specified for the construction project
             whenever possible.
           </p>
-
         </div>
 
         {/* =================================================
             DOORS AND WINDOWS
         ================================================= */}
 
-        <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-
+        <div
+          id="openings"
+          className="mt-6 scroll-mt-24 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+        >
           <h2 className="text-xl font-bold text-slate-900">
             Deducting Doors and Windows
           </h2>
@@ -448,15 +585,16 @@ export default function BrickCalculatorPage() {
             dimensions in the calculator. This helps prevent overestimating
             the number of bricks required.
           </p>
-
         </div>
 
         {/* =================================================
             BRICK WASTE
         ================================================= */}
 
-        <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-
+        <div
+          id="waste"
+          className="mt-6 scroll-mt-24 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+        >
           <h2 className="text-xl font-bold text-slate-900">
             Brick Waste Allowance
           </h2>
@@ -478,15 +616,16 @@ export default function BrickCalculatorPage() {
             estimated brick quantity to include an allowance for
             construction waste.
           </p>
-
         </div>
 
         {/* =================================================
             MORTAR AND MATERIAL COST
         ================================================= */}
 
-        <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-
+        <div
+          id="cost"
+          className="mt-6 scroll-mt-24 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+        >
           <h2 className="text-xl font-bold text-slate-900">
             Mortar and Material Cost Estimate
           </h2>
@@ -503,21 +642,21 @@ export default function BrickCalculatorPage() {
             depending on local brick prices, cement prices, sand prices,
             transportation, labor and site conditions.
           </p>
-
         </div>
 
         {/* =================================================
             BRICK CALCULATION STEPS
         ================================================= */}
 
-        <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-
+        <div
+          id="calculation-steps"
+          className="mt-6 scroll-mt-24 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+        >
           <h2 className="text-xl font-bold text-slate-900">
             Brick Calculation Steps
           </h2>
 
           <ol className="mt-4 list-decimal space-y-3 pl-5 text-sm leading-7 text-slate-600">
-
             <li>
               Measure the wall length and wall height.
             </li>
@@ -549,17 +688,17 @@ export default function BrickCalculatorPage() {
             <li>
               Review the estimated brick, mortar and material cost results.
             </li>
-
           </ol>
-
         </div>
 
         {/* =================================================
             CALCULATION METHODOLOGY
         ================================================= */}
 
-        <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-
+        <div
+          id="methodology"
+          className="mt-6 scroll-mt-24 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+        >
           <h2 className="text-xl font-bold text-slate-900">
             How We Calculate Brick Quantity
           </h2>
@@ -571,7 +710,6 @@ export default function BrickCalculatorPage() {
           </p>
 
           <ol className="mt-4 list-decimal space-y-3 pl-5 text-sm leading-7 text-slate-600">
-
             <li>
               Calculate the gross wall area from wall length and height.
             </li>
@@ -601,7 +739,6 @@ export default function BrickCalculatorPage() {
               Estimate mortar and material costs using the calculated
               quantities and prices entered by the user.
             </li>
-
           </ol>
 
           <p className="mt-4 text-xs leading-6 text-slate-500">
@@ -610,23 +747,22 @@ export default function BrickCalculatorPage() {
             joints, cutting, breakage, construction methods and site
             conditions.
           </p>
-
         </div>
 
         {/* =================================================
             COMMON USES
         ================================================= */}
 
-        <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-
+        <div
+          id="common-uses"
+          className="mt-6 scroll-mt-24 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+        >
           <h2 className="text-xl font-bold text-slate-900">
             Common Uses of a Brick Calculator
           </h2>
 
           <div className="mt-4 grid gap-3 sm:grid-cols-2">
-
             <div className="rounded-xl bg-slate-50 p-4">
-
               <h3 className="font-semibold text-slate-900">
                 House Walls
               </h3>
@@ -634,11 +770,9 @@ export default function BrickCalculatorPage() {
               <p className="mt-2 text-sm leading-6 text-slate-600">
                 Estimate bricks required for residential wall construction.
               </p>
-
             </div>
 
             <div className="rounded-xl bg-slate-50 p-4">
-
               <h3 className="font-semibold text-slate-900">
                 Boundary Walls
               </h3>
@@ -646,11 +780,9 @@ export default function BrickCalculatorPage() {
               <p className="mt-2 text-sm leading-6 text-slate-600">
                 Estimate brick quantities for boundary and compound walls.
               </p>
-
             </div>
 
             <div className="rounded-xl bg-slate-50 p-4">
-
               <h3 className="font-semibold text-slate-900">
                 Partition Walls
               </h3>
@@ -659,11 +791,9 @@ export default function BrickCalculatorPage() {
                 Calculate approximate brick requirements for internal
                 masonry partitions.
               </p>
-
             </div>
 
             <div className="rounded-xl bg-slate-50 p-4">
-
               <h3 className="font-semibold text-slate-900">
                 Material Planning
               </h3>
@@ -672,27 +802,84 @@ export default function BrickCalculatorPage() {
                 Use estimated quantities for preliminary construction
                 material planning and budgeting.
               </p>
-
             </div>
-
           </div>
+        </div>
 
+        {/* =================================================
+            AUTHORITATIVE REFERENCES
+        ================================================= */}
+
+        <div
+          id="references"
+          className="mt-6 scroll-mt-24 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+        >
+          <h2 className="text-xl font-bold text-slate-900">
+            Brick Size and Standards References
+          </h2>
+
+          <p className="mt-3 text-sm leading-7 text-slate-600">
+            Brick dimensions can vary by manufacturer, product line and
+            application. The following sources provide additional
+            information for brick dimensions and masonry specifications.
+          </p>
+
+          <ul className="mt-4 list-disc space-y-3 pl-5 text-sm leading-7 text-slate-600">
+            <li>
+              <a
+                href="https://www.glengery.com/brick-sizes"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-medium text-blue-700 hover:underline"
+              >
+                Glen-Gery – Brick Sizes and Dimensions
+              </a>
+            </li>
+
+            <li>
+              <a
+                href="https://brick.com/modular-size-brick/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-medium text-blue-700 hover:underline"
+              >
+                Acme Brick – Modular Size Brick
+              </a>
+            </li>
+
+            <li>
+              <a
+                href="https://store.astm.org/standards/c216"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-medium text-blue-700 hover:underline"
+              >
+                ASTM International – C216 Facing Brick Specification
+              </a>
+            </li>
+          </ul>
+
+          <p className="mt-4 text-xs leading-6 text-slate-500">
+            External references are provided for additional technical
+            context. Always verify the actual dimensions and product
+            specifications supplied by the manufacturer for your project.
+          </p>
         </div>
 
         {/* =================================================
             FAQ
         ================================================= */}
 
-        <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-
+        <div
+          id="faq"
+          className="mt-6 scroll-mt-24 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+        >
           <h2 className="text-xl font-bold text-slate-900">
             Brick Calculator FAQ
           </h2>
 
           <div className="mt-5 space-y-6">
-
             <div>
-
               <h3 className="font-semibold text-slate-900">
                 How do I calculate the number of bricks for a wall?
               </h3>
@@ -703,11 +890,9 @@ export default function BrickCalculatorPage() {
                 the brick dimensions and mortar joint thickness. Add a
                 suitable waste allowance for practical planning.
               </p>
-
             </div>
 
             <div>
-
               <h3 className="font-semibold text-slate-900">
                 How many bricks are needed per square foot?
               </h3>
@@ -717,11 +902,9 @@ export default function BrickCalculatorPage() {
                 joint thickness. There is no single bricks-per-square-foot
                 value that applies to every brick type and wall.
               </p>
-
             </div>
 
             <div>
-
               <h3 className="font-semibold text-slate-900">
                 Does mortar thickness affect brick quantity?
               </h3>
@@ -731,11 +914,9 @@ export default function BrickCalculatorPage() {
                 of each brick unit in the finished brickwork and can
                 therefore change the estimated number of bricks required.
               </p>
-
             </div>
 
             <div>
-
               <h3 className="font-semibold text-slate-900">
                 Should doors and windows be deducted?
               </h3>
@@ -745,11 +926,9 @@ export default function BrickCalculatorPage() {
                 needs to be constructed with bricks, so their area should
                 be deducted from the gross wall area.
               </p>
-
             </div>
 
             <div>
-
               <h3 className="font-semibold text-slate-900">
                 What brick size should I use for a US project?
               </h3>
@@ -759,11 +938,9 @@ export default function BrickCalculatorPage() {
                 vary by manufacturer and product line. Enter the actual
                 dimensions of the brick you plan to use whenever possible.
               </p>
-
             </div>
 
             <div>
-
               <h3 className="font-semibold text-slate-900">
                 How much brick waste should I allow?
               </h3>
@@ -774,11 +951,9 @@ export default function BrickCalculatorPage() {
                 the project, brick type, cutting, breakage and construction
                 conditions.
               </p>
-
             </div>
 
             <div>
-
               <h3 className="font-semibold text-slate-900">
                 Is the brick calculator exact?
               </h3>
@@ -789,11 +964,8 @@ export default function BrickCalculatorPage() {
                 size tolerances, mortar joints, cutting, breakage,
                 workmanship and site conditions.
               </p>
-
             </div>
-
           </div>
-
         </div>
 
         {/* =================================================
@@ -801,13 +973,11 @@ export default function BrickCalculatorPage() {
         ================================================= */}
 
         <p className="mt-6 px-2 pb-6 text-center text-xs leading-5 text-slate-500">
-
           This brick calculator provides estimates for planning and
           budgeting purposes only. Actual brick and mortar quantities may
           vary depending on brick dimensions, mortar joint thickness, wall
           construction method, openings, waste, workmanship and site
           conditions.
-
         </p>
 
       </section>
