@@ -93,12 +93,24 @@ export default function BrickCalculator() {
                 brickLength={
                   state.brickLength
                 }
+
                 brickHeight={
                   state.brickHeight
                 }
+
                 brickWidth={
                   state.brickWidth
                 }
+
+                /* =================================================
+                   FIX:
+                   BrickDiagram requires brickUnit
+                ================================================= */}
+
+                brickUnit={
+                  state.brickUnit
+                }
+
                 mortarJoint={
                   state.mortarJoint
                 }
@@ -141,11 +153,13 @@ export default function BrickCalculator() {
           ================================================= */}
 
           <section className="mx-auto mt-7 max-w-6xl rounded-2xl border border-blue-100 bg-blue-50 p-5 sm:p-6">
+
             <h2 className="text-lg font-bold text-slate-900">
               Brick Calculator Tips
             </h2>
 
             <ul className="mt-3 list-disc space-y-2 pl-5 text-sm leading-6 text-slate-700">
+
               <li>
                 Measure the wall length and height
                 accurately before calculating.
@@ -170,7 +184,9 @@ export default function BrickCalculator() {
                 Brick sizes can vary by region,
                 manufacturer and construction method.
               </li>
+
             </ul>
+
           </section>
 
           {/* =================================================
