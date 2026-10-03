@@ -42,7 +42,6 @@ export const LENGTH_UNIT_OPTIONS: {
 
 /* =========================================================
    MORTAR JOINT OPTIONS
-
    Stored internally in inches.
 ========================================================= */
 
@@ -52,19 +51,19 @@ export const MORTAR_JOINT_OPTIONS: {
 }[] = [
   {
     value: "0.25",
-    label: '1/4 in',
+    label: "1/4 in",
   },
   {
     value: "0.375",
-    label: '3/8 in',
+    label: "3/8 in",
   },
   {
     value: "0.5",
-    label: '1/2 in',
+    label: "1/2 in",
   },
   {
     value: "0.625",
-    label: '5/8 in',
+    label: "5/8 in",
   },
 ];
 
@@ -210,6 +209,12 @@ export function getCurrencySymbol(
 
 /* =========================================================
    DEFAULT CALCULATOR STATE
+
+   Input fields intentionally start empty so the calculator
+   does not display example/project values on first load.
+
+   Dropdown selections and calculation settings retain
+   sensible defaults.
 ========================================================= */
 
 export const BRICK_DEFAULTS: BrickCalculatorState = {
@@ -219,8 +224,8 @@ export const BRICK_DEFAULTS: BrickCalculatorState = {
 
   wallType: "single",
 
-  wallLength: "20",
-  wallHeight: "8",
+  wallLength: "",
+  wallHeight: "",
 
   wallLengthUnit: "ft",
   wallHeightUnit: "ft",
@@ -231,9 +236,9 @@ export const BRICK_DEFAULTS: BrickCalculatorState = {
      DOOR
   ------------------------------------------------------- */
 
-  doorQuantity: "1",
-  doorWidth: "3",
-  doorHeight: "7",
+  doorQuantity: "",
+  doorWidth: "",
+  doorHeight: "",
 
   doorWidthUnit: "ft",
   doorHeightUnit: "ft",
@@ -242,23 +247,24 @@ export const BRICK_DEFAULTS: BrickCalculatorState = {
      WINDOW
   ------------------------------------------------------- */
 
-  windowQuantity: "2",
-  windowWidth: "3",
-  windowHeight: "4",
+  windowQuantity: "",
+  windowWidth: "",
+  windowHeight: "",
 
   windowWidthUnit: "ft",
   windowHeightUnit: "ft",
 
   /* -------------------------------------------------------
-     BRICK
-     
-     US Modular Brick
-     7.625 × 2.25 × 3.625 in
+     BRICK DIMENSIONS
+
+     Input fields start empty.
+     User can enter actual brick dimensions or select
+     a predefined brick size from the calculator UI.
   ------------------------------------------------------- */
 
-  brickLength: "7.625",
-  brickHeight: "2.25",
-  brickWidth: "3.625",
+  brickLength: "",
+  brickHeight: "",
+  brickWidth: "",
 
   brickUnit: "in",
 
@@ -290,11 +296,11 @@ export const BRICK_DEFAULTS: BrickCalculatorState = {
 
   currency: "USD",
 
-  pricePerBrick: "0.75",
+  pricePerBrick: "",
 
-  cementPrice: "10",
+  cementPrice: "",
 
-  sandPrice: "30",
+  sandPrice: "",
 
   /* -------------------------------------------------------
      WASTE
