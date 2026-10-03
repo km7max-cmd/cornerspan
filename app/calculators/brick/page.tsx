@@ -26,16 +26,11 @@ export const metadata: Metadata = {
 
   openGraph: {
     title: "Brick Calculator – Bricks, Mortar & Cost | CornerSpan",
-
     description:
       "Calculate bricks, mortar, openings, waste, and estimated material cost for your wall construction project.",
-
     url: "https://www.cornerspan.com/calculators/brick",
-
     siteName: "CornerSpan",
-
     type: "website",
-
     images: [
       {
         url: "/og-image.png",
@@ -48,12 +43,9 @@ export const metadata: Metadata = {
 
   twitter: {
     card: "summary_large_image",
-
     title: "Brick Calculator – Bricks, Mortar & Cost | CornerSpan",
-
     description:
       "Free brick calculator for estimating bricks, mortar, waste, openings, and material cost.",
-
     images: ["/og-image.png"],
   },
 
@@ -214,7 +206,7 @@ export default function BrickCalculatorPage() {
                 href="#references"
                 className="text-blue-700 hover:underline"
               >
-                Brick Size and Standards References
+                Brick Standards & References
               </a>
             </li>
 
@@ -260,6 +252,22 @@ export default function BrickCalculatorPage() {
             provides mortar and material cost estimates based on the
             information entered.
           </p>
+
+          {/* =================================================
+              BRICK CALCULATOR INFOGRAPHIC
+          ================================================= */}
+
+          <div className="mt-5 overflow-hidden rounded-2xl border border-slate-200 bg-slate-50">
+            <img
+              src="/brick-calculator-infographic.webp"
+              alt="Brick wall construction diagram showing brick dimensions, mortar joints, wall openings, waste allowance, and brick quantity calculation"
+              width={1200}
+              height={800}
+              loading="lazy"
+              decoding="async"
+              className="h-auto w-full"
+            />
+          </div>
         </div>
 
         {/* =================================================
@@ -317,6 +325,22 @@ export default function BrickCalculatorPage() {
             region. In the United States, modular brick is a common
             reference size for estimating brickwork. Always check the
             actual product dimensions before ordering materials.
+          </p>
+
+          {/* =================================================
+              CONTEXTUAL INTERNAL LINK
+          ================================================= */}
+
+          <p className="mt-3 text-sm leading-7 text-slate-600">
+            For a more detailed reference on common US brick dimensions,
+            nominal sizes and brick measurements, see our{" "}
+            <a
+              href="/guides/us-brick-sizes"
+              className="font-medium text-blue-700 underline underline-offset-2 hover:text-blue-900"
+            >
+              US Brick Sizes &amp; Dimensions Guide
+            </a>
+            .
           </p>
 
           <div className="mt-4 overflow-x-auto">
@@ -709,6 +733,22 @@ export default function BrickCalculatorPage() {
             bricks-per-square-foot value.
           </p>
 
+          {/* =================================================
+              CONTEXTUAL INTERNAL LINK
+          ================================================= */}
+
+          <p className="mt-3 text-sm leading-7 text-slate-600">
+            For a step-by-step explanation of brick quantity calculations,
+            wall area, openings and material estimation, see our{" "}
+            <a
+              href="/guides/brick-calculation"
+              className="font-medium text-blue-700 underline underline-offset-2 hover:text-blue-900"
+            >
+              Brick Calculation Guide
+            </a>
+            .
+          </p>
+
           <ol className="mt-4 list-decimal space-y-3 pl-5 text-sm leading-7 text-slate-600">
             <li>
               Calculate the gross wall area from wall length and height.
@@ -815,22 +855,22 @@ export default function BrickCalculatorPage() {
           className="mt-6 scroll-mt-24 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
         >
           <h2 className="text-xl font-bold text-slate-900">
-            Brick Size and Standards References
+            Brick Standards &amp; References
           </h2>
 
           <p className="mt-3 text-sm leading-7 text-slate-600">
-            Brick dimensions can vary by manufacturer, product line and
-            application. The following sources provide additional
-            information for brick dimensions and masonry specifications.
+            Brick sizes, material properties and construction requirements
+            can vary by product and application. The following sources
+            provide additional technical information.
           </p>
 
-          <ul className="mt-4 list-disc space-y-3 pl-5 text-sm leading-7 text-slate-600">
+          <ul className="mt-4 space-y-3 text-sm leading-7">
             <li>
               <a
                 href="https://www.glengery.com/brick-sizes"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-medium text-blue-700 hover:underline"
+                className="font-medium text-blue-700 underline underline-offset-2 hover:text-blue-900"
               >
                 Glen-Gery – Brick Sizes and Dimensions
               </a>
@@ -841,7 +881,7 @@ export default function BrickCalculatorPage() {
                 href="https://brick.com/modular-size-brick/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-medium text-blue-700 hover:underline"
+                className="font-medium text-blue-700 underline underline-offset-2 hover:text-blue-900"
               >
                 Acme Brick – Modular Size Brick
               </a>
@@ -852,7 +892,7 @@ export default function BrickCalculatorPage() {
                 href="https://store.astm.org/standards/c216"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-medium text-blue-700 hover:underline"
+                className="font-medium text-blue-700 underline underline-offset-2 hover:text-blue-900"
               >
                 ASTM International – C216 Facing Brick Specification
               </a>
