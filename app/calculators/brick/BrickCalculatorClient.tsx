@@ -93,24 +93,15 @@ export default function BrickCalculator() {
                 brickLength={
                   state.brickLength
                 }
-
                 brickHeight={
                   state.brickHeight
                 }
-
                 brickWidth={
                   state.brickWidth
                 }
-
-                /* =================================================
-                   FIX:
-                   BrickDiagram requires brickUnit
-                ================================================= */}
-
                 brickUnit={
                   state.brickUnit
                 }
-
                 mortarJoint={
                   state.mortarJoint
                 }
