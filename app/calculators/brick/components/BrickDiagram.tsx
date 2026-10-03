@@ -1,9 +1,12 @@
 "use client";
 
+import type { LengthUnit } from "../types";
+
 type BrickDiagramProps = {
   brickLength: string;
   brickHeight: string;
   brickWidth: string;
+  brickUnit: LengthUnit;
   mortarJoint: string;
 };
 
@@ -11,19 +14,13 @@ export default function BrickDiagram({
   brickLength,
   brickHeight,
   brickWidth,
+  brickUnit,
   mortarJoint,
 }: BrickDiagramProps) {
-  const length =
-    brickLength || "8";
-
-  const height =
-    brickHeight || "2.25";
-
-  const width =
-    brickWidth || "3.625";
-
-  const joint =
-    mortarJoint || "0.375";
+  const length = brickLength || "8";
+  const height = brickHeight || "2.25";
+  const width = brickWidth || "3.625";
+  const joint = mortarJoint || "0.375";
 
   return (
     <section className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
@@ -33,7 +30,6 @@ export default function BrickDiagram({
       ===================================================== */}
 
       <div className="border-b border-slate-100 px-5 py-5 sm:px-7">
-
         <h2 className="text-2xl font-bold tracking-tight text-slate-900">
           Brick Dimensions
         </h2>
@@ -41,7 +37,6 @@ export default function BrickDiagram({
         <p className="mt-1 text-sm leading-6 text-slate-500">
           Visual reference for brick length, height, width and mortar joint.
         </p>
-
       </div>
 
       {/* =====================================================
@@ -56,7 +51,7 @@ export default function BrickDiagram({
             viewBox="0 0 700 430"
             className="h-auto w-full"
             role="img"
-            aria-label="Brick dimension diagram"
+            aria-label={`Brick dimension diagram showing ${length} ${brickUnit} length, ${height} ${brickUnit} height and ${width} ${brickUnit} width`}
           >
 
             {/* =================================================
@@ -198,7 +193,7 @@ export default function BrickDiagram({
               fontSize="18"
               fontWeight="700"
             >
-              {length} in
+              {length} {brickUnit}
             </text>
 
             {/* =================================================
@@ -249,7 +244,7 @@ export default function BrickDiagram({
               fontSize="17"
               fontWeight="700"
             >
-              {height} in
+              {height} {brickUnit}
             </text>
 
             {/* =================================================
@@ -300,7 +295,7 @@ export default function BrickDiagram({
               fontSize="17"
               fontWeight="700"
             >
-              {width} in
+              {width} {brickUnit}
             </text>
 
             {/* =================================================
@@ -359,43 +354,36 @@ export default function BrickDiagram({
         <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
 
           <div className="rounded-xl bg-white p-3 text-center shadow-sm">
-
             <p className="text-xs text-slate-500">
               Length
             </p>
 
             <p className="mt-1 text-base font-bold text-slate-900">
-              {length} in
+              {length} {brickUnit}
             </p>
-
           </div>
 
           <div className="rounded-xl bg-white p-3 text-center shadow-sm">
-
             <p className="text-xs text-slate-500">
               Height
             </p>
 
             <p className="mt-1 text-base font-bold text-slate-900">
-              {height} in
+              {height} {brickUnit}
             </p>
-
           </div>
 
           <div className="rounded-xl bg-white p-3 text-center shadow-sm">
-
             <p className="text-xs text-slate-500">
               Width
             </p>
 
             <p className="mt-1 text-base font-bold text-slate-900">
-              {width} in
+              {width} {brickUnit}
             </p>
-
           </div>
 
           <div className="rounded-xl bg-white p-3 text-center shadow-sm">
-
             <p className="text-xs text-slate-500">
               Mortar Joint
             </p>
@@ -403,7 +391,6 @@ export default function BrickDiagram({
             <p className="mt-1 text-base font-bold text-slate-900">
               {joint} in
             </p>
-
           </div>
 
         </div>
