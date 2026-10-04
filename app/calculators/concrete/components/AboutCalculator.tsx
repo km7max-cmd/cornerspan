@@ -182,6 +182,83 @@ export default function AboutCalculator() {
         </div>
 
         {/* =================================================
+            AUTHORITATIVE REFERENCES
+        ================================================= */}
+
+        <div className="mt-7 rounded-2xl border border-slate-200 bg-slate-50 p-5">
+
+          <h3 className="text-lg font-black text-slate-900 sm:text-xl">
+            Concrete Standards and References
+          </h3>
+
+          <p className="mt-2 text-sm leading-6 text-slate-600 sm:text-base">
+            Concrete mix design, materials, testing, and construction
+            requirements can vary by project and jurisdiction. For
+            authoritative technical information, consult recognized
+            industry organizations and the applicable project specifications.
+          </p>
+
+          <div className="mt-4 space-y-3">
+
+            <a
+              href="https://www.concrete.org/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block rounded-xl border border-slate-200 bg-white p-4 transition hover:border-blue-300 hover:bg-blue-50"
+            >
+              <p className="font-bold text-slate-900">
+                American Concrete Institute (ACI)
+              </p>
+
+              <p className="mt-1 text-sm leading-6 text-slate-600">
+                Reference source for concrete design, construction,
+                materials, and technical guidance.
+              </p>
+            </a>
+
+            <a
+              href="https://www.cement.org/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block rounded-xl border border-slate-200 bg-white p-4 transition hover:border-blue-300 hover:bg-blue-50"
+            >
+              <p className="font-bold text-slate-900">
+                Portland Cement Association (PCA)
+              </p>
+
+              <p className="mt-1 text-sm leading-6 text-slate-600">
+                Technical information about cement, concrete materials,
+                applications, and concrete construction.
+              </p>
+            </a>
+
+            <a
+              href="https://www.astm.org/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block rounded-xl border border-slate-200 bg-white p-4 transition hover:border-blue-300 hover:bg-blue-50"
+            >
+              <p className="font-bold text-slate-900">
+                ASTM International
+              </p>
+
+              <p className="mt-1 text-sm leading-6 text-slate-600">
+                International standards and technical information covering
+                construction materials, concrete, and material testing.
+              </p>
+            </a>
+
+          </div>
+
+          <p className="mt-4 text-xs leading-5 text-slate-500">
+            External references are provided for technical context. Always
+            follow the applicable building code, engineering design,
+            manufacturer instructions, and project specifications.
+          </p>
+
+        </div>
+
+        {/* =================================================
             FINAL NOTE
         ================================================= */}
 
