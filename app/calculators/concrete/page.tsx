@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   title: "Concrete Calculator | Volume, Materials & Cost | CornerSpan",
 
   description:
-    "Use this free concrete calculator to estimate volume, cement, sand, aggregate, water, and material cost for common construction projects.",
+    "Use this free concrete calculator to estimate concrete volume, cement, sand, aggregate, water, and material cost for slabs, footings, walls, columns, and other construction projects.",
 
   alternates: {
     canonical: PAGE_URL,
@@ -21,6 +21,7 @@ export const metadata: Metadata = {
     "concrete material calculator",
     "concrete cost calculator",
     "cement sand aggregate calculator",
+    "concrete quantity calculator",
   ],
 
   openGraph: {
@@ -76,7 +77,7 @@ const webPageSchema = {
   name: "Concrete Calculator",
   url: PAGE_URL,
   description:
-    "A free concrete calculator for estimating volume, cement, sand, aggregate, water, and material cost.",
+    "A free concrete calculator for estimating concrete volume, cement, sand, aggregate, water, and material cost.",
   isPartOf: {
     "@type": "WebSite",
     name: "CornerSpan",
@@ -103,9 +104,7 @@ const softwareSchema = {
 export default function ConcreteCalculatorPage() {
   return (
     <>
-      {/* =====================================================
-          STRUCTURED DATA
-      ===================================================== */}
+      {/* STRUCTURED DATA */}
 
       <script
         type="application/ld+json"
@@ -128,14 +127,11 @@ export default function ConcreteCalculatorPage() {
         }}
       />
 
-      {/* =====================================================
-          PAGE
-      ===================================================== */}
+      {/* PAGE */}
 
       <main className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
-        {/* ===================================================
-            HERO
-        =================================================== */}
+
+        {/* HERO */}
 
         <header className="mb-8">
           <p className="mb-2 text-sm font-bold uppercase tracking-[0.16em] text-blue-600">
@@ -153,9 +149,7 @@ export default function ConcreteCalculatorPage() {
           </p>
         </header>
 
-        {/* ===================================================
-            CALCULATOR
-        =================================================== */}
+        {/* CALCULATOR */}
 
         <section
           aria-labelledby="calculator-heading"
@@ -171,24 +165,6 @@ export default function ConcreteCalculatorPage() {
           <ConcreteCalculator />
         </section>
 
-        {/* ===================================================
-            CONTENT
-        =================================================== */}
-
-        <section
-          aria-labelledby="information-heading"
-          className="mb-10"
-        >
-          <h2
-            id="information-heading"
-            className="sr-only"
-          >
-            Concrete Calculator Information
-          </h2>
-
-          {/* If AboutCalculator is already rendered inside
-              ConcreteCalculator, do not render it again here. */}
-        </section>
       </main>
     </>
   );
