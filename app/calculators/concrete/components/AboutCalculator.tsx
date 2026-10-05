@@ -34,6 +34,7 @@ export default function AboutCalculator() {
         ================================================= */}
 
         <figure className="mb-7 overflow-hidden rounded-2xl border border-slate-200 bg-slate-50">
+
           <img
             src="/concrete-calculator-infographic.webp"
             alt="Concrete calculator diagram showing length, width and depth measurements for estimating concrete volume"
@@ -48,6 +49,7 @@ export default function AboutCalculator() {
             Measure the length, width, and depth of the concrete area
             to estimate the required concrete volume.
           </figcaption>
+
         </figure>
 
         {/* =================================================
@@ -284,15 +286,3 @@ function Step({
     </div>
   );
 }
-
-గమనించాల్సిన ఒక విషయం: image exact filename ఇలా ఉండాలి:
-
-"public/concrete-calculator-infographic.webp"
-
-అప్పుడు code లోని:
-
-"/concrete-calculator-infographic.webp"
-
-సరిగ్గా పని చేస్తుంది.
-
-ఇది deploy చేసిన తర్వాత Concrete page → About section లో image కనిపిస్తుంది.
