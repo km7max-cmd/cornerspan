@@ -91,6 +91,17 @@ export type FenceCalculationResult = {
   topRailFt: number;
 
   estimatedCost: number | null;
+
+  /**
+   * True when all required material prices for the selected
+   * calculation mode have been entered.
+   */
+  isFullCostEstimate: boolean;
+
+  /**
+   * True when the supplied gate configuration is impossible.
+   */
+  invalidGateConfiguration: boolean;
 };
 
 const FEET_PER_UNIT: Record<FenceUnit, number> = {
@@ -206,20 +217,42 @@ export function calculateFence(
   const gateCount = wholeNonNegative(input.gates);
 
   /*
-   * Gate openings cannot exceed the total fence-line length.
+   * ---------------------------------------------------------
+   * GATE VALIDATION
+   * ---------------------------------------------------------
    *
-   * The calculator uses total fence-line length as the
-   * project length and subtracts gate openings from the
-   * material-covered fence length.
+   * A gate configuration is invalid when the combined gate
+   * opening width is greater than the total fence-line length.
+   *
+   * We do NOT silently cap the gate width anymore.
+   *
+   * Example:
+   * 30 ft fence + 10 gates × 4 ft = 40 ft gate opening
+   * This is an impossible configuration and is flagged.
    */
-  const totalGateWidth = Math.min(
-    fenceLengthFt,
-    gateCount * gateWidthFt,
-  );
+
+  const totalGateWidth =
+    gateCount * gateWidthFt;
+
+  const invalidGateConfiguration =
+    fenceLengthFt > 0 &&
+    gateCount > 0 &&
+    gateWidthFt > 0 &&
+    totalGateWidth > fenceLengthFt;
+
+  /*
+   * For an invalid gate configuration we still prevent
+   * negative material quantities, but the UI should display
+   * the validation warning.
+   */
+
+  const safeGateWidth = invalidGateConfiguration
+    ? fenceLengthFt
+    : totalGateWidth;
 
   const netFenceLengthFt = Math.max(
     0,
-    fenceLengthFt - totalGateWidth,
+    fenceLengthFt - safeGateWidth,
   );
 
   /*
@@ -227,6 +260,7 @@ export function calculateFence(
    *
    * Gate openings are excluded.
    */
+
   const fenceAreaSqFt =
     netFenceLengthFt * fenceHeightFt;
 
@@ -235,10 +269,10 @@ export function calculateFence(
    * SECTIONS & POSTS
    * ---------------------------------------------------------
    *
-   * This is a planning estimate based on total net fence
-   * length and post spacing.
+   * Planning estimate based on total net fence length
+   * and post spacing.
    *
-   * Exact post placement can vary with actual run/corner/gate
+   * Exact placement can vary with actual run/corner/gate
    * geometry.
    */
 
@@ -249,7 +283,8 @@ export function calculateFence(
         )
       : 0;
 
-  const gatePosts = gateCount * 2;
+  const gatePosts =
+    gateCount * 2;
 
   const basePosts =
     netFenceLengthFt > 0
@@ -263,18 +298,12 @@ export function calculateFence(
    * ---------------------------------------------------------
    * WOOD / PICKET RAILS
    * ---------------------------------------------------------
-   *
-   * Rails are applicable to wood/picket fences.
-   *
-   * Panel fences normally contain their own horizontal
-   * rails, so they are not counted separately.
-   *
-   * Chain-link uses top rail separately.
    */
 
-  const railsPerSection = wholeNonNegative(
-    input.railsPerSection,
-  );
+  const railsPerSection =
+    wholeNonNegative(
+      input.railsPerSection,
+    );
 
   const rails =
     input.mode === "wood-picket"
@@ -288,13 +317,6 @@ export function calculateFence(
    * ---------------------------------------------------------
    * WOOD / PICKETS
    * ---------------------------------------------------------
-   *
-   * Effective picket coverage:
-   *
-   *   picket face width + installation gap
-   *
-   * Gate openings have already been removed from
-   * netFenceLengthFt, so they are not counted again.
    */
 
   const picketWidthIn = positive(
@@ -330,9 +352,6 @@ export function calculateFence(
    * ---------------------------------------------------------
    * WOOD PANELS
    * ---------------------------------------------------------
-   *
-   * Full panels are purchased, so a partial final panel
-   * rounds up to the next complete panel.
    */
 
   const panelWidthFt = positive(
@@ -365,17 +384,19 @@ export function calculateFence(
    * CHAIN LINK
    * ---------------------------------------------------------
    *
-   * This remains a planning estimate because the calculator
-   * currently accepts total fence length rather than
-   * individual fence runs.
+   * Planning estimate based on total fence length.
    *
-   * Corners replace intermediate line-post positions.
+   * Individual fence-run geometry is not currently modeled.
+   * Therefore corners are treated as replacements for
+   * intermediate line-post positions.
    */
 
   const cornerCount =
     input.mode === "chain-link"
       ? Math.min(
-          wholeNonNegative(input.chainCorners),
+          wholeNonNegative(
+            input.chainCorners,
+          ),
           Math.max(0, sections - 1),
         )
       : 0;
@@ -410,13 +431,6 @@ export function calculateFence(
         gatePosts
       : 0;
 
-  /*
-   * For chain link, the post total is derived from the
-   * specialized line + terminal post model.
-   *
-   * This prevents the generic wood-fence post formula from
-   * being used for chain-link.
-   */
   const chainLinkPosts =
     input.mode === "chain-link"
       ? linePosts + terminalPosts
@@ -428,10 +442,11 @@ export function calculateFence(
       : posts;
 
   /*
-   * Chain-link fabric.
-   *
-   * Waste is applied to material length.
+   * ---------------------------------------------------------
+   * CHAIN-LINK FABRIC
+   * ---------------------------------------------------------
    */
+
   const chainFabricFt =
     input.mode === "chain-link"
       ? netFenceLengthFt *
@@ -440,9 +455,10 @@ export function calculateFence(
         )
       : 0;
 
-  const chainRollLength = positive(
-    input.chainRollLength,
-  );
+  const chainRollLength =
+    positive(
+      input.chainRollLength,
+    );
 
   const chainRolls =
     input.mode === "chain-link" &&
@@ -454,10 +470,6 @@ export function calculateFence(
         )
       : 0;
 
-  /*
-   * Top rail is estimated using the same material-length
-   * allowance as chain-link fabric.
-   */
   const topRailFt =
     input.mode === "chain-link"
       ? chainFabricFt
@@ -468,12 +480,9 @@ export function calculateFence(
    * CONCRETE
    * ---------------------------------------------------------
    *
-   * Hole volume:
-   *
-   *   π × radius² × depth
-   *
-   * Hole dimensions are supplied in inches and converted
-   * to feet.
+   * This treats the full cylindrical hole volume as the
+   * concrete volume. Actual concrete quantity can be lower
+   * when post displacement is considered.
    */
 
   const holeDiameterFt =
@@ -519,19 +528,6 @@ export function calculateFence(
    * ---------------------------------------------------------
    * PAINT / STAIN
    * ---------------------------------------------------------
-   *
-   * Paint estimate:
-   *
-   *   fence area
-   *   × coats
-   *   × painted sides
-   *   ÷ coverage
-   *   × waste
-   *
-   * Gate openings are excluded because fenceAreaSqFt is
-   * based on net fence length.
-   *
-   * Separate gate-surface area is not modeled.
    */
 
   const paintCoverage = positive(
@@ -540,7 +536,9 @@ export function calculateFence(
 
   const paintCoats = Math.max(
     1,
-    wholeNonNegative(input.paintCoats),
+    wholeNonNegative(
+      input.paintCoats,
+    ),
   );
 
   const paintSides =
@@ -564,21 +562,6 @@ export function calculateFence(
    * ---------------------------------------------------------
    * MATERIAL COST
    * ---------------------------------------------------------
-   *
-   * Wood/Picket:
-   *   posts + rails + pickets + concrete + paint
-   *
-   * Wood/Panel:
-   *   posts + panels + concrete + paint
-   *
-   * Chain Link:
-   *   line posts + terminal posts + fabric +
-   *   top rail + concrete + paint
-   *
-   * IMPORTANT:
-   * pricePost is deliberately NOT used in chain-link mode.
-   * This prevents double-counting when line-post and
-   * terminal-post prices are supplied separately.
    */
 
   const costItems: number[] = [];
@@ -646,6 +629,17 @@ export function calculateFence(
     ),
   );
 
+  /*
+   * Determine whether every relevant price for the selected
+   * fence mode has been entered.
+   *
+   * This does NOT change the cost calculation.
+   * It simply lets the UI distinguish between:
+   *
+   * - full material cost estimate
+   * - partial material cost estimate
+   */
+
   const relevantPrices =
     input.mode === "wood-picket"
       ? [
@@ -673,6 +667,9 @@ export function calculateFence(
 
   const hasAnyPrice =
     relevantPrices.some(hasPrice);
+
+  const isFullCostEstimate =
+    relevantPrices.every(hasPrice);
 
   const estimatedCost = hasAnyPrice
     ? costItems.reduce(
@@ -719,5 +716,8 @@ export function calculateFence(
     topRailFt,
 
     estimatedCost,
+
+    isFullCostEstimate,
+    invalidGateConfiguration,
   };
 }
