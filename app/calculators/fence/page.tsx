@@ -38,12 +38,9 @@ export const metadata: Metadata = {
 
   openGraph: {
     title: "Fence Calculator | Posts, Pickets, Panels & Cost",
-
     description:
       "Estimate fence materials, concrete, paint and project cost with CornerSpan's free Fence Calculator.",
-
     url: "https://www.cornerspan.com/calculators/fence",
-
     type: "website",
 
     images: [
@@ -58,12 +55,9 @@ export const metadata: Metadata = {
 
   twitter: {
     card: "summary_large_image",
-
     title: "Fence Calculator | Posts, Pickets, Panels & Cost",
-
     description:
       "Calculate fence posts, rails, pickets, panels, concrete and material cost.",
-
     images: ["/cornerspan-fence-calculator-hero.webp"],
   },
 };
@@ -77,9 +71,7 @@ function InfoCard({
 }) {
   return (
     <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-      <h3 className="text-lg font-bold text-slate-900">
-        {title}
-      </h3>
+      <h3 className="text-lg font-bold text-slate-900">{title}</h3>
 
       <div className="mt-2 text-sm leading-6 text-slate-600">
         {children}
@@ -99,9 +91,7 @@ function FormulaCard({
 }) {
   return (
     <div className="rounded-xl border border-slate-200 bg-slate-50 p-5">
-      <h3 className="text-base font-bold text-slate-900">
-        {title}
-      </h3>
+      <h3 className="text-base font-bold text-slate-900">{title}</h3>
 
       <div className="mt-3 overflow-x-auto rounded-lg border border-slate-200 bg-white px-4 py-3">
         <code className="whitespace-nowrap text-sm font-semibold text-blue-700">
@@ -125,9 +115,7 @@ function ExampleBox({
 }) {
   return (
     <div className="rounded-xl border-l-4 border-blue-600 bg-blue-50 p-5">
-      <p className="text-sm font-bold text-blue-800">
-        {title}
-      </p>
+      <p className="text-sm font-bold text-blue-800">{title}</p>
 
       <div className="mt-2 text-sm leading-6 text-slate-700">
         {children}
@@ -140,7 +128,6 @@ export default function FencePage() {
   return (
     <main className="bg-white">
       <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-
         <Breadcrumb current="Fence Calculator" />
 
         <CalculatorStructuredData
@@ -175,22 +162,123 @@ export default function FencePage() {
         <section className="mx-auto mt-10 max-w-5xl">
           <div className="overflow-hidden rounded-2xl border border-slate-200 shadow-sm">
             <Image
-  src="/cornerspan-fence-calculator-hero.webp"
-  alt="Fence Calculator for wood, fence panels and chain-link projects"
-  width={1536}
-  height={1024}
-  sizes="(max-width: 1024px) 100vw, 1024px"
-  className="h-auto w-full"
-  priority
-/>
+              src="/cornerspan-fence-calculator-hero.webp"
+              alt="Fence Calculator for wood, fence panels and chain-link projects"
+              width={1536}
+              height={1024}
+              sizes="(max-width: 1024px) 100vw, 1024px"
+              className="h-auto w-full"
+              priority
+            />
           </div>
         </section>
 
+        {/* Table of Contents */}
+        <nav
+          aria-label="Table of contents"
+          className="mx-auto mt-10 max-w-5xl rounded-xl border border-slate-200 bg-slate-50 p-6"
+        >
+          <h2 className="text-lg font-bold text-slate-900">
+            Table of Contents
+          </h2>
+
+          <ul className="mt-4 grid gap-2 text-sm sm:grid-cols-2">
+            <li>
+              <a
+                href="#what-it-calculates"
+                className="text-blue-700 hover:underline"
+              >
+                What Does a Fence Calculator Calculate?
+              </a>
+            </li>
+
+            <li>
+              <a
+                href="#how-to-use"
+                className="text-blue-700 hover:underline"
+              >
+                How to Use the Fence Calculator
+              </a>
+            </li>
+
+            <li>
+              <a
+                href="#fence-posts"
+                className="text-blue-700 hover:underline"
+              >
+                How Many Fence Posts Do I Need?
+              </a>
+            </li>
+
+            <li>
+              <a
+                href="#fence-pickets"
+                className="text-blue-700 hover:underline"
+              >
+                How Many Fence Pickets Do I Need?
+              </a>
+            </li>
+
+            <li>
+              <a
+                href="#fence-concrete"
+                className="text-blue-700 hover:underline"
+              >
+                How Much Concrete Do I Need for Fence Posts?
+              </a>
+            </li>
+
+            <li>
+              <a
+                href="#fence-waste"
+                className="text-blue-700 hover:underline"
+              >
+                How Much Fence Material Waste Should I Add?
+              </a>
+            </li>
+
+            <li>
+              <a
+                href="#fence-cost"
+                className="text-blue-700 hover:underline"
+              >
+                Fence Material Cost Estimate
+              </a>
+            </li>
+
+            <li>
+              <a
+                href="#fence-types"
+                className="text-blue-700 hover:underline"
+              >
+                Wood Fence vs. Fence Panels vs. Chain Link
+              </a>
+            </li>
+
+            <li>
+              <a
+                href="#fence-faq"
+                className="text-blue-700 hover:underline"
+              >
+                Fence Calculator FAQ
+              </a>
+            </li>
+
+            <li>
+              <a
+                href="#fence-disclaimer"
+                className="text-blue-700 hover:underline"
+              >
+                Fence Estimate Disclaimer
+              </a>
+            </li>
+          </ul>
+        </nav>
+
         {/* Content */}
         <div className="mx-auto mt-14 max-w-5xl">
-
           {/* What it calculates */}
-          <section>
+          <section id="what-it-calculates">
             <div className="max-w-3xl">
               <p className="text-sm font-bold uppercase tracking-wider text-blue-600">
                 Fence Planning
@@ -210,7 +298,6 @@ export default function FencePage() {
             </div>
 
             <div className="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-
               <InfoCard title="Fence Posts">
                 Estimate the number of posts from your fence length,
                 post spacing and gate requirements.
@@ -240,13 +327,14 @@ export default function FencePage() {
                 Estimate fabric, rolls, line posts, terminal posts,
                 corners and top rail.
               </InfoCard>
-
             </div>
           </section>
 
           {/* How to use */}
-          <section className="mt-14 border-t border-slate-200 pt-12">
-
+          <section
+            id="how-to-use"
+            className="mt-14 scroll-mt-6 border-t border-slate-200 pt-12"
+          >
             <p className="text-sm font-bold uppercase tracking-wider text-blue-600">
               Quick Guide
             </p>
@@ -263,7 +351,6 @@ export default function FencePage() {
             </p>
 
             <div className="mt-7 grid gap-4 sm:grid-cols-2">
-
               <InfoCard title="1. Measure the Fence Length">
                 Enter the total length of the fence line. If the project
                 has several runs, add the lengths together for a planning
@@ -298,13 +385,14 @@ export default function FencePage() {
                 pricing lets you estimate material cost using your own
                 local prices.
               </InfoCard>
-
             </div>
           </section>
 
           {/* Posts */}
-          <section className="mt-14 border-t border-slate-200 pt-12">
-
+          <section
+            id="fence-posts"
+            className="mt-14 scroll-mt-6 border-t border-slate-200 pt-12"
+          >
             <p className="text-sm font-bold uppercase tracking-wider text-blue-600">
               Posts
             </p>
@@ -335,12 +423,13 @@ export default function FencePage() {
               property boundaries, terrain, gate layouts and the
               manufacturer's installation requirements.
             </p>
-
           </section>
 
           {/* Pickets */}
-          <section className="mt-14 border-t border-slate-200 pt-12">
-
+          <section
+            id="fence-pickets"
+            className="mt-14 scroll-mt-6 border-t border-slate-200 pt-12"
+          >
             <p className="text-sm font-bold uppercase tracking-wider text-blue-600">
               Wood & Picket Fencing
             </p>
@@ -372,12 +461,13 @@ export default function FencePage() {
                 becomes 220 pickets.
               </ExampleBox>
             </div>
-
           </section>
 
           {/* Concrete */}
-          <section className="mt-14 border-t border-slate-200 pt-12">
-
+          <section
+            id="fence-concrete"
+            className="mt-14 scroll-mt-6 border-t border-slate-200 pt-12"
+          >
             <p className="text-sm font-bold uppercase tracking-wider text-blue-600">
               Concrete
             </p>
@@ -415,12 +505,13 @@ export default function FencePage() {
               wind exposure and local building requirements may require
               different post-hole dimensions.
             </p>
-
           </section>
 
           {/* Waste */}
-          <section className="mt-14 border-t border-slate-200 pt-12">
-
+          <section
+            id="fence-waste"
+            className="mt-14 scroll-mt-6 border-t border-slate-200 pt-12"
+          >
             <p className="text-sm font-bold uppercase tracking-wider text-blue-600">
               Material Planning
             </p>
@@ -443,12 +534,13 @@ export default function FencePage() {
                 allowance gives an order quantity of 220 pickets.
               </ExampleBox>
             </div>
-
           </section>
 
           {/* Cost */}
-          <section className="mt-14 border-t border-slate-200 pt-12">
-
+          <section
+            id="fence-cost"
+            className="mt-14 scroll-mt-6 border-t border-slate-200 pt-12"
+          >
             <p className="text-sm font-bold uppercase tracking-wider text-blue-600">
               Budgeting
             </p>
@@ -465,7 +557,6 @@ export default function FencePage() {
             </p>
 
             <div className="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-
               <InfoCard title="Posts">
                 Enter the price per post to estimate your post material
                 cost.
@@ -493,19 +584,19 @@ export default function FencePage() {
               <InfoCard title="Paint or Stain">
                 Add a price per gallon to estimate paint or stain cost.
               </InfoCard>
-
             </div>
 
             <p className="mt-5 text-sm leading-6 text-slate-600">
               The optional cost estimate does not include labor, permits,
               delivery charges, taxes or site-specific installation costs.
             </p>
-
           </section>
 
           {/* Comparison */}
-          <section className="mt-14 border-t border-slate-200 pt-12">
-
+          <section
+            id="fence-types"
+            className="mt-14 scroll-mt-6 border-t border-slate-200 pt-12"
+          >
             <p className="text-sm font-bold uppercase tracking-wider text-blue-600">
               Fence Types
             </p>
@@ -515,10 +606,8 @@ export default function FencePage() {
             </h2>
 
             <div className="mt-7 overflow-hidden rounded-xl border border-slate-200">
-
               <div className="overflow-x-auto">
                 <table className="w-full min-w-[650px] text-left text-sm">
-
                   <thead className="bg-slate-50">
                     <tr>
                       <th className="px-4 py-4 font-bold text-slate-900">
@@ -536,7 +625,6 @@ export default function FencePage() {
                   </thead>
 
                   <tbody className="divide-y divide-slate-200">
-
                     <tr>
                       <td className="px-4 py-4 font-semibold text-slate-900">
                         Wood / Picket
@@ -578,17 +666,17 @@ export default function FencePage() {
                         Practical boundary and security fencing
                       </td>
                     </tr>
-
                   </tbody>
                 </table>
               </div>
             </div>
-
           </section>
 
           {/* FAQ */}
-          <section className="mt-14 border-t border-slate-200 pt-12">
-
+          <section
+            id="fence-faq"
+            className="mt-14 scroll-mt-6 border-t border-slate-200 pt-12"
+          >
             <p className="text-sm font-bold uppercase tracking-wider text-blue-600">
               Common Questions
             </p>
@@ -598,7 +686,6 @@ export default function FencePage() {
             </h2>
 
             <div className="mt-7 space-y-4">
-
               <details className="group rounded-xl border border-slate-200 bg-white">
                 <summary className="cursor-pointer list-none px-5 py-4 font-semibold text-slate-900">
                   <span className="flex items-center justify-between gap-4">
@@ -705,13 +792,14 @@ export default function FencePage() {
                   focuses on the material prices entered by the user.
                 </div>
               </details>
-
             </div>
           </section>
 
           {/* Disclaimer */}
-          <section className="mt-12 rounded-xl border border-slate-200 bg-slate-50 p-5">
-
+          <section
+            id="fence-disclaimer"
+            className="mt-12 scroll-mt-6 rounded-xl border border-slate-200 bg-slate-50 p-5"
+          >
             <h2 className="text-base font-bold text-slate-900">
               Fence Estimate Disclaimer
             </h2>
@@ -724,7 +812,6 @@ export default function FencePage() {
               Verify project-specific requirements before purchasing
               materials or beginning construction.
             </p>
-
           </section>
         </div>
 
@@ -732,7 +819,6 @@ export default function FencePage() {
         <section className="mx-auto mt-14 max-w-5xl">
           <RelatedCalculators />
         </section>
-
       </div>
     </main>
   );
