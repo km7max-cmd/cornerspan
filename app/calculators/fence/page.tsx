@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import Link from "next/link";
 
 import Breadcrumb from "../../../components/Breadcrumb";
 import CalculatorStructuredData from "../../../components/CalculatorStructuredData";
@@ -328,6 +329,48 @@ export default function FencePage() {
                 corners and top rail.
               </InfoCard>
             </div>
+
+            {/* Internal Links */}
+            <div className="mt-7 rounded-xl border border-slate-200 bg-slate-50 p-5">
+              <h3 className="text-base font-bold text-slate-900">
+                Related Construction Calculators
+              </h3>
+
+              <p className="mt-2 text-sm leading-6 text-slate-600">
+                Need to calculate project dimensions before estimating
+                fence materials? Use these related CornerSpan calculators.
+              </p>
+
+              <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm">
+                <Link
+                  href="/calculators/area"
+                  className="font-semibold text-blue-700 hover:underline"
+                >
+                  Area Calculator
+                </Link>
+
+                <Link
+                  href="/calculators/square-footage"
+                  className="font-semibold text-blue-700 hover:underline"
+                >
+                  Square Footage Calculator
+                </Link>
+
+                <Link
+                  href="/calculators/concrete"
+                  className="font-semibold text-blue-700 hover:underline"
+                >
+                  Concrete Calculator
+                </Link>
+
+                <Link
+                  href="/calculators"
+                  className="font-semibold text-blue-700 hover:underline"
+                >
+                  All Construction Calculators
+                </Link>
+              </div>
+            </div>
           </section>
 
           {/* How to use */}
@@ -504,6 +547,18 @@ export default function FencePage() {
               specification. Soil conditions, frost depth, drainage,
               wind exposure and local building requirements may require
               different post-hole dimensions.
+            </p>
+
+            {/* Internal Link */}
+            <p className="mt-4 text-sm leading-6 text-slate-600">
+              For a separate concrete quantity estimate, see our{" "}
+              <Link
+                href="/calculators/concrete"
+                className="font-semibold text-blue-700 hover:underline"
+              >
+                Concrete Calculator
+              </Link>
+              .
             </p>
           </section>
 
@@ -812,6 +867,60 @@ export default function FencePage() {
               Verify project-specific requirements before purchasing
               materials or beginning construction.
             </p>
+          </section>
+
+          {/* Helpful External Resources */}
+          <section className="mt-10 rounded-xl border border-slate-200 bg-slate-50 p-6">
+            <h2 className="text-xl font-bold text-slate-900">
+              Helpful Fence Planning Resources
+            </h2>
+
+            <p className="mt-2 text-sm leading-6 text-slate-600">
+              Fence installation requirements can vary by location, soil
+              conditions, structural design and local building codes.
+              These official resources can help with project planning
+              and code research.
+            </p>
+
+            <ul className="mt-5 space-y-3 text-sm leading-6">
+              <li>
+                <a
+                  href="https://www.iccsafe.org/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-semibold text-blue-700 hover:underline"
+                >
+                  International Code Council (ICC)
+                </a>{" "}
+                — Building and safety code information.
+              </li>
+
+              <li>
+                <a
+                  href="https://www.nrcs.usda.gov/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-semibold text-blue-700 hover:underline"
+                >
+                  USDA Natural Resources Conservation Service
+                </a>{" "}
+                — Soil and site information that can be useful when
+                planning construction projects.
+              </li>
+
+              <li>
+                <a
+                  href="https://awc.org/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-semibold text-blue-700 hover:underline"
+                >
+                  American Wood Council
+                </a>{" "}
+                — Technical information and resources related to wood
+                construction.
+              </li>
+            </ul>
           </section>
         </div>
 
