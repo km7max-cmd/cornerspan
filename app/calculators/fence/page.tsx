@@ -175,13 +175,14 @@ export default function FencePage() {
         <section className="mx-auto mt-10 max-w-5xl">
           <div className="overflow-hidden rounded-2xl border border-slate-200 shadow-sm">
             <Image
-              src="/cornerspan-fence-calculator-hero.webp"
-              alt="Fence Calculator for wood, fence panels and chain-link projects"
-              width={1536}
-              height={1024}
-              className="h-auto w-full"
-              priority
-            />
+  src="/cornerspan-fence-calculator-hero.webp"
+  alt="Fence Calculator for wood, fence panels and chain-link projects"
+  width={1536}
+  height={1024}
+  sizes="(max-width: 1024px) 100vw, 1024px"
+  className="h-auto w-full"
+  priority
+/>
           </div>
         </section>
 
