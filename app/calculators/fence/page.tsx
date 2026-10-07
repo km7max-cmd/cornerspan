@@ -157,9 +157,9 @@ export default function FencePage() {
         </section>
 
         {/* CALCULATOR */}
-        <section className="mt-8">
-          <FenceCalculator />
-        </section>
+        <section className="mt-8 min-h-[1200px] lg:min-h-[900px]">
+  <FenceCalculator />
+</section>
 
         {/* HERO IMAGE */}
         <section className="mx-auto mt-10 max-w-5xl">
