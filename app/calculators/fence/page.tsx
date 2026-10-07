@@ -329,48 +329,6 @@ export default function FencePage() {
                 corners and top rail.
               </InfoCard>
             </div>
-
-            {/* Internal Links */}
-            <div className="mt-7 rounded-xl border border-slate-200 bg-slate-50 p-5">
-              <h3 className="text-base font-bold text-slate-900">
-                Related Construction Calculators
-              </h3>
-
-              <p className="mt-2 text-sm leading-6 text-slate-600">
-                Need to calculate project dimensions before estimating
-                fence materials? Use these related CornerSpan calculators.
-              </p>
-
-              <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm">
-                <Link
-                  href="/calculators/area"
-                  className="font-semibold text-blue-700 hover:underline"
-                >
-                  Area Calculator
-                </Link>
-
-                <Link
-                  href="/calculators/square-footage"
-                  className="font-semibold text-blue-700 hover:underline"
-                >
-                  Square Footage Calculator
-                </Link>
-
-                <Link
-                  href="/calculators/concrete"
-                  className="font-semibold text-blue-700 hover:underline"
-                >
-                  Concrete Calculator
-                </Link>
-
-                <Link
-                  href="/calculators"
-                  className="font-semibold text-blue-700 hover:underline"
-                >
-                  All Construction Calculators
-                </Link>
-              </div>
-            </div>
           </section>
 
           {/* How to use */}
@@ -488,6 +446,18 @@ export default function FencePage() {
               estimate how many pickets fit across the fence.
             </p>
 
+            <p className="mt-4 text-sm leading-6 text-slate-600">
+              If you also need to calculate the area of a fence or other
+              project surface, use the{" "}
+              <Link
+                href="/calculators/area"
+                className="font-semibold text-blue-700 hover:underline"
+              >
+                Area Calculator
+              </Link>{" "}
+              for a separate area estimate.
+            </p>
+
             <div className="mt-6">
               <FormulaCard
                 title="Picket quantity"
@@ -549,9 +519,9 @@ export default function FencePage() {
               different post-hole dimensions.
             </p>
 
-            {/* Internal Link */}
             <p className="mt-4 text-sm leading-6 text-slate-600">
-              For a separate concrete quantity estimate, see our{" "}
+              For a more detailed concrete quantity estimate, you can
+              also use the{" "}
               <Link
                 href="/calculators/concrete"
                 className="font-semibold text-blue-700 hover:underline"
@@ -609,6 +579,18 @@ export default function FencePage() {
               region and fence style. Instead of using a fixed national
               price, the calculator lets you enter your own material
               prices.
+            </p>
+
+            <p className="mt-4 text-sm leading-6 text-slate-600">
+              If you need to calculate the area of a project before
+              estimating material quantities, you can use the{" "}
+              <Link
+                href="/calculators/square-footage"
+                className="font-semibold text-blue-700 hover:underline"
+              >
+                Square Footage Calculator
+              </Link>
+              .
             </p>
 
             <div className="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -924,7 +906,7 @@ export default function FencePage() {
           </section>
         </div>
 
-        {/* Related calculators */}
+        {/* Existing Related Calculators */}
         <section className="mx-auto mt-14 max-w-5xl">
           <RelatedCalculators />
         </section>
