@@ -27,7 +27,7 @@ function ResultCard({
           : "border-slate-200 bg-white"
       }`}
     >
-      <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+      <p className="text-xs font-semibold uppercase tracking-wide text-slate-600">
         {label}
       </p>
 
@@ -42,25 +42,42 @@ function ResultCard({
   );
 }
 
+function makeFieldId(label: string): string {
+  return `fence-${label
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "")}`;
+}
+
 function Field({
   label,
   children,
   hint,
+  id,
 }: {
   label: string;
   children: React.ReactNode;
   hint?: string;
+  id?: string;
 }) {
+  const fieldId = id || makeFieldId(label);
+
   return (
     <div>
-      <label className="mb-2 block text-sm font-semibold text-slate-700">
+      <label
+        htmlFor={fieldId}
+        className="mb-2 block text-sm font-semibold text-slate-700"
+      >
         {label}
       </label>
 
       {children}
 
       {hint && (
-        <p className="mt-1 text-xs text-slate-500">
+        <p
+          id={`${fieldId}-hint`}
+          className="mt-1 text-xs text-slate-600"
+        >
           {hint}
         </p>
       )}
@@ -328,12 +345,15 @@ export default function FenceCalculator() {
         {/* Calculator header */}
         <div className="border-b border-slate-200 px-5 py-6 sm:px-8">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-600 text-lg text-white">
+            <div
+              aria-hidden="true"
+              className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-600 text-lg text-white"
+            >
               📐
             </div>
 
             <div>
-              <p className="text-xs font-bold uppercase tracking-wider text-blue-600">
+              <p className="text-xs font-bold uppercase tracking-wider text-blue-700">
                 Construction Calculator
               </p>
 
@@ -365,6 +385,7 @@ export default function FenceCalculator() {
                 <div className="grid grid-cols-3 gap-2">
                   <button
                     type="button"
+                    aria-pressed={mode === "wood-picket"}
                     onClick={() =>
                       setMode("wood-picket")
                     }
@@ -379,6 +400,7 @@ export default function FenceCalculator() {
 
                   <button
                     type="button"
+                    aria-pressed={mode === "wood-panel"}
                     onClick={() =>
                       setMode("wood-panel")
                     }
@@ -393,6 +415,7 @@ export default function FenceCalculator() {
 
                   <button
                     type="button"
+                    aria-pressed={mode === "chain-link"}
                     onClick={() =>
                       setMode("chain-link")
                     }
@@ -416,6 +439,7 @@ export default function FenceCalculator() {
                 <div className="grid gap-4 sm:grid-cols-3">
                   <Field label="Fence Length">
                     <input
+                      id="fence-fence-length"
                       type="number"
                       min="0"
                       step="any"
@@ -432,6 +456,7 @@ export default function FenceCalculator() {
 
                   <Field label="Fence Height">
                     <input
+                      id="fence-fence-height"
                       type="number"
                       min="0"
                       step="any"
@@ -448,6 +473,7 @@ export default function FenceCalculator() {
 
                   <Field label="Unit">
                     <select
+                      id="fence-unit"
                       value={projectUnit}
                       onChange={(e) =>
                         setProjectUnit(
@@ -483,6 +509,7 @@ export default function FenceCalculator() {
                   hint="Common residential spacing is approximately 6–8 ft."
                 >
                   <input
+                    id="fence-post-spacing"
                     type="number"
                     min="0"
                     step="any"
@@ -493,6 +520,7 @@ export default function FenceCalculator() {
                       )
                     }
                     className={inputClass}
+                    aria-describedby="fence-post-spacing-hint"
                   />
                 </Field>
               </div>
@@ -507,7 +535,7 @@ export default function FenceCalculator() {
                   Calculate Fence Materials
                 </button>
 
-                <p className="mt-2 text-center text-xs text-slate-500">
+                <p className="mt-2 text-center text-xs text-slate-600">
                   Results update automatically as you change your inputs.
                 </p>
               </div>
@@ -518,7 +546,10 @@ export default function FenceCalculator() {
                   <span className="flex items-center justify-between">
                     <span>More Fence Options</span>
 
-                    <span className="text-slate-400">
+                    <span
+                      aria-hidden="true"
+                      className="text-slate-600"
+                    >
                       +
                     </span>
                   </span>
@@ -537,6 +568,7 @@ export default function FenceCalculator() {
                       {!isChainLink && (
                         <Field label="Rails Per Section">
                           <input
+                            id="fence-rails-per-section"
                             type="number"
                             min="0"
                             step="1"
@@ -555,6 +587,7 @@ export default function FenceCalculator() {
                         <>
                           <Field label="Picket Width (in)">
                             <input
+                              id="fence-picket-width"
                               type="number"
                               min="0"
                               step="any"
@@ -570,6 +603,7 @@ export default function FenceCalculator() {
 
                           <Field label="Picket Gap (in)">
                             <input
+                              id="fence-picket-gap"
                               type="number"
                               min="0"
                               step="any"
@@ -588,6 +622,7 @@ export default function FenceCalculator() {
                       {isPanel && (
                         <Field label="Panel Width">
                           <input
+                            id="fence-panel-width"
                             type="number"
                             min="0"
                             step="any"
@@ -609,6 +644,7 @@ export default function FenceCalculator() {
                             hint="Length of one fabric roll."
                           >
                             <input
+                              id="fence-chain-roll-length"
                               type="number"
                               min="0"
                               step="any"
@@ -624,6 +660,7 @@ export default function FenceCalculator() {
 
                           <Field label="Corners">
                             <input
+                              id="fence-corners"
                               type="number"
                               min="0"
                               step="1"
@@ -650,6 +687,7 @@ export default function FenceCalculator() {
                     <div className="mt-4 grid gap-4 sm:grid-cols-2">
                       <Field label="Number of Gates">
                         <input
+                          id="fence-number-of-gates"
                           type="number"
                           min="0"
                           step="1"
@@ -665,6 +703,7 @@ export default function FenceCalculator() {
 
                       <Field label="Gate Width">
                         <input
+                          id="fence-gate-width"
                           type="number"
                           min="0"
                           step="any"
@@ -689,6 +728,7 @@ export default function FenceCalculator() {
                     <div className="mt-4 grid gap-4 sm:grid-cols-3">
                       <Field label="Hole Diameter (in)">
                         <input
+                          id="fence-hole-diameter"
                           type="number"
                           min="0"
                           step="any"
@@ -704,6 +744,7 @@ export default function FenceCalculator() {
 
                       <Field label="Hole Depth (in)">
                         <input
+                          id="fence-hole-depth"
                           type="number"
                           min="0"
                           step="any"
@@ -719,6 +760,7 @@ export default function FenceCalculator() {
 
                       <Field label="Concrete Bag">
                         <select
+                          id="fence-concrete-bag"
                           value={concreteBagSize}
                           onChange={(e) =>
                             setConcreteBagSize(
@@ -755,6 +797,7 @@ export default function FenceCalculator() {
                         hint="10% is a common starting point for material estimates."
                       >
                         <input
+                          id="fence-waste-percentage"
                           type="number"
                           min="0"
                           step="1"
@@ -779,6 +822,7 @@ export default function FenceCalculator() {
                     <div className="mt-4 grid gap-4 sm:grid-cols-3">
                       <Field label="Coverage / Gallon">
                         <input
+                          id="fence-paint-coverage"
                           type="number"
                           min="0"
                           step="any"
@@ -794,6 +838,7 @@ export default function FenceCalculator() {
 
                       <Field label="Coats">
                         <input
+                          id="fence-paint-coats"
                           type="number"
                           min="0"
                           step="1"
@@ -809,6 +854,7 @@ export default function FenceCalculator() {
 
                       <Field label="Sides">
                         <select
+                          id="fence-paint-sides"
                           value={paintSides}
                           onChange={(e) =>
                             setPaintSides(
@@ -837,7 +883,7 @@ export default function FenceCalculator() {
                       Material Pricing
                     </h3>
 
-                    <p className="mt-1 text-xs text-slate-500">
+                    <p className="mt-1 text-xs text-slate-600">
                       Optional. Enter your local material prices.
                     </p>
 
@@ -847,6 +893,7 @@ export default function FenceCalculator() {
                         <>
                           <Field label="Price / Post">
                             <input
+                              id="fence-price-post"
                               type="number"
                               min="0"
                               step="any"
@@ -864,6 +911,7 @@ export default function FenceCalculator() {
                           {!isPanel && (
                             <Field label="Price / Rail">
                               <input
+                                id="fence-price-rail"
                                 type="number"
                                 min="0"
                                 step="any"
@@ -882,6 +930,7 @@ export default function FenceCalculator() {
                           {mode === "wood-picket" && (
                             <Field label="Price / Picket">
                               <input
+                                id="fence-price-picket"
                                 type="number"
                                 min="0"
                                 step="any"
@@ -900,6 +949,7 @@ export default function FenceCalculator() {
                           {isPanel && (
                             <Field label="Price / Panel">
                               <input
+                                id="fence-price-panel"
                                 type="number"
                                 min="0"
                                 step="any"
@@ -921,6 +971,7 @@ export default function FenceCalculator() {
                         <>
                           <Field label="Price / Line Post">
                             <input
+                              id="fence-price-line-post"
                               type="number"
                               min="0"
                               step="any"
@@ -937,6 +988,7 @@ export default function FenceCalculator() {
 
                           <Field label="Price / Terminal Post">
                             <input
+                              id="fence-price-terminal-post"
                               type="number"
                               min="0"
                               step="any"
@@ -953,6 +1005,7 @@ export default function FenceCalculator() {
 
                           <Field label="Price / ft Fabric">
                             <input
+                              id="fence-price-fabric"
                               type="number"
                               min="0"
                               step="any"
@@ -969,6 +1022,7 @@ export default function FenceCalculator() {
 
                           <Field label="Price / ft Top Rail">
                             <input
+                              id="fence-price-top-rail"
                               type="number"
                               min="0"
                               step="any"
@@ -987,6 +1041,7 @@ export default function FenceCalculator() {
 
                       <Field label="Price / Concrete Bag">
                         <input
+                          id="fence-price-concrete"
                           type="number"
                           min="0"
                           step="any"
@@ -1003,6 +1058,7 @@ export default function FenceCalculator() {
 
                       <Field label="Price / Gallon Paint">
                         <input
+                          id="fence-price-paint"
                           type="number"
                           min="0"
                           step="any"
@@ -1030,7 +1086,7 @@ export default function FenceCalculator() {
           >
             <div className="flex items-start justify-between gap-4">
               <div>
-                <p className="text-xs font-bold uppercase tracking-wider text-blue-600">
+                <p className="text-xs font-bold uppercase tracking-wider text-blue-700">
                   Your Estimate
                 </p>
 
@@ -1039,14 +1095,14 @@ export default function FenceCalculator() {
                 </h2>
               </div>
 
-              <div className="rounded-lg bg-white px-3 py-2 text-xs font-semibold text-slate-500 shadow-sm">
+              <div className="rounded-lg bg-white px-3 py-2 text-xs font-semibold text-slate-600 shadow-sm">
                 {projectUnit.toUpperCase()}
               </div>
             </div>
 
             {/* Primary result */}
             <div className="mt-6 rounded-2xl border border-blue-200 bg-white p-5 shadow-sm">
-              <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+              <p className="text-xs font-semibold uppercase tracking-wide text-slate-600">
                 Fence Area
               </p>
 
@@ -1054,7 +1110,7 @@ export default function FenceCalculator() {
                 {result.fenceAreaSqFt.toFixed(0)}
               </p>
 
-              <p className="mt-1 text-sm text-slate-500">
+              <p className="mt-1 text-sm text-slate-600">
                 square feet
               </p>
             </div>
@@ -1193,7 +1249,7 @@ export default function FenceCalculator() {
             {/* Cost */}
             {result.estimatedCost !== null && (
               <div className="mt-4 rounded-2xl border border-blue-200 bg-blue-50 p-5">
-                <p className="text-xs font-bold uppercase tracking-wide text-blue-600">
+                <p className="text-xs font-bold uppercase tracking-wide text-blue-700">
                   Estimated Material Cost
                 </p>
 
@@ -1209,7 +1265,7 @@ export default function FenceCalculator() {
             )}
 
             {/* Small note */}
-            <p className="mt-5 text-xs leading-5 text-slate-500">
+            <p className="mt-5 text-xs leading-5 text-slate-600">
               Estimates are for planning purposes. Actual material
               requirements can vary with fence layout, terrain,
               installation method and local requirements.
