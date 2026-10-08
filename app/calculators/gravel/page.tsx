@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Breadcrumb from "../../../components/Breadcrumb";
+import CalculatorStructuredData from "../../../components/CalculatorStructuredData";
 import RelatedCalculators from "../../../components/RelatedCalculators";
 import GravelCalculator from "./GravelCalculator";
 
@@ -105,6 +106,11 @@ export default function GravelPage() {
   return (
     <>
       <Breadcrumb current="Gravel Calculator" />
+      <CalculatorStructuredData
+  name="Gravel Calculator"
+  url="https://www.cornerspan.com/calculators/gravel"
+  description="Free gravel calculator to estimate cubic yards, US tons, metric tonnes, waste and material cost."
+/>
 
       <main className="mx-auto w-full max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
 
