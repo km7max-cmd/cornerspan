@@ -86,9 +86,8 @@ const socials = [
 export default function Footer() {
   return (
     <footer
-      className="border-t border-slate-800 bg-slate-800"
-      style={{ minHeight: "250px" }}
-    >
+  className="min-h-[430px] border-t border-slate-800 bg-slate-800 sm:min-h-[330px]"
+>
       <div className="mx-auto max-w-7xl px-5 sm:px-6">
 
         {/* Logo + Description */}
