@@ -106,11 +106,12 @@ export default function GravelPage() {
   return (
     <>
       <Breadcrumb current="Gravel Calculator" />
+
       <CalculatorStructuredData
-  name="Gravel Calculator"
-  url="https://www.cornerspan.com/calculators/gravel"
-  description="Free gravel calculator to estimate cubic yards, US tons, metric tonnes, waste and material cost."
-/>
+        name="Gravel Calculator"
+        url="https://www.cornerspan.com/calculators/gravel"
+        description="Free gravel calculator to estimate cubic yards, US tons, metric tonnes, waste and material cost."
+      />
 
       <main className="mx-auto w-full max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
 
@@ -202,6 +203,18 @@ export default function GravelPage() {
             density.
           </p>
 
+          <p className="mt-3 text-sm leading-7 text-slate-600">
+            For rectangular projects, you can also use the{" "}
+            <Link
+              href="/calculators/area"
+              className="font-semibold text-blue-700 hover:underline"
+            >
+              Area Calculator
+            </Link>{" "}
+            to calculate the surface area before determining the
+            gravel volume.
+          </p>
+
           <div className="mt-5 grid gap-4 sm:grid-cols-3">
 
             <FormulaCard
@@ -250,7 +263,20 @@ export default function GravelPage() {
             the measurement system appropriate for your project.
           </p>
 
+          <p className="mt-3 text-sm leading-7 text-slate-600">
+            If your project also requires a concrete base or footing,
+            you can use the{" "}
+            <Link
+              href="/calculators/concrete"
+              className="font-semibold text-blue-700 hover:underline"
+            >
+              Concrete Calculator
+            </Link>{" "}
+            to estimate concrete volume separately.
+          </p>
+
           <div className="mt-5 rounded-xl border border-blue-100 bg-blue-50 p-4">
+
             <p className="text-sm font-bold text-slate-900">
               US measurement
             </p>
@@ -266,6 +292,7 @@ export default function GravelPage() {
             <p className="mt-1 text-sm leading-6 text-slate-600">
               Cubic meters + metric tonnes
             </p>
+
           </div>
         </section>
 
@@ -356,7 +383,7 @@ export default function GravelPage() {
 
               <ExampleRow
                 label="Estimated order"
-                value="3.81 US tons"
+                value="3.80 US tons"
                 strong
               />
 
@@ -401,41 +428,19 @@ export default function GravelPage() {
             ))}
 
           </div>
-        </section>
 
-        {/* Contextual Internal Links */}
-
-        <section className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
-
-          <h2 className="text-xl font-extrabold text-slate-900">
-            Related Construction Calculators
-          </h2>
-
-          <div className="mt-4 grid gap-3 sm:grid-cols-3">
-
-            <Link
-              href="/calculators/area"
-              className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm font-bold text-blue-700 hover:bg-slate-100"
-            >
-              Area Calculator
-            </Link>
-
-            <Link
-              href="/calculators/concrete"
-              className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm font-bold text-blue-700 hover:bg-slate-100"
-            >
-              Concrete Calculator
-            </Link>
-
+          <p className="mt-4 text-sm leading-7 text-slate-600">
+            For projects that require surface-area calculations in
+            different shapes, the{" "}
             <Link
               href="/calculators/square-footage"
-              className="rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm font-bold text-blue-700 hover:bg-slate-100"
+              className="font-semibold text-blue-700 hover:underline"
             >
               Square Footage Calculator
-            </Link>
-
-          </div>
-
+            </Link>{" "}
+            can help determine the area before estimating material
+            quantities.
+          </p>
         </section>
 
         {/* FAQ */}
