@@ -385,16 +385,16 @@ export default function GravelCalculator() {
 
       {/* Hero Image */}
 
-      <div className="mb-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-        <Image
-          src="/cornerspan-gravel-calculator-hero.webp"
-          alt="Gravel calculator for estimating gravel volume, cubic yards, US tons and material quantity"
-          width={1774}
-          height={887}
-          priority
-          className="h-auto w-full"
-        />
-      </div>
+      <div className="relative mb-6 aspect-[1774/887] overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+  <Image
+    src="/cornerspan-gravel-calculator-hero.webp"
+    alt="Gravel calculator for estimating gravel volume, cubic yards, US tons and material quantity"
+    fill
+    priority
+    sizes="(max-width: 768px) 100vw, 1200px"
+    className="object-cover"
+  />
+</div>
 
       {/* Calculator */}
 
