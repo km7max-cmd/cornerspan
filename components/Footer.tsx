@@ -85,39 +85,25 @@ const socials = [
 
 export default function Footer() {
   return (
-    <footer
-  className="border-t border-slate-800 bg-slate-800"
-  style={{ minHeight: "250px" }}
->
+    <footer className="border-t border-slate-800 bg-slate-800">
       <div className="mx-auto max-w-7xl px-5 sm:px-6">
-
-        {/* Logo + Description */}
-        <div className="flex flex-col items-center py-8 text-center">
-
-          {/* Fixed-size logo wrapper prevents CLS */}
+        {/* Logo and description */}
+        <div
+          className="flex flex-col items-center py-8 text-center"
+          style={{ contain: "layout" }}
+        >
           <Link
             href="/"
             aria-label="CornerSpan Home"
-            className="flex shrink-0 items-center justify-center overflow-hidden"
-            style={{
-              width: "220px",
-              height: "61px",
-              aspectRatio: "220 / 61",
-            }}
+            className="flex h-[61px] w-[220px] shrink-0 items-center justify-center overflow-hidden"
           >
             <Image
-              src="/logo-dark.webp?v=2"
+              src="/logo-dark.webp"
               alt="CornerSpan - Construction Calculators"
               width={220}
               height={61}
               sizes="220px"
-              priority={false}
               className="block h-[61px] w-[220px] object-contain"
-              style={{
-                width: "220px",
-                height: "61px",
-                aspectRatio: "220 / 61",
-              }}
             />
           </Link>
 
@@ -130,9 +116,9 @@ export default function Footer() {
             engineers, builders and homeowners.
           </p>
 
-          {/* Social Icons */}
+          {/* Social icons */}
           <div
-            className="mt-5 flex min-h-[20px] items-center justify-center gap-5"
+            className="mt-5 flex h-5 items-center justify-center gap-5"
             aria-label="CornerSpan social media"
           >
             {socials.map((social) => (
@@ -143,7 +129,7 @@ export default function Footer() {
                 rel="noopener noreferrer"
                 aria-label={`CornerSpan on ${social.name}`}
                 title={`CornerSpan on ${social.name}`}
-                className="flex h-5 w-5 items-center justify-center text-slate-200 transition-transform duration-200 hover:-translate-y-1 hover:text-blue-400"
+                className="flex h-5 w-5 shrink-0 items-center justify-center text-slate-200 transition-colors hover:text-blue-400"
               >
                 {social.icon}
               </a>
@@ -151,7 +137,7 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Footer Navigation */}
+        {/* Footer navigation */}
         <div className="border-y border-slate-700 py-5">
           <nav
             aria-label="Footer navigation"
@@ -175,7 +161,6 @@ export default function Footer() {
             © {new Date().getFullYear()} CornerSpan. All rights reserved.
           </p>
         </div>
-
       </div>
     </footer>
   );
