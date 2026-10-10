@@ -58,7 +58,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Paint Calculator | How Much Paint Do I Need?",
     description:
-      "Estimate the paint needed for walls and ceilings, including coverage, multiple coats, doors, windows, and painting costs.",
+      "Estimate paint for walls and ceilings, including coverage, coats, doors, windows, and painting costs.",
     url: pageUrl,
     siteName: "CornerSpan",
     type: "website",
@@ -89,7 +89,7 @@ export default function PaintCalculatorPage() {
       url: pageUrl,
       name: "Paint Calculator",
       description:
-        "Estimate the paint needed for walls and ceilings, including coverage, coats, doors, windows, and painting costs.",
+        "Estimate paint for walls and ceilings, including coverage, coats, doors, windows, and painting costs.",
       primaryImageOfPage: {
         "@type": "ImageObject",
         url: imageUrl,
@@ -144,16 +144,19 @@ export default function PaintCalculatorPage() {
         </p>
       </section>
 
+      {/* Paint guide image with reserved space to reduce layout shifts */}
       <figure className="mt-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-        <Image
-          src="/paint-calculator.webp"
-          alt="Paint Calculator guide showing room painting, wall dimensions, paint coverage, and cost estimation"
-          width={1536}
-          height={1024}
-          priority
-          sizes="(max-width: 768px) 100vw, 1200px"
-          className="h-auto w-full"
-        />
+        <div className="relative aspect-[3/2] w-full">
+          <Image
+            src="/paint-calculator.webp"
+            alt="Paint Calculator guide showing room painting, wall dimensions, paint coverage, and cost estimation"
+            fill
+            priority
+            fetchPriority="high"
+            sizes="(max-width: 768px) 100vw, 1200px"
+            className="object-contain"
+          />
+        </div>
 
         <figcaption className="px-4 py-3 text-sm leading-6 text-slate-600">
           Learn how room dimensions, doors, windows, paint coverage, and
