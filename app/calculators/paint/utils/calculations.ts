@@ -9,50 +9,39 @@ export type PaintUnit =
 
 export type PaintCalculationInput = {
   jobType: "room" | "walls" | "ceiling";
-
   length: number;
   width: number;
   height: number;
-
   lengthSecondary: number;
   widthSecondary: number;
   heightSecondary: number;
-
   doors: number;
   windows: number;
-
   coats: number;
   coverage: number;
   pricePerUnit: number;
   laborPricePerArea: number;
-
   unit: PaintUnit;
 };
 
 export type PaintCalculationResult = {
   paintedAreaSqFt: number;
   paintedAreaSqM: number;
-
   paintAreaSqFt: number;
   paintAreaSqM: number;
-
   paintQuantity: number;
   quantityUnit: "gallons" | "liters";
-
   quantityToBuy: number;
-
+  purchaseGallons: number;
+  purchaseQuarts: number;
   paintCost: number;
   laborCost: number;
   totalCost: number;
 };
 
 const SQFT_TO_SQM = 0.09290304;
-
 const DOOR_AREA_SQ_FT = 21;
 const WINDOW_AREA_SQ_FT = 15;
-
-const DEFAULT_US_COVERAGE = 350;
-const DEFAULT_METRIC_COVERAGE = 10;
 
 function safeNumber(value: number): number {
   return Number.isFinite(value) ? value : 0;
@@ -73,25 +62,18 @@ function toFeet(
   switch (unit) {
     case "ft":
       return primary;
-
     case "in":
       return primary / 12;
-
     case "cm":
       return primary / 30.48;
-
     case "m":
       return primary / 0.3048;
-
     case "yd":
       return primary * 3;
-
     case "ft-in":
       return primary + extra / 12;
-
     case "m-cm":
       return primary / 0.3048 + extra / 30.48;
-
     default:
       return 0;
   }
@@ -121,12 +103,10 @@ export function calculatePaint(
     unit,
   } = input;
 
-  // 1. Convert dimensions to feet.
   const lengthFt = toFeet(length, unit, lengthSecondary);
   const widthFt = toFeet(width, unit, widthSecondary);
   const heightFt = toFeet(height, unit, heightSecondary);
 
-  // 2. Calculate the selected surface area.
   let baseAreaSqFt = 0;
 
   if (jobType === "room" || jobType === "walls") {
@@ -135,11 +115,8 @@ export function calculatePaint(
     baseAreaSqFt = lengthFt * widthFt;
   }
 
-  // Prevent invalid or negative area values.
   baseAreaSqFt = Math.max(0, safeNumber(baseAreaSqFt));
 
-  // 3. Subtract estimated door and window areas from walls.
-  // These are estimates, not exact measurements.
   const openingsAreaSqFt =
     jobType === "ceiling"
       ? 0
@@ -153,7 +130,6 @@ export function calculatePaint(
 
   const paintedAreaSqM = paintedAreaSqFt * SQFT_TO_SQM;
 
-  // 4. Apply the number of coats.
   const safeCoats = Math.max(
     1,
     Math.floor(safeNumber(coats) || 1)
@@ -162,61 +138,66 @@ export function calculatePaint(
   const paintAreaSqFt = paintedAreaSqFt * safeCoats;
   const paintAreaSqM = paintAreaSqFt * SQFT_TO_SQM;
 
-  // 5. Determine the measurement system.
   const metric =
     unit === "cm" ||
     unit === "m" ||
     unit === "m-cm";
 
-  // 6. Calculate paint quantity.
   const safeCoverage = Math.max(
     0.01,
-    safeNumber(coverage) ||
-      (metric ? DEFAULT_METRIC_COVERAGE : DEFAULT_US_COVERAGE)
+    safeNumber(coverage) || (metric ? 10 : 350)
   );
 
-  let paintQuantity: number;
-  let quantityToBuy: number;
+  let paintQuantity = 0;
+  let quantityToBuy = 0;
   let quantityUnit: "gallons" | "liters";
 
+  let purchaseGallons = 0;
+  let purchaseQuarts = 0;
+
   if (metric) {
-    // Coverage is m² per liter.
     paintQuantity = paintAreaSqM / safeCoverage;
     quantityToBuy = Math.ceil(paintQuantity);
     quantityUnit = "liters";
   } else {
-    // Coverage is ft² per gallon.
+    // US: round purchase quantity up to the nearest quart.
+    // 4 quarts = 1 US gallon.
     paintQuantity = paintAreaSqFt / safeCoverage;
-    quantityToBuy = Math.ceil(paintQuantity);
+
+    const totalQuarts = Math.ceil(
+      Math.max(0, paintQuantity) * 4
+    );
+
+    purchaseGallons = Math.floor(totalQuarts / 4);
+    purchaseQuarts = totalQuarts % 4;
+
+    quantityToBuy = totalQuarts / 4;
     quantityUnit = "gallons";
   }
 
-  // 7. Calculate paint cost using the rounded purchase quantity.
   const safePrice = nonNegative(pricePerUnit);
+
+  // Price is entered per gallon; quart price is estimated proportionally.
   const paintCost = quantityToBuy * safePrice;
 
-  // 8. Calculate labor cost using surface area, not coat-adjusted area.
   const safeLaborPrice = nonNegative(laborPricePerArea);
 
   const laborCost = metric
     ? paintedAreaSqM * safeLaborPrice
     : paintedAreaSqFt * safeLaborPrice;
 
-  // 9. Calculate total cost.
   const totalCost = paintCost + laborCost;
 
   return {
     paintedAreaSqFt: roundToTwo(paintedAreaSqFt),
     paintedAreaSqM: roundToTwo(paintedAreaSqM),
-
     paintAreaSqFt: roundToTwo(paintAreaSqFt),
     paintAreaSqM: roundToTwo(paintAreaSqM),
-
     paintQuantity: roundToTwo(paintQuantity),
     quantityUnit,
-
-    quantityToBuy,
-
+    quantityToBuy: roundToTwo(quantityToBuy),
+    purchaseGallons,
+    purchaseQuarts,
     paintCost: roundToTwo(paintCost),
     laborCost: roundToTwo(laborCost),
     totalCost: roundToTwo(totalCost),
