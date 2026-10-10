@@ -17,7 +17,7 @@ const PaverCalculator = dynamic(() => import("./PaverCalculator"), {
 export const metadata: Metadata = {
   title: "Paver Calculator | Pavers Needed & Cost",
   description:
-    "Free paver calculator to estimate how many pavers you need for a patio, walkway, driveway or other project. Calculate pavers, waste and estimated cost.",
+    "Calculate patio, walkway and driveway paver quantities with waste allowance. Estimate pavers needed, compare common sizes and calculate material costs.",
   keywords: [
     "paver calculator",
     "paver block calculator",
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Paver Calculator | Pavers Needed & Cost",
     description:
-      "Calculate how many pavers you need for patios, walkways, driveways and other projects, including waste and estimated material cost.",
+      "Estimate paver quantities, installation waste and material costs for patios, walkways and driveways.",
     url: "https://www.cornerspan.com/calculators/paver",
     siteName: "CornerSpan",
     type: "website",
@@ -47,7 +47,7 @@ export const metadata: Metadata = {
         url: "/cornerspan-paver-calculator-hero.webp",
         width: 1536,
         height: 1024,
-        alt: "CornerSpan Paver Calculator showing patio measurements, paver size and layout pattern",
+        alt: "Paver calculator guide showing project measurements and paver dimensions",
       },
     ],
   },
@@ -55,7 +55,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Paver Calculator | Pavers Needed & Cost",
     description:
-      "Free paver calculator for estimating paver quantity, waste and material cost.",
+      "Calculate pavers needed for your patio, walkway or driveway, including waste and estimated material cost.",
     images: ["/cornerspan-paver-calculator-hero.webp"],
   },
 };
@@ -63,14 +63,13 @@ export const metadata: Metadata = {
 export default function PaverCalculatorPage() {
   return (
     <main>
-      {/* Header */}
       <div className="mx-auto max-w-7xl px-6 pt-6">
         <Breadcrumb current="Paver Calculator" />
 
         <CalculatorStructuredData
           name="Paver Calculator"
           url="https://www.cornerspan.com/calculators/paver"
-          description="Free paver calculator for estimating paver quantity, waste allowance and material cost for patios, walkways, driveways and other projects."
+          description="Calculate paver quantities, waste allowance and estimated material costs for patios, walkways, driveways and other paving projects."
         />
 
         <header className="mx-auto max-w-4xl text-center">
@@ -79,121 +78,112 @@ export default function PaverCalculatorPage() {
           </h1>
 
           <p className="mx-auto mt-3 max-w-3xl text-base leading-7 text-slate-600 sm:text-lg">
-            Calculate how many pavers you need for a patio, walkway, driveway
-            or other project. Enter your project size, paver dimensions and
-            waste allowance to get an estimated quantity.
+            Find out how many pavers you need for a patio, walkway,
+            driveway or garden path. Enter your project dimensions,
+            paver size and waste allowance to estimate your material
+            quantity and optional paver cost.
           </p>
         </header>
       </div>
 
-      {/* Calculator FIRST */}
+      {/* Interactive calculator */}
       <div className="mt-7">
         <PaverCalculator />
       </div>
 
-      {/* Hero Image */}
+      {/* Project measurement guide */}
       <div className="mx-auto mt-8 max-w-5xl px-3 sm:px-6">
         <figure className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
           <Image
             src="/cornerspan-paver-calculator-hero.webp"
-            alt="Paver calculator guide showing patio length and width measurements, paver size, and layout pattern"
+            alt="Guide to measuring a patio and selecting paver dimensions"
             width={1536}
             height={1024}
             priority
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1024px"
             className="h-auto w-full"
           />
-
           <figcaption className="px-4 py-3 text-center text-xs text-slate-500 sm:text-sm">
-            Measure your project area, choose your paver size, and allow for
-            installation waste.
+            Measure the paving area and check the actual dimensions
+            of your selected paver before ordering.
           </figcaption>
         </figure>
       </div>
 
-      {/* SEO Content */}
       <article className="mx-auto mt-10 max-w-5xl px-6 pb-12">
         {/* Introduction */}
         <section>
           <h2 className="text-2xl font-bold text-slate-900">
-            Paver Calculator for Patios, Walkways and Driveways
+            Calculate Pavers for Patios, Walkways and Driveways
           </h2>
 
           <p className="mt-4 text-base leading-7 text-slate-600">
-            This paver calculator helps you estimate how many paving units you
-            need for a patio, walkway, driveway, garden path or other paving
-            project. Enter the project dimensions, choose the unit you want to
-            use, enter the paver size, and add a waste allowance to calculate
-            the estimated quantity.
+            A paver calculator estimates the number of paving units
+            required to cover a measured surface. It is useful when
+            planning a backyard patio, front walkway, garden path,
+            pool surround or driveway. Accurate measurements help
+            reduce material shortages and unnecessary leftovers.
           </p>
 
           <p className="mt-4 text-base leading-7 text-slate-600">
-            The calculator can also estimate material cost when you enter a
-            price per paver. It supports common imperial and metric units so
-            you can work with measurements in feet, meters, inches or
-            centimeters.
+            Enter the length and width of your project, then enter
+            the length and width of one paver. Select the appropriate
+            measurement units and a waste allowance. The calculator
+            estimates the number of units to order and can calculate
+            an estimated paver material cost when you provide a
+            price per paver.
+          </p>
+
+          <p className="mt-4 text-base leading-7 text-slate-600">
+            The calculator supports US customary measurements such
+            as feet and inches, as well as metric measurements such
+            as meters and centimeters. Results are estimates, not a
+            substitute for a site measurement or a product-specific
+            installation plan.
           </p>
         </section>
 
-        {/* How to Use */}
+        {/* How to use */}
         <section className="mt-12">
           <h2 className="text-2xl font-bold text-slate-900">
             How to Use the Paver Calculator
           </h2>
 
-          <p className="mt-4 text-base leading-7 text-slate-600">
-            Follow these steps to estimate the number of pavers required for
-            your project.
-          </p>
-
-          <div className="mt-6 space-y-5">
-            <div>
-              <h3 className="font-semibold text-slate-900">
-                1. Measure the project area
-              </h3>
-
-              <p className="mt-1 text-sm leading-6 text-slate-600">
-                For a rectangular patio, walkway or driveway, measure the
-                length and width of the area. You can enter the measurements in
-                feet, meters, inches or centimeters.
-              </p>
-            </div>
-
-            <div>
-              <h3 className="font-semibold text-slate-900">
-                2. Enter the paver size
-              </h3>
-
-              <p className="mt-1 text-sm leading-6 text-slate-600">
-                Enter the actual length and width of one paver. Common paver
-                dimensions vary by manufacturer, so use the dimensions of the
-                product you plan to install.
-              </p>
-            </div>
-
-            <div>
-              <h3 className="font-semibold text-slate-900">
-                3. Add a waste allowance
-              </h3>
-
-              <p className="mt-1 text-sm leading-6 text-slate-600">
-                Waste accounts for cutting, breakage and installation mistakes.
-                A 10% allowance is a practical starting point for many simple
-                paving layouts.
-              </p>
-            </div>
-
-            <div>
-              <h3 className="font-semibold text-slate-900">
-                4. Review the paver quantity
-              </h3>
-
-              <p className="mt-1 text-sm leading-6 text-slate-600">
-                The calculator shows the estimated quantity and the
-                recommended number of pavers to order after the selected waste
-                allowance is included.
-              </p>
-            </div>
+          <div className="mt-6 grid gap-4 sm:grid-cols-2">
+            {[
+              {
+                title: "1. Measure the project",
+                description:
+                  "Measure the length and width of the area to be paved. Use consistent units and exclude spaces that will not receive pavers.",
+              },
+              {
+                title: "2. Enter paver dimensions",
+                description:
+                  "Use the actual length and width supplied by the manufacturer. Do not assume every paver has the same dimensions.",
+              },
+              {
+                title: "3. Select waste allowance",
+                description:
+                  "Choose an allowance based on cutting, the layout pattern, the shape of the area and possible breakage.",
+              },
+              {
+                title: "4. Review quantity and cost",
+                description:
+                  "Check the order quantity and enter the price per paver if you want a material-cost estimate.",
+              },
+            ].map((item) => (
+              <div
+                key={item.title}
+                className="rounded-xl border border-slate-200 bg-white p-5"
+              >
+                <h3 className="font-semibold text-slate-900">
+                  {item.title}
+                </h3>
+                <p className="mt-2 text-sm leading-6 text-slate-600">
+                  {item.description}
+                </p>
+              </div>
+            ))}
           </div>
         </section>
 
@@ -204,110 +194,58 @@ export default function PaverCalculatorPage() {
           </h2>
 
           <p className="mt-4 text-base leading-7 text-slate-600">
-            The basic paver quantity calculation uses the project area and the
-            coverage area of one paver.
+            For a rectangular project using rectangular pavers,
+            calculate the project area and the area covered by one
+            paver in the same units. Divide the project area by the
+            paver area, then apply the selected waste allowance.
           </p>
 
-          <div className="mt-5 rounded-xl border border-slate-200 bg-slate-50 p-5">
+          <div className="mt-5 space-y-3 rounded-xl border border-slate-200 bg-slate-50 p-5">
             <p className="font-mono text-sm leading-7 text-slate-800">
               Project area = Length × Width
-              <br />
+            </p>
+            <p className="font-mono text-sm leading-7 text-slate-800">
               Paver area = Paver length × Paver width
-              <br />
-              Pavers needed = Project area ÷ Paver area
-              <br />
-              Pavers to order = Pavers needed × (1 + Waste %)
+            </p>
+            <p className="font-mono text-sm leading-7 text-slate-800">
+              Exact quantity = Project area ÷ Paver area
+            </p>
+            <p className="font-mono text-sm leading-7 text-slate-800">
+              Order quantity = CEIL(Exact quantity × (1 + Waste % ÷ 100))
             </p>
           </div>
 
           <p className="mt-4 text-sm leading-6 text-slate-600">
-            When paver dimensions are entered in inches, the paver area is
-            converted to square feet using 144 square inches per square foot.
-            The final quantity is rounded up to a whole paver.
+            CEIL means rounding up to the next whole paver. The
+            calculator converts measurements to square feet for
+            its internal calculation. For example, one square foot
+            contains 144 square inches, and one square meter is
+            approximately 10.764 square feet.
           </p>
         </section>
 
-        {/* Common Sizes */}
+        {/* Worked example */}
         <section className="mt-12">
           <h2 className="text-2xl font-bold text-slate-900">
-            Common Paver Sizes and Pavers per Square Foot
+            Example: Pavers for a 12 ft × 10 ft Patio
           </h2>
 
           <p className="mt-4 text-base leading-7 text-slate-600">
-            Paver sizes vary by manufacturer. The table below shows approximate
-            coverage calculations before accounting for joints or waste.
-          </p>
-
-          <div className="mt-5 overflow-hidden rounded-xl border border-slate-200">
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-[520px] text-left text-sm">
-                <thead className="bg-slate-50">
-                  <tr>
-                    <th className="px-4 py-3 font-semibold text-slate-900">
-                      Paver Size
-                    </th>
-                    <th className="px-4 py-3 font-semibold text-slate-900">
-                      Area per Paver
-                    </th>
-                    <th className="px-4 py-3 font-semibold text-slate-900">
-                      Approx. Pavers / Sq Ft
-                    </th>
-                  </tr>
-                </thead>
-
-                <tbody className="divide-y divide-slate-200">
-                  <tr>
-                    <td className="px-4 py-3">4 × 8 in</td>
-                    <td className="px-4 py-3">0.2222 sq ft</td>
-                    <td className="px-4 py-3 font-semibold">4.5</td>
-                  </tr>
-
-                  <tr>
-                    <td className="px-4 py-3">6 × 6 in</td>
-                    <td className="px-4 py-3">0.25 sq ft</td>
-                    <td className="px-4 py-3 font-semibold">4</td>
-                  </tr>
-
-                  <tr>
-                    <td className="px-4 py-3">12 × 12 in</td>
-                    <td className="px-4 py-3">1 sq ft</td>
-                    <td className="px-4 py-3 font-semibold">1</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <p className="mt-4 text-sm leading-6 text-slate-600">
-            These figures are mathematical coverage estimates. Actual
-            installation quantities can vary because of joints, cuts, borders,
-            pattern layout and product specifications.
-          </p>
-        </section>
-
-        {/* Example */}
-        <section className="mt-12">
-          <h2 className="text-2xl font-bold text-slate-900">
-            Example: How Many Pavers Do I Need?
-          </h2>
-
-          <p className="mt-4 text-base leading-7 text-slate-600">
-            Suppose you have a 12 ft × 10 ft patio and want to install 8 × 4
-            inch pavers with 10% waste.
+            Suppose a rectangular patio measures 12 feet by 10 feet
+            and you plan to use pavers measuring 8 inches by 4
+            inches. For this example, assume a 10% waste allowance.
           </p>
 
           <div className="mt-5 overflow-hidden rounded-xl border border-slate-200">
             <div className="divide-y divide-slate-200">
               <ExampleRow label="Project area" value="120 sq ft" />
-              <ExampleRow label="Paver size" value="8 × 4 in" />
+              <ExampleRow label="Paver dimensions" value="8 × 4 in" />
+              <ExampleRow label="Area per paver" value="32 sq in" />
               <ExampleRow label="Pavers per sq ft" value="4.5" />
-              <ExampleRow label="Exact quantity" value="540" />
+              <ExampleRow label="Exact quantity" value="540 pavers" />
+              <ExampleRow label="10% allowance" value="54 pavers" />
               <ExampleRow
-                label="10% waste allowance"
-                value="54 pavers"
-              />
-              <ExampleRow
-                label="Pavers to order"
+                label="Estimated order quantity"
                 value="594 pavers"
                 strong
               />
@@ -315,210 +253,350 @@ export default function PaverCalculatorPage() {
           </div>
 
           <p className="mt-4 text-sm leading-6 text-slate-600">
-            In this example, 540 pavers cover the project area before waste.
-            Adding a 10% waste allowance gives a recommended order quantity of
-            594 pavers.
+            Calculation: 120 sq ft × 144 = 17,280 sq in.
+            Dividing 17,280 by 32 gives 540 pavers. Adding 10%
+            gives 594 pavers. This is a mathematical coverage
+            estimate; actual cuts, joint spacing and the product's
+            nominal dimensions can change the quantity needed.
+          </p>
+        </section>
+
+        {/* Common sizes */}
+        <section className="mt-12">
+          <h2 className="text-2xl font-bold text-slate-900">
+            Common Paver Sizes and Coverage
+          </h2>
+
+          <p className="mt-4 text-base leading-7 text-slate-600">
+            The table below uses the stated dimensions as the
+            actual coverage dimensions. It does not account for
+            joint spacing, borders, cutting or waste.
+          </p>
+
+          <div className="mt-5 overflow-hidden rounded-xl border border-slate-200">
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[480px] text-left text-sm">
+                <thead className="bg-slate-50">
+                  <tr>
+                    <th className="px-4 py-3 font-semibold text-slate-900">
+                      Paver size
+                    </th>
+                    <th className="px-4 py-3 font-semibold text-slate-900">
+                      Area per paver
+                    </th>
+                    <th className="px-4 py-3 font-semibold text-slate-900">
+                      Pavers per sq ft
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-200">
+                  <tr>
+                    <td className="px-4 py-3">4 × 8 in</td>
+                    <td className="px-4 py-3">0.2222 sq ft</td>
+                    <td className="px-4 py-3">4.5</td>
+                  </tr>
+                  <tr>
+                    <td className="px-4 py-3">6 × 6 in</td>
+                    <td className="px-4 py-3">0.25 sq ft</td>
+                    <td className="px-4 py-3">4</td>
+                  </tr>
+                  <tr>
+                    <td className="px-4 py-3">12 × 12 in</td>
+                    <td className="px-4 py-3">1 sq ft</td>
+                    <td className="px-4 py-3">1</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <p className="mt-4 text-sm leading-6 text-slate-600">
+            Actual product coverage can differ from nominal size.
+            Check the manufacturer's coverage information before
+            placing an order, especially when pavers have spacers,
+            irregular edges or specified joint widths.
           </p>
         </section>
 
         {/* Waste */}
         <section className="mt-12">
           <h2 className="text-2xl font-bold text-slate-900">
-            How Much Paver Waste Should I Add?
+            How Much Extra Should You Order?
           </h2>
 
           <p className="mt-4 text-base leading-7 text-slate-600">
-            The amount of extra material depends on the project shape,
-            installation pattern and amount of cutting required.
+            Waste allowance covers material that may be lost to
+            cutting, breakage and installation mistakes. The
+            appropriate percentage depends on the project rather
+            than on one universal rule.
           </p>
 
-          <ul className="mt-5 list-disc space-y-3 pl-6 text-sm leading-6 text-slate-600">
-            <li>
-              <strong className="text-slate-900">5%:</strong> Simple
-              rectangular layouts with minimal cutting.
-            </li>
+          <div className="mt-5 grid gap-4 sm:grid-cols-3">
+            <div className="rounded-xl border border-slate-200 p-4">
+              <p className="text-2xl font-bold text-slate-900">5%</p>
+              <h3 className="mt-1 font-semibold text-slate-900">
+                Simple layouts
+              </h3>
+              <p className="mt-2 text-sm leading-6 text-slate-600">
+                A possible starting point for rectangular areas
+                with few cuts and minimal edge waste.
+              </p>
+            </div>
 
-            <li>
-              <strong className="text-slate-900">10%:</strong> A practical
-              general-purpose allowance for many projects.
-            </li>
+            <div className="rounded-xl border border-blue-200 bg-blue-50 p-4">
+              <p className="text-2xl font-bold text-slate-900">10%</p>
+              <h3 className="mt-1 font-semibold text-slate-900">
+                General planning
+              </h3>
+              <p className="mt-2 text-sm leading-6 text-slate-600">
+                A common planning allowance for many straightforward
+                paving projects.
+              </p>
+            </div>
 
-            <li>
-              <strong className="text-slate-900">15%:</strong> Complex layouts,
-              curves or projects requiring substantial cutting.
-            </li>
-          </ul>
+            <div className="rounded-xl border border-slate-200 p-4">
+              <p className="text-2xl font-bold text-slate-900">15%+</p>
+              <h3 className="mt-1 font-semibold text-slate-900">
+                Complex layouts
+              </h3>
+              <p className="mt-2 text-sm leading-6 text-slate-600">
+                May be appropriate for curves, diagonal patterns,
+                intricate borders or extensive cutting.
+              </p>
+            </div>
+          </div>
 
           <p className="mt-4 text-sm leading-6 text-slate-600">
-            These percentages are planning allowances rather than guarantees.
-            Follow the installation guidance supplied with your specific paver
-            product when available.
+            These percentages are planning examples, not guaranteed
+            requirements. Follow the supplier's recommendations and
+            consider whether future replacement pavers are available
+            from the same product batch.
           </p>
         </section>
 
-        {/* How Many Pavers */}
+        {/* Layout patterns */}
         <section className="mt-12">
           <h2 className="text-2xl font-bold text-slate-900">
-            How Many Pavers Do I Need for a Patio?
+            How Paver Layout Patterns Affect Material Needs
           </h2>
 
           <p className="mt-4 text-base leading-7 text-slate-600">
-            To calculate patio pavers, first determine the patio area in
-            square feet. Next, calculate the area covered by one paver. Divide
-            the total patio area by the area of one paver, then add a waste
-            allowance and round the result up.
+            Two patios with the same area can require different
+            quantities of purchased material if their layouts
+            involve different amounts of cutting. The basic
+            area formula estimates coverage, while the layout
+            determines how efficiently whole pavers fit the space.
           </p>
+
+          <div className="mt-5 space-y-5">
+            <div>
+              <h3 className="font-semibold text-slate-900">
+                Running bond
+              </h3>
+              <p className="mt-2 text-sm leading-6 text-slate-600">
+                Rows are offset from one another. This arrangement
+                is common for rectangular pavers, but cuts may be
+                needed at the ends of rows and around obstacles.
+              </p>
+            </div>
+
+            <div>
+              <h3 className="font-semibold text-slate-900">
+                Herringbone
+              </h3>
+              <p className="mt-2 text-sm leading-6 text-slate-600">
+                Pavers form an interlocking pattern. Borders and
+                edges may require more cuts than a simple
+                straight-row layout, so calculate the waste
+                allowance accordingly.
+              </p>
+            </div>
+
+            <div>
+              <h3 className="font-semibold text-slate-900">
+                Diagonal and curved layouts
+              </h3>
+              <p className="mt-2 text-sm leading-6 text-slate-600">
+                Angled edges and curved boundaries can create
+                additional offcuts. A basic rectangular-area
+                calculation may need a larger allowance or a
+                detailed layout plan.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Irregular areas */}
+        <section className="mt-12">
+          <h2 className="text-2xl font-bold text-slate-900">
+            Calculating Pavers for Irregular Areas
+          </h2>
+
+          <p className="mt-4 text-base leading-7 text-slate-600">
+            If your patio or walkway is L-shaped, divide it into
+            smaller rectangles. Calculate each rectangle's area
+            and add the areas together. For example, an area made
+            up of two non-overlapping rectangles measuring 10 × 8
+            feet and 6 × 4 feet has a combined area of 104 square
+            feet.
+          </p>
+
+          <p className="mt-4 text-base leading-7 text-slate-600">
+            For circular, curved or highly irregular spaces, use
+            suitable geometric measurements or a scaled layout
+            plan. Avoid counting overlapping sections twice.
+            Subtract areas that will not be paved, such as
+            permanent planters or other excluded spaces.
+          </p>
+        </section>
+
+        {/* Cost */}
+        <section className="mt-12">
+          <h2 className="text-2xl font-bold text-slate-900">
+            Estimating Paver Material Cost
+          </h2>
+
+          <p className="mt-4 text-base leading-7 text-slate-600">
+            If you know the price of one paver, multiply that price
+            by the calculated order quantity to estimate the cost
+            of the pavers themselves.
+          </p>
+
+          <div className="mt-5 rounded-xl border border-slate-200 bg-slate-50 p-5">
+            <p className="font-mono text-sm leading-7 text-slate-800">
+              Paver material cost = Order quantity × Price per paver
+            </p>
+          </div>
 
           <p className="mt-4 text-sm leading-6 text-slate-600">
-            For irregular or complex layouts, divide the project into smaller
-            measurable sections and calculate each section separately before
-            combining the results.
+            This estimate does not include delivery, labor, taxes,
+            base aggregate, bedding sand, edging, jointing
+            materials, drainage or equipment rental. For a
+            complete project budget, obtain local supplier and
+            contractor estimates.
           </p>
         </section>
 
-        {/* Applications */}
+        {/* Limitations */}
         <section className="mt-12">
           <h2 className="text-2xl font-bold text-slate-900">
-            What Can You Use a Paver Calculator For?
+            What This Calculator Does Not Include
           </h2>
 
           <p className="mt-4 text-base leading-7 text-slate-600">
-            A paver calculator can help estimate paving units for many
-            residential and construction projects, including:
+            This calculator estimates paver quantity and optional
+            paver material cost from rectangular dimensions. It
+            does not design the paving system or determine the
+            required thickness of the base, bedding layer or
+            jointing material.
           </p>
-
-          <ul className="mt-5 grid gap-2 text-sm leading-6 text-slate-600 sm:grid-cols-2">
-            <li className="rounded-lg bg-slate-50 px-4 py-3">
-              Patio pavers
-            </li>
-
-            <li className="rounded-lg bg-slate-50 px-4 py-3">
-              Walkways
-            </li>
-
-            <li className="rounded-lg bg-slate-50 px-4 py-3">
-              Driveways
-            </li>
-
-            <li className="rounded-lg bg-slate-50 px-4 py-3">
-              Garden paths
-            </li>
-
-            <li className="rounded-lg bg-slate-50 px-4 py-3">
-              Outdoor seating areas
-            </li>
-
-            <li className="rounded-lg bg-slate-50 px-4 py-3">
-              Other paving projects
-            </li>
-          </ul>
-        </section>
-
-        {/* Important Limitations */}
-        <section className="mt-12">
-          <h2 className="text-2xl font-bold text-slate-900">
-            What This Paver Calculator Does Not Include
-          </h2>
 
           <p className="mt-4 text-base leading-7 text-slate-600">
-            This paver calculator estimates the quantity of paving units and
-            optional paver material cost. It does not calculate the required
-            depth or quantity of base gravel, bedding sand or jointing
-            material.
-          </p>
-
-          <p className="mt-4 text-sm leading-6 text-slate-600">
-            Base and bedding requirements depend on soil conditions, drainage,
-            traffic loads, local construction practices and the specific
-            installation system.
+            Those requirements depend on soil conditions,
+            drainage, expected traffic, climate, paver type and
+            local construction practices. Driveways and other
+            vehicle-bearing surfaces may need a different base
+            design from a pedestrian patio. Follow applicable
+            installation instructions and local requirements.
           </p>
         </section>
 
-        {/* FAQ */}
+        {/* FAQs */}
         <section className="mt-12">
           <h2 className="text-2xl font-bold text-slate-900">
-            Paver Calculator FAQ
+            Paver Calculator FAQs
           </h2>
 
-          <div className="mt-6 space-y-7">
+          <div className="mt-6 space-y-6">
             <div>
               <h3 className="font-semibold text-slate-900">
-                How many pavers are needed per square foot?
+                How many pavers do I need for a 100-square-foot patio?
               </h3>
-
               <p className="mt-2 text-sm leading-6 text-slate-600">
-                The number of pavers required per square foot depends on the
-                dimensions of the paver. Larger pavers cover more area and
-                require fewer units per square foot, while smaller pavers
-                require more.
+                The quantity depends on the coverage area of each
+                paver. With 4 × 8 inch pavers and no joint adjustment,
+                100 square feet requires 450 pavers before waste.
+                A 10% allowance gives 495 pavers.
               </p>
             </div>
 
             <div>
               <h3 className="font-semibold text-slate-900">
-                How do I calculate pavers for a patio?
+                How do I calculate pavers per square foot?
               </h3>
-
               <p className="mt-2 text-sm leading-6 text-slate-600">
-                Calculate the patio area, determine the coverage area of one
-                paver, divide the project area by the paver area, add an
-                appropriate waste allowance, and round the final quantity up.
+                Divide one square foot by the area of one paver in
+                square feet. For example, an 8 × 4 inch paver covers
+                32 square inches, so the mathematical coverage is
+                144 ÷ 32 = 4.5 pavers per square foot.
               </p>
             </div>
 
             <div>
               <h3 className="font-semibold text-slate-900">
-                Should I buy extra pavers?
+                Does paver joint spacing affect the quantity?
               </h3>
-
               <p className="mt-2 text-sm leading-6 text-slate-600">
-                Yes. Extra pavers help account for cutting, breakage and
-                installation errors. The appropriate allowance depends on the
-                shape and pattern of the project.
+                Yes. Joint spacing affects the installed module
+                size and the number of units that fit across an
+                area. Use the manufacturer's coverage specifications
+                when available; the basic calculator uses the
+                dimensions entered by the user.
               </p>
             </div>
 
             <div>
               <h3 className="font-semibold text-slate-900">
-                What is a good paver waste percentage?
+                Can I use this calculator for a driveway?
               </h3>
-
               <p className="mt-2 text-sm leading-6 text-slate-600">
-                Five percent may be sufficient for simple layouts, while 10%
-                is a useful general allowance. Projects with curves, complex
-                patterns or substantial cutting may require around 15% or
-                more.
+                Yes, it can estimate the number of pavers needed
+                for the measured driveway surface. It does not
+                determine whether a paver or base system is
+                suitable for vehicle loads.
               </p>
             </div>
 
             <div>
               <h3 className="font-semibold text-slate-900">
-                Can I use metric measurements?
+                Can I calculate pavers using metric units?
               </h3>
-
               <p className="mt-2 text-sm leading-6 text-slate-600">
-                Yes. The calculator supports feet, meters, inches and
-                centimeters. You can use different units for the project
-                dimensions and paver dimensions.
+                Yes. Enter project and paver dimensions using the
+                supported feet, meters, inches or centimeters
+                options. The calculator converts them internally
+                for its area calculations.
               </p>
             </div>
 
             <div>
               <h3 className="font-semibold text-slate-900">
-                Does this calculator include paver base?
+                Does the result include gravel and sand?
               </h3>
-
               <p className="mt-2 text-sm leading-6 text-slate-600">
-                No. It estimates paver quantity, waste and optional paver
-                material cost. Base gravel, bedding sand and other installation
-                materials require separate calculations.
+                No. The result estimates paving units and, when
+                a unit price is entered, paver material cost.
+                Base gravel, bedding sand and jointing materials
+                must be estimated separately.
+              </p>
+            </div>
+
+            <div>
+              <h3 className="font-semibold text-slate-900">
+                Should I order all the pavers at once?
+              </h3>
+              <p className="mt-2 text-sm leading-6 text-slate-600">
+                For many projects, ordering the planned quantity
+                together can help maintain color and batch
+                consistency. Confirm quantities, returns policy
+                and availability with the supplier before ordering.
               </p>
             </div>
           </div>
         </section>
       </article>
 
-      {/* Related Calculators */}
+      {/* Related tools */}
       <div className="mx-auto max-w-7xl px-6 pb-12">
         <RelatedCalculators />
       </div>
@@ -538,7 +616,6 @@ function ExampleRow({
   return (
     <div className="flex items-center justify-between gap-4 p-4">
       <span className="text-sm text-slate-600">{label}</span>
-
       <strong
         className={
           strong
