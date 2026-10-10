@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 
@@ -83,14 +85,17 @@ const socials = [
 
 export default function Footer() {
   return (
-    <footer className="border-t border-slate-800 bg-slate-800 [content-visibility:auto] [contain-intrinsic-size:auto_350px]">
+    <footer className="border-t border-slate-800 bg-slate-800">
       <div className="mx-auto max-w-7xl px-5 sm:px-6">
         {/* Logo and description */}
-        <div className="flex flex-col items-center py-8 text-center">
+        <div
+          className="flex flex-col items-center py-8 text-center"
+          style={{ contain: "layout" }}
+        >
           <Link
             href="/"
             aria-label="CornerSpan Home"
-            className="flex h-[61px] w-[220px] shrink-0 items-center justify-center"
+            className="flex h-[61px] w-[220px] shrink-0 items-center justify-center overflow-hidden"
           >
             <Image
               src="/logo-dark.webp"
@@ -98,7 +103,7 @@ export default function Footer() {
               width={220}
               height={61}
               sizes="220px"
-              className="h-[61px] w-[220px] object-contain"
+              className="block h-[61px] w-[220px] object-contain"
             />
           </Link>
 
