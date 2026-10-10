@@ -26,6 +26,7 @@ const PaintCalculator = dynamic(() => import("./PaintCalculator"), {
 });
 
 const pageUrl = "https://www.cornerspan.com/calculators/paint";
+const imageUrl = "https://www.cornerspan.com/paint-calculator.webp";
 
 export const metadata: Metadata = {
   title: "Paint Calculator | How Much Paint Do I Need?",
@@ -63,10 +64,10 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/images/paint-calculator.webp",
+        url: imageUrl,
         width: 1536,
         height: 1024,
-        alt: "Paint Calculator guide for estimating paint quantity and cost",
+        alt: "CornerSpan Paint Calculator guide",
       },
     ],
   },
@@ -75,7 +76,7 @@ export const metadata: Metadata = {
     title: "Paint Calculator | How Much Paint Do I Need?",
     description:
       "Calculate paint quantity, coverage, coats, and estimated painting costs.",
-    images: ["/images/paint-calculator.webp"],
+    images: [imageUrl],
   },
 };
 
@@ -91,7 +92,7 @@ export default function PaintCalculatorPage() {
         "Estimate the paint needed for walls and ceilings, including coverage, coats, doors, windows, and painting costs.",
       primaryImageOfPage: {
         "@type": "ImageObject",
-        url: "https://www.cornerspan.com/images/paint-calculator.webp",
+        url: imageUrl,
       },
       isPartOf: {
         "@type": "WebSite",
@@ -145,7 +146,7 @@ export default function PaintCalculatorPage() {
 
       <figure className="mt-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
         <Image
-          src="/images/paint-calculator.webp"
+          src="/paint-calculator.webp"
           alt="Paint Calculator guide showing room painting, wall dimensions, paint coverage, and cost estimation"
           width={1536}
           height={1024}
@@ -153,6 +154,7 @@ export default function PaintCalculatorPage() {
           sizes="(max-width: 768px) 100vw, 1200px"
           className="h-auto w-full"
         />
+
         <figcaption className="px-4 py-3 text-sm leading-6 text-slate-600">
           Learn how room dimensions, doors, windows, paint coverage, and
           coats affect your paint quantity and cost estimate.
