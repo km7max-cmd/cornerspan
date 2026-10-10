@@ -72,17 +72,36 @@ export default function PaintResults({
     );
   }
 
-  const isMetric =
-    result.quantityUnit === "liters";
+  const isMetric = result.quantityUnit === "liters";
 
-  const areaUnit = isMetric
-    ? "m²"
-    : "ft²";
+  const areaUnit = isMetric ? "m²" : "ft²";
+
+  const recommendedPurchase = isMetric
+    ? `${result.quantityToBuy} ${
+        result.quantityToBuy === 1 ? "liter" : "liters"
+      }`
+    : [
+        result.purchaseGallons > 0
+          ? `${result.purchaseGallons} ${
+              result.purchaseGallons === 1
+                ? "gallon"
+                : "gallons"
+            }`
+          : "",
+        result.purchaseQuarts > 0
+          ? `${result.purchaseQuarts} ${
+              result.purchaseQuarts === 1
+                ? "quart"
+                : "quarts"
+            }`
+          : "",
+      ]
+        .filter(Boolean)
+        .join(" + ") || "0 gallons";
 
   return (
     <section className="mt-5 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-
-      {/* Smart result header */}
+      {/* Result header */}
       <div className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-600 p-5 text-white">
         <div className="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-white/10 blur-2xl" />
 
@@ -108,14 +127,13 @@ export default function PaintResults({
       </div>
 
       <div className="p-5">
-
-        {/* Main quantity */}
+        {/* Paint quantity */}
         <div className="rounded-2xl bg-slate-50 p-4">
           <p className="text-sm font-medium text-slate-500">
             Paint needed
           </p>
 
-          <div className="mt-1 flex items-end justify-between gap-3">
+          <div className="mt-2 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
             <p className="text-3xl font-black tracking-tight text-slate-900">
               {result.paintQuantity.toFixed(2)}
 
@@ -124,32 +142,34 @@ export default function PaintResults({
               </span>
             </p>
 
-            <div className="text-right">
+            <div className="sm:text-right">
               <p className="text-xs text-slate-500">
                 Recommended purchase
               </p>
 
-              <p className="text-lg font-bold text-blue-600">
-                {result.quantityToBuy}{" "}
-                {result.quantityUnit}
+              <p className="mt-1 text-lg font-bold text-blue-600">
+                {recommendedPurchase}
               </p>
             </div>
           </div>
+
+          {!isMetric && (
+            <p className="mt-2 text-xs leading-5 text-slate-500">
+              1 US gallon = 4 US quarts. Purchase quantity is rounded
+              up to the nearest quart.
+            </p>
+          )}
         </div>
 
         {/* Cost cards */}
         <div className="mt-3 grid grid-cols-2 gap-3">
-
           <div className="rounded-xl border border-slate-200 p-3">
             <p className="text-xs text-slate-500">
               Paint cost
             </p>
 
             <p className="mt-1 text-lg font-bold text-slate-900">
-              {formatMoney(
-                result.paintCost,
-                currency
-              )}
+              {formatMoney(result.paintCost, currency)}
             </p>
           </div>
 
@@ -159,16 +179,12 @@ export default function PaintResults({
             </p>
 
             <p className="mt-1 text-lg font-bold text-slate-900">
-              {formatMoney(
-                result.laborCost,
-                currency
-              )}
+              {formatMoney(result.laborCost, currency)}
             </p>
           </div>
-
         </div>
 
-        {/* Total */}
+        {/* Total cost */}
         <div className="mt-3 flex items-center justify-between gap-3 rounded-xl border border-blue-100 bg-blue-50 px-4 py-3">
           <div>
             <p className="text-xs font-medium text-blue-700">
@@ -181,22 +197,17 @@ export default function PaintResults({
           </div>
 
           <p className="text-xl font-black text-blue-700 sm:text-2xl">
-            {formatMoney(
-              result.totalCost,
-              currency
-            )}
+            {formatMoney(result.totalCost, currency)}
           </p>
         </div>
 
-        {/* Calculation details */}
+        {/* Estimate details */}
         <div className="mt-5 border-t border-slate-100 pt-4">
-
           <p className="mb-3 text-sm font-bold text-slate-800">
             Estimate details
           </p>
 
           <div className="space-y-2.5 text-sm">
-
             <div className="flex justify-between gap-4">
               <span className="text-slate-500">
                 Painted area
@@ -232,23 +243,23 @@ export default function PaintResults({
                 {currencySymbol} {currency}
               </span>
             </div>
-
           </div>
         </div>
 
-        {/* Smart note */}
+        {/* Helpful note */}
         <div className="mt-4 rounded-xl bg-slate-50 px-4 py-3">
           <div className="flex gap-2">
             <span>💡</span>
 
             <p className="text-xs leading-5 text-slate-600">
-              The recommended purchase quantity is
-              rounded up so you have enough paint for
-              the complete job and minor touch-ups.
+              The purchase quantity is rounded up to help provide enough
+              paint for the job. Actual coverage varies by paint brand,
+              surface texture, and application method. Paint cost is an
+              estimate based on the price you entered per gallon or liter;
+              actual quart prices may differ.
             </p>
           </div>
         </div>
-
       </div>
     </section>
   );
