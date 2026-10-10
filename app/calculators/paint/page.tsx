@@ -1,3 +1,4 @@
+
 import type { Metadata } from "next";
 import dynamic from "next/dynamic";
 
@@ -12,10 +13,8 @@ const PaintCalculator = dynamic(() => import("./PaintCalculator"), {
       aria-label="Loading paint calculator"
     >
       <div className="h-10 w-2/3 rounded-xl bg-slate-200" />
-
       <div className="mt-4 h-4 w-full rounded bg-slate-200" />
       <div className="mt-2 h-4 w-5/6 rounded bg-slate-200" />
-
       <div className="mt-8 grid gap-4 sm:grid-cols-2">
         <div className="h-20 rounded-2xl bg-slate-100" />
         <div className="h-20 rounded-2xl bg-slate-100" />
@@ -26,20 +25,20 @@ const PaintCalculator = dynamic(() => import("./PaintCalculator"), {
   ),
 });
 
-const pageUrl =
-  "https://www.cornerspan.com/calculators/paint";
+const pageUrl = "https://www.cornerspan.com/calculators/paint";
 
 export const metadata: Metadata = {
   title: "Paint Calculator | How Much Paint Do I Need?",
   description:
-    "Free paint calculator to estimate how much paint you need for walls and ceilings. Calculate paint quantity, coats, doors, windows and estimated cost.",
+    "Use this free paint calculator to estimate gallons of paint for walls and ceilings. Calculate room dimensions, paint coverage, coats, doors, windows, and estimated painting costs.",
   keywords: [
     "paint calculator",
-    "paint estimator",
     "how much paint do I need",
+    "paint coverage calculator",
     "paint quantity calculator",
-    "paint calculator by room",
-    "house paint calculator",
+    "room paint calculator",
+    "wall paint calculator",
+    "paint cost calculator",
   ],
   alternates: {
     canonical: pageUrl,
@@ -58,7 +57,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Paint Calculator | How Much Paint Do I Need?",
     description:
-      "Free paint calculator to estimate paint quantity and cost for walls and ceilings.",
+      "Estimate the paint needed for walls and ceilings, including coverage, multiple coats, doors, windows, and painting costs.",
     url: pageUrl,
     siteName: "CornerSpan",
     type: "website",
@@ -75,7 +74,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Paint Calculator | How Much Paint Do I Need?",
     description:
-      "Calculate paint quantity, coats, doors, windows and estimated cost.",
+      "Calculate paint quantity, coverage, coats, and estimated painting costs.",
     images: ["/og-image.png"],
   },
 };
@@ -89,9 +88,10 @@ export default function PaintCalculatorPage() {
       url: pageUrl,
       name: "Paint Calculator",
       description:
-        "Free paint calculator to estimate paint quantity and cost for walls and ceilings.",
+        "Estimate the paint needed for walls and ceilings, including coverage, coats, doors, windows, and painting costs.",
       isPartOf: {
         "@type": "WebSite",
+        "@id": "https://www.cornerspan.com/#website",
         name: "CornerSpan",
         url: "https://www.cornerspan.com",
       },
@@ -102,11 +102,11 @@ export default function PaintCalculatorPage() {
       "@id": `${pageUrl}#calculator`,
       name: "Paint Calculator",
       description:
-        "Calculate how much paint you need for walls and ceilings, including coats, doors, windows, coverage and estimated cost.",
+        "A free online tool to estimate paint quantity and cost for walls and ceilings using room dimensions, coverage, coats, doors, and windows.",
       url: pageUrl,
-      applicationCategory: "Calculator",
-      applicationSubCategory: "Paint Calculator",
+      applicationCategory: "UtilitiesApplication",
       operatingSystem: "Web",
+      isAccessibleForFree: true,
       offers: {
         "@type": "Offer",
         price: "0",
@@ -120,7 +120,7 @@ export default function PaintCalculatorPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(structuredData),
+          __html: JSON.stringify(structuredData).replace(/</g, "\\u003c"),
         }}
       />
 
@@ -132,20 +132,17 @@ export default function PaintCalculatorPage() {
         </h1>
 
         <p className="mt-3 max-w-3xl text-base leading-7 text-slate-600 sm:text-lg">
-          Calculate how much paint you need for walls and ceilings.
-          Estimate paint quantity, multiple coats, doors, windows and
-          total paint and labor cost using your preferred units and
-          local prices.
+          Find out how much paint you need for walls and ceilings.
+          Estimate paint quantity, coverage, multiple coats, doors,
+          windows, and paint and labor costs using your room dimensions
+          and local prices.
         </p>
       </section>
 
-      {/* Calculator */}
       <PaintCalculator />
 
-      {/* Related Calculators */}
       <RelatedCalculators />
 
-      {/* Paint Guide + Formula + FAQ */}
       <PaintGuide />
     </main>
   );
