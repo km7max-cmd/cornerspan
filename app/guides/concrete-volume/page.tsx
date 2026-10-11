@@ -1,4 +1,6 @@
+import Image from "next/image";
 import Link from "next/link";
+
 export const metadata = {
   title:
     "Concrete Volume Calculator Guide: Slabs, Cubic Yards & Examples | CornerSpan",
@@ -11,8 +13,16 @@ export const metadata = {
     title: "Concrete Volume Calculator Guide | CornerSpan",
     description:
       "Calculate concrete volume using practical formulas, unit conversions and construction examples.",
-    url: "https://cornerspan.com/guides/concrete-volume",
+    url: "https://www.cornerspan.com/guides/concrete-volume",
     type: "article",
+    images: [
+      {
+        url: "https://www.cornerspan.com/images/concrete-volume/concrete-volume-formula-small.webp",
+        width: 1000,
+        height: 563,
+        alt: "Concrete volume formula showing length, width and depth",
+      },
+    ],
   },
 };
 
@@ -23,14 +33,22 @@ const articleSchema = {
     "How to Calculate Concrete Volume for Slabs, Beams and Columns",
   description:
     "A practical guide to concrete volume formulas, cubic yard conversions and worked construction examples.",
+  image: [
+    "https://www.cornerspan.com/images/concrete-volume/concrete-volume-formula-small.webp",
+  ],
   mainEntityOfPage: {
     "@type": "WebPage",
-    "@id": "https://cornerspan.com/guides/concrete-volume",
+    "@id": "https://www.cornerspan.com/guides/concrete-volume",
+  },
+  author: {
+    "@type": "Organization",
+    name: "CornerSpan",
+    url: "https://www.cornerspan.com/",
   },
   publisher: {
     "@type": "Organization",
     name: "CornerSpan",
-    url: "https://cornerspan.com",
+    url: "https://www.cornerspan.com/",
   },
 };
 
@@ -42,19 +60,19 @@ const breadcrumbSchema = {
       "@type": "ListItem",
       position: 1,
       name: "Home",
-      item: "https://cornerspan.com",
+      item: "https://www.cornerspan.com/",
     },
     {
       "@type": "ListItem",
       position: 2,
       name: "Guides",
-      item: "https://cornerspan.com/guides",
+      item: "https://www.cornerspan.com/guides",
     },
     {
       "@type": "ListItem",
       position: 3,
       name: "Concrete Volume Guide",
-      item: "https://cornerspan.com/guides/concrete-volume",
+      item: "https://www.cornerspan.com/guides/concrete-volume",
     },
   ],
 };
@@ -100,9 +118,62 @@ const faqs = [
   },
 ];
 
+function GuideImage({
+  src,
+  alt,
+  caption,
+  priority = false,
+}: {
+  src: string;
+  alt: string;
+  caption: string;
+  priority?: boolean;
+}) {
+  return (
+    <figure className="guide-image-reveal my-6 overflow-hidden rounded-xl border border-slate-200 bg-white">
+      <Image
+        src={src}
+        alt={alt}
+        width={1000}
+        height={667}
+        sizes="(max-width: 768px) 100vw, 800px"
+        priority={priority}
+        loading={priority ? "eager" : "lazy"}
+        className="h-auto w-full object-contain"
+      />
+      <figcaption className="border-t border-slate-100 px-4 py-3 text-sm leading-6 text-slate-600">
+        {caption}
+      </figcaption>
+    </figure>
+  );
+}
+
 export default function ConcreteVolumeGuide() {
   return (
     <main className="min-h-screen bg-white pt-[80px] text-slate-900">
+      <style>{`
+        @keyframes guideImageReveal {
+          from {
+            opacity: 0;
+            transform: translateY(12px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        .guide-image-reveal {
+          animation: guideImageReveal 0.65s ease-out both;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .guide-image-reveal {
+            animation: none;
+          }
+        }
+      `}</style>
+
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -178,7 +249,7 @@ export default function ConcreteVolumeGuide() {
             Concrete volume is the three-dimensional space that concrete
             needs to fill. It is commonly measured in cubic yards in the
             United States and cubic meters in metric calculations. The
-            required quantity depends on the structure's dimensions and shape.
+            required quantity depends on the structure&apos;s dimensions and shape.
           </p>
           <p className="mt-4 leading-8 text-slate-600">
             Accurate measurements help estimate material requirements before
@@ -208,6 +279,13 @@ export default function ConcreteVolumeGuide() {
               Feet × feet × feet = cubic feet
             </p>
           </div>
+
+          <GuideImage
+            src="/images/concrete-volume/concrete-volume-formula-small.webp"
+            alt="Concrete volume formula diagram showing the length, width and depth of a rectangular slab"
+            caption="The rectangular concrete volume formula: multiply length by width by depth. Use the same unit for all three measurements."
+            priority
+          />
 
           <p className="mt-5 leading-8 text-slate-600">
             If dimensions are measured in feet, the result is cubic feet.
@@ -271,6 +349,12 @@ export default function ConcreteVolumeGuide() {
             Suppose a rectangular slab is 10 feet long, 12 feet wide and
             4 inches thick. First convert the thickness from inches to feet.
           </p>
+
+          <GuideImage
+            src="/images/concrete-volume/concrete-slab-calculation-example.webp"
+            alt="Concrete slab calculation example showing a 10-foot by 12-foot slab with a 4-inch thickness"
+            caption="Example slab dimensions: 10 ft long × 12 ft wide × 4 inches thick."
+          />
 
           <div className="mt-6 overflow-x-auto rounded-xl border border-slate-200">
             <table className="w-full text-left text-sm">
@@ -337,6 +421,13 @@ export default function ConcreteVolumeGuide() {
           <p className="mt-3 leading-8 text-slate-600">
             A beam is 12 feet long, 1 foot wide and 1.5 feet deep.
           </p>
+
+          <GuideImage
+            src="/images/concrete-volume/concrete-beam-volume-example.webp"
+            alt="Rectangular concrete beam diagram showing length, width and depth measurements"
+            caption="For a rectangular beam, multiply length × width × depth."
+          />
+
           <div className="mt-4 rounded-xl border border-slate-200 p-5">
             <p className="font-semibold">Volume = length × width × depth</p>
             <p className="mt-2 text-slate-700">12 × 1 × 1.5 = 18 cubic feet</p>
@@ -347,6 +438,13 @@ export default function ConcreteVolumeGuide() {
           <p className="mt-3 leading-8 text-slate-600">
             A column is 1.5 feet wide, 1.5 feet deep and 10 feet tall.
           </p>
+
+          <GuideImage
+            src="/images/concrete-volume/concrete-column-volume-example.webp"
+            alt="Rectangular concrete column showing width, depth and height"
+            caption="For a rectangular column, multiply width × depth × height."
+          />
+
           <div className="mt-4 rounded-xl border border-slate-200 p-5">
             <p className="font-semibold">Volume = width × depth × height</p>
             <p className="mt-2 text-slate-700">
@@ -360,9 +458,17 @@ export default function ConcreteVolumeGuide() {
             For a cylindrical column, multiply pi by the radius squared and
             then by the height. The radius is half the diameter.
           </p>
+
+          <GuideImage
+            src="/images/concrete-volume/concrete-circular-column-example.webp"
+            alt="Circular concrete column diagram illustrating radius and height for the cylinder volume formula"
+            caption="For a circular column, use π × radius² × height. The radius is half the diameter."
+          />
+
           <div className="mt-4 rounded-xl bg-slate-50 p-5">
             <p className="font-semibold">Volume = π × radius² × height</p>
           </div>
+
           <p className="mt-4 leading-8 text-slate-600">
             When adding volumes for connected structural sections, avoid
             counting overlapping regions twice.
@@ -378,6 +484,13 @@ export default function ConcreteVolumeGuide() {
             amount ordered may vary due to uneven subgrade, formwork
             variation, spillage and placement conditions.
           </p>
+
+          <GuideImage
+            src="/images/concrete-volume/concrete-ordering-wastage-guide.webp"
+            alt="Concrete ordering and wastage illustration showing how an additional allowance changes the estimated quantity"
+            caption="Calculate the geometric volume first, then assess any additional allowance based on actual site conditions."
+          />
+
           <p className="mt-4 leading-8 text-slate-600">
             For illustration, adding 10% to the 40-cubic-foot slab example
             gives 44 cubic feet, or about 1.63 cubic yards. This demonstrates
@@ -400,6 +513,13 @@ export default function ConcreteVolumeGuide() {
           <h2 className="text-2xl font-bold md:text-3xl">
             Common Concrete Volume Calculation Mistakes
           </h2>
+
+          <GuideImage
+            src="/images/concrete-volume/concrete-calculation-common-mistakes.webp"
+            alt="Common concrete volume calculation mistakes involving units, dimensions, depth and ordering allowance"
+            caption="Check your units, dimensions, shape formula and ordering allowance before finalizing an estimate."
+          />
+
           <div className="mt-6 space-y-5">
             <div>
               <h3 className="font-bold">Mixing feet and inches</h3>
