@@ -3,10 +3,60 @@ export const metadata = {
   title:
     "Concrete Volume Calculator Guide: Slabs, Cubic Yards & Examples | CornerSpan",
   description:
-    "Learn how to calculate concrete volume for slabs, beams and columns in cubic feet, cubic yards and cubic meters, with worked examples and conversion formulas.",
+    "Learn how to calculate concrete volume for slabs, beams and columns. Includes cubic yard conversions, formulas, worked examples and ordering tips.",
   alternates: {
     canonical: "/guides/concrete-volume",
   },
+  openGraph: {
+    title: "Concrete Volume Calculator Guide | CornerSpan",
+    description:
+      "Calculate concrete volume using practical formulas, unit conversions and construction examples.",
+    url: "https://cornerspan.com/guides/concrete-volume",
+    type: "article",
+  },
+};
+
+const articleSchema = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  headline:
+    "How to Calculate Concrete Volume for Slabs, Beams and Columns",
+  description:
+    "A practical guide to concrete volume formulas, cubic yard conversions and worked construction examples.",
+  mainEntityOfPage: {
+    "@type": "WebPage",
+    "@id": "https://cornerspan.com/guides/concrete-volume",
+  },
+  publisher: {
+    "@type": "Organization",
+    name: "CornerSpan",
+    url: "https://cornerspan.com",
+  },
+};
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    {
+      "@type": "ListItem",
+      position: 1,
+      name: "Home",
+      item: "https://cornerspan.com",
+    },
+    {
+      "@type": "ListItem",
+      position: 2,
+      name: "Guides",
+      item: "https://cornerspan.com/guides",
+    },
+    {
+      "@type": "ListItem",
+      position: 3,
+      name: "Concrete Volume Guide",
+      item: "https://cornerspan.com/guides/concrete-volume",
+    },
+  ],
 };
 
 const conversions = [
@@ -16,9 +66,60 @@ const conversions = [
   ["1 foot", "12 inches"],
 ];
 
+const faqs = [
+  {
+    question:
+      "How many cubic yards of concrete do I need for a 10 × 12 slab?",
+    answer:
+      "For a 10 × 12 foot slab that is 4 inches thick, the geometric volume is 40 cubic feet, or approximately 1.48 cubic yards before any additional ordering allowance.",
+  },
+  {
+    question: "How do I calculate concrete in cubic yards?",
+    answer:
+      "Calculate the volume in cubic feet by multiplying length, width and thickness in feet. Divide the result by 27 to convert cubic feet to cubic yards.",
+  },
+  {
+    question: "How thick should a concrete slab be?",
+    answer:
+      "Required slab thickness depends on its intended use, loads, ground conditions and applicable project requirements. Follow the project design rather than selecting thickness from a volume calculator alone.",
+  },
+  {
+    question: "Can I calculate concrete volume in cubic meters?",
+    answer:
+      "Yes. Convert length, width and depth to meters, then multiply them. The result is in cubic meters. One cubic meter is approximately 35.3147 cubic feet.",
+  },
+  {
+    question: "Should I order extra concrete?",
+    answer:
+      "The required allowance depends on measurement accuracy, ground conditions, formwork and placement losses. Check actual site dimensions and confirm the order quantity with your supplier.",
+  },
+  {
+    question: "How do I calculate concrete for a circular column?",
+    answer:
+      "Use the cylinder formula: volume equals pi multiplied by the radius squared and the height. Keep the radius and height in the same unit.",
+  },
+];
+
 export default function ConcreteVolumeGuide() {
   return (
     <main className="min-h-screen bg-white pt-[80px] text-slate-900">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(articleSchema).replace(/</g, "\\u003c"),
+        }}
+      />
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbSchema).replace(
+            /</g,
+            "\\u003c"
+          ),
+        }}
+      />
+
       <section className="border-b border-slate-200 bg-slate-50">
         <div className="mx-auto max-w-4xl px-6 py-12 md:py-16">
           <Link
@@ -37,15 +138,14 @@ export default function ConcreteVolumeGuide() {
           </h1>
 
           <p className="mt-5 max-w-3xl text-base leading-8 text-slate-600 md:text-lg">
-            Estimate the concrete required for a construction project using
-            simple volume formulas. This guide explains dimensions, US
-            customary units, metric conversions, worked examples and ordering
-            allowances.
+            Estimate concrete requirements using simple volume formulas.
+            Learn about US customary units, metric conversions, worked
+            examples and practical ordering considerations.
           </p>
 
           <Link
             href="/calculators/concrete"
-            className="mt-7 inline-flex items-center rounded-lg bg-blue-600 px-5 py-3 text-sm font-bold text-white hover:bg-blue-700"
+            className="mt-7 inline-flex items-center rounded-lg bg-blue-600 px-5 py-3 text-sm font-bold text-white transition hover:bg-blue-700"
           >
             Open Concrete Calculator <span className="ml-2">→</span>
           </Link>
@@ -59,13 +159,14 @@ export default function ConcreteVolumeGuide() {
         >
           <h2 className="text-lg font-bold">In This Guide</h2>
           <ul className="mt-4 grid gap-3 text-sm text-blue-700 sm:grid-cols-2">
-            <li><a className="hover:underline" href="#formula">Volume formula</a></li>
-            <li><a className="hover:underline" href="#units">Units and conversions</a></li>
-            <li><a className="hover:underline" href="#slab-example">Slab example</a></li>
-            <li><a className="hover:underline" href="#other-shapes">Beams and columns</a></li>
-            <li><a className="hover:underline" href="#ordering">Ordering concrete</a></li>
-            <li><a className="hover:underline" href="#mistakes">Common mistakes</a></li>
-            <li><a className="hover:underline" href="#faq">FAQs</a></li>
+            <li><a href="#formula" className="hover:underline">Volume formula</a></li>
+            <li><a href="#units" className="hover:underline">Units and conversions</a></li>
+            <li><a href="#slab-example" className="hover:underline">Slab calculation example</a></li>
+            <li><a href="#shapes" className="hover:underline">Beams and columns</a></li>
+            <li><a href="#ordering" className="hover:underline">Ordering concrete</a></li>
+            <li><a href="#mistakes" className="hover:underline">Common mistakes</a></li>
+            <li><a href="#references" className="hover:underline">Technical references</a></li>
+            <li><a href="#faq" className="hover:underline">FAQs</a></li>
           </ul>
         </nav>
 
@@ -74,15 +175,15 @@ export default function ConcreteVolumeGuide() {
             What Is Concrete Volume?
           </h2>
           <p className="mt-4 leading-8 text-slate-600">
-            Concrete volume is the three-dimensional space that concrete must
-            fill. It is commonly measured in cubic feet or cubic yards in the
-            United States and cubic meters in metric calculations. Accurate
-            dimensions help estimate the required concrete before ordering.
+            Concrete volume is the three-dimensional space that concrete
+            needs to fill. It is commonly measured in cubic yards in the
+            United States and cubic meters in metric calculations. The
+            required quantity depends on the structure's dimensions and shape.
           </p>
           <p className="mt-4 leading-8 text-slate-600">
-            The required volume depends on the shape, length, width and depth
-            of the structure. Irregular ground, uneven forms, openings and
-            changes in thickness can affect the final quantity.
+            Accurate measurements help estimate material requirements before
+            ordering ready-mix concrete. Uneven subgrade, varying thickness,
+            openings and formwork dimensions can affect the final quantity.
           </p>
         </section>
 
@@ -91,26 +192,27 @@ export default function ConcreteVolumeGuide() {
             Concrete Volume Formula
           </h2>
           <p className="mt-4 leading-8 text-slate-600">
-            For a rectangular slab, multiply its length by its width and
-            thickness. Convert every measurement to the same unit before
-            multiplying.
+            For a rectangular slab or other rectangular structure, multiply
+            length by width by thickness or depth. Convert all dimensions
+            to the same unit before multiplying.
           </p>
+
           <div className="mt-6 rounded-xl border border-blue-100 bg-blue-50 p-6 text-center">
             <p className="text-xs font-bold uppercase tracking-wider text-slate-500">
-              Rectangular Volume
+              Basic Formula
             </p>
             <p className="mt-3 text-2xl font-extrabold text-blue-700 md:text-3xl">
-              Length × Width × Thickness
+              Volume = Length × Width × Depth
             </p>
-            <p className="mt-3 text-sm leading-6 text-slate-600">
+            <p className="mt-3 text-sm text-slate-600">
               Feet × feet × feet = cubic feet
             </p>
           </div>
+
           <p className="mt-5 leading-8 text-slate-600">
-            For a rectangular structure, volume is calculated from its
-            external dimensions. If the dimensions are measured in feet, the
-            result is in cubic feet. Divide cubic feet by 27 to convert the
-            result to cubic yards.
+            If dimensions are measured in feet, the result is cubic feet.
+            Divide cubic feet by 27 to obtain cubic yards. If dimensions are
+            measured in meters, the result is cubic meters.
           </p>
         </section>
 
@@ -119,11 +221,12 @@ export default function ConcreteVolumeGuide() {
             Concrete Volume Units and Conversions
           </h2>
           <p className="mt-4 leading-8 text-slate-600">
-            Concrete suppliers in the United States commonly quote ready-mix
-            concrete in cubic yards. Some calculators and technical plans
-            use cubic feet or cubic meters. Converting correctly prevents
-            ordering errors.
+            Concrete suppliers in the United States commonly sell ready-mix
+            concrete by the cubic yard. Some plans and calculators use cubic
+            feet or cubic meters. Correct conversions are essential for
+            reliable estimates.
           </p>
+
           <div className="mt-6 overflow-x-auto rounded-xl border border-slate-200">
             <table className="w-full text-left text-sm">
               <thead className="bg-slate-50">
@@ -142,18 +245,20 @@ export default function ConcreteVolumeGuide() {
               </tbody>
             </table>
           </div>
+
           <h3 className="mt-7 text-xl font-bold">
-            How to Convert Cubic Feet to Cubic Yards
+            Convert Cubic Feet to Cubic Yards
           </h3>
           <p className="mt-3 leading-8 text-slate-600">
-            Divide the volume in cubic feet by 27. For example, 54 cubic feet
-            ÷ 27 = 2 cubic yards. To convert cubic yards to cubic feet,
-            multiply the cubic yards by 27.
+            Divide cubic feet by 27. For example, 54 cubic feet divided by
+            27 equals 2 cubic yards. To convert cubic yards to cubic feet,
+            multiply by 27.
           </p>
+
           <div className="mt-5 rounded-xl bg-slate-50 p-5">
             <p className="font-semibold">Cubic yards = cubic feet ÷ 27</p>
             <p className="mt-2 text-slate-600">
-              Cubic meters = cubic feet ÷ 35.3147
+              Cubic feet = cubic meters × 35.3147
             </p>
           </div>
         </section>
@@ -163,10 +268,10 @@ export default function ConcreteVolumeGuide() {
             Example: Concrete for a 10 × 12 Foot Slab
           </h2>
           <p className="mt-4 leading-8 text-slate-600">
-            Suppose you are preparing a rectangular slab that is 10 feet long,
-            12 feet wide and 4 inches thick. First, convert the thickness
-            from inches to feet.
+            Suppose a rectangular slab is 10 feet long, 12 feet wide and
+            4 inches thick. First convert the thickness from inches to feet.
           </p>
+
           <div className="mt-6 overflow-x-auto rounded-xl border border-slate-200">
             <table className="w-full text-left text-sm">
               <thead className="bg-slate-50">
@@ -186,11 +291,12 @@ export default function ConcreteVolumeGuide() {
                 </tr>
                 <tr className="border-t border-slate-200">
                   <td className="px-5 py-4">Thickness</td>
-                  <td className="px-5 py-4 font-semibold">4 in ÷ 12 = 0.3333 ft</td>
+                  <td className="px-5 py-4 font-semibold">4 ÷ 12 = 0.3333 ft</td>
                 </tr>
               </tbody>
             </table>
           </div>
+
           <div className="mt-5 rounded-xl bg-slate-50 p-6">
             <p className="font-semibold">Step 1: Calculate cubic feet</p>
             <p className="mt-2 text-slate-700">
@@ -202,11 +308,13 @@ export default function ConcreteVolumeGuide() {
               Estimated volume: 1.48 yd³
             </p>
           </div>
+
           <p className="mt-5 leading-8 text-slate-600">
-            This is the geometric volume, not a guaranteed delivery quantity.
-            Check the actual form dimensions and discuss a suitable ordering
-            allowance with your concrete supplier before placing an order.
+            This is the geometric volume before any additional ordering
+            allowance. Verify the actual form dimensions and site conditions
+            before placing an order.
           </p>
+
           <Link
             href="/calculators/concrete"
             className="mt-5 inline-flex font-semibold text-blue-700 hover:underline"
@@ -215,20 +323,19 @@ export default function ConcreteVolumeGuide() {
           </Link>
         </section>
 
-        <section id="other-shapes" className="mt-12 border-t border-slate-200 pt-10">
+        <section id="shapes" className="mt-12 border-t border-slate-200 pt-10">
           <h2 className="text-2xl font-bold md:text-3xl">
             Concrete Volume for Beams and Columns
           </h2>
           <p className="mt-4 leading-8 text-slate-600">
-            The same volume principle applies to rectangular beams and
-            columns. Use the appropriate dimensions and keep all measurements
-            in consistent units.
+            Rectangular beams and columns use the same basic volume
+            principle, but their dimensions represent different sides of
+            the structure.
           </p>
 
           <h3 className="mt-7 text-xl font-bold">Rectangular Beam Example</h3>
           <p className="mt-3 leading-8 text-slate-600">
-            Consider a beam that is 12 feet long, 1 foot wide and 1.5 feet
-            deep.
+            A beam is 12 feet long, 1 foot wide and 1.5 feet deep.
           </p>
           <div className="mt-4 rounded-xl border border-slate-200 p-5">
             <p className="font-semibold">Volume = length × width × depth</p>
@@ -238,28 +345,27 @@ export default function ConcreteVolumeGuide() {
 
           <h3 className="mt-7 text-xl font-bold">Rectangular Column Example</h3>
           <p className="mt-3 leading-8 text-slate-600">
-            Suppose a column is 1.5 feet wide, 1.5 feet deep and 10 feet
-            tall.
+            A column is 1.5 feet wide, 1.5 feet deep and 10 feet tall.
           </p>
           <div className="mt-4 rounded-xl border border-slate-200 p-5">
             <p className="font-semibold">Volume = width × depth × height</p>
-            <p className="mt-2 text-slate-700">1.5 × 1.5 × 10 = 22.5 cubic feet</p>
+            <p className="mt-2 text-slate-700">
+              1.5 × 1.5 × 10 = 22.5 cubic feet
+            </p>
             <p className="mt-2 text-slate-700">22.5 ÷ 27 = 0.83 cubic yards</p>
           </div>
 
           <h3 className="mt-7 text-xl font-bold">Circular Column Formula</h3>
           <p className="mt-3 leading-8 text-slate-600">
             For a cylindrical column, multiply pi by the radius squared and
-            then by the height. The radius is half the diameter. Use the same
-            unit for radius and height.
+            then by the height. The radius is half the diameter.
           </p>
           <div className="mt-4 rounded-xl bg-slate-50 p-5">
             <p className="font-semibold">Volume = π × radius² × height</p>
           </div>
           <p className="mt-4 leading-8 text-slate-600">
-            For connected slabs, beams or columns, take care not to count
-            overlapping concrete regions twice when combining individual
-            volumes.
+            When adding volumes for connected structural sections, avoid
+            counting overlapping regions twice.
           </p>
         </section>
 
@@ -269,22 +375,23 @@ export default function ConcreteVolumeGuide() {
           </h2>
           <p className="mt-4 leading-8 text-slate-600">
             The calculated volume describes the space to be filled. The
-            amount ordered may differ because of uneven subgrade, formwork
-            variation, spillage, handling losses and placement conditions.
+            amount ordered may vary due to uneven subgrade, formwork
+            variation, spillage and placement conditions.
           </p>
           <p className="mt-4 leading-8 text-slate-600">
-            For illustration, adding a 10% allowance to the 40-cubic-foot
-            slab example gives 44 cubic feet, or about 1.63 cubic yards.
-            This is only an example of the arithmetic, not a universal
-            recommendation that every project needs 10% extra.
+            For illustration, adding 10% to the 40-cubic-foot slab example
+            gives 44 cubic feet, or about 1.63 cubic yards. This demonstrates
+            the calculation only; it is not a universal recommendation to
+            add 10% to every order.
           </p>
+
           <div className="mt-5 rounded-xl border border-amber-200 bg-amber-50 p-5">
-            <p className="font-bold">Before ordering</p>
+            <p className="font-bold">Before ordering concrete</p>
             <ul className="mt-3 list-disc space-y-2 pl-5 leading-7 text-slate-700">
               <li>Measure the actual length, width and thickness.</li>
               <li>Check the base and formwork for uneven areas.</li>
-              <li>Confirm the order quantity and delivery increments with the supplier.</li>
-              <li>Follow the project's specifications and the responsible professional's instructions.</li>
+              <li>Confirm supplier ordering increments and delivery requirements.</li>
+              <li>Follow project specifications and professional instructions.</li>
             </ul>
           </div>
         </section>
@@ -297,20 +404,20 @@ export default function ConcreteVolumeGuide() {
             <div>
               <h3 className="font-bold">Mixing feet and inches</h3>
               <p className="mt-2 leading-7 text-slate-600">
-                Convert thickness in inches to feet before multiplying
-                dimensions measured in feet. For example, 4 inches is
-                4 ÷ 12 = 0.3333 feet.
+                Convert inches to feet before multiplying dimensions
+                measured in feet. For example, 4 inches equals 4 ÷ 12 feet.
               </p>
             </div>
             <div>
               <h3 className="font-bold">Confusing square and cubic units</h3>
               <p className="mt-2 leading-7 text-slate-600">
-                Square feet measure area. Cubic feet and cubic yards measure
-                volume. A concrete estimate needs thickness as well as area.
+                Square feet measure area, while cubic feet and cubic yards
+                measure volume. Concrete volume calculations also require
+                thickness or depth.
               </p>
             </div>
             <div>
-              <h3 className="font-bold">Using nominal instead of actual dimensions</h3>
+              <h3 className="font-bold">Using incorrect dimensions</h3>
               <p className="mt-2 leading-7 text-slate-600">
                 Use the dimensions specified for the actual pour, including
                 the planned thickness and formwork measurements.
@@ -319,9 +426,8 @@ export default function ConcreteVolumeGuide() {
             <div>
               <h3 className="font-bold">Treating the estimate as an exact order</h3>
               <p className="mt-2 leading-7 text-slate-600">
-                A volume calculation is an estimate based on dimensions.
-                Confirm site conditions and the delivery quantity before
-                ordering concrete.
+                The calculation is an estimate based on dimensions. Confirm
+                site conditions and delivery quantities with your supplier.
               </p>
             </div>
           </div>
@@ -343,71 +449,60 @@ export default function ConcreteVolumeGuide() {
           </Link>
         </section>
 
+        <section id="references" className="mt-12 border-t border-slate-200 pt-10">
+          <h2 className="text-2xl font-bold md:text-3xl">
+            Further Technical Information
+          </h2>
+          <p className="mt-4 leading-8 text-slate-600">
+            For additional concrete construction information, consult
+            established technical organizations and verify that the guidance
+            applies to your project.
+          </p>
+          <ul className="mt-4 list-disc space-y-3 pl-5 leading-7">
+            <li>
+              <a
+                href="https://www.concrete.org/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-semibold text-blue-700 hover:underline"
+              >
+                American Concrete Institute (ACI)
+              </a>
+              <span className="text-slate-600">
+                {" "}— technical information and concrete construction resources.
+              </span>
+            </li>
+            <li>
+              <a
+                href="https://www.nist.gov/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-semibold text-blue-700 hover:underline"
+              >
+                National Institute of Standards and Technology (NIST)
+              </a>
+              <span className="text-slate-600">
+                {" "}— measurement and standards information.
+              </span>
+            </li>
+          </ul>
+          <p className="mt-4 text-sm leading-6 text-slate-500">
+            These links provide general reference resources. Consult the
+            relevant technical documents for project-specific requirements.
+          </p>
+        </section>
+
         <section id="faq" className="mt-12 border-t border-slate-200 pt-10">
           <h2 className="text-2xl font-bold md:text-3xl">
             Concrete Volume FAQs
           </h2>
           <div className="mt-6 divide-y divide-slate-200">
-            <div className="py-5">
-              <h3 className="text-lg font-bold">
-                How many cubic yards of concrete do I need for a 10 × 12 slab?
-              </h3>
-              <p className="mt-3 leading-7 text-slate-600">
-                At 4 inches thick, a 10 × 12 foot slab has a geometric volume
-                of 40 cubic feet, or about 1.48 cubic yards, before any
-                additional ordering allowance.
-              </p>
-            </div>
-            <div className="py-5">
-              <h3 className="text-lg font-bold">
-                How do I calculate concrete in cubic yards?
-              </h3>
-              <p className="mt-3 leading-7 text-slate-600">
-                Calculate the volume in cubic feet, then divide by 27 to
-                convert it to cubic yards.
-              </p>
-            </div>
-            <div className="py-5">
-              <h3 className="text-lg font-bold">
-                How thick should a concrete slab be?
-              </h3>
-              <p className="mt-3 leading-7 text-slate-600">
-                The required thickness depends on the slab's purpose, loading,
-                ground conditions and local requirements. Follow the project
-                design rather than choosing thickness from a volume
-                calculator alone.
-              </p>
-            </div>
-            <div className="py-5">
-              <h3 className="text-lg font-bold">
-                Does concrete volume include reinforcement?
-              </h3>
-              <p className="mt-3 leading-7 text-slate-600">
-                The basic geometric estimate uses the dimensions of the
-                concrete section. Reinforcement design and placement must
-                follow the project's specifications.
-              </p>
-            </div>
-            <div className="py-5">
-              <h3 className="text-lg font-bold">
-                Is one cubic yard always enough for a small slab?
-              </h3>
-              <p className="mt-3 leading-7 text-slate-600">
-                No. The required quantity depends on the slab's length, width
-                and thickness. Calculate the volume first and confirm the
-                order quantity with your supplier.
-              </p>
-            </div>
-            <div className="py-5">
-              <h3 className="text-lg font-bold">
-                Can I calculate concrete volume in cubic meters?
-              </h3>
-              <p className="mt-3 leading-7 text-slate-600">
-                Yes. Convert all dimensions to meters before multiplying.
-                The resulting volume is in cubic meters. One cubic meter is
-                approximately 35.3147 cubic feet.
-              </p>
-            </div>
+            {faqs.map((faq) => (
+              <div key={faq.question} className="py-5">
+                <h3 className="text-lg font-bold">{faq.question}</h3>
+                <p className="mt-3 leading-7 text-slate-600">{faq.answer}</p>
+              </div>
+            ))}
           </div>
         </section>
 
@@ -435,6 +530,7 @@ export default function ConcreteVolumeGuide() {
                 Read guide →
               </span>
             </Link>
+
             <Link
               href="/guides/steel-weight"
               className="rounded-xl border border-slate-200 p-5 transition hover:border-blue-300 hover:bg-blue-50"
