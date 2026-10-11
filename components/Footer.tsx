@@ -89,7 +89,7 @@ export default function Footer() {
       <div className="mx-auto max-w-7xl px-5 sm:px-6">
         {/* Logo and description */}
         <div
-          className="flex flex-col items-center py-8 text-center"
+          className="flex min-h-[300px] flex-col items-center py-8 text-center"
           style={{ contain: "layout" }}
         >
           <Link
