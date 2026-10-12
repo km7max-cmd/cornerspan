@@ -2,6 +2,18 @@
 const nextConfig = {
   async redirects() {
     return [
+      // Malformed URLs found in Google Search Console
+      {
+        source: "/\\$",
+        destination: "/",
+        permanent: true,
+      },
+      {
+        source: "/&",
+        destination: "/",
+        permanent: true,
+      },
+
       // Square Footage
       {
         source: "/calculators/square-footage-calculator",
@@ -17,16 +29,16 @@ const nextConfig = {
       },
 
       // Concrete
-{
-  source: "/calculators/concrete-calculator",
-  destination: "/calculators/concrete",
-  permanent: true,
-},
-{
-  source: "/calculators/concrete-slab-calculator",
-  destination: "/calculators/concrete",
-  permanent: true,
-},
+      {
+        source: "/calculators/concrete-calculator",
+        destination: "/calculators/concrete",
+        permanent: true,
+      },
+      {
+        source: "/calculators/concrete-slab-calculator",
+        destination: "/calculators/concrete",
+        permanent: true,
+      },
 
       // Paint
       {
