@@ -22,7 +22,8 @@ const guides = [
     title: "Brick Quantity Guide",
     description:
       "Explore how wall dimensions, brick size and mortar joints affect a brick estimate. Account for openings such as doors and windows where applicable.",
-    href: "/calculators/brick",
+    href: "/guides/brick-calculation",
+    
     category: "WALL MATERIALS",
     icon: "▦",
   },
