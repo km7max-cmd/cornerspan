@@ -1,3 +1,4 @@
+
 import type { Metadata } from "next";
 
 import Hero from "../components/Hero";
@@ -9,11 +10,13 @@ import CalculatorGuides from "../components/CalculatorGuides";
 import PopularCalculators from "../components/PopularCalculators";
 import { homepageFaq } from "../data/homepage-faq";
 
-export const metadata: Metadata = {
-  title: "Free Construction Calculators Online",
+const homepageDescription =
+  "Estimate concrete, brick, paint, tile, roofing, paver, asphalt and gravel materials with free construction calculators from CornerSpan.";
 
-  description:
-    "Free online construction calculators for concrete, brick, steel, paint, tile, roofing, pavers, asphalt, gravel and more. Get fast material estimates for your project.",
+export const metadata: Metadata = {
+  title: "Free Construction Calculators Online | CornerSpan",
+
+  description: homepageDescription,
 
   alternates: {
     canonical: "https://www.cornerspan.com/",
@@ -21,18 +24,11 @@ export const metadata: Metadata = {
 
   openGraph: {
     title: "Free Construction Calculators Online | CornerSpan",
-
-    description:
-      "Free online construction calculators for concrete, brick, steel, paint, tile, roofing, pavers, asphalt, gravel and more.",
-
+    description: homepageDescription,
     url: "https://www.cornerspan.com/",
-
     type: "website",
-
     siteName: "CornerSpan",
-
     locale: "en_US",
-
     images: [
       {
         url: "https://www.cornerspan.com/og-image.png",
@@ -45,56 +41,36 @@ export const metadata: Metadata = {
 
   twitter: {
     card: "summary_large_image",
-
     title: "Free Construction Calculators Online | CornerSpan",
-
-    description:
-      "Free online construction calculators for concrete, brick, steel, paint, tile, roofing, pavers, asphalt, gravel and more.",
-
-    images: [
-      "https://www.cornerspan.com/og-image.png",
-    ],
+    description: homepageDescription,
+    images: ["https://www.cornerspan.com/og-image.png"],
   },
 };
 
 const websiteSchema = {
   "@context": "https://schema.org",
-
   "@type": "WebSite",
-
   name: "CornerSpan",
-
   url: "https://www.cornerspan.com/",
-
-  description:
-    "Free online construction calculators for concrete, brick, steel, paint, tile, roofing, pavers, asphalt, gravel and more.",
+  description: homepageDescription,
 };
 
 const organizationSchema = {
   "@context": "https://schema.org",
-
   "@type": "Organization",
-
   name: "CornerSpan",
-
   url: "https://www.cornerspan.com/",
-
   logo: "https://www.cornerspan.com/og-image.png",
 };
 
 const faqSchema = {
   "@context": "https://schema.org",
-
   "@type": "FAQPage",
-
   mainEntity: homepageFaq.map((item) => ({
     "@type": "Question",
-
     name: item.question,
-
     acceptedAnswer: {
       "@type": "Answer",
-
       text: item.answer,
     },
   })),
@@ -103,16 +79,12 @@ const faqSchema = {
 export default function Home() {
   return (
     <main className="min-h-screen bg-slate-50">
-      {/* Website structured data */}
-
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(websiteSchema),
         }}
       />
-
-      {/* Organization structured data */}
 
       <script
         type="application/ld+json"
@@ -121,16 +93,12 @@ export default function Home() {
         }}
       />
 
-      {/* FAQ structured data */}
-
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(faqSchema),
         }}
       />
-
-      {/* Homepage */}
 
       <Hero />
 
