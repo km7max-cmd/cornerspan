@@ -1,10 +1,8 @@
-
 "use client";
 
 import { useMemo, useState } from "react";
 
 type UnitSystem = "imperial" | "metric";
-
 type Currency = "USD" | "EUR" | "GBP" | "CAD" | "AUD" | "INR";
 
 const currencySymbols: Record<Currency, string> = {
@@ -37,9 +35,13 @@ function getPitchAngle(rise: number) {
   return (Math.atan(rise / 12) * 180) / Math.PI;
 }
 
+const inputClass =
+  "h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-800 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100";
+
+const labelClass = "mb-1.5 block text-xs font-bold text-slate-600";
+
 export default function RoofingCalculator() {
-  const [unitSystem, setUnitSystem] =
-    useState<UnitSystem>("imperial");
+  const [unitSystem, setUnitSystem] = useState<UnitSystem>("imperial");
   const [length, setLength] = useState("");
   const [width, setWidth] = useState("");
   const [pitch, setPitch] = useState("6");
@@ -129,8 +131,6 @@ export default function RoofingCalculator() {
     const squares = orderArea / roofingSquareArea;
     const bundles = Math.ceil(orderArea / coverage);
     const angle = getPitchAngle(pitchValue);
-
-    // Estimate cost using the next whole roofing square.
     const cost = hasPrice ? Math.ceil(squares) * price : null;
 
     setResult({
@@ -145,12 +145,10 @@ export default function RoofingCalculator() {
     });
 
     setTimeout(() => {
-      document
-        .getElementById("roofing-result")
-        ?.scrollIntoView({
-          behavior: "smooth",
-          block: "nearest",
-        });
+      document.getElementById("roofing-result")?.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+      });
     }, 50);
   }
 
@@ -195,127 +193,137 @@ export default function RoofingCalculator() {
 
   return (
     <section className="mx-auto w-full max-w-3xl">
-      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-        <div className="bg-slate-950 px-5 py-5 text-white sm:px-7">
-          <p className="text-xs font-bold uppercase tracking-wider text-blue-300">
-            ROOFING ESTIMATOR
-          </p>
-          <h2 className="mt-1 text-2xl font-black tracking-tight sm:text-3xl">
-            Roofing Calculator
-          </h2>
-          <p className="mt-2 text-sm leading-6 text-slate-300">
-            Estimate roof area, roofing squares, shingle bundles and material cost.
-          </p>
+      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-md shadow-slate-200/50">
+        {/* Compact AI-inspired header */}
+        <div className="relative overflow-hidden bg-gradient-to-r from-slate-950 via-slate-900 to-blue-950 px-4 py-4 text-white sm:px-5">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/15 bg-white/10 text-blue-300">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                className="h-6 w-6"
+                aria-hidden="true"
+              >
+                <path d="M3 11.5 12 4l9 7.5" />
+                <path d="M5.5 10v10h13V10M9 20v-6h6v6" />
+                <path d="m17 4 1.5 1.3" />
+              </svg>
+            </div>
+            <div className="min-w-0 flex-1">
+              <div className="flex flex-wrap items-center gap-2">
+                <h2 className="text-lg font-extrabold tracking-tight sm:text-xl">
+                  Roofing Calculator
+                </h2>
+                <span className="rounded-full border border-blue-300/30 bg-blue-400/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-blue-200">
+                  Smart Estimate
+                </span>
+              </div>
+              <p className="mt-1 text-xs text-slate-300">
+                Roof area, shingles, bundles and material cost
+              </p>
+            </div>
+          </div>
         </div>
 
-        <div className="space-y-5 bg-slate-50 p-5 sm:p-7">
-          <div>
-            <label className="mb-2 block text-sm font-bold text-slate-700">
-              Measurement System
-            </label>
-            <div className="grid grid-cols-2 gap-2">
-              <button
-                type="button"
-                onClick={() => switchUnitSystem("imperial")}
-                className={`rounded-xl border px-4 py-3 text-sm font-bold transition ${
-                  unitSystem === "imperial"
-                    ? "border-blue-600 bg-blue-600 text-white"
-                    : "border-slate-200 bg-white text-slate-700 hover:border-blue-300"
-                }`}
-              >
-                US / Imperial
-              </button>
-              <button
-                type="button"
-                onClick={() => switchUnitSystem("metric")}
-                className={`rounded-xl border px-4 py-3 text-sm font-bold transition ${
-                  unitSystem === "metric"
-                    ? "border-blue-600 bg-blue-600 text-white"
-                    : "border-slate-200 bg-white text-slate-700 hover:border-blue-300"
-                }`}
-              >
-                Metric
-              </button>
+        <div className="space-y-3 p-3 sm:p-4">
+          {/* Unit selector */}
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <span className="text-xs font-bold text-slate-600">
+              Measurement system
+            </span>
+            <div className="inline-flex rounded-lg border border-slate-200 bg-slate-100 p-1">
+              {(["imperial", "metric"] as const).map((system) => (
+                <button
+                  key={system}
+                  type="button"
+                  onClick={() => switchUnitSystem(system)}
+                  aria-pressed={unitSystem === system}
+                  className={`rounded-md px-3 py-1.5 text-xs font-bold transition ${
+                    unitSystem === system
+                      ? "bg-blue-600 text-white shadow-sm"
+                      : "text-slate-600 hover:text-slate-950"
+                  }`}
+                >
+                  {system === "imperial" ? "US / Imperial" : "Metric"}
+                </button>
+              ))}
             </div>
-            <p className="mt-2 text-xs leading-5 text-slate-500">
-              One roofing square equals 100 ft² (9.290304 m²).
-              Roofing squares use the standard U.S. roofing measurement
-              in both Imperial and Metric modes.
-            </p>
           </div>
 
-          <div className="rounded-xl border border-slate-200 bg-white p-4">
-            <h3 className="mb-4 text-base font-extrabold text-slate-900">
-              Building Dimensions
-            </h3>
-            <div className="grid gap-4 sm:grid-cols-2">
+          {/* Dimensions */}
+          <div className="rounded-xl border border-slate-200 p-3">
+            <div className="mb-2 flex items-center justify-between">
+              <h3 className="text-sm font-extrabold text-slate-900">
+                Building dimensions
+              </h3>
+              <span className="text-[10px] font-semibold text-slate-400">
+                {units.length}
+              </span>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
               <Field
-                label={`Building Length (${units.length})`}
+                label={`Length (${units.length})`}
                 value={length}
                 onChange={(value) => {
                   setLength(value);
                   setResult(null);
                   setError("");
                 }}
-                placeholder={
-                  unitSystem === "imperial"
-                    ? "Enter length in feet"
-                    : "Enter length in meters"
-                }
+                placeholder="e.g. 30"
               />
               <Field
-                label={`Building Width (${units.length})`}
+                label={`Width (${units.length})`}
                 value={width}
                 onChange={(value) => {
                   setWidth(value);
                   setResult(null);
                   setError("");
                 }}
-                placeholder={
-                  unitSystem === "imperial"
-                    ? "Enter width in feet"
-                    : "Enter width in meters"
-                }
+                placeholder="e.g. 20"
               />
             </div>
           </div>
 
-          <div className="rounded-xl border border-slate-200 bg-white p-4">
-            <label className="mb-2 block text-sm font-bold text-slate-700">
-              Roof Pitch
-            </label>
-            <select
-              value={pitch}
-              onChange={(event) => {
-                setPitch(event.target.value);
-                setResult(null);
-              }}
-              className="h-12 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-800 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-            >
-              {pitchOptions.map((value) => (
-                <option key={value} value={value}>
-                  {value}:12 {value === 0 ? "(Flat)" : ""}
-                </option>
-              ))}
-            </select>
-            <p className="mt-2 text-xs leading-5 text-slate-500">
-              Example: 6:12 means the roof rises 6 units for every
-              12 units of horizontal run.
-            </p>
-          </div>
-
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div className="rounded-xl border border-slate-200 bg-white p-4">
-              <label className="mb-2 block text-sm font-bold text-slate-700">
-                Waste / Overage
+          {/* Pitch and waste */}
+          <div className="grid grid-cols-2 gap-3">
+            <div className="rounded-xl border border-slate-200 p-3">
+              <label htmlFor="roof-pitch" className={labelClass}>
+                Roof pitch
               </label>
               <select
+                id="roof-pitch"
+                value={pitch}
+                onChange={(event) => {
+                  setPitch(event.target.value);
+                  setResult(null);
+                }}
+                className={inputClass}
+              >
+                {pitchOptions.map((value) => (
+                  <option key={value} value={value}>
+                    {value}:12 {value === 0 ? "(Flat)" : ""}
+                  </option>
+                ))}
+              </select>
+              <p className="mt-1.5 text-[10px] leading-4 text-slate-500">
+                Rise per 12 units of run.
+              </p>
+            </div>
+
+            <div className="rounded-xl border border-slate-200 p-3">
+              <label htmlFor="roof-waste" className={labelClass}>
+                Waste allowance
+              </label>
+              <select
+                id="roof-waste"
                 value={waste}
                 onChange={(event) => {
                   setWaste(event.target.value);
                   setResult(null);
                 }}
-                className="h-12 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-800 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                className={inputClass}
               >
                 {wasteOptions.map((value) => (
                   <option key={value} value={value}>
@@ -323,54 +331,63 @@ export default function RoofingCalculator() {
                   </option>
                 ))}
               </select>
-              <p className="mt-2 text-xs leading-5 text-slate-500">
-                Complex roofs may require more allowance.
-              </p>
-            </div>
-
-            <div className="rounded-xl border border-slate-200 bg-white p-4">
-              <label className="mb-2 block text-sm font-bold text-slate-700">
-                Bundle Coverage ({units.area})
-              </label>
-              <input
-                type="number"
-                min="0"
-                step="any"
-                inputMode="decimal"
-                value={bundleCoverage}
-                onChange={(event) => {
-                  setBundleCoverage(event.target.value);
-                  setResult(null);
-                  setError("");
-                }}
-                placeholder={
-                  unitSystem === "imperial"
-                    ? "Example: 33.3"
-                    : "Example: 3.09"
-                }
-                className="h-12 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-800 outline-none placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-              />
-              <p className="mt-2 text-xs leading-5 text-slate-500">
-                Use the coverage printed on the shingle package.
+              <p className="mt-1.5 text-[10px] leading-4 text-slate-500">
+                Extra material for cuts.
               </p>
             </div>
           </div>
 
-          <div className="rounded-xl border border-slate-200 bg-white p-4">
-            <h3 className="mb-4 text-base font-extrabold text-slate-900">
-              Optional Cost Estimate
-            </h3>
-            <div className="grid gap-4 sm:grid-cols-2">
+          {/* Bundle coverage */}
+          <div className="rounded-xl border border-slate-200 p-3">
+            <label htmlFor="bundle-coverage" className={labelClass}>
+              Bundle coverage ({units.area})
+            </label>
+            <input
+              id="bundle-coverage"
+              type="number"
+              min="0"
+              step="any"
+              inputMode="decimal"
+              value={bundleCoverage}
+              onChange={(event) => {
+                setBundleCoverage(event.target.value);
+                setResult(null);
+                setError("");
+              }}
+              placeholder={unitSystem === "imperial" ? "e.g. 33.3" : "e.g. 3.09"}
+              className={inputClass}
+            />
+            <p className="mt-1.5 text-[10px] leading-4 text-slate-500">
+              Use the coverage shown on your shingle package. One U.S. roofing
+              square equals 100 ft² (9.290304 m²).
+            </p>
+          </div>
+
+          {/* Optional cost */}
+          <details className="group rounded-xl border border-slate-200">
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-3 text-sm font-bold text-slate-700 [&::-webkit-details-marker]:hidden">
+              <span className="flex items-center gap-2">
+                <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-50 text-emerald-700">
+                  $
+                </span>
+                Optional material cost
+              </span>
+              <span className="text-xs text-slate-400 transition group-open:rotate-180">
+                ▼
+              </span>
+            </summary>
+            <div className="grid grid-cols-2 gap-3 border-t border-slate-100 p-3">
               <div>
-                <label className="mb-2 block text-sm font-bold text-slate-700">
+                <label htmlFor="roof-currency" className={labelClass}>
                   Currency
                 </label>
                 <select
+                  id="roof-currency"
                   value={currency}
                   onChange={(event) =>
                     setCurrency(event.target.value as Currency)
                   }
-                  className="h-12 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-800 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                  className={inputClass}
                 >
                   <option value="USD">USD ($)</option>
                   <option value="EUR">EUR (€)</option>
@@ -381,7 +398,7 @@ export default function RoofingCalculator() {
                 </select>
               </div>
               <Field
-                label={`Price per roofing square (${currency})`}
+                label={`Price per square (${currency})`}
                 value={pricePerSquare}
                 onChange={(value) => {
                   setPricePerSquare(value);
@@ -390,17 +407,16 @@ export default function RoofingCalculator() {
                 }}
                 placeholder="Optional"
               />
+              <p className="col-span-2 text-[10px] leading-4 text-slate-500">
+                Material estimate only. No live currency conversion is used.
+              </p>
             </div>
-            <p className="mt-2 text-xs leading-5 text-slate-500">
-              Enter your local material price. Currency selection only
-              changes the displayed currency. No live exchange rate is used.
-            </p>
-          </div>
+          </details>
 
           {error && (
             <div
               role="alert"
-              className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium leading-6 text-red-700"
+              className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs font-semibold text-red-700"
             >
               {error}
             </div>
@@ -409,89 +425,118 @@ export default function RoofingCalculator() {
           <button
             type="button"
             onClick={calculate}
-            className="w-full rounded-xl bg-blue-600 px-5 py-4 text-sm font-extrabold text-white shadow-sm transition hover:bg-blue-700 active:scale-[0.99]"
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-3 text-sm font-extrabold text-white shadow-sm transition hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-100 active:scale-[0.99]"
           >
-            Calculate Roofing
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              className="h-4 w-4"
+              aria-hidden="true"
+            >
+              <rect x="5" y="3" width="14" height="18" rx="2" />
+              <path d="M8 7h8M8 11h2m4 0h2M8 15h2m4 0h2M8 18h2m4 0h2" />
+            </svg>
+            Calculate Roof Area
           </button>
 
+          {/* Results */}
           {result && (
             <div
               id="roofing-result"
-              className="space-y-3"
+              className="space-y-3 scroll-mt-4"
               aria-live="polite"
             >
-              <div className="rounded-2xl bg-slate-950 p-5 text-white">
-                <p className="text-xs font-bold uppercase tracking-wider text-blue-300">
-                  Roofing Material Estimate
-                </p>
-                <p className="mt-1 text-3xl font-black">
-                  {formatNumber(result.squares)} squares
-                </p>
-                <p className="mt-2 text-sm font-semibold text-emerald-300">
-                  Order Quantity: {Math.ceil(result.squares)} full squares
-                </p>
-                <p className="mt-1 text-sm text-slate-300">
-                  {result.bundles.toLocaleString("en-US")} shingle bundles
-                </p>
-                <p className="mt-2 text-xs leading-5 text-slate-400">
-                  Roofing squares are shown as a calculated quantity.
-                  The order quantity rounds up to the next whole square.
-                  Confirm actual material requirements with your supplier.
-                </p>
+              <div className="overflow-hidden rounded-xl border border-blue-200 bg-blue-50/60">
+                <div className="border-b border-blue-100 px-3 py-2">
+                  <p className="text-[10px] font-extrabold uppercase tracking-widest text-blue-700">
+                    Your roofing estimate
+                  </p>
+                </div>
+                <div className="p-3">
+                  <div className="flex flex-wrap items-end justify-between gap-3">
+                    <div>
+                      <p className="text-xs font-semibold text-slate-600">
+                        Calculated quantity
+                      </p>
+                      <p className="mt-1 text-3xl font-black tracking-tight text-slate-950">
+                        {formatNumber(result.squares)}{" "}
+                        <span className="text-sm font-bold text-slate-500">
+                          squares
+                        </span>
+                      </p>
+                    </div>
+                    <div className="rounded-lg border border-blue-100 bg-white px-3 py-2 text-right">
+                      <p className="text-[10px] font-semibold text-slate-500">
+                        Rounded equivalent
+                      </p>
+                      <p className="text-lg font-extrabold text-blue-700">
+                        {Math.ceil(result.squares)} squares
+                      </p>
+                    </div>
+                  </div>
+                  <div className="mt-3 flex items-center justify-between gap-3 rounded-lg bg-white px-3 py-2">
+                    <span className="text-xs font-semibold text-slate-600">
+                      Estimated shingle bundles
+                    </span>
+                    <span className="text-sm font-extrabold text-slate-900">
+                      {result.bundles.toLocaleString("en-US")}
+                    </span>
+                  </div>
+                  <p className="mt-2 text-[10px] leading-4 text-slate-500">
+                    Rounded squares are a planning equivalent. Bundle quantities
+                    depend on the coverage entered and the product packaging.
+                  </p>
+                </div>
               </div>
 
-              <div className="grid gap-3 sm:grid-cols-2">
+              <div className="grid grid-cols-2 gap-2">
                 <ResultCard
-                  label="Building Footprint"
+                  label="Building footprint"
                   value={`${formatNumber(result.footprint)} ${units.area}`}
                 />
                 <ResultCard
-                  label="Roof Surface Area"
+                  label="Roof surface area"
                   value={`${formatNumber(result.roofArea)} ${units.area}`}
                 />
                 <ResultCard
-                  label="Area with Waste"
+                  label="Area including waste"
                   value={`${formatNumber(result.orderArea)} ${units.area}`}
                 />
                 <ResultCard
-                  label="Pitch Multiplier"
+                  label="Pitch multiplier"
                   value={formatNumber(result.multiplier, 3)}
                 />
                 <ResultCard
-                  label="Roof Angle"
+                  label="Roof angle"
                   value={`${formatNumber(result.angle, 1)}°`}
-                />
-                <ResultCard
-                  label="Rounded Squares to Order"
-                  value={`${Math.ceil(result.squares)} squares`}
                 />
               </div>
 
               {result.cost !== null && (
-                <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4">
-                  <p className="text-xs font-bold uppercase tracking-wider text-emerald-700">
-                    Estimated Material Cost
+                <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-3">
+                  <p className="text-[10px] font-extrabold uppercase tracking-wider text-emerald-700">
+                    Estimated material cost
                   </p>
                   <p className="mt-1 text-2xl font-black text-emerald-900">
                     {currencySymbols[currency]}
                     {formatNumber(result.cost)}
                   </p>
-                  <p className="mt-1 text-xs leading-5 text-emerald-800">
-                    Based on the rounded roofing squares and the price
-                    you entered. Labor and accessories are not included.
+                  <p className="mt-1 text-[10px] leading-4 text-emerald-800">
+                    Based on rounded roofing squares and the entered price.
+                    Labor and accessories are excluded.
                   </p>
                 </div>
               )}
             </div>
           )}
 
-          <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-900">
-            <strong>Important:</strong>{" "}
-            Actual roof quantities can vary because of valleys, hips,
-            dormers, overhangs, penetrations and cutting waste. Always
-            verify final quantities with the roofing manufacturer,
-            supplier or contractor.
-          </div>
+          <p className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-[10px] leading-4 text-amber-900">
+            <strong>Note:</strong> Hips, valleys, dormers, overhangs and roof
+            complexity can change material needs. Verify the final quantity
+            with your supplier or roofing contractor.
+          </p>
         </div>
       </div>
     </section>
@@ -510,10 +555,8 @@ function Field({
   placeholder: string;
 }) {
   return (
-    <div>
-      <label className="mb-2 block text-sm font-bold text-slate-700">
-        {label}
-      </label>
+    <div className="min-w-0">
+      <label className={labelClass}>{label}</label>
       <input
         type="number"
         min="0"
@@ -522,7 +565,7 @@ function Field({
         value={value}
         onChange={(event) => onChange(event.target.value)}
         placeholder={placeholder}
-        className="h-12 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-800 outline-none placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+        className={inputClass}
       />
     </div>
   );
@@ -536,9 +579,9 @@ function ResultCard({
   value: string;
 }) {
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-4">
-      <p className="text-xs font-semibold text-slate-500">{label}</p>
-      <p className="mt-1 text-lg font-extrabold text-slate-900">
+    <div className="min-w-0 rounded-lg border border-slate-200 bg-white p-3">
+      <p className="text-[10px] font-semibold text-slate-500">{label}</p>
+      <p className="mt-1 break-words text-sm font-extrabold text-slate-900 sm:text-base">
         {value}
       </p>
     </div>
