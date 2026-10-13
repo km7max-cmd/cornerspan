@@ -10,10 +10,8 @@ const PAGE_URL = `${SITE_URL}/calculators/roofing`;
 
 export const metadata: Metadata = {
   title: "Roofing Calculator | Roof Area, Squares, Shingles & Cost",
-
   description:
     "Free roofing calculator to estimate roof area, roofing squares, shingle bundles, waste and material cost from building dimensions and roof pitch.",
-
   keywords: [
     "roofing calculator",
     "roof calculator",
@@ -31,11 +29,9 @@ export const metadata: Metadata = {
     "roof estimate calculator",
     "roofing materials calculator",
   ],
-
   alternates: {
     canonical: PAGE_URL,
   },
-
   robots: {
     index: true,
     follow: true,
@@ -47,7 +43,6 @@ export const metadata: Metadata = {
       "max-video-preview": -1,
     },
   },
-
   openGraph: {
     title: "Roofing Calculator | Roof Area, Squares, Shingles & Cost",
     description:
@@ -64,7 +59,6 @@ export const metadata: Metadata = {
       },
     ],
   },
-
   twitter: {
     card: "summary_large_image",
     title: "Roofing Calculator | Roof Area, Squares, Shingles & Cost",
@@ -137,12 +131,12 @@ const faqs = [
   {
     question: "How do I calculate roof area from pitch?",
     answer:
-      "First multiply the building length by its width to find the footprint. Then multiply the footprint by the pitch multiplier: √(1 + (rise ÷ 12)²). This estimates the sloped roof area for a simple roof shape.",
+      "Multiply the building length by its width to find the footprint. Then multiply the footprint by the pitch multiplier: √(1 + (rise ÷ 12)²). This estimates the sloped roof area for a simple roof shape.",
   },
   {
     question: "How many shingle bundles are in a roofing square?",
     answer:
-      "Some common asphalt shingles require about three bundles per roofing square, but coverage varies by product. Use the coverage printed on the package for a more reliable estimate.",
+      "Some common asphalt shingles require about three bundles per roofing square, but coverage varies by product. Check the coverage printed on the package for a more reliable estimate.",
   },
   {
     question: "How much roofing waste should I add?",
@@ -164,6 +158,14 @@ const faqs = [
     answer:
       "It provides a planning estimate for a simple roof shape. Complex roofs should be divided into individual roof planes or measured with a detailed roof takeoff. Overhangs, valleys, hips, dormers and penetrations can change material quantities.",
   },
+];
+
+const tableOfContents = [
+  { id: "roofing-basics", label: "How to Calculate Roofing" },
+  { id: "roofing-formula", label: "Roofing Calculator Formula" },
+  { id: "roofing-example", label: "Roofing Calculator Example" },
+  { id: "roofing-uses", label: "Common Roofing Calculator Uses" },
+  { id: "roofing-faq", label: "Roofing Calculator FAQ" },
 ];
 
 export default function RoofingPage() {
@@ -193,17 +195,42 @@ export default function RoofingPage() {
             </h1>
 
             <p className="mt-3 max-w-3xl text-base leading-7 text-slate-600">
-              Use this free roofing calculator to estimate roof
-              surface area, roofing squares, shingle bundles, waste
-              and material cost. Enter the building dimensions and
-              roof pitch to get a quick material estimate.
+              Use this free roofing calculator to estimate roof surface
+              area, roofing squares, shingle bundles, waste and material
+              cost. Enter the building dimensions and roof pitch to get
+              a quick material estimate.
             </p>
           </div>
 
           <RoofingCalculator />
         </section>
 
-        <section className="mt-8 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
+        <nav
+          aria-label="Table of contents"
+          className="mx-auto mt-8 max-w-4xl rounded-2xl border border-slate-200 bg-slate-50 p-5 sm:p-6"
+        >
+          <h2 className="text-lg font-extrabold text-slate-900">
+            On This Page
+          </h2>
+
+          <ul className="mt-3 grid gap-3 text-sm sm:grid-cols-2">
+            {tableOfContents.map(({ id, label }) => (
+              <li key={id}>
+                <a
+                  href={`#${id}`}
+                  className="font-medium text-blue-700 underline-offset-4 hover:underline"
+                >
+                  {label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        <section
+          id="roofing-basics"
+          className="mt-8 scroll-mt-24 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7"
+        >
           <p className="text-xs font-bold uppercase tracking-wider text-blue-600">
             ROOFING CALCULATION
           </p>
@@ -213,10 +240,18 @@ export default function RoofingPage() {
           </h2>
 
           <p className="mt-3 text-sm leading-7 text-slate-600">
-            Roofing quantity depends on the building footprint,
-            roof pitch, material coverage and waste. A pitched roof
-            has more surface area than its flat footprint because
-            the roof slopes upward.
+            Roofing quantity depends on the building footprint, roof
+            pitch, material coverage and waste. A pitched roof has more
+            surface area than its flat footprint because the roof slopes
+            upward. For a more detailed building footprint calculation,
+            use our{" "}
+            <a
+              href="/calculators/area"
+              className="font-semibold text-blue-700 underline underline-offset-4"
+            >
+              Area Calculator
+            </a>
+            .
           </p>
 
           <div className="mt-5 grid gap-4 sm:grid-cols-3">
@@ -238,7 +273,10 @@ export default function RoofingPage() {
           </div>
         </section>
 
-        <section className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
+        <section
+          id="roofing-formula"
+          className="mt-6 scroll-mt-24 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7"
+        >
           <h2 className="text-xl font-extrabold text-slate-900">
             Roofing Calculator Formula
           </h2>
@@ -272,14 +310,18 @@ export default function RoofingPage() {
           </div>
         </section>
 
-        <section className="mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-5 sm:p-7">
+        <section
+          id="roofing-example"
+          className="mt-6 scroll-mt-24 rounded-2xl border border-slate-200 bg-slate-50 p-5 sm:p-7"
+        >
           <h2 className="text-xl font-extrabold text-slate-900">
             Roofing Calculator Example
           </h2>
 
           <p className="mt-3 text-sm leading-7 text-slate-600">
-            Suppose a building is 40 ft long and 30 ft wide with
-            a 6:12 roof pitch and 10% waste.
+            Suppose a building is 40 ft long and 30 ft wide with a 6:12
+            roof pitch and 10% waste. This example assumes a simple roof
+            shape and does not separately add overhangs.
           </p>
 
           <div className="mt-4 overflow-hidden rounded-xl border border-slate-200 bg-white">
@@ -290,15 +332,43 @@ export default function RoofingPage() {
               <ExampleRow label="10% waste" value="134 ft²" />
               <ExampleRow label="Order area" value="1,476 ft²" />
               <ExampleRow label="Roofing squares" value="14.76" />
-              <ExampleRow label="At 33.3 ft²/bundle" value="45 bundles" strong />
+              <ExampleRow
+                label="At 33.3 ft²/bundle"
+                value="45 bundles"
+                strong
+              />
             </div>
           </div>
         </section>
 
-        <section className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
+        <section
+          id="roofing-uses"
+          className="mt-6 scroll-mt-24 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7"
+        >
           <h2 className="text-xl font-extrabold text-slate-900">
             Common Roofing Calculator Uses
           </h2>
+
+          <p className="mt-3 text-sm leading-7 text-slate-600">
+            Homeowners and contractors can use a roof estimate to plan
+            shingle purchases, compare material quantities and prepare
+            an initial budget. For related construction estimates, see
+            our{" "}
+            <a
+              href="/calculators/paint"
+              className="font-semibold text-blue-700 underline underline-offset-4"
+            >
+              Paint Calculator
+            </a>{" "}
+            and{" "}
+            <a
+              href="/calculators/gravel"
+              className="font-semibold text-blue-700 underline underline-offset-4"
+            >
+              Gravel Calculator
+            </a>
+            .
+          </p>
 
           <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {[
@@ -322,7 +392,10 @@ export default function RoofingPage() {
           </div>
         </section>
 
-        <section className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
+        <section
+          id="roofing-faq"
+          className="mt-6 scroll-mt-24 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7"
+        >
           <h2 className="text-xl font-extrabold text-slate-900">
             Roofing Calculator FAQ
           </h2>
@@ -349,10 +422,10 @@ export default function RoofingPage() {
           </h2>
           <p className="mt-2 text-sm leading-6 text-amber-900/80">
             This calculator provides a material-planning estimate.
-            Actual roofing quantities depend on roof geometry,
-            overhangs, valleys, hips, dormers, penetrations, product
-            coverage and installation waste. Confirm the final quantity
-            with your roofing supplier or a qualified roofing professional.
+            Actual roofing quantities depend on roof geometry, overhangs,
+            valleys, hips, dormers, penetrations, product coverage and
+            installation waste. Confirm the final quantity with your
+            roofing supplier or a qualified roofing professional.
           </p>
         </section>
       </main>
