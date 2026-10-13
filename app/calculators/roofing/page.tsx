@@ -1,12 +1,15 @@
+
 import type { Metadata } from "next";
 
 import Breadcrumb from "../../../components/Breadcrumb";
 import RelatedCalculators from "../../../components/RelatedCalculators";
 import RoofingCalculator from "./RoofingCalculator";
 
+const SITE_URL = "https://www.cornerspan.com";
+const PAGE_URL = `${SITE_URL}/calculators/roofing`;
+
 export const metadata: Metadata = {
-  title:
-    "Roofing Calculator | Roof Area, Squares, Shingles & Cost",
+  title: "Roofing Calculator | Roof Area, Squares, Shingles & Cost",
 
   description:
     "Free roofing calculator to estimate roof area, roofing squares, shingle bundles, waste and material cost from building dimensions and roof pitch.",
@@ -30,14 +33,12 @@ export const metadata: Metadata = {
   ],
 
   alternates: {
-    canonical:
-      "https://www.cornerspan.com/calculators/roofing",
+    canonical: PAGE_URL,
   },
 
   robots: {
     index: true,
     follow: true,
-
     googleBot: {
       index: true,
       follow: true,
@@ -48,19 +49,12 @@ export const metadata: Metadata = {
   },
 
   openGraph: {
-    title:
-      "Roofing Calculator | Roof Area, Squares, Shingles & Cost",
-
+    title: "Roofing Calculator | Roof Area, Squares, Shingles & Cost",
     description:
       "Estimate roof surface area, roofing squares, shingle bundles, waste and material cost.",
-
-    url:
-      "https://www.cornerspan.com/calculators/roofing",
-
+    url: PAGE_URL,
     siteName: "CornerSpan",
-
     type: "website",
-
     images: [
       {
         url: "/og-image.png",
@@ -73,108 +67,143 @@ export const metadata: Metadata = {
 
   twitter: {
     card: "summary_large_image",
-
-    title:
-      "Roofing Calculator | Roof Area, Squares, Shingles & Cost",
-
+    title: "Roofing Calculator | Roof Area, Squares, Shingles & Cost",
     description:
       "Free roofing calculator for roof area, squares, shingle bundles and cost.",
-
     images: ["/og-image.png"],
   },
 };
 
+const webPageSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  name: "Roofing Calculator",
+  url: PAGE_URL,
+  description:
+    "Free roofing calculator to estimate roof surface area, roofing squares, shingle bundles, waste and material cost.",
+  isPartOf: {
+    "@type": "WebSite",
+    name: "CornerSpan",
+    url: SITE_URL,
+  },
+  mainEntity: {
+    "@type": "SoftwareApplication",
+    name: "Roofing Calculator",
+    applicationCategory: "UtilitiesApplication",
+    operatingSystem: "Web",
+    url: PAGE_URL,
+    description:
+      "Calculate roof area, roofing squares, shingle bundles and estimated material cost.",
+    isAccessibleForFree: true,
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "USD",
+    },
+  },
+};
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    {
+      "@type": "ListItem",
+      position: 1,
+      name: "Home",
+      item: SITE_URL,
+    },
+    {
+      "@type": "ListItem",
+      position: 2,
+      name: "Calculators",
+      item: `${SITE_URL}/calculators`,
+    },
+    {
+      "@type": "ListItem",
+      position: 3,
+      name: "Roofing Calculator",
+      item: PAGE_URL,
+    },
+  ],
+};
+
 const faqs = [
   {
-    question:
-      "What is a roofing square?",
-
+    question: "What is a roofing square?",
     answer:
-      "One roofing square is 100 square feet of roof surface area in the U.S. Roofing contractors commonly use roofing squares when estimating shingles and other roofing materials.",
+      "One U.S. roofing square equals 100 square feet (9.290304 square meters) of roof surface area. Roofing contractors commonly use roofing squares when estimating shingles and other roofing materials.",
   },
-
   {
-    question:
-      "How do I calculate roof area from pitch?",
-
+    question: "How do I calculate roof area from pitch?",
     answer:
-      "First calculate the building footprint by multiplying length by width. Then multiply the footprint by the roof pitch multiplier: √(1 + (rise ÷ 12)²).",
+      "First multiply the building length by its width to find the footprint. Then multiply the footprint by the pitch multiplier: √(1 + (rise ÷ 12)²). This estimates the sloped roof area for a simple roof shape.",
   },
-
   {
-    question:
-      "How many shingle bundles are in a roofing square?",
-
+    question: "How many shingle bundles are in a roofing square?",
     answer:
-      "Many standard asphalt shingles cover approximately one roofing square with three bundles, but coverage varies by manufacturer and product. Always use the coverage printed on the product packaging.",
+      "Some common asphalt shingles require about three bundles per roofing square, but coverage varies by product. Use the coverage printed on the package for a more reliable estimate.",
   },
-
   {
-    question:
-      "How much roofing waste should I add?",
-
+    question: "How much roofing waste should I add?",
     answer:
-      "A simple roof may require around 5% to 10% allowance. Roofs with hips, valleys, dormers, penetrations and many cuts may require more. The appropriate allowance depends on the roof design and roofing material.",
+      "A simple roof may need around 5% to 10% extra material. Roofs with hips, valleys, dormers, penetrations and many cuts may need more. The correct allowance depends on roof design and material.",
   },
-
   {
-    question:
-      "Can I use this roofing calculator in metric units?",
-
+    question: "Can I use this roofing calculator in metric units?",
     answer:
-      "Yes. The calculator supports both U.S./Imperial and Metric measurements. Length and width can be entered in feet or meters, and bundle coverage can be entered in square feet or square meters.",
+      "Yes. Select Metric to enter dimensions in meters and bundle coverage in square meters. One U.S. roofing square equals 9.290304 square meters.",
   },
-
   {
-    question:
-      "Does the roofing cost estimate include labor?",
-
+    question: "Does the roofing cost estimate include labor?",
     answer:
-      "No. The optional cost estimate uses only the material price per roofing square that you enter. Labor, roof removal, underlayment, flashing, delivery and other accessories are not included.",
+      "No. The optional cost estimate uses the material price per roofing square you enter. Labor, roof removal, underlayment, flashing, delivery and other accessories are excluded.",
   },
-
   {
-    question:
-      "Can I use this calculator for a complex roof?",
-
+    question: "Can I use this calculator for a complex roof?",
     answer:
-      "It can provide a rough planning estimate, but complex roofs should be divided into individual roof sections or measured with a detailed roof takeoff. Valleys, hips, dormers, multiple roof planes and penetrations can change the final material quantity.",
+      "It provides a planning estimate for a simple roof shape. Complex roofs should be divided into individual roof planes or measured with a detailed roof takeoff. Overhangs, valleys, hips, dormers and penetrations can change material quantities.",
   },
 ];
 
 export default function RoofingPage() {
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(webPageSchema).replace(/</g, "\\u003c"),
+        }}
+      />
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbSchema).replace(/</g, "\\u003c"),
+        }}
+      />
+
       <Breadcrumb current="Roofing Calculator" />
 
       <main className="mx-auto w-full max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
-
-        {/* Page Introduction */}
         <section className="mx-auto max-w-4xl">
-
           <div className="mb-6">
-
             <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
               Roofing Calculator
             </h1>
 
             <p className="mt-3 max-w-3xl text-base leading-7 text-slate-600">
-              Use this free roofing calculator to estimate
-              roof surface area, roofing squares, shingle
-              bundles, waste and material cost. Enter the
-              building dimensions and roof pitch to get a
-              quick material estimate.
+              Use this free roofing calculator to estimate roof
+              surface area, roofing squares, shingle bundles, waste
+              and material cost. Enter the building dimensions and
+              roof pitch to get a quick material estimate.
             </p>
-
           </div>
 
           <RoofingCalculator />
-
         </section>
 
-        {/* How to Calculate */}
         <section className="mt-8 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
-
           <p className="text-xs font-bold uppercase tracking-wider text-blue-600">
             ROOFING CALCULATION
           </p>
@@ -184,164 +213,94 @@ export default function RoofingPage() {
           </h2>
 
           <p className="mt-3 text-sm leading-7 text-slate-600">
-            Roofing quantity depends on the building
-            footprint, roof pitch, material coverage and
-            waste. A pitched roof has more surface area
-            than its flat footprint because the roof slopes
-            upward.
+            Roofing quantity depends on the building footprint,
+            roof pitch, material coverage and waste. A pitched roof
+            has more surface area than its flat footprint because
+            the roof slopes upward.
           </p>
 
           <div className="mt-5 grid gap-4 sm:grid-cols-3">
-
             <FormulaCard
               title="1. Footprint"
               formula="Length × Width"
               description="Calculate the flat building footprint."
             />
-
             <FormulaCard
               title="2. Roof Area"
               formula="Footprint × Pitch Factor"
               description="Adjust the footprint for the roof slope."
             />
-
             <FormulaCard
-              title="3. Order"
+              title="3. Material"
               formula="Area + Waste"
               description="Convert the adjusted area into roofing squares and bundles."
             />
-
           </div>
-
         </section>
 
-        {/* Formula */}
         <section className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
-
           <h2 className="text-xl font-extrabold text-slate-900">
             Roofing Calculator Formula
           </h2>
 
           <div className="mt-4 space-y-3 text-sm leading-7 text-slate-600">
-
             <p>
-              <strong>
-                Building Footprint
-              </strong>{" "}
-              = Length × Width
+              <strong>Building Footprint:</strong> Length × Width
             </p>
-
             <p>
-              <strong>
-                Pitch Multiplier
-              </strong>{" "}
-              = √(1 + (Rise ÷ 12)²)
+              <strong>Pitch Multiplier:</strong> √(1 + (Rise ÷ 12)²)
             </p>
-
             <p>
-              <strong>
-                Roof Surface Area
-              </strong>{" "}
-              = Footprint × Pitch Multiplier
+              <strong>Roof Surface Area:</strong> Footprint × Pitch Multiplier
             </p>
-
             <p>
-              <strong>
-                Order Area
-              </strong>{" "}
-              = Roof Area × (1 + Waste ÷ 100)
+              <strong>Order Area:</strong> Roof Area × (1 + Waste ÷ 100)
             </p>
-
             <p>
-              <strong>
-                Roofing Squares
-              </strong>{" "}
-              = Order Area ÷ 100 ft²
+              <strong>Roofing Squares (Imperial):</strong> Order Area ÷ 100 ft²
             </p>
-
             <p>
-              <strong>
-                Shingle Bundles
-              </strong>{" "}
-              = Order Area ÷ Bundle Coverage
+              <strong>Roofing Squares (Metric):</strong> Order Area ÷ 9.290304 m²
             </p>
-
             <p>
-              Bundle quantities are rounded up to the
-              next whole bundle.
+              <strong>Shingle Bundles:</strong> Order Area ÷ Bundle Coverage
             </p>
-
+            <p>
+              Bundle quantities are rounded up to the next whole bundle.
+              One U.S. roofing square is 100 ft², equivalent to 9.290304 m².
+            </p>
           </div>
-
         </section>
 
-        {/* Worked Example */}
         <section className="mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-5 sm:p-7">
-
           <h2 className="text-xl font-extrabold text-slate-900">
             Roofing Calculator Example
           </h2>
 
           <p className="mt-3 text-sm leading-7 text-slate-600">
-            Suppose a building is 40 ft long and 30 ft
-            wide with a 6:12 roof pitch and 10% waste.
+            Suppose a building is 40 ft long and 30 ft wide with
+            a 6:12 roof pitch and 10% waste.
           </p>
 
           <div className="mt-4 overflow-hidden rounded-xl border border-slate-200 bg-white">
-
-            <div className="grid grid-cols-2 text-sm">
-
-              <ExampleRow
-                label="Building footprint"
-                value="1,200 ft²"
-              />
-
-              <ExampleRow
-                label="6:12 pitch multiplier"
-                value="1.118"
-              />
-
-              <ExampleRow
-                label="Roof surface area"
-                value="1,342 ft²"
-              />
-
-              <ExampleRow
-                label="10% waste"
-                value="134 ft²"
-              />
-
-              <ExampleRow
-                label="Order area"
-                value="1,476 ft²"
-              />
-
-              <ExampleRow
-                label="Roofing squares"
-                value="14.76"
-              />
-
-              <ExampleRow
-                label="At 33.3 ft²/bundle"
-                value="45 bundles"
-                strong
-              />
-
+            <div className="grid grid-cols-1 text-sm sm:grid-cols-2">
+              <ExampleRow label="Building footprint" value="1,200 ft²" />
+              <ExampleRow label="6:12 pitch multiplier" value="1.118" />
+              <ExampleRow label="Roof surface area" value="1,342 ft²" />
+              <ExampleRow label="10% waste" value="134 ft²" />
+              <ExampleRow label="Order area" value="1,476 ft²" />
+              <ExampleRow label="Roofing squares" value="14.76" />
+              <ExampleRow label="At 33.3 ft²/bundle" value="45 bundles" strong />
             </div>
-
           </div>
-
         </section>
 
-        {/* Common Uses */}
         <section className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
-
           <h2 className="text-xl font-extrabold text-slate-900">
             Common Roofing Calculator Uses
           </h2>
 
           <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-
             {[
               "Asphalt shingles",
               "Architectural shingles",
@@ -360,63 +319,42 @@ export default function RoofingPage() {
                 {item}
               </div>
             ))}
-
           </div>
-
         </section>
 
-        {/* FAQ */}
         <section className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
-
           <h2 className="text-xl font-extrabold text-slate-900">
             Roofing Calculator FAQ
           </h2>
 
           <div className="mt-4 divide-y divide-slate-200">
-
             {faqs.map((faq) => (
-              <details
-                key={faq.question}
-                className="group py-4"
-              >
-
+              <details key={faq.question} className="group py-4">
                 <summary className="cursor-pointer list-none pr-8 text-sm font-bold text-slate-900">
                   {faq.question}
                 </summary>
-
                 <p className="mt-2 text-sm leading-6 text-slate-600">
                   {faq.answer}
                 </p>
-
               </details>
             ))}
-
           </div>
-
         </section>
 
-        {/* Related Calculators */}
         <RelatedCalculators />
 
-        {/* Important Note */}
         <section className="mt-6 rounded-2xl border border-amber-200 bg-amber-50 p-5 sm:p-6">
-
           <h2 className="text-base font-extrabold text-amber-900">
             Important Note
           </h2>
-
           <p className="mt-2 text-sm leading-6 text-amber-900/80">
-            This calculator provides a material-planning
-            estimate. Actual roofing quantities depend on
-            roof geometry, overhangs, valleys, hips, dormers,
-            penetrations, product coverage and installation
-            waste. Confirm the final quantity with your
-            roofing supplier or a qualified roofing
-            professional.
+            This calculator provides a material-planning estimate.
+            Actual roofing quantities depend on roof geometry,
+            overhangs, valleys, hips, dormers, penetrations, product
+            coverage and installation waste. Confirm the final quantity
+            with your roofing supplier or a qualified roofing professional.
           </p>
-
         </section>
-
       </main>
     </>
   );
@@ -433,19 +371,11 @@ function FormulaCard({
 }) {
   return (
     <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
-
       <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
         {title}
       </p>
-
-      <p className="mt-2 text-base font-black text-slate-900">
-        {formula}
-      </p>
-
-      <p className="mt-1 text-sm leading-6 text-slate-600">
-        {description}
-      </p>
-
+      <p className="mt-2 text-base font-black text-slate-900">{formula}</p>
+      <p className="mt-1 text-sm leading-6 text-slate-600">{description}</p>
     </div>
   );
 }
@@ -461,11 +391,7 @@ function ExampleRow({
 }) {
   return (
     <div className="flex items-center justify-between gap-3 border-b border-slate-100 px-4 py-3 last:border-0">
-
-      <span className="text-slate-600">
-        {label}
-      </span>
-
+      <span className="text-slate-600">{label}</span>
       <span
         className={
           strong
@@ -475,7 +401,6 @@ function ExampleRow({
       >
         {value}
       </span>
-
     </div>
   );
 }
