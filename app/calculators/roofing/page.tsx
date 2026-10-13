@@ -1,5 +1,6 @@
 
 import type { Metadata } from "next";
+import Image from "next/image";
 
 import Breadcrumb from "../../../components/Breadcrumb";
 import RelatedCalculators from "../../../components/RelatedCalculators";
@@ -79,6 +80,10 @@ const webPageSchema = {
     "@type": "WebSite",
     name: "CornerSpan",
     url: SITE_URL,
+  },
+  primaryImageOfPage: {
+    "@type": "ImageObject",
+    url: `${SITE_URL}/roofing-calculator-hero.webp`,
   },
   mainEntity: {
     "@type": "SoftwareApplication",
@@ -166,6 +171,7 @@ const tableOfContents = [
   { id: "roofing-example", label: "Roofing Calculator Example" },
   { id: "roofing-uses", label: "Common Roofing Calculator Uses" },
   { id: "roofing-faq", label: "Roofing Calculator FAQ" },
+  { id: "roofing-resources", label: "Roofing Resources" },
 ];
 
 export default function RoofingPage() {
@@ -203,6 +209,22 @@ export default function RoofingPage() {
           </div>
 
           <RoofingCalculator />
+
+          <figure className="mt-8 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+            <Image
+              src="/roofing-calculator-hero.webp"
+              alt="Residential roof with asphalt shingles illustrating roof area and pitch calculations"
+              width={1152}
+              height={648}
+              sizes="(max-width: 768px) 100vw, 896px"
+              className="h-auto w-full"
+            />
+            <figcaption className="px-4 py-3 text-sm leading-6 text-slate-600">
+              Roof pitch and surface area affect the amount of roofing
+              material needed. Use the calculator above to estimate
+              roofing squares, shingle bundles and material cost.
+            </figcaption>
+          </figure>
         </section>
 
         <nav
@@ -243,8 +265,7 @@ export default function RoofingPage() {
             Roofing quantity depends on the building footprint, roof
             pitch, material coverage and waste. A pitched roof has more
             surface area than its flat footprint because the roof slopes
-            upward. For a more detailed building footprint calculation,
-            use our{" "}
+            upward. For a building footprint calculation, use our{" "}
             <a
               href="/calculators/area"
               className="font-semibold text-blue-700 underline underline-offset-4"
@@ -428,67 +449,66 @@ export default function RoofingPage() {
             roofing supplier or a qualified roofing professional.
           </p>
         </section>
-        
-<section
-  id="roofing-resources"
-  className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7"
->
-  <h2 className="text-xl font-extrabold text-slate-900">
-    Roofing Resources and Further Reading
-  </h2>
 
-  <p className="mt-3 text-sm leading-7 text-slate-600">
-    Use these trusted resources to learn more about roofing
-    materials, roof performance and energy efficiency.
-  </p>
+        <section
+          id="roofing-resources"
+          className="mt-6 scroll-mt-24 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7"
+        >
+          <h2 className="text-xl font-extrabold text-slate-900">
+            Roofing Resources and Further Reading
+          </h2>
 
-  <ul className="mt-4 list-disc space-y-3 pl-5 text-sm leading-6 text-slate-700">
-    <li>
-      <a
-        href="https://www.energy.gov/energysaver/articles/energy-101-video-cool-roofs-1"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="font-semibold text-blue-700 underline underline-offset-4"
-      >
-        U.S. Department of Energy: Cool Roofs
-      </a>
-      {" — "}Learn how reflective roofing can affect heat absorption
-      and building energy use.
-    </li>
+          <p className="mt-3 text-sm leading-7 text-slate-600">
+            Explore these resources for general information about
+            roofing materials, roof performance and energy efficiency.
+          </p>
 
-    <li>
-      <a
-        href="https://www.energy.gov/cmei/buildings/articles/cool-asphalt-shingles"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="font-semibold text-blue-700 underline underline-offset-4"
-      >
-        U.S. Department of Energy: Cool Asphalt Shingles
-      </a>
-      {" — "}Explore research on asphalt shingle reflectance and
-      roofing performance.
-    </li>
+          <ul className="mt-4 list-disc space-y-3 pl-5 text-sm leading-6 text-slate-700">
+            <li>
+              <a
+                href="https://www.energy.gov/energysaver/articles/energy-101-video-cool-roofs-1"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-semibold text-blue-700 underline underline-offset-4"
+              >
+                U.S. Department of Energy: Cool Roofs
+              </a>
+              {" — "}Learn how reflective roofing can affect heat
+              absorption and building energy use.
+            </li>
 
-    <li>
-      <a
-        href="https://betterbuildingssolutioncenter.energy.gov/roofs"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="font-semibold text-blue-700 underline underline-offset-4"
-      >
-        Better Buildings: Roofing Resources
-      </a>
-      {" — "}Read about roofing systems and building energy efficiency.
-    </li>
-  </ul>
+            <li>
+              <a
+                href="https://www.energy.gov/cmei/buildings/articles/cool-asphalt-shingles"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-semibold text-blue-700 underline underline-offset-4"
+              >
+                U.S. Department of Energy: Cool Asphalt Shingles
+              </a>
+              {" — "}Explore information on asphalt shingle reflectance
+              and roofing performance.
+            </li>
 
-  <p className="mt-4 text-xs leading-5 text-slate-500">
-    These resources provide general educational information.
-    Always follow the selected roofing product manufacturer's
-    installation instructions and local building requirements.
-  </p>
-</section>
+            <li>
+              <a
+                href="https://betterbuildingssolutioncenter.energy.gov/roofs"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-semibold text-blue-700 underline underline-offset-4"
+              >
+                Better Buildings: Roofing Resources
+              </a>
+              {" — "}Read about roofing systems and building energy efficiency.
+            </li>
+          </ul>
 
+          <p className="mt-4 text-xs leading-5 text-slate-500">
+            These resources provide general educational information.
+            Always follow the selected roofing product manufacturer's
+            installation instructions and local building requirements.
+          </p>
+        </section>
       </main>
     </>
   );
