@@ -428,6 +428,67 @@ export default function RoofingPage() {
             roofing supplier or a qualified roofing professional.
           </p>
         </section>
+        
+<section
+  id="roofing-resources"
+  className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7"
+>
+  <h2 className="text-xl font-extrabold text-slate-900">
+    Roofing Resources and Further Reading
+  </h2>
+
+  <p className="mt-3 text-sm leading-7 text-slate-600">
+    Use these trusted resources to learn more about roofing
+    materials, roof performance and energy efficiency.
+  </p>
+
+  <ul className="mt-4 list-disc space-y-3 pl-5 text-sm leading-6 text-slate-700">
+    <li>
+      <a
+        href="https://www.energy.gov/energysaver/articles/energy-101-video-cool-roofs-1"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="font-semibold text-blue-700 underline underline-offset-4"
+      >
+        U.S. Department of Energy: Cool Roofs
+      </a>
+      {" — "}Learn how reflective roofing can affect heat absorption
+      and building energy use.
+    </li>
+
+    <li>
+      <a
+        href="https://www.energy.gov/cmei/buildings/articles/cool-asphalt-shingles"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="font-semibold text-blue-700 underline underline-offset-4"
+      >
+        U.S. Department of Energy: Cool Asphalt Shingles
+      </a>
+      {" — "}Explore research on asphalt shingle reflectance and
+      roofing performance.
+    </li>
+
+    <li>
+      <a
+        href="https://betterbuildingssolutioncenter.energy.gov/roofs"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="font-semibold text-blue-700 underline underline-offset-4"
+      >
+        Better Buildings: Roofing Resources
+      </a>
+      {" — "}Read about roofing systems and building energy efficiency.
+    </li>
+  </ul>
+
+  <p className="mt-4 text-xs leading-5 text-slate-500">
+    These resources provide general educational information.
+    Always follow the selected roofing product manufacturer's
+    installation instructions and local building requirements.
+  </p>
+</section>
+
       </main>
     </>
   );
