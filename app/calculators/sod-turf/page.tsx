@@ -1,32 +1,33 @@
 
+import Image from "next/image";
 import type { Metadata } from "next";
 import CalculatorStructuredData from "../../../components/CalculatorStructuredData";
 import Breadcrumb from "../../../components/Breadcrumb";
 import RelatedCalculators from "../../../components/RelatedCalculators";
 import SodTurfCalculator from "./SodTurfCalculator";
 
+const pageUrl = "https://www.cornerspan.com/calculators/sod-turf";
+const heroImage = "/cornerspan-sod-turf-calculator-hero.webp";
+
 export const metadata: Metadata = {
   title: "Sod Calculator: How Much Sod Do I Need?",
   description:
-    "Calculate how much sod you need for your lawn. Estimate square footage, sod rolls, waste allowance, pallet quantities, and material costs with this free sod calculator.",
+    "Use this sod calculator to estimate lawn square footage, sod rolls, pallets, cutting waste, and material costs. Includes formulas and a worked example.",
   keywords: [
     "sod calculator",
-    "sod calculator square feet",
     "how much sod do I need",
-    "sod calculator for lawn",
-    "how many rolls of sod do I need",
+    "sod calculator square feet",
+    "sod roll calculator",
     "sod cost calculator",
     "sod pallet calculator",
     "turf calculator",
-    "turf grass calculator",
     "lawn sod calculator",
     "sod quantity calculator",
     "sod waste calculator",
-    "lawn area calculator",
     "sod calculator square meters",
   ],
   alternates: {
-    canonical: "https://www.cornerspan.com/calculators/sod-turf",
+    canonical: pageUrl,
   },
   robots: {
     index: true,
@@ -42,16 +43,16 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Sod Calculator: Estimate Lawn Area, Rolls & Cost",
     description:
-      "Find the sod quantity for your lawn, account for cutting waste, and estimate material costs using your supplier's coverage and prices.",
-    url: "https://www.cornerspan.com/calculators/sod-turf",
+      "Estimate sod quantity, cutting waste, pallet needs, and material costs with this free sod calculator.",
+    url: pageUrl,
     siteName: "CornerSpan",
     type: "website",
     images: [
       {
-        url: "/cornerspan-sod-turf-calculator-hero.webp",
+        url: heroImage,
         width: 1536,
         height: 1024,
-        alt: "Sod calculator for estimating lawn area and sod quantity",
+        alt: "Sod calculator and lawn material estimate",
       },
     ],
   },
@@ -59,8 +60,8 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Sod Calculator: Estimate Lawn Area, Rolls & Cost",
     description:
-      "Estimate sod quantity, cutting waste, pallet needs, and material costs for your lawn project.",
-    images: ["/cornerspan-sod-turf-calculator-hero.webp"],
+      "Estimate lawn area, sod rolls, waste allowance, pallet quantities, and material costs.",
+    images: [heroImage],
   },
 };
 
@@ -78,37 +79,37 @@ const faqs = [
   {
     question: "How much extra sod should I order?",
     answer:
-      "A 5% to 10% allowance can be a reasonable starting point for a relatively simple lawn. More complicated layouts, curves, narrow strips, and many obstacles may require additional material. The appropriate allowance depends on the layout and installation method.",
+      "A 5% to 10% allowance can be a reasonable starting point for a relatively simple lawn. Complex layouts, curves, narrow strips, and obstacles may require more material. The appropriate allowance depends on the layout and installation method.",
   },
   {
     question: "How many sod rolls or pieces will I need?",
     answer:
-      "Divide the total order area, including your waste allowance, by the coverage of one roll or piece. Round up to the next whole unit. Check the actual dimensions and coverage on the product label because sod rolls and pieces are not all the same size.",
+      "Divide the total order area, including waste allowance, by the coverage of one roll or piece. Round up to the next whole unit. Check the actual coverage on your supplier's product label.",
   },
   {
     question: "How many sod pallets do I need?",
     answer:
-      "Divide your total order area by the square-foot coverage of one pallet and round up to a whole pallet. Pallet coverage varies by supplier and product, so use the coverage stated by your seller rather than assuming every pallet contains the same amount.",
+      "Divide your total order area by the square-foot coverage of one pallet and round up to a whole pallet. Pallet coverage varies by supplier, so use the coverage stated by your seller.",
   },
   {
     question: "How much does sod cost?",
     answer:
-      "Material cost depends on your lawn's order area, the type of sod, and your supplier's price. If you buy by area, multiply the order area by the price per square foot. If you buy whole rolls or pallets, calculate the number of packages needed and multiply by the price per package. Delivery, soil preparation, taxes, and installation may cost extra.",
+      "Material cost depends on the order area, sod variety, and supplier price. Multiply the order area by the price per square foot, or multiply the number of rolls or pallets by their unit prices. Delivery, taxes, soil preparation, and installation may cost extra.",
   },
   {
     question: "Does the calculator include cutting waste?",
     answer:
-      "Yes. Choose a waste allowance in the calculator. It adds that percentage to the measured lawn area before estimating the quantity to order. This is a planning estimate; actual cutting needs depend on the shape of your lawn and the installation pattern.",
+      "Yes. Choose a waste allowance in the calculator. It adds that percentage to the measured lawn area before estimating the quantity to order. Actual cutting needs depend on the lawn shape and installation pattern.",
   },
   {
     question: "Can I use this sod calculator for an irregular lawn?",
     answer:
-      "Yes, as a planning method. Divide the lawn into rectangles or other simple shapes, calculate each section's area, and add the areas together. Enter the combined area using equivalent dimensions, or calculate the sections separately and combine their totals before ordering.",
+      "Yes. Divide the lawn into rectangles or other simple shapes, calculate each section's area, and add the areas together. Avoid counting the same area twice.",
   },
   {
     question: "Can I calculate sod in square meters?",
     answer:
-      "Yes. Select Metric in the calculator and enter your dimensions and product coverage in meters and square meters. If you switch units after entering values, the calculator converts the measurements. Confirm that the supplier's product coverage uses the same units.",
+      "Yes. Select Metric in the calculator and enter your dimensions and product coverage in meters and square meters. Confirm that the supplier's product coverage uses the same units.",
   },
   {
     question: "Does currency selection convert prices using exchange rates?",
@@ -117,39 +118,107 @@ const faqs = [
   },
 ];
 
+const contents = [
+  { id: "calculator", label: "Sod Calculator" },
+  { id: "calculation-formula", label: "Sod Calculation Formula" },
+  { id: "worked-example", label: "Worked Example" },
+  { id: "waste-allowance", label: "Sod Waste Allowance" },
+  { id: "cost-estimate", label: "Sod Material Cost" },
+  { id: "irregular-lawn", label: "Irregular Lawn Measurements" },
+  { id: "calculator-uses", label: "When to Use a Sod Calculator" },
+  { id: "external-resources", label: "Sod Installation Resources" },
+  { id: "faqs", label: "Frequently Asked Questions" },
+];
+
 export default function SodTurfPage() {
   return (
     <div className="min-h-screen bg-white">
       <CalculatorStructuredData
         name="Sod & Turf Calculator"
-        url="https://www.cornerspan.com/calculators/sod-turf"
+        url={pageUrl}
         description="Estimate lawn area, sod pieces or rolls, cutting waste, pallet quantities, and material costs using supplier coverage and prices."
       />
 
       <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
         <Breadcrumb current="Sod / Turf Calculator" />
 
-        <section className="mx-auto mt-4 max-w-4xl">
-          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
-            Sod Calculator
-          </h1>
+        <article className="mx-auto mt-4 max-w-4xl">
+          <header>
+            <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+              Sod Calculator
+            </h1>
 
-          <p className="mt-3 max-w-3xl text-base leading-7 text-slate-600">
-            Planning a new lawn? Use this free sod calculator to estimate
-            how much sod you need, how many pieces or rolls to order, and
-            how much the material may cost. Enter your lawn dimensions,
-            the coverage listed by your sod supplier, and an allowance
-            for cutting waste. The calculator uses feet and square feet
-            by default, with a metric option for other measurements.
-          </p>
+            <p className="mt-3 max-w-3xl text-base leading-7 text-slate-600">
+              Planning a new lawn? Use this free sod calculator to estimate
+              how much sod you need, how many pieces or rolls to order, and
+              how much the material may cost. Enter your lawn dimensions,
+              the coverage listed by your sod supplier, and an allowance
+              for cutting waste. Use feet and square feet by default, or
+              switch to metric measurements.
+            </p>
+          </header>
+
+          {/* Table of contents */}
+          <nav
+            aria-label="Table of contents"
+            className="mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-5"
+          >
+            <h2 className="text-lg font-bold text-slate-900">
+              On This Page
+            </h2>
+
+            <ul className="mt-3 grid gap-2 sm:grid-cols-2">
+              {contents.map((item) => (
+                <li key={item.id}>
+                  <a
+                    href={`#${item.id}`}
+                    className="text-sm font-medium text-blue-700 underline decoration-blue-300 underline-offset-4 hover:text-blue-900"
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
 
           {/* Calculator */}
-          <div className="mt-6">
-            <SodTurfCalculator />
-          </div>
+          <section id="calculator" className="mt-8 scroll-mt-24">
+            <h2 className="text-2xl font-bold text-slate-900">
+              Calculate Your Sod Requirements
+            </h2>
+
+            <p className="mt-2 leading-7 text-slate-600">
+              Enter your lawn dimensions, product coverage, waste allowance,
+              and optional supplier pricing to estimate the material you need.
+            </p>
+
+            <div className="mt-5">
+              <SodTurfCalculator />
+            </div>
+          </section>
+
+          {/* Featured image */}
+          <figure className="mt-8">
+            <Image
+              src={heroImage}
+              alt="Sod and turf calculator for estimating lawn area and sod quantities"
+              width={1536}
+              height={1024}
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 896px"
+              className="h-auto w-full rounded-2xl border border-slate-200"
+              loading="lazy"
+            />
+            <figcaption className="mt-2 text-sm text-slate-500">
+              Use your measured lawn area and supplier coverage to estimate
+              how much sod to order.
+            </figcaption>
+          </figure>
 
           {/* Calculation guide */}
-          <section className="mt-10">
+          <section
+            id="calculation-formula"
+            className="mt-10 scroll-mt-24"
+          >
             <h2 className="text-2xl font-bold text-slate-900">
               How to Calculate Sod for a Lawn
             </h2>
@@ -157,10 +226,9 @@ export default function SodTurfPage() {
             <p className="mt-3 leading-7 text-slate-700">
               Start by measuring the area where you plan to install sod.
               For a rectangular lawn, multiply its length by its width.
-              Add a reasonable allowance for cutting and fitting around
-              edges, curves, and obstacles. Then divide the order area
-              by the coverage of one sod piece or roll and round up to
-              a whole unit.
+              Add an allowance for cutting and fitting around edges, curves,
+              and obstacles. Divide the order area by the coverage of one
+              sod piece or roll, then round up to a whole unit.
             </p>
 
             <div className="mt-5 rounded-2xl border border-slate-200 bg-slate-50 p-5">
@@ -182,31 +250,29 @@ export default function SodTurfPage() {
                   <strong>Pieces or rolls</strong> = Order area ÷ Coverage per piece
                 </p>
                 <p className="font-medium">
-                  Always round the required number of pieces or rolls up
-                  to the next whole unit.
+                  Round the required number of pieces or rolls up to the
+                  next whole unit.
                 </p>
               </div>
             </div>
           </section>
 
           {/* Worked example */}
-          <section className="mt-10">
+          <section id="worked-example" className="mt-10 scroll-mt-24">
             <h2 className="text-2xl font-bold text-slate-900">
               Sod Calculator Example: A 600-Square-Foot Lawn
             </h2>
 
             <p className="mt-3 leading-7 text-slate-700">
               Suppose your rectangular lawn is 30 feet long and 20 feet
-              wide. You plan to use sod pieces that each cover 10 square
-              feet and want to allow 10% extra for cutting.
+              wide. Each sod piece covers 10 square feet, and you want
+              to allow 10% extra for cutting.
             </p>
 
             <div className="mt-4 overflow-hidden rounded-xl border border-slate-200">
               <div className="divide-y divide-slate-100">
                 <div className="flex items-center justify-between gap-4 px-4 py-3">
-                  <span className="text-sm text-slate-600">
-                    Lawn area
-                  </span>
+                  <span className="text-sm text-slate-600">Lawn area</span>
                   <span className="text-sm font-semibold text-slate-900">
                     30 × 20 = 600 ft²
                   </span>
@@ -242,109 +308,105 @@ export default function SodTurfPage() {
             </div>
 
             <p className="mt-3 leading-7 text-slate-700">
-              In this example, the estimate is 66 pieces. Your actual
-              order may differ if the supplier sells sod in larger rolls,
-              bundles, or full pallets. Always confirm the product's
-              coverage before purchasing.
+              The estimate is 66 pieces. Your actual order may differ if
+              the supplier sells sod in larger rolls, bundles, or full
+              pallets. Confirm product coverage before purchasing.
             </p>
           </section>
 
-          {/* Waste and measurement guidance */}
-          <section className="mt-10">
+          {/* Waste guidance */}
+          <section id="waste-allowance" className="mt-10 scroll-mt-24">
             <h2 className="text-2xl font-bold text-slate-900">
               Choosing a Sod Waste Allowance
             </h2>
 
             <p className="mt-3 leading-7 text-slate-700">
-              Extra sod helps account for trimming and fitting, but the
-              right amount depends on the shape of the lawn and the way
-              the sod is installed. A simple rectangular lawn may need
-              less trimming than a yard with curved borders, trees,
-              garden beds, or narrow sections.
+              Extra sod helps account for trimming and fitting. The right
+              amount depends on the shape of the lawn and installation
+              method. A simple rectangular lawn may need less trimming than
+              a yard with curved borders, trees, garden beds, or narrow areas.
             </p>
 
             <ul className="mt-4 list-disc space-y-2 pl-6 leading-7 text-slate-700">
               <li>
-                <strong>Simple rectangular lawns:</strong> Consider a
-                modest allowance, such as 5%, depending on the layout.
+                <strong>Simple rectangular lawns:</strong> A modest allowance,
+                such as 5%, may be sufficient depending on the layout.
               </li>
               <li>
-                <strong>Typical layouts:</strong> A 10% allowance can be
-                a useful starting estimate.
+                <strong>Typical layouts:</strong> A 10% allowance can be a
+                useful starting estimate.
               </li>
               <li>
-                <strong>Complex lawns:</strong> Curves and many obstacles
-                may require more material; assess the layout before ordering.
+                <strong>Complex lawns:</strong> Curves and many obstacles may
+                require more material.
               </li>
             </ul>
 
             <p className="mt-3 text-sm leading-6 text-slate-600">
               These percentages are planning guidelines, not universal
-              installation requirements. Follow your supplier's or
-              installer's advice for your specific lawn.
+              installation requirements. Follow your supplier&apos;s or
+              installer&apos;s advice for your specific lawn.
             </p>
           </section>
 
           {/* Cost guide */}
-          <section className="mt-10">
+          <section id="cost-estimate" className="mt-10 scroll-mt-24">
             <h2 className="text-2xl font-bold text-slate-900">
               Estimating Sod Material Cost
             </h2>
 
             <p className="mt-3 leading-7 text-slate-700">
-              Sod prices vary by grass variety, region, supplier, and
-              order size. The calculator supports different pricing
-              methods so you can use the price your supplier provides.
+              Sod prices vary by grass variety, region, supplier, and order
+              size. Use the price quoted by your supplier and select the
+              matching pricing method in the calculator.
             </p>
 
             <ul className="mt-4 list-disc space-y-2 pl-6 leading-7 text-slate-700">
               <li>
-                <strong>Price per square foot:</strong> Multiply the
-                order area by the quoted price per square foot.
+                <strong>Price per square foot:</strong> Multiply the order
+                area by the quoted price per square foot.
               </li>
               <li>
                 <strong>Price per piece or roll:</strong> Multiply the
                 number of whole pieces or rolls by the price per unit.
               </li>
               <li>
-                <strong>Price per pallet:</strong> Calculate the number
-                of pallets using the supplier's stated coverage,
-                round up, and multiply by the price per pallet.
+                <strong>Price per pallet:</strong> Divide the order area by
+                the supplier&apos;s pallet coverage, round up, and multiply
+                by the price per pallet.
               </li>
             </ul>
 
             <p className="mt-3 leading-7 text-slate-700">
-              These estimates cover the selected material pricing method.
               Delivery, taxes, soil preparation, equipment rental, and
               professional installation may be additional expenses.
               Confirm the final quote with your supplier.
             </p>
           </section>
 
-          {/* Irregular lawn guidance */}
-          <section className="mt-10">
+          {/* Irregular lawn */}
+          <section id="irregular-lawn" className="mt-10 scroll-mt-24">
             <h2 className="text-2xl font-bold text-slate-900">
               Measuring an Irregular Lawn
             </h2>
 
             <p className="mt-3 leading-7 text-slate-700">
               Not every yard is a perfect rectangle. Divide an irregular
-              lawn into smaller rectangles or other simple shapes that
-              you can measure accurately. Calculate each section's
-              area, add the sections together, and then account for
-              cutting waste. Avoid counting the same area twice.
+              lawn into smaller rectangles or other simple shapes that you
+              can measure accurately. Calculate each section&apos;s area,
+              add the sections together, and then account for cutting waste.
+              Avoid counting the same area twice.
             </p>
 
             <p className="mt-3 leading-7 text-slate-700">
               For example, if a yard contains two rectangular sections
               measuring 200 ft² and 150 ft², the combined lawn area is
-              350 ft² before adding waste. Use the combined area when
-              planning the material order.
+              350 ft² before adding waste.
             </p>
           </section>
 
           {/* Common uses */}
-          <section className="mt-10">
+          <section id="calculator-uses" className="mt-10 scroll-mt-24">
             <h2 className="text-2xl font-bold text-slate-900">
               When to Use a Sod Calculator
             </h2>
@@ -364,8 +426,60 @@ export default function SodTurfPage() {
             </ul>
           </section>
 
+          {/* Authoritative external resources */}
+          <section
+            id="external-resources"
+            className="mt-10 scroll-mt-24"
+          >
+            <h2 className="text-2xl font-bold text-slate-900">
+              Sod Installation and Lawn Planning Resources
+            </h2>
+
+            <p className="mt-3 leading-7 text-slate-700">
+              The calculator estimates material quantities. For lawn
+              preparation and installation guidance, consult university
+              extension resources as well as your local supplier.
+            </p>
+
+            <ul className="mt-4 list-disc space-y-3 pl-6 leading-7 text-slate-700">
+              <li>
+                <a
+                  href="https://extension.umn.edu/garden-and-home/yard-and-garden/lawns-and-landscapes-in-minnesota/seeding-and-sodding-home-lawns"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-medium text-blue-700 underline decoration-blue-300 underline-offset-4 hover:text-blue-900"
+                >
+                  University of Minnesota Extension: Seeding and Sodding Home Lawns
+                </a>
+                <span className="block text-sm text-slate-600">
+                  Guidance on lawn establishment, soil preparation, and sod installation.
+                </span>
+              </li>
+
+              <li>
+                <a
+                  href="https://extension.psu.edu/lawn-establishment"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-medium text-blue-700 underline decoration-blue-300 underline-offset-4 hover:text-blue-900"
+                >
+                  Penn State Extension: Lawn Establishment
+                </a>
+                <span className="block text-sm text-slate-600">
+                  Information on measuring a site, preparing soil, and establishing turf.
+                </span>
+              </li>
+            </ul>
+
+            <p className="mt-3 text-sm leading-6 text-slate-600">
+              These resources provide general lawn guidance. Local climate,
+              grass variety, soil conditions, and supplier specifications
+              may affect your project.
+            </p>
+          </section>
+
           {/* FAQs */}
-          <section className="mt-10">
+          <section id="faqs" className="mt-10 scroll-mt-24">
             <h2 className="text-2xl font-bold text-slate-900">
               Frequently Asked Questions
             </h2>
@@ -389,9 +503,9 @@ export default function SodTurfPage() {
           </section>
 
           {/* Related calculators */}
-          <div className="mt-10">
+          <section className="mt-10">
             <RelatedCalculators />
-          </div>
+          </section>
 
           {/* Important note */}
           <aside className="mt-8 rounded-2xl border border-amber-200 bg-amber-50 p-5">
@@ -400,15 +514,14 @@ export default function SodTurfPage() {
             </h2>
 
             <p className="mt-2 text-sm leading-6 text-amber-900">
-              This calculator provides a planning estimate, not a
-              guaranteed order quantity or supplier quote. Sod coverage,
-              roll dimensions, pallet quantities, and installation
-              requirements vary by product. Verify the stated coverage,
-              package sizes, pricing, and delivery arrangements with
-              your supplier before placing an order.
+              This calculator provides a planning estimate, not a guaranteed
+              order quantity or supplier quote. Sod coverage, roll dimensions,
+              pallet quantities, and installation requirements vary by product.
+              Verify coverage, package sizes, pricing, and delivery arrangements
+              with your supplier before placing an order.
             </p>
           </aside>
-        </section>
+        </article>
       </div>
     </div>
   );
