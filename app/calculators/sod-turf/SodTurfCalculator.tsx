@@ -2,13 +2,12 @@
 
 import { useMemo, useState } from "react";
 
-type UnitSystem = "imperial" | "metric";
-type CostMode = "area" | "piece";
+type Unit = "imperial" | "metric";
 type Currency = "USD" | "EUR" | "GBP" | "CAD" | "AUD" | "INR";
 
 const FT2_TO_M2 = 0.09290304;
 
-const CURRENCY_SYMBOLS: Record<Currency, string> = {
+const currencies: Record<Currency, string> = {
   USD: "$",
   EUR: "€",
   GBP: "£",
@@ -17,111 +16,53 @@ const CURRENCY_SYMBOLS: Record<Currency, string> = {
   INR: "₹",
 };
 
-const CURRENCY_OPTIONS: { value: Currency; label: string }[] = [
-  { value: "USD", label: "USD ($)" },
-  { value: "EUR", label: "EUR (€)" },
-  { value: "GBP", label: "GBP (£)" },
-  { value: "CAD", label: "CAD (CA$)" },
-  { value: "AUD", label: "AUD (A$)" },
-  { value: "INR", label: "INR (₹)" },
-];
-
-const formatNumber = (value: number, maximumFractionDigits = 2) =>
+const fmt = (n: number, digits = 2) =>
   new Intl.NumberFormat("en-US", {
-    maximumFractionDigits,
-    minimumFractionDigits: 0,
-  }).format(value);
-
-const formatMoney = (value: number, currency: Currency) =>
-  `${CURRENCY_SYMBOLS[currency]}${formatNumber(value, 2)}`;
+    maximumFractionDigits: digits,
+  }).format(n);
 
 export default function SodTurfCalculator() {
-  const [unit, setUnit] = useState<UnitSystem>("imperial");
+  const [unit, setUnit] = useState<Unit>("imperial");
   const [length, setLength] = useState("30");
   const [width, setWidth] = useState("20");
   const [coverage, setCoverage] = useState("10");
   const [waste, setWaste] = useState("10");
-
-  const [costMode, setCostMode] = useState<CostMode>("area");
   const [price, setPrice] = useState("");
+  const [priceMode, setPriceMode] = useState<"area" | "piece">("area");
   const [currency, setCurrency] = useState<Currency>("USD");
-
-  const [enablePallets, setEnablePallets] = useState(false);
+  const [palletsOn, setPalletsOn] = useState(false);
   const [palletCoverage, setPalletCoverage] = useState("200");
-
   const [error, setError] = useState("");
-  const [calculated, setCalculated] = useState(false);
+  const [showResults, setShowResults] = useState(false);
 
-  const areaUnit = unit === "imperial" ? "ft²" : "m²";
-  const dimensionUnit = unit === "imperial" ? "ft" : "m";
-  const priceUnit = unit === "imperial" ? "ft²" : "m²";
+  const dim = unit === "imperial" ? "ft" : "m";
+  const area = unit === "imperial" ? "ft²" : "m²";
 
-  const values = useMemo(() => {
+  const result = useMemo(() => {
     const l = Number(length);
     const w = Number(width);
     const c = Number(coverage);
-    const wastePercent = Number(waste);
+    const wp = Number(waste);
     const p = price.trim() === "" ? null : Number(price);
-    const palletArea = Number(palletCoverage);
+    const pc = Number(palletCoverage);
 
-    const validDimensions =
-      length.trim() !== "" &&
-      width.trim() !== "" &&
-      Number.isFinite(l) &&
-      Number.isFinite(w) &&
-      l > 0 &&
-      w > 0;
-
-    const validCoverage =
-      coverage.trim() !== "" &&
-      Number.isFinite(c) &&
-      c > 0;
-
-    const validWaste =
-      waste.trim() !== "" &&
-      Number.isFinite(wastePercent) &&
-      wastePercent >= 0 &&
-      wastePercent <= 100;
-
-    const validPrice =
-      p === null || (Number.isFinite(p) && p >= 0);
-
-    const validPallet =
-      !enablePallets ||
-      (palletCoverage.trim() !== "" &&
-        Number.isFinite(palletArea) &&
-        palletArea > 0);
-
-    const lawnArea = l * w;
-    const wasteArea = lawnArea * (wastePercent / 100);
-    const orderArea = lawnArea + wasteArea;
+    const lawn = l * w;
+    const extra = lawn * (wp / 100);
+    const orderArea = lawn + extra;
     const pieces = Math.ceil(orderArea / c);
 
-    const totalCost =
-      p === null
-        ? null
-        : costMode === "area"
-          ? orderArea * p
-          : pieces * p;
-
-    const pallets = enablePallets
-      ? Math.ceil(orderArea / palletArea)
-      : null;
-
     return {
-      valid:
-        validDimensions &&
-        validCoverage &&
-        validWaste &&
-        validPrice &&
-        validPallet,
-      lawnArea,
-      wasteArea,
+      lawn,
+      extra,
       orderArea,
       pieces,
-      totalCost,
-      pallets,
-      wastePercent,
+      cost:
+        p === null
+          ? null
+          : priceMode === "area"
+            ? orderArea * p
+            : pieces * p,
+      pallets: palletsOn ? Math.ceil(orderArea / pc) : null,
     };
   }, [
     length,
@@ -129,526 +70,399 @@ export default function SodTurfCalculator() {
     coverage,
     waste,
     price,
-    costMode,
-    enablePallets,
+    priceMode,
+    palletsOn,
     palletCoverage,
   ]);
 
-  function handleCalculate() {
-    if (
-      length.trim() === "" ||
-      width.trim() === "" ||
-      coverage.trim() === "" ||
-      waste.trim() === ""
-    ) {
-      setError("Enter all required measurements to calculate your estimate.");
-      setCalculated(false);
-      return;
-    }
-
-    if (
-      !Number.isFinite(Number(length)) ||
-      !Number.isFinite(Number(width)) ||
-      !Number.isFinite(Number(coverage)) ||
-      Number(length) <= 0 ||
-      Number(width) <= 0 ||
-      Number(coverage) <= 0
-    ) {
-      setError("Length, width, and coverage must be greater than zero.");
-      setCalculated(false);
-      return;
-    }
-
-    if (
-      !Number.isFinite(Number(waste)) ||
-      Number(waste) < 0 ||
-      Number(waste) > 100
-    ) {
-      setError("Waste allowance must be between 0% and 100%.");
-      setCalculated(false);
-      return;
-    }
-
-    if (
-      price.trim() !== "" &&
-      (!Number.isFinite(Number(price)) || Number(price) < 0)
-    ) {
-      setError("Enter a valid price of zero or more.");
-      setCalculated(false);
-      return;
-    }
-
-    if (
-      enablePallets &&
-      (palletCoverage.trim() === "" ||
-        !Number.isFinite(Number(palletCoverage)) ||
-        Number(palletCoverage) <= 0)
-    ) {
-      setError("Enter a valid coverage area per pallet.");
-      setCalculated(false);
-      return;
-    }
-
+  function update(setter: (v: string) => void, value: string) {
+    setter(value);
+    setShowResults(false);
     setError("");
-    setCalculated(true);
   }
 
-  function handleUnitChange(nextUnit: UnitSystem) {
-    if (nextUnit === unit) return;
+  function switchUnit(next: Unit) {
+    if (next === unit) return;
 
-    const convertDimension = (value: string) => {
-      if (value.trim() === "" || !Number.isFinite(Number(value))) {
-        return value;
-      }
+    const convert = (value: string, factor: number) =>
+      value.trim() === "" || !Number.isFinite(Number(value))
+        ? value
+        : String(Number((Number(value) * factor).toFixed(4)));
 
-      const n = Number(value);
+    const areaFactor = next === "metric" ? FT2_TO_M2 : 1 / FT2_TO_M2;
+    const lengthFactor = next === "metric" ? 0.3048 : 1 / 0.3048;
 
-      return String(
-        Number(
-          (
-            nextUnit === "metric"
-              ? n * 0.3048
-              : n / 0.3048
-          ).toFixed(4)
-        )
-      );
-    };
-
-    const convertArea = (value: string) => {
-      if (value.trim() === "" || !Number.isFinite(Number(value))) {
-        return value;
-      }
-
-      const n = Number(value);
-
-      return String(
-        Number(
-          (
-            nextUnit === "metric"
-              ? n * FT2_TO_M2
-              : n / FT2_TO_M2
-          ).toFixed(4)
-        )
-      );
-    };
-
-    setLength(convertDimension(length));
-    setWidth(convertDimension(width));
-    setCoverage(convertArea(coverage));
-    setPalletCoverage(convertArea(palletCoverage));
+    setLength(convert(length, lengthFactor));
+    setWidth(convert(width, lengthFactor));
+    setCoverage(convert(coverage, areaFactor));
+    setPalletCoverage(convert(palletCoverage, areaFactor));
 
     if (price.trim() !== "" && Number.isFinite(Number(price))) {
-      const p = Number(price);
-
-      setPrice(
-        String(
-          Number(
-            (
-              nextUnit === "metric"
-                ? p / FT2_TO_M2
-                : p * FT2_TO_M2
-            ).toFixed(4)
-          )
-        )
-      );
+      setPrice(convert(price, priceMode === "area" ? 1 / areaFactor : 1));
     }
 
-    setUnit(nextUnit);
-    setError("");
-    setCalculated(false);
-  }
-
-  function updateInput(
-    setter: (value: string) => void,
-    value: string
-  ) {
-    setter(value);
-    setCalculated(false);
+    setUnit(next);
+    setShowResults(false);
     setError("");
   }
 
-  const inputClass =
-    "mt-1.5 w-full min-w-0 rounded-xl border border-slate-200 bg-white px-3 py-3 text-base font-semibold text-slate-900 outline-none transition placeholder:font-normal placeholder:text-slate-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100";
+  function calculate() {
+    const l = Number(length);
+    const w = Number(width);
+    const c = Number(coverage);
+    const wp = Number(waste);
+    const p = price.trim() === "" ? null : Number(price);
+    const pc = Number(palletCoverage);
 
-  const labelClass =
-    "block text-sm font-medium text-slate-600";
+    if (
+      !length.trim() ||
+      !width.trim() ||
+      !coverage.trim() ||
+      !waste.trim() ||
+      !Number.isFinite(l) ||
+      !Number.isFinite(w) ||
+      !Number.isFinite(c) ||
+      l <= 0 ||
+      w <= 0 ||
+      c <= 0
+    ) {
+      setError("Enter valid length, width, and coverage values.");
+      setShowResults(false);
+      return;
+    }
+
+    if (!Number.isFinite(wp) || wp < 0 || wp > 100) {
+      setError("Waste allowance must be between 0% and 100%.");
+      setShowResults(false);
+      return;
+    }
+
+    if (p !== null && (!Number.isFinite(p) || p < 0)) {
+      setError("Enter a valid material price.");
+      setShowResults(false);
+      return;
+    }
+
+    if (
+      palletsOn &&
+      (!palletCoverage.trim() || !Number.isFinite(pc) || pc <= 0)
+    ) {
+      setError("Enter valid coverage per pallet.");
+      setShowResults(false);
+      return;
+    }
+
+    setError("");
+    setShowResults(true);
+  }
+
+  const input =
+    "w-full min-w-0 rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm font-semibold text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100";
+
+  const label = "mb-1 block text-xs font-medium text-slate-500";
 
   return (
     <section
       aria-label="Sod and turf calculator"
-      className="mx-auto w-full max-w-3xl"
+      className="mx-auto w-full max-w-2xl"
     >
-      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-lg shadow-slate-200/50">
-        {/* Compact calculator header */}
-        <div className="bg-slate-950 px-4 py-5 text-white sm:px-6">
-          <div className="flex items-start justify-between gap-3">
-            <div>
-              <div className="mb-2 inline-flex items-center gap-1.5 rounded-full border border-blue-400/30 bg-blue-400/10 px-2.5 py-1 text-xs font-semibold text-blue-300">
-                <span
-                  aria-hidden="true"
-                  className="h-1.5 w-1.5 rounded-full bg-blue-400"
-                />
-                SMART ESTIMATOR
-              </div>
-
-              <h2 className="text-xl font-bold tracking-tight sm:text-2xl">
-                Sod &amp; Turf Calculator
-              </h2>
-
-              <p className="mt-1 text-sm leading-5 text-slate-300">
-                Estimate your lawn area, sod quantity, and material cost.
-              </p>
+      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-md shadow-slate-200/40">
+        {/* Compact header */}
+        <div className="flex items-center justify-between gap-3 bg-slate-950 px-4 py-3.5 text-white sm:px-5">
+          <div>
+            <div className="text-[10px] font-bold uppercase tracking-[0.16em] text-blue-300">
+              Lawn planning tool
             </div>
-
-            <div
-              aria-hidden="true"
-              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-xl"
-            >
-              🌱
-            </div>
+            <h2 className="mt-0.5 text-lg font-bold tracking-tight">
+              Sod Calculator
+            </h2>
+            <p className="text-xs text-slate-400">
+              Area, quantity & cost estimate
+            </p>
           </div>
 
-          <div
-            aria-label="Measurement units"
-            className="mt-5 grid grid-cols-2 gap-1 rounded-xl bg-white/10 p-1"
-          >
-            <button
-              type="button"
-              onClick={() => handleUnitChange("imperial")}
-              aria-pressed={unit === "imperial"}
-              className={`rounded-lg px-3 py-2.5 text-sm font-semibold transition ${
-                unit === "imperial"
-                  ? "bg-white text-slate-950 shadow-sm"
-                  : "text-slate-300 hover:bg-white/10"
-              }`}
-            >
-              Feet · ft²
-            </button>
-
-            <button
-              type="button"
-              onClick={() => handleUnitChange("metric")}
-              aria-pressed={unit === "metric"}
-              className={`rounded-lg px-3 py-2.5 text-sm font-semibold transition ${
-                unit === "metric"
-                  ? "bg-white text-slate-950 shadow-sm"
-                  : "text-slate-300 hover:bg-white/10"
-              }`}
-            >
-              Meters · m²
-            </button>
+          <div className="flex shrink-0 rounded-lg border border-white/10 bg-white/5 p-1">
+            {(["imperial", "metric"] as Unit[]).map((u) => (
+              <button
+                key={u}
+                type="button"
+                onClick={() => switchUnit(u)}
+                aria-pressed={unit === u}
+                className={`rounded-md px-2.5 py-2 text-xs font-semibold transition ${
+                  unit === u
+                    ? "bg-blue-500 text-white"
+                    : "text-slate-300 hover:bg-white/10"
+                }`}
+              >
+                {u === "imperial" ? "ft / ft²" : "m / m²"}
+              </button>
+            ))}
           </div>
         </div>
 
-        <div className="space-y-5 p-4 sm:p-6">
-          {/* Lawn measurements */}
+        <div className="space-y-4 p-3.5 sm:p-5">
+          {/* Measurements */}
           <div>
-            <div className="mb-3 flex items-center justify-between gap-2">
-              <h3 className="text-sm font-bold text-slate-900">
-                01. Lawn measurements
+            <div className="mb-2.5 flex items-center justify-between">
+              <h3 className="text-sm font-bold text-slate-800">
+                Lawn dimensions
               </h3>
-
-              <span className="text-xs text-slate-500">
-                Units: {dimensionUnit}
+              <span className="text-[11px] text-slate-400">
+                Measurements in {dim}
               </span>
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
-              <label className={labelClass}>
-                Length ({dimensionUnit})
+            <div className="grid grid-cols-2 gap-2.5">
+              <label>
+                <span className={label}>Length ({dim})</span>
                 <input
                   type="number"
-                  inputMode="decimal"
                   min="0"
                   step="any"
+                  inputMode="decimal"
                   value={length}
-                  onChange={(e) =>
-                    updateInput(setLength, e.target.value)
-                  }
-                  className={inputClass}
-                  placeholder="e.g. 30"
+                  onChange={(e) => update(setLength, e.target.value)}
+                  className={input}
+                  placeholder="Length"
                 />
               </label>
 
-              <label className={labelClass}>
-                Width ({dimensionUnit})
+              <label>
+                <span className={label}>Width ({dim})</span>
                 <input
                   type="number"
-                  inputMode="decimal"
                   min="0"
                   step="any"
+                  inputMode="decimal"
                   value={width}
-                  onChange={(e) =>
-                    updateInput(setWidth, e.target.value)
-                  }
-                  className={inputClass}
-                  placeholder="e.g. 20"
+                  onChange={(e) => update(setWidth, e.target.value)}
+                  className={input}
+                  placeholder="Width"
                 />
               </label>
-            </div>
 
-            <div className="mt-3 grid grid-cols-2 gap-3">
-              <label className={labelClass}>
-                Coverage per piece ({areaUnit})
+              <label>
+                <span className={label}>Coverage per piece ({area})</span>
                 <input
                   type="number"
-                  inputMode="decimal"
                   min="0"
                   step="any"
+                  inputMode="decimal"
                   value={coverage}
-                  onChange={(e) =>
-                    updateInput(setCoverage, e.target.value)
-                  }
-                  className={inputClass}
+                  onChange={(e) => update(setCoverage, e.target.value)}
+                  className={input}
                   placeholder="e.g. 10"
                 />
               </label>
 
-              <label className={labelClass}>
-                Extra material
+              <label>
+                <span className={label}>Waste allowance</span>
                 <select
                   value={waste}
-                  onChange={(e) =>
-                    updateInput(setWaste, e.target.value)
-                  }
-                  className={inputClass}
+                  onChange={(e) => update(setWaste, e.target.value)}
+                  className={input}
                 >
-                  <option value="0">0% — No extra</option>
-                  <option value="5">5% — Simple layout</option>
+                  <option value="0">0% — None</option>
+                  <option value="5">5% — Simple lawn</option>
                   <option value="10">10% — Recommended</option>
-                  <option value="15">15% — Complex layout</option>
+                  <option value="15">15% — Complex lawn</option>
                   <option value="20">20% — Extra allowance</option>
                 </select>
               </label>
             </div>
-
-            <p className="mt-2 text-xs leading-5 text-slate-500">
-              Measure the area you want to cover. Extra material helps
-              account for trimming and irregular edges.
-            </p>
           </div>
 
-          <div className="border-t border-slate-100" />
-
-          {/* Optional pricing */}
-          <div>
-            <h3 className="mb-3 text-sm font-bold text-slate-900">
-              02. Material cost
-              <span className="ml-2 font-normal text-slate-400">
-                Optional
+          {/* Optional settings */}
+          <details className="group rounded-xl border border-slate-200">
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3.5 py-3 text-sm font-semibold text-slate-700">
+              <span>Price & advanced options</span>
+              <span className="text-slate-400 transition group-open:rotate-180">
+                ▾
               </span>
-            </h3>
+            </summary>
 
-            <div className="grid grid-cols-2 gap-3">
-              <label className={labelClass}>
-                Pricing method
-                <select
-                  value={costMode}
-                  onChange={(e) => {
-                    setCostMode(e.target.value as CostMode);
-                    setCalculated(false);
-                  }}
-                  className={inputClass}
-                >
-                  <option value="area">Price per {priceUnit}</option>
-                  <option value="piece">Price per piece / roll</option>
-                </select>
-              </label>
+            <div className="space-y-3 border-t border-slate-100 p-3.5">
+              <div className="grid grid-cols-2 gap-2.5">
+                <label>
+                  <span className={label}>Pricing method</span>
+                  <select
+                    value={priceMode}
+                    onChange={(e) => {
+                      setPriceMode(e.target.value as "area" | "piece");
+                      setShowResults(false);
+                    }}
+                    className={input}
+                  >
+                    <option value="area">Price per {area}</option>
+                    <option value="piece">Price per piece</option>
+                  </select>
+                </label>
 
-              <label className={labelClass}>
-                Currency
-                <select
-                  value={currency}
-                  onChange={(e) => {
-                    setCurrency(e.target.value as Currency);
-                    setCalculated(false);
-                  }}
-                  className={inputClass}
-                >
-                  {CURRENCY_OPTIONS.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-              </label>
-            </div>
+                <label>
+                  <span className={label}>Currency</span>
+                  <select
+                    value={currency}
+                    onChange={(e) => {
+                      setCurrency(e.target.value as Currency);
+                      setShowResults(false);
+                    }}
+                    className={input}
+                  >
+                    {Object.entries(currencies).map(([code, symbol]) => (
+                      <option key={code} value={code}>
+                        {code} ({symbol})
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              </div>
 
-            <label className={`${labelClass} mt-3 block`}>
-              {costMode === "area"
-                ? `Price per ${priceUnit}`
-                : "Price per piece / roll"}
-
-              <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 font-semibold text-slate-500">
-                  {CURRENCY_SYMBOLS[currency]}
+              <label className="block">
+                <span className={label}>
+                  {priceMode === "area"
+                    ? `Price per ${area}`
+                    : "Price per piece / roll"}
                 </span>
-
                 <input
                   type="number"
-                  inputMode="decimal"
                   min="0"
                   step="any"
+                  inputMode="decimal"
                   value={price}
-                  onChange={(e) =>
-                    updateInput(setPrice, e.target.value)
-                  }
-                  className={`${inputClass} pl-10`}
+                  onChange={(e) => update(setPrice, e.target.value)}
+                  className={input}
                   placeholder="Leave blank to skip cost"
                 />
-              </div>
-            </label>
-
-            <label className="mt-4 flex cursor-pointer items-start gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3.5">
-              <input
-                type="checkbox"
-                checked={enablePallets}
-                onChange={(e) => {
-                  setEnablePallets(e.target.checked);
-                  setCalculated(false);
-                  setError("");
-                }}
-                className="mt-0.5 h-4 w-4 shrink-0 accent-blue-600"
-              />
-
-              <span>
-                <span className="block text-sm font-semibold text-slate-800">
-                  Estimate full pallets
-                </span>
-                <span className="mt-0.5 block text-xs leading-5 text-slate-500">
-                  Useful when your supplier sells sod by the pallet.
-                </span>
-              </span>
-            </label>
-
-            {enablePallets && (
-              <label className={`${labelClass} mt-3 block`}>
-                Coverage per pallet ({areaUnit})
-                <input
-                  type="number"
-                  inputMode="decimal"
-                  min="0"
-                  step="any"
-                  value={palletCoverage}
-                  onChange={(e) =>
-                    updateInput(setPalletCoverage, e.target.value)
-                  }
-                  className={inputClass}
-                  placeholder="e.g. 200"
-                />
               </label>
-            )}
-          </div>
 
-          {/* Validation message */}
+              <label className="flex cursor-pointer items-center gap-2.5 rounded-lg bg-slate-50 px-3 py-2.5 text-sm text-slate-700">
+                <input
+                  type="checkbox"
+                  checked={palletsOn}
+                  onChange={(e) => {
+                    setPalletsOn(e.target.checked);
+                    setShowResults(false);
+                  }}
+                  className="h-4 w-4 accent-blue-600"
+                />
+                Estimate full pallets
+              </label>
+
+              {palletsOn && (
+                <label className="block">
+                  <span className={label}>
+                    Coverage per pallet ({area})
+                  </span>
+                  <input
+                    type="number"
+                    min="0"
+                    step="any"
+                    inputMode="decimal"
+                    value={palletCoverage}
+                    onChange={(e) =>
+                      update(setPalletCoverage, e.target.value)
+                    }
+                    className={input}
+                  />
+                </label>
+              )}
+            </div>
+          </details>
+
           {error && (
-            <div
+            <p
               role="alert"
-              className="rounded-xl border border-red-200 bg-red-50 px-3.5 py-3 text-sm leading-5 text-red-700"
+              className="rounded-lg bg-red-50 px-3 py-2 text-xs text-red-700"
             >
               {error}
-            </div>
+            </p>
           )}
 
-          {/* Primary action */}
           <button
             type="button"
-            onClick={handleCalculate}
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-4 text-base font-bold text-white shadow-md shadow-blue-600/20 transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 active:scale-[0.99]"
+            onClick={calculate}
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 active:scale-[0.99]"
           >
-            Calculate Sod Estimate
+            Calculate sod needed
             <span aria-hidden="true">→</span>
           </button>
 
-          {/* Compact result panel */}
-          {calculated && values.valid && (
-            <section
+          {/* One compact results panel */}
+          {showResults && (
+            <div
               aria-live="polite"
-              aria-label="Sod estimate results"
-              className="overflow-hidden rounded-2xl border border-blue-200 bg-blue-50/60"
+              className="overflow-hidden rounded-xl border border-blue-200 bg-blue-50/60"
             >
-              <div className="bg-slate-950 px-4 py-4 text-white sm:px-5">
-                <p className="text-sm font-medium text-slate-300">
-                  Your estimated order
-                </p>
-
-                <div className="mt-1 flex flex-wrap items-baseline gap-x-2 gap-y-1">
-                  <span className="text-4xl font-extrabold tracking-tight">
-                    {formatNumber(values.pieces, 0)}
-                  </span>
-
-                  <span className="text-sm text-slate-300">
-                    pieces / rolls
-                  </span>
+              <div className="flex items-center justify-between gap-3 bg-slate-950 px-4 py-3 text-white">
+                <div>
+                  <p className="text-[11px] font-medium text-slate-400">
+                    Recommended quantity
+                  </p>
+                  <p className="mt-0.5 text-3xl font-extrabold tracking-tight">
+                    {fmt(result.pieces, 0)}
+                    <span className="ml-1.5 text-sm font-medium text-slate-300">
+                      pieces
+                    </span>
+                  </p>
                 </div>
 
-                <p className="mt-2 text-xs leading-5 text-slate-400">
-                  Includes {values.wastePercent}% extra material.
-                  Round-up quantities help avoid running short.
-                </p>
+                <div className="rounded-lg bg-blue-500/15 px-3 py-2 text-right">
+                  <p className="text-[10px] text-blue-200">Order area</p>
+                  <p className="mt-0.5 text-sm font-bold text-white">
+                    {fmt(result.orderArea)} {area}
+                  </p>
+                </div>
               </div>
 
-              <div className="divide-y divide-blue-100 px-4 sm:px-5">
-                <div className="flex items-center justify-between gap-3 py-3">
-                  <span className="text-sm text-slate-600">
-                    Lawn area
-                  </span>
-                  <span className="text-sm font-bold tabular-nums text-slate-900">
-                    {formatNumber(values.lawnArea)} {areaUnit}
-                  </span>
+              <div className="grid grid-cols-2 gap-x-4 gap-y-3 p-3.5 sm:grid-cols-3">
+                <div>
+                  <p className="text-[11px] text-slate-500">Lawn area</p>
+                  <p className="mt-0.5 text-sm font-bold text-slate-900">
+                    {fmt(result.lawn)} {area}
+                  </p>
                 </div>
 
-                <div className="flex items-center justify-between gap-3 py-3">
-                  <span className="text-sm text-slate-600">
-                    Extra material ({values.wastePercent}%)
-                  </span>
-                  <span className="text-sm font-bold tabular-nums text-slate-900">
-                    {formatNumber(values.wasteArea)} {areaUnit}
-                  </span>
+                <div>
+                  <p className="text-[11px] text-slate-500">
+                    Extra material ({waste}%)
+                  </p>
+                  <p className="mt-0.5 text-sm font-bold text-slate-900">
+                    {fmt(result.extra)} {area}
+                  </p>
                 </div>
 
-                <div className="flex items-center justify-between gap-3 py-3">
-                  <span className="text-sm font-semibold text-slate-800">
-                    Total area to cover
-                  </span>
-                  <span className="text-sm font-extrabold tabular-nums text-blue-700">
-                    {formatNumber(values.orderArea)} {areaUnit}
-                  </span>
-                </div>
+                {result.cost !== null && (
+                  <div>
+                    <p className="text-[11px] text-slate-500">
+                      Estimated cost
+                    </p>
+                    <p className="mt-0.5 text-sm font-extrabold text-emerald-700">
+                      {currencies[currency]}{fmt(result.cost)}
+                    </p>
+                  </div>
+                )}
 
-                {enablePallets && values.pallets !== null && (
-                  <div className="flex items-center justify-between gap-3 py-3">
-                    <span className="text-sm text-slate-600">
+                {palletsOn && result.pallets !== null && (
+                  <div>
+                    <p className="text-[11px] text-slate-500">
                       Estimated pallets
-                    </span>
-                    <span className="text-sm font-bold tabular-nums text-slate-900">
-                      {formatNumber(values.pallets, 0)}
-                    </span>
-                  </div>
-                )}
-
-                {values.totalCost !== null && (
-                  <div className="flex items-center justify-between gap-3 py-3">
-                    <span className="text-sm font-semibold text-slate-800">
-                      Estimated material cost
-                    </span>
-                    <span className="text-lg font-extrabold tabular-nums text-emerald-700">
-                      {formatMoney(values.totalCost, currency)}
-                    </span>
+                    </p>
+                    <p className="mt-0.5 text-sm font-bold text-slate-900">
+                      {fmt(result.pallets, 0)}
+                    </p>
                   </div>
                 )}
               </div>
 
-              <p className="px-4 pb-4 pt-2 text-xs leading-5 text-slate-500 sm:px-5">
-                This is a planning estimate. Actual quantities and costs
-                depend on product coverage, package sizes, delivery, and
-                your supplier&apos;s minimum order requirements.
+              <p className="border-t border-blue-100 px-3.5 py-2.5 text-[11px] leading-4 text-slate-500">
+                Estimate only. Check product coverage and supplier package
+                sizes before ordering.
               </p>
-            </section>
+            </div>
           )}
 
-          <p className="text-center text-xs leading-5 text-slate-400">
-            Check your supplier&apos;s stated coverage before placing an order.
+          <p className="text-center text-[11px] text-slate-400">
+            Simple estimates for a better-planned lawn.
           </p>
         </div>
       </div>
