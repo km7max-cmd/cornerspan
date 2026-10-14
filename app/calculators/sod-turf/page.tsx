@@ -1,5 +1,5 @@
-
 import Image from "next/image";
+import Link from "next/link";
 import type { Metadata } from "next";
 import CalculatorStructuredData from "../../../components/CalculatorStructuredData";
 import Breadcrumb from "../../../components/Breadcrumb";
@@ -130,6 +130,9 @@ const contents = [
   { id: "faqs", label: "Frequently Asked Questions" },
 ];
 
+const internalLinkClass =
+  "font-medium text-blue-700 underline decoration-blue-300 underline-offset-4 hover:text-blue-900";
+
 export default function SodTurfPage() {
   return (
     <div className="min-h-screen bg-white">
@@ -143,7 +146,10 @@ export default function SodTurfPage() {
         <Breadcrumb current="Sod / Turf Calculator" />
 
         {/* Calculator first */}
-        <section id="calculator" className="mx-auto mt-4 max-w-4xl scroll-mt-24">
+        <section
+          id="calculator"
+          className="mx-auto mt-4 max-w-4xl scroll-mt-24"
+        >
           <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
             Sod Calculator
           </h1>
@@ -152,6 +158,21 @@ export default function SodTurfPage() {
             Calculate how much sod you need for your lawn, including
             cutting waste, rolls, pallets, and estimated material costs.
             Enter your lawn dimensions and supplier coverage to get started.
+          </p>
+
+          <p className="mt-3 leading-7 text-slate-700">
+            Need to measure your lawn first? Use our{" "}
+            <Link href="/calculators/area" className={internalLinkClass}>
+              Area Calculator
+            </Link>{" "}
+            or{" "}
+            <Link
+              href="/calculators/square-footage"
+              className={internalLinkClass}
+            >
+              Square Footage Calculator
+            </Link>{" "}
+            to work out the surface area before estimating sod quantities.
           </p>
 
           <div className="mt-5">
@@ -208,10 +229,15 @@ export default function SodTurfPage() {
 
             <p className="mt-3 leading-7 text-slate-700">
               Measure the area where you plan to install sod. For a
-              rectangular lawn, multiply its length by its width. Add an
-              allowance for cutting around edges, curves, and obstacles.
-              Divide the order area by the coverage of one sod piece or
-              roll, then round up to a whole unit.
+              rectangular lawn, multiply its length by its width. You can
+              use the{" "}
+              <Link href="/calculators/area" className={internalLinkClass}>
+                Area Calculator
+              </Link>{" "}
+              to calculate the dimensions of a simple lawn. Add an allowance
+              for cutting around edges, curves, and obstacles. Divide the
+              order area by the coverage of one sod piece or roll, then
+              round up to a whole unit.
             </p>
 
             <div className="mt-5 rounded-2xl border border-slate-200 bg-slate-50 p-5">
@@ -269,7 +295,9 @@ export default function SodTurfPage() {
                 </div>
 
                 <div className="flex items-center justify-between gap-4 px-4 py-3">
-                  <span className="text-sm text-slate-600">Total order area</span>
+                  <span className="text-sm text-slate-600">
+                    Total order area
+                  </span>
                   <span className="text-sm font-semibold text-slate-900">
                     600 + 60 = 660 ft²
                   </span>
@@ -335,7 +363,12 @@ export default function SodTurfPage() {
             <p className="mt-3 leading-7 text-slate-700">
               Sod prices vary by grass variety, region, supplier, and order
               size. Use your supplier's quoted price and select the matching
-              pricing method in the calculator.
+              pricing method in the calculator. For other landscaping
+              material estimates, see our{" "}
+              <Link href="/calculators/gravel" className={internalLinkClass}>
+                Gravel Calculator
+              </Link>
+              .
             </p>
 
             <ul className="mt-4 list-disc space-y-2 pl-6 leading-7 text-slate-700">
@@ -371,12 +404,26 @@ export default function SodTurfPage() {
               Divide an irregular lawn into smaller rectangles or other
               simple shapes that you can measure accurately. Calculate
               each section's area, add the sections together, and account
-              for cutting waste. Avoid counting the same area twice.
+              for cutting waste. The{" "}
+              <Link
+                href="/calculators/square-footage"
+                className={internalLinkClass}
+              >
+                Square Footage Calculator
+              </Link>{" "}
+              can help with individual sections. Avoid counting the same
+              area twice.
             </p>
 
             <p className="mt-3 leading-7 text-slate-700">
               For example, two rectangular sections measuring 200 ft² and
               150 ft² have a combined area of 350 ft² before adding waste.
+              If you also need to estimate soil for lawn preparation, use
+              our{" "}
+              <Link href="/calculators/topsoil" className={internalLinkClass}>
+                Topsoil Calculator
+              </Link>
+              .
             </p>
           </section>
 
@@ -415,10 +462,10 @@ export default function SodTurfPage() {
             <ul className="mt-4 list-disc space-y-3 pl-6 leading-7 text-slate-700">
               <li>
                 <a
-                  href="https://extension.umn.edu/garden-and-home/yard-and-garden-in-minnesota/lawns-and-landscapes-in-minnesota/seeding-and-sodding-home-lawns"
+                  href="https://extension.umn.edu/lawn-care/seeding-and-sodding-home-lawns"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="font-medium text-blue-700 underline decoration-blue-300 underline-offset-4 hover:text-blue-900"
+                  className={internalLinkClass}
                 >
                   University of Minnesota Extension: Seeding and Sodding Home Lawns
                 </a>
@@ -428,7 +475,7 @@ export default function SodTurfPage() {
                   href="https://extension.psu.edu/lawn-establishment"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="font-medium text-blue-700 underline decoration-blue-300 underline-offset-4 hover:text-blue-900"
+                  className={internalLinkClass}
                 >
                   Penn State Extension: Lawn Establishment
                 </a>
