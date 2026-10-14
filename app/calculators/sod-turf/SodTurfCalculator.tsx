@@ -37,8 +37,8 @@ export default function SodTurfCalculator() {
   const [price, setPrice] = useState("");
   const [priceMode, setPriceMode] = useState<PriceMode>("area");
   const [currency, setCurrency] = useState<Currency>("USD");
-
   const [palletCoverage, setPalletCoverage] = useState("");
+
   const [error, setError] = useState("");
   const [showResults, setShowResults] = useState(false);
 
@@ -128,7 +128,6 @@ export default function SodTurfCalculator() {
     setCoverage(convert(coverage, areaFactor));
     setPalletCoverage(convert(palletCoverage, areaFactor));
 
-    // Convert area-based prices to preserve the same cost per physical area.
     if (
       priceMode === "area" &&
       price.trim() !== "" &&
@@ -203,9 +202,9 @@ export default function SodTurfCalculator() {
   }
 
   const inputClass =
-    "mt-1 w-full min-w-0 rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm font-medium text-slate-900 outline-none transition-all duration-200 hover:border-slate-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10";
+    "box-border mt-1 w-full min-w-0 max-w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm font-medium text-slate-900 outline-none transition-all duration-200 hover:border-slate-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10";
 
-  const labelClass = "block text-xs font-medium text-slate-600";
+  const labelClass = "block min-w-0 text-xs font-medium text-slate-600";
 
   return (
     <section
@@ -214,7 +213,7 @@ export default function SodTurfCalculator() {
     >
       <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_8px_32px_rgba(15,23,42,0.08)]">
 
-        {/* Compact AI-inspired header */}
+        {/* Header */}
         <div className="flex items-center justify-between gap-3 bg-slate-950 px-4 py-3.5 text-white sm:px-5">
           <div className="min-w-0">
             <div className="mb-1 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.16em] text-blue-300">
@@ -250,13 +249,14 @@ export default function SodTurfCalculator() {
           </div>
         </div>
 
-        {/* Pure white calculator body */}
+        {/* Pure-white body */}
         <div className="space-y-3.5 bg-[#FFFFFF] p-3 sm:p-4">
           <div>
             <div className="mb-2.5 flex items-center justify-between gap-2">
               <h3 className="text-sm font-bold text-slate-900">
                 Lawn dimensions
               </h3>
+
               <span className="text-[11px] text-slate-400">
                 Measurements in {dimensionUnit}
               </span>
@@ -319,22 +319,24 @@ export default function SodTurfCalculator() {
             </div>
           </div>
 
-          {/* Optional pricing settings */}
+          {/* Pricing and advanced options */}
           <details className="group rounded-xl border border-slate-200 bg-white">
             <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-2.5 text-sm font-semibold text-slate-700 marker:hidden">
-              <span className="flex items-center gap-2">
-                <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
+              <span className="flex min-w-0 items-center gap-2">
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
                   $
                 </span>
-                Pricing &amp; advanced options
+                <span>Pricing &amp; advanced options</span>
               </span>
-              <span className="text-slate-400 transition-transform group-open:rotate-180">
+
+              <span className="shrink-0 text-slate-400 transition-transform group-open:rotate-180">
                 ▾
               </span>
             </summary>
 
             <div className="space-y-3 border-t border-slate-100 p-3">
-              <div className="grid grid-cols-2 gap-2.5">
+              {/* Stacked on mobile to prevent clipped option text */}
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <label className={labelClass}>
                   Pricing method
                   <select
@@ -344,7 +346,7 @@ export default function SodTurfCalculator() {
                       setShowResults(false);
                       setError("");
                     }}
-                    className={inputClass}
+                    className={`${inputClass} text-sm`}
                   >
                     <option value="area">{priceAreaLabel}</option>
                     <option value="piece">Price per piece / roll</option>
@@ -360,7 +362,7 @@ export default function SodTurfCalculator() {
                       setCurrency(e.target.value as Currency);
                       setShowResults(false);
                     }}
-                    className={inputClass}
+                    className={`${inputClass} text-sm`}
                   >
                     {currencyOptions.map((code) => (
                       <option key={code} value={code}>
@@ -423,6 +425,7 @@ export default function SodTurfCalculator() {
             </p>
           )}
 
+          {/* Keep the existing gradient and focus ring */}
           <button
             type="button"
             onClick={calculate}
@@ -432,7 +435,7 @@ export default function SodTurfCalculator() {
             <span aria-hidden="true">→</span>
           </button>
 
-          {/* Compact results */}
+          {/* Results */}
           {showResults && (
             <section
               aria-live="polite"
@@ -440,10 +443,11 @@ export default function SodTurfCalculator() {
               className="overflow-hidden rounded-xl border border-blue-100 bg-white"
             >
               <div className="flex items-center justify-between gap-3 bg-gradient-to-r from-slate-950 to-slate-800 px-4 py-3 text-white">
-                <div>
+                <div className="min-w-0">
                   <p className="text-[11px] font-medium text-slate-300">
                     Estimated sod quantity
                   </p>
+
                   <p className="mt-0.5 text-3xl font-extrabold tracking-tight">
                     {fmt(result.pieces, 0)}
                     <span className="ml-1.5 text-sm font-medium text-slate-300">
@@ -452,10 +456,11 @@ export default function SodTurfCalculator() {
                   </p>
                 </div>
 
-                <div className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-right">
+                <div className="shrink-0 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-right">
                   <p className="text-[10px] text-slate-300">
                     Order area
                   </p>
+
                   <p className="mt-0.5 text-sm font-bold">
                     {fmt(result.orderArea)} {areaUnit}
                   </p>
