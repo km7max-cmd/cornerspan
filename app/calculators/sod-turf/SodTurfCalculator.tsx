@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 
 type Unit = "imperial" | "metric";
 type Currency = "USD" | "EUR" | "GBP" | "CAD" | "AUD" | "INR";
-type PriceMode = "area" | "piece";
+type PriceMode = "area" | "piece" | "pallet";
 
 const FT2_TO_M2 = 0.09290304;
 
@@ -29,7 +29,6 @@ const fmt = (value: number, digits = 2) =>
 export default function SodTurfCalculator() {
   const [unit, setUnit] = useState<Unit>("imperial");
 
-  // All measurement and price fields start empty.
   const [length, setLength] = useState("");
   const [width, setWidth] = useState("");
   const [coverage, setCoverage] = useState("");
@@ -39,14 +38,14 @@ export default function SodTurfCalculator() {
   const [priceMode, setPriceMode] = useState<PriceMode>("area");
   const [currency, setCurrency] = useState<Currency>("USD");
 
-  const [palletsOn, setPalletsOn] = useState(false);
   const [palletCoverage, setPalletCoverage] = useState("");
-
   const [error, setError] = useState("");
   const [showResults, setShowResults] = useState(false);
 
   const dimensionUnit = unit === "imperial" ? "ft" : "m";
   const areaUnit = unit === "imperial" ? "ft²" : "m²";
+  const priceAreaLabel =
+    unit === "imperial" ? "Price per square foot" : "Price per square meter";
 
   const result = useMemo(() => {
     const l = Number(length);
@@ -61,18 +60,32 @@ export default function SodTurfCalculator() {
     const orderArea = lawnArea + extraArea;
     const pieces = Math.ceil(orderArea / c);
 
+    const pallets =
+      palletCoverage.trim() !== "" &&
+      Number.isFinite(pc) &&
+      pc > 0
+        ? Math.ceil(orderArea / pc)
+        : null;
+
+    let cost: number | null = null;
+
+    if (p !== null && Number.isFinite(p) && p >= 0) {
+      if (priceMode === "area") {
+        cost = orderArea * p;
+      } else if (priceMode === "piece") {
+        cost = pieces * p;
+      } else if (priceMode === "pallet" && pallets !== null) {
+        cost = pallets * p;
+      }
+    }
+
     return {
       lawnArea,
       extraArea,
       orderArea,
       pieces,
-      cost:
-        p === null
-          ? null
-          : priceMode === "area"
-            ? orderArea * p
-            : pieces * p,
-      pallets: palletsOn ? Math.ceil(orderArea / pc) : null,
+      pallets,
+      cost,
     };
   }, [
     length,
@@ -81,7 +94,6 @@ export default function SodTurfCalculator() {
     waste,
     price,
     priceMode,
-    palletsOn,
     palletCoverage,
   ]);
 
@@ -116,10 +128,13 @@ export default function SodTurfCalculator() {
     setCoverage(convert(coverage, areaFactor));
     setPalletCoverage(convert(palletCoverage, areaFactor));
 
-    if (price.trim() !== "" && Number.isFinite(Number(price))) {
-      setPrice(
-        convert(price, priceMode === "area" ? 1 / areaFactor : 1)
-      );
+    // Convert area-based prices to preserve the same cost per physical area.
+    if (
+      priceMode === "area" &&
+      price.trim() !== "" &&
+      Number.isFinite(Number(price))
+    ) {
+      setPrice(convert(price, 1 / areaFactor));
     }
 
     setUnit(nextUnit);
@@ -128,12 +143,8 @@ export default function SodTurfCalculator() {
   }
 
   function calculate() {
-    if (
-      !length.trim() ||
-      !width.trim() ||
-      !coverage.trim()
-    ) {
-      setError("Enter the lawn length, width, and coverage to continue.");
+    if (!length.trim() || !width.trim() || !coverage.trim()) {
+      setError("Enter the lawn length, width, and sod coverage to continue.");
       setShowResults(false);
       return;
     }
@@ -141,7 +152,7 @@ export default function SodTurfCalculator() {
     const l = Number(length);
     const w = Number(width);
     const c = Number(coverage);
-    const wp = Number(waste);
+    const wastePercent = Number(waste);
     const p = price.trim() === "" ? null : Number(price);
     const pc = Number(palletCoverage);
 
@@ -158,27 +169,31 @@ export default function SodTurfCalculator() {
       return;
     }
 
-    if (!Number.isFinite(wp) || wp < 0 || wp > 100) {
+    if (
+      !Number.isFinite(wastePercent) ||
+      wastePercent < 0 ||
+      wastePercent > 100
+    ) {
       setError("Waste allowance must be between 0% and 100%.");
       setShowResults(false);
       return;
     }
 
     if (p !== null && (!Number.isFinite(p) || p < 0)) {
-      setError("Enter a valid material price.");
+      setError("Enter a valid material price of zero or more.");
       setShowResults(false);
       return;
     }
 
     if (
-      palletsOn &&
+      priceMode === "pallet" &&
       (
         !palletCoverage.trim() ||
         !Number.isFinite(pc) ||
         pc <= 0
       )
     ) {
-      setError("Enter coverage per pallet to estimate pallets.");
+      setError("Enter the coverage area per pallet to calculate pallet pricing.");
       setShowResults(false);
       return;
     }
@@ -199,6 +214,7 @@ export default function SodTurfCalculator() {
     >
       <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_8px_32px_rgba(15,23,42,0.08)]">
 
+        {/* Compact AI-inspired header */}
         <div className="flex items-center justify-between gap-3 bg-slate-950 px-4 py-3.5 text-white sm:px-5">
           <div className="min-w-0">
             <div className="mb-1 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-[0.16em] text-blue-300">
@@ -211,7 +227,7 @@ export default function SodTurfCalculator() {
             </h2>
 
             <p className="mt-0.5 text-xs text-slate-400">
-              Plan your lawn with confidence.
+              Estimate sod quantity and material cost.
             </p>
           </div>
 
@@ -234,6 +250,7 @@ export default function SodTurfCalculator() {
           </div>
         </div>
 
+        {/* Pure white calculator body */}
         <div className="space-y-3.5 bg-[#FFFFFF] p-3 sm:p-4">
           <div>
             <div className="mb-2.5 flex items-center justify-between gap-2">
@@ -302,13 +319,14 @@ export default function SodTurfCalculator() {
             </div>
           </div>
 
+          {/* Optional pricing settings */}
           <details className="group rounded-xl border border-slate-200 bg-white">
             <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-2.5 text-sm font-semibold text-slate-700 marker:hidden">
               <span className="flex items-center gap-2">
                 <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
                   $
                 </span>
-                Price &amp; advanced options
+                Pricing &amp; advanced options
               </span>
               <span className="text-slate-400 transition-transform group-open:rotate-180">
                 ▾
@@ -324,11 +342,13 @@ export default function SodTurfCalculator() {
                     onChange={(e) => {
                       setPriceMode(e.target.value as PriceMode);
                       setShowResults(false);
+                      setError("");
                     }}
                     className={inputClass}
                   >
-                    <option value="area">Price per {areaUnit}</option>
-                    <option value="piece">Price per piece</option>
+                    <option value="area">{priceAreaLabel}</option>
+                    <option value="piece">Price per piece / roll</option>
+                    <option value="pallet">Price per pallet</option>
                   </select>
                 </label>
 
@@ -351,36 +371,7 @@ export default function SodTurfCalculator() {
                 </label>
               </div>
 
-              <label className={labelClass}>
-                {priceMode === "area"
-                  ? `Price per ${areaUnit}`
-                  : "Price per piece / roll"}
-                <input
-                  type="number"
-                  inputMode="decimal"
-                  min="0"
-                  step="any"
-                  value={price}
-                  onChange={(e) => updateInput(setPrice, e.target.value)}
-                  className={inputClass}
-                />
-              </label>
-
-              <label className="flex cursor-pointer items-center gap-2.5 rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700">
-                <input
-                  type="checkbox"
-                  checked={palletsOn}
-                  onChange={(e) => {
-                    setPalletsOn(e.target.checked);
-                    setShowResults(false);
-                    setError("");
-                  }}
-                  className="h-4 w-4 accent-blue-600"
-                />
-                Estimate full pallets
-              </label>
-
-              {palletsOn && (
+              {priceMode === "pallet" && (
                 <label className={labelClass}>
                   Coverage per pallet ({areaUnit})
                   <input
@@ -396,6 +387,30 @@ export default function SodTurfCalculator() {
                   />
                 </label>
               )}
+
+              <label className={labelClass}>
+                {priceMode === "area"
+                  ? `Price per ${areaUnit}`
+                  : priceMode === "piece"
+                    ? "Price per piece / roll"
+                    : "Price per pallet"}
+
+                <input
+                  type="number"
+                  inputMode="decimal"
+                  min="0"
+                  step="any"
+                  value={price}
+                  onChange={(e) => updateInput(setPrice, e.target.value)}
+                  className={inputClass}
+                />
+              </label>
+
+              <p className="text-[11px] leading-4 text-slate-500">
+                Enter the price and coverage stated by your supplier.
+                Taxes, delivery, site preparation, and installation are
+                not included.
+              </p>
             </div>
           </details>
 
@@ -417,6 +432,7 @@ export default function SodTurfCalculator() {
             <span aria-hidden="true">→</span>
           </button>
 
+          {/* Compact results */}
           {showResults && (
             <section
               aria-live="polite"
@@ -426,19 +442,19 @@ export default function SodTurfCalculator() {
               <div className="flex items-center justify-between gap-3 bg-gradient-to-r from-slate-950 to-slate-800 px-4 py-3 text-white">
                 <div>
                   <p className="text-[11px] font-medium text-slate-300">
-                    Recommended quantity
+                    Estimated sod quantity
                   </p>
                   <p className="mt-0.5 text-3xl font-extrabold tracking-tight">
                     {fmt(result.pieces, 0)}
                     <span className="ml-1.5 text-sm font-medium text-slate-300">
-                      pieces
+                      pieces / rolls
                     </span>
                   </p>
                 </div>
 
                 <div className="rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-right">
                   <p className="text-[10px] text-slate-300">
-                    Total order area
+                    Order area
                   </p>
                   <p className="mt-0.5 text-sm font-bold">
                     {fmt(result.orderArea)} {areaUnit}
@@ -448,7 +464,9 @@ export default function SodTurfCalculator() {
 
               <div className="grid grid-cols-2 gap-x-4 gap-y-3 bg-white p-3.5 sm:grid-cols-3">
                 <div>
-                  <p className="text-[11px] text-slate-500">Lawn area</p>
+                  <p className="text-[11px] text-slate-500">
+                    Lawn area
+                  </p>
                   <p className="mt-0.5 text-sm font-bold text-slate-900">
                     {fmt(result.lawnArea)} {areaUnit}
                   </p>
@@ -463,18 +481,7 @@ export default function SodTurfCalculator() {
                   </p>
                 </div>
 
-                {result.cost !== null && (
-                  <div>
-                    <p className="text-[11px] text-slate-500">
-                      Estimated cost
-                    </p>
-                    <p className="mt-0.5 text-sm font-extrabold text-emerald-700">
-                      {currencies[currency]}{fmt(result.cost)}
-                    </p>
-                  </div>
-                )}
-
-                {palletsOn && result.pallets !== null && (
+                {result.pallets !== null && (
                   <div>
                     <p className="text-[11px] text-slate-500">
                       Estimated pallets
@@ -484,17 +491,29 @@ export default function SodTurfCalculator() {
                     </p>
                   </div>
                 )}
+
+                {result.cost !== null && (
+                  <div>
+                    <p className="text-[11px] text-slate-500">
+                      Estimated material cost
+                    </p>
+                    <p className="mt-0.5 text-sm font-extrabold text-emerald-700">
+                      {currencies[currency]}{fmt(result.cost)}
+                    </p>
+                  </div>
+                )}
               </div>
 
               <p className="border-t border-slate-100 bg-white px-3.5 py-2.5 text-[11px] leading-4 text-slate-500">
-                Planning estimate only. Confirm product coverage and
-                package sizes with your supplier before ordering.
+                Planning estimate only. Confirm product coverage,
+                package quantities, and pricing with your supplier.
+                Actual order quantities may vary by product.
               </p>
             </section>
           )}
 
           <p className="text-center text-[11px] text-slate-400">
-            A practical starting point for planning your lawn.
+            Built for practical lawn planning in US customary units.
           </p>
         </div>
       </div>
