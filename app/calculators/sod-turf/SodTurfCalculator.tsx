@@ -122,10 +122,9 @@ export default function SodTurfCalculator() {
     setPalletCoverage(convert(palletCoverage, areaFactor));
 
     if (price.trim() !== "" && Number.isFinite(Number(price))) {
-      const priceFactor =
-        priceMode === "area" ? 1 / areaFactor : 1;
-
-      setPrice(convert(price, priceFactor));
+      setPrice(
+        convert(price, priceMode === "area" ? 1 / areaFactor : 1)
+      );
     }
 
     setUnit(nextUnit);
@@ -197,7 +196,7 @@ export default function SodTurfCalculator() {
   }
 
   const inputClass =
-    "mt-1 w-full min-w-0 rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm font-medium text-slate-900 outline-none transition-all duration-200 placeholder:text-slate-400 hover:border-slate-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10";
+    "mt-1 w-full min-w-0 rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm font-medium text-slate-900 outline-none transition-all duration-200 placeholder:text-transparent hover:border-slate-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10";
 
   const labelClass =
     "block text-xs font-medium text-slate-600";
@@ -250,7 +249,6 @@ export default function SodTurfCalculator() {
 
         {/* Pure-white calculator body */}
         <div className="space-y-3.5 bg-[#FFFFFF] p-3 sm:p-4">
-
           <div>
             <div className="mb-2.5 flex items-center justify-between gap-2">
               <h3 className="text-sm font-bold text-slate-900">
@@ -275,7 +273,6 @@ export default function SodTurfCalculator() {
                     updateInput(setLength, e.target.value)
                   }
                   className={inputClass}
-                  placeholder="e.g. 30"
                 />
               </label>
 
@@ -291,7 +288,6 @@ export default function SodTurfCalculator() {
                     updateInput(setWidth, e.target.value)
                   }
                   className={inputClass}
-                  placeholder="e.g. 20"
                 />
               </label>
 
@@ -307,7 +303,6 @@ export default function SodTurfCalculator() {
                     updateInput(setCoverage, e.target.value)
                   }
                   className={inputClass}
-                  placeholder="e.g. 10"
                 />
               </label>
 
@@ -330,7 +325,7 @@ export default function SodTurfCalculator() {
             </div>
           </div>
 
-          {/* Optional settings stay collapsed */}
+          {/* Optional settings */}
           <details className="group rounded-xl border border-slate-200 bg-white">
             <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-3 py-2.5 text-sm font-semibold text-slate-700 marker:hidden">
               <span className="flex items-center gap-2">
@@ -388,7 +383,6 @@ export default function SodTurfCalculator() {
                 {priceMode === "area"
                   ? `Price per ${areaUnit}`
                   : "Price per piece / roll"}
-
                 <input
                   type="number"
                   inputMode="decimal"
@@ -399,7 +393,6 @@ export default function SodTurfCalculator() {
                     updateInput(setPrice, e.target.value)
                   }
                   className={inputClass}
-                  placeholder="Leave blank to skip cost"
                 />
               </label>
 
@@ -445,7 +438,6 @@ export default function SodTurfCalculator() {
             </p>
           )}
 
-          {/* Premium gradient action */}
           <button
             type="button"
             onClick={calculate}
