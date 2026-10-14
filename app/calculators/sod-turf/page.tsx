@@ -1,10 +1,12 @@
+
 import type { Metadata } from "next";
+import CalculatorStructuredData from "../../../components/CalculatorStructuredData";
 import Breadcrumb from "../../../components/Breadcrumb";
 import RelatedCalculators from "../../../components/RelatedCalculators";
 import SodTurfCalculator from "./SodTurfCalculator";
 
 export const metadata: Metadata = {
-  title: "Sod Calculator: How Much Sod Do I Need? | CornerSpan",
+  title: "Sod Calculator: How Much Sod Do I Need?",
   description:
     "Calculate how much sod you need for your lawn. Estimate square footage, sod rolls, waste allowance, pallet quantities, and material costs with this free sod calculator.",
   keywords: [
@@ -117,7 +119,13 @@ const faqs = [
 
 export default function SodTurfPage() {
   return (
-    <main className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white">
+      <CalculatorStructuredData
+        name="Sod & Turf Calculator"
+        url="https://www.cornerspan.com/calculators/sod-turf"
+        description="Estimate lawn area, sod pieces or rolls, cutting waste, pallet quantities, and material costs using supplier coverage and prices."
+      />
+
       <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
         <Breadcrumb current="Sod / Turf Calculator" />
 
@@ -273,7 +281,7 @@ export default function SodTurfPage() {
             <p className="mt-3 text-sm leading-6 text-slate-600">
               These percentages are planning guidelines, not universal
               installation requirements. Follow your supplier's or
-              installer&apos;s advice for your specific lawn.
+              installer's advice for your specific lawn.
             </p>
           </section>
 
@@ -300,7 +308,7 @@ export default function SodTurfPage() {
               </li>
               <li>
                 <strong>Price per pallet:</strong> Calculate the number
-                of pallets using the supplier&apos;s stated coverage,
+                of pallets using the supplier's stated coverage,
                 round up, and multiply by the price per pallet.
               </li>
             </ul>
@@ -322,7 +330,7 @@ export default function SodTurfPage() {
             <p className="mt-3 leading-7 text-slate-700">
               Not every yard is a perfect rectangle. Divide an irregular
               lawn into smaller rectangles or other simple shapes that
-              you can measure accurately. Calculate each section&apos;s
+              you can measure accurately. Calculate each section's
               area, add the sections together, and then account for
               cutting waste. Avoid counting the same area twice.
             </p>
@@ -402,6 +410,6 @@ export default function SodTurfPage() {
           </aside>
         </section>
       </div>
-    </main>
+    </div>
   );
 }
