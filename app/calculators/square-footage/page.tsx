@@ -1,6 +1,6 @@
-
 import type { Metadata } from "next";
 import dynamic from "next/dynamic";
+import Image from "next/image";
 import Link from "next/link";
 
 import Breadcrumb from "../../../components/Breadcrumb";
@@ -29,12 +29,21 @@ export const metadata: Metadata = {
     title: "Square Footage Calculator: Sq Ft & Area | CornerSpan",
     description:
       "Calculate square feet for rooms, flooring, walls and floor plans with feet-and-inches measurements, area conversions and material estimates.",
+    images: [
+      {
+        url: "/images/square-footage-diagram.webp",
+        width: 1200,
+        height: 800,
+        alt: "Square footage formula and room measurement diagram",
+      },
+    ],
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: "Square Footage Calculator | CornerSpan",
     description:
       "Calculate square feet for rooms, floors, walls and floor plans using feet, inches and multiple shapes.",
+    images: ["/images/square-footage-diagram.webp"],
   },
 };
 
@@ -230,12 +239,13 @@ export default function SquareFootagePage() {
             </p>
           </section>
 
-          {/* Keep the existing calculator implementation unchanged. */}
-          <section className="mt-8" aria-label="Square footage calculator">
+          <section
+            className="mt-8"
+            aria-label="Square footage calculator"
+          >
             <CalculatorForm />
           </section>
 
-          {/* Table of contents */}
           <nav
             aria-label="Table of contents"
             className="mt-10 rounded-2xl border border-slate-200 bg-white p-5 sm:p-6"
@@ -259,8 +269,13 @@ export default function SquareFootagePage() {
           </nav>
 
           <article className="mt-12 max-w-4xl space-y-12">
-            <section id="how-to-calculate" className="scroll-mt-6">
-              <SectionTitle>How to Calculate Square Footage</SectionTitle>
+            <section
+              id="how-to-calculate"
+              className="scroll-mt-6"
+            >
+              <SectionTitle>
+                How to Calculate Square Footage
+              </SectionTitle>
 
               <p className="mt-4 leading-7">
                 Square footage is the area of a surface measured in
@@ -282,9 +297,29 @@ export default function SquareFootagePage() {
                   15 × 12 = 180 square feet.
                 </p>
               </div>
+
+              {/* Square footage infographic */}
+              <figure className="mt-6">
+                <Image
+                  src="/images/square-footage-diagram.webp"
+                  alt="Square footage diagram showing room length, width, the area formula, and examples for rectangles, squares, triangles, and circles"
+                  width={1200}
+                  height={800}
+                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 90vw, 800px"
+                  className="h-auto w-full rounded-xl border border-slate-200"
+                />
+                <figcaption className="mt-3 text-sm leading-6 text-slate-600">
+                  Square footage is calculated by multiplying length
+                  by width for a rectangular area. Other shapes use
+                  their corresponding area formulas.
+                </figcaption>
+              </figure>
             </section>
 
-            <section id="feet-and-inches" className="scroll-mt-6">
+            <section
+              id="feet-and-inches"
+              className="scroll-mt-6"
+            >
               <SectionTitle>
                 How to Calculate Square Footage With Feet and Inches
               </SectionTitle>
@@ -384,7 +419,9 @@ export default function SquareFootagePage() {
 
               <div className="mt-5 rounded-xl border border-slate-200 bg-white p-5">
                 <p>Main section: 20 ft × 12 ft = 240 sq ft</p>
-                <p className="mt-2">Additional section: 10 ft × 8 ft = 80 sq ft</p>
+                <p className="mt-2">
+                  Additional section: 10 ft × 8 ft = 80 sq ft
+                </p>
                 <p className="mt-4 font-bold text-slate-900">
                   Total area = 240 + 80 = 320 sq ft
                 </p>
@@ -401,7 +438,9 @@ export default function SquareFootagePage() {
             </section>
 
             <section id="room-area" className="scroll-mt-6">
-              <SectionTitle>How to Calculate Room Square Footage</SectionTitle>
+              <SectionTitle>
+                How to Calculate Room Square Footage
+              </SectionTitle>
 
               <p className="mt-4 leading-7">
                 Measure the inside length and width of the room at
@@ -456,7 +495,9 @@ export default function SquareFootagePage() {
             </section>
 
             <section id="wall-area" className="scroll-mt-6">
-              <SectionTitle>How to Calculate Wall Square Footage</SectionTitle>
+              <SectionTitle>
+                How to Calculate Wall Square Footage
+              </SectionTitle>
 
               <p className="mt-4 leading-7">
                 Multiply the wall length by its height to calculate the
@@ -467,7 +508,9 @@ export default function SquareFootagePage() {
               <div className="mt-5 rounded-xl border border-slate-200 bg-white p-5">
                 <p className="font-semibold">Wall area formula</p>
                 <p className="mt-2">Wall area = Length × Height</p>
-                <p className="mt-3">Example: 20 ft × 8 ft = 160 sq ft</p>
+                <p className="mt-3">
+                  Example: 20 ft × 8 ft = 160 sq ft
+                </p>
                 <p className="mt-3 text-sm leading-6 text-slate-600">
                   Net area = Gross wall area − Openings to be excluded.
                 </p>
@@ -499,13 +542,10 @@ export default function SquareFootagePage() {
                 <li>Rectangle: length × width.</li>
                 <li>Triangle: base × height ÷ 2.</li>
                 <li>Circle: π × radius².</li>
-                <li>Trapezoid: (base 1 + base 2) × height ÷ 2.</li>
+                <li>
+                  Trapezoid: (base 1 + base 2) × height ÷ 2.
+                </li>
               </ul>
-
-              <p className="mt-4 leading-7">
-                Confirm that the selected calculator supports the shape
-                and measurements you need before relying on its result.
-              </p>
             </section>
 
             <section id="area-conversions" className="scroll-mt-6">
@@ -541,7 +581,7 @@ export default function SquareFootagePage() {
               </div>
             </section>
 
-            <section className="scroll-mt-6">
+            <section>
               <SectionTitle>Material Waste and Cost Estimates</SectionTitle>
 
               <p className="mt-4 leading-7">
@@ -567,8 +607,7 @@ export default function SquareFootagePage() {
                 <InternalLink href="/calculators/concrete">
                   Concrete Calculator
                 </InternalLink>
-                . Use the calculator's cost estimate only when its
-                required material price and quantity inputs are available.
+                .
               </p>
             </section>
 
@@ -598,7 +637,9 @@ export default function SquareFootagePage() {
                   href="/calculators/area"
                   className="rounded-xl border border-slate-200 bg-white p-5 transition hover:border-blue-300"
                 >
-                  <h3 className="font-semibold text-slate-900">Area Calculator</h3>
+                  <h3 className="font-semibold text-slate-900">
+                    Area Calculator
+                  </h3>
                   <p className="mt-2 text-sm leading-6 text-slate-600">
                     Calculate areas for common geometric shapes and
                     different measurement units.
@@ -609,7 +650,9 @@ export default function SquareFootagePage() {
                   href="/calculators/tile"
                   className="rounded-xl border border-slate-200 bg-white p-5 transition hover:border-blue-300"
                 >
-                  <h3 className="font-semibold text-slate-900">Tile Calculator</h3>
+                  <h3 className="font-semibold text-slate-900">
+                    Tile Calculator
+                  </h3>
                   <p className="mt-2 text-sm leading-6 text-slate-600">
                     Estimate tile quantities for a measured floor or wall.
                   </p>
@@ -619,7 +662,9 @@ export default function SquareFootagePage() {
                   href="/calculators/concrete"
                   className="rounded-xl border border-slate-200 bg-white p-5 transition hover:border-blue-300"
                 >
-                  <h3 className="font-semibold text-slate-900">Concrete Calculator</h3>
+                  <h3 className="font-semibold text-slate-900">
+                    Concrete Calculator
+                  </h3>
                   <p className="mt-2 text-sm leading-6 text-slate-600">
                     Estimate concrete volume for common construction projects.
                   </p>
@@ -629,7 +674,9 @@ export default function SquareFootagePage() {
                   href="/calculators/paint"
                   className="rounded-xl border border-slate-200 bg-white p-5 transition hover:border-blue-300"
                 >
-                  <h3 className="font-semibold text-slate-900">Paint Calculator</h3>
+                  <h3 className="font-semibold text-slate-900">
+                    Paint Calculator
+                  </h3>
                   <p className="mt-2 text-sm leading-6 text-slate-600">
                     Estimate paint quantities from wall dimensions and coverage.
                   </p>
@@ -685,7 +732,9 @@ export default function SquareFootagePage() {
             </section>
 
             <section className="rounded-xl border border-amber-200 bg-amber-50 p-5">
-              <h2 className="font-semibold text-slate-900">Important Note</h2>
+              <h2 className="font-semibold text-slate-900">
+                Important Note
+              </h2>
               <p className="mt-2 text-sm leading-6 text-slate-700">
                 Results are estimates based on the measurements and inputs
                 provided. Actual material requirements may vary because
