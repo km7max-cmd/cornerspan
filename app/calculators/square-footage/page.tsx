@@ -1,7 +1,9 @@
+
 import type { Metadata } from "next";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
+import type { ReactNode } from "react";
 
 import Breadcrumb from "../../../components/Breadcrumb";
 import RelatedCalculators from "../../../components/RelatedCalculators";
@@ -10,11 +12,28 @@ const CalculatorForm = dynamic(() => import("./components/CalculatorForm"));
 
 const pageUrl =
   "https://www.cornerspan.com/calculators/square-footage";
+const diagramPath = "/square-footage-diagram.webp";
 
 export const metadata: Metadata = {
   title: "Square Footage Calculator: Sq Ft & Area | CornerSpan",
   description:
     "Calculate square footage for rooms, floors, walls and floor plans. Enter feet and inches, calculate multiple shapes, convert area units and estimate material waste.",
+  keywords: [
+    "square footage calculator",
+    "square foot calculator",
+    "square feet calculator",
+    "sq ft calculator",
+    "calculate square feet",
+    "room square footage calculator",
+    "floor area calculator",
+    "floor plan square footage calculator",
+    "flooring square footage calculator",
+    "wall area calculator",
+    "square feet calculator with inches",
+    "square meter calculator",
+    "square yard calculator",
+    "construction area calculator",
+  ],
   alternates: {
     canonical: "/calculators/square-footage",
   },
@@ -31,10 +50,10 @@ export const metadata: Metadata = {
       "Calculate square feet for rooms, flooring, walls and floor plans with feet-and-inches measurements, area conversions and material estimates.",
     images: [
       {
-        url: "/images/square-footage-diagram.webp",
+        url: diagramPath,
         width: 1200,
         height: 800,
-        alt: "Square footage formula and room measurement diagram",
+        alt: "Square footage formula showing room length, width and area",
       },
     ],
   },
@@ -43,7 +62,7 @@ export const metadata: Metadata = {
     title: "Square Footage Calculator | CornerSpan",
     description:
       "Calculate square feet for rooms, floors, walls and floor plans using feet, inches and multiple shapes.",
-    images: ["/images/square-footage-diagram.webp"],
+    images: [diagramPath],
   },
 };
 
@@ -162,7 +181,7 @@ function JsonLd({ data }: { data: object }) {
   );
 }
 
-function SectionTitle({ children }: { children: React.ReactNode }) {
+function SectionTitle({ children }: { children: ReactNode }) {
   return (
     <h2 className="text-2xl font-bold tracking-tight text-slate-900">
       {children}
@@ -175,7 +194,7 @@ function InternalLink({
   children,
 }: {
   href: string;
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   return (
     <Link
@@ -269,10 +288,7 @@ export default function SquareFootagePage() {
           </nav>
 
           <article className="mt-12 max-w-4xl space-y-12">
-            <section
-              id="how-to-calculate"
-              className="scroll-mt-6"
-            >
+            <section id="how-to-calculate" className="scroll-mt-6">
               <SectionTitle>
                 How to Calculate Square Footage
               </SectionTitle>
@@ -298,28 +314,24 @@ export default function SquareFootagePage() {
                 </p>
               </div>
 
-              {/* Square footage infographic */}
               <figure className="mt-6">
                 <Image
-                  src="/images/square-footage-diagram.webp"
-                  alt="Square footage diagram showing room length, width, the area formula, and examples for rectangles, squares, triangles, and circles"
+                  src={diagramPath}
+                  alt="Square footage diagram showing room length, width, area formula, and common shape calculations"
                   width={1200}
                   height={800}
                   sizes="(max-width: 768px) 100vw, (max-width: 1024px) 90vw, 800px"
                   className="h-auto w-full rounded-xl border border-slate-200"
                 />
                 <figcaption className="mt-3 text-sm leading-6 text-slate-600">
-                  Square footage is calculated by multiplying length
-                  by width for a rectangular area. Other shapes use
-                  their corresponding area formulas.
+                  Calculate rectangular square footage by multiplying
+                  length by width. Other shapes use their corresponding
+                  area formulas.
                 </figcaption>
               </figure>
             </section>
 
-            <section
-              id="feet-and-inches"
-              className="scroll-mt-6"
-            >
+            <section id="feet-and-inches" className="scroll-mt-6">
               <SectionTitle>
                 How to Calculate Square Footage With Feet and Inches
               </SectionTitle>
