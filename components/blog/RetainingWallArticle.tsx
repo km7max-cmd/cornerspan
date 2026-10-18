@@ -1,4 +1,3 @@
-
 import Link from "next/link";
 
 const articleUrl =
@@ -25,9 +24,9 @@ const sections = [
 
 const estimates = [
   { height: "1 ft", area: 10, bricks: 69, extra: 76 },
-  { height: "2 ft", area: 20, bricks: 137, extra: 151 },
+  { height: "2 ft", area: 20, bricks: 138, extra: 152 },
   { height: "3 ft", area: 30, bricks: 206, extra: 227 },
-  { height: "4 ft", area: 40, bricks: 274, extra: 302 },
+  { height: "4 ft", area: 40, bricks: 275, extra: 303 },
 ];
 
 const articleSchema = {
@@ -35,6 +34,7 @@ const articleSchema = {
   "@type": "Article",
   headline: articleTitle,
   description: articleDescription,
+  image: ["https://www.cornerspan.com/logo.webp"],
   mainEntityOfPage: {
     "@type": "WebPage",
     "@id": articleUrl,
@@ -42,15 +42,15 @@ const articleSchema = {
   author: {
     "@type": "Organization",
     name: "CornerSpan",
-    url: "https://www.cornerspan.com",
+    url: "https://www.cornerspan.com/",
   },
   publisher: {
     "@type": "Organization",
     name: "CornerSpan",
-    url: "https://www.cornerspan.com",
+    url: "https://www.cornerspan.com/",
   },
-  datePublished: "2026-10-18",
-  dateModified: "2026-10-18",
+  datePublished: "2026-10-18T00:00:00+05:30",
+  dateModified: "2026-10-18T00:00:00+05:30",
 };
 
 const breadcrumbSchema = {
@@ -90,10 +90,11 @@ function RetainingWallIllustration() {
         <title id="wall-diagram-title">
           Ten-foot-long brick retaining wall illustration
         </title>
+
         <desc id="wall-diagram-description">
-          An illustrative brick wall with a ten-foot length,
-          wall height, retained soil and drainage area.
-          This diagram is not a structural construction plan.
+          Illustrative brick wall showing a ten-foot length,
+          wall height, retained soil and backfill area.
+          This is not a structural construction plan.
         </desc>
 
         <rect width="720" height="320" rx="16" fill="#f8fafc" />
@@ -103,6 +104,7 @@ function RetainingWallIllustration() {
           fill="#d6b58b"
           opacity="0.55"
         />
+
         <path
           d="M365 105 L690 105 L690 245 L365 245 Z"
           fill="#bbd7a5"
@@ -125,7 +127,14 @@ function RetainingWallIllustration() {
           ))
         )}
 
-        <rect x="90" y="240" width="310" height="14" rx="3" fill="#64748b" />
+        <rect
+          x="90"
+          y="240"
+          width="310"
+          height="14"
+          rx="3"
+          fill="#64748b"
+        />
 
         <path
           d="M75 270 H420"
@@ -133,7 +142,13 @@ function RetainingWallIllustration() {
           strokeWidth="2"
           strokeLinecap="round"
         />
-        <path d="M75 262 V278 M420 262 V278" stroke="#334155" strokeWidth="2" />
+
+        <path
+          d="M75 262 V278 M420 262 V278"
+          stroke="#334155"
+          strokeWidth="2"
+        />
+
         <text
           x="247"
           y="295"
@@ -151,7 +166,13 @@ function RetainingWallIllustration() {
           strokeWidth="2"
           strokeDasharray="5 5"
         />
-        <path d="M437 115 H453 M437 239 H453" stroke="#2563eb" strokeWidth="2" />
+
+        <path
+          d="M437 115 H453 M437 239 H453"
+          stroke="#2563eb"
+          strokeWidth="2"
+        />
+
         <text
           x="465"
           y="178"
@@ -161,23 +182,47 @@ function RetainingWallIllustration() {
         >
           Height
         </text>
+
         <text x="465" y="198" fontSize="12" fill="#475569">
           Varies by project
         </text>
 
-        <text x="48" y="78" fontSize="15" fontWeight="700" fill="#854d0e">
+        <text
+          x="48"
+          y="78"
+          fontSize="15"
+          fontWeight="700"
+          fill="#854d0e"
+        >
           Retained soil
         </text>
-        <text x="490" y="78" fontSize="15" fontWeight="700" fill="#166534">
+
+        <text
+          x="490"
+          y="78"
+          fontSize="15"
+          fontWeight="700"
+          fill="#166534"
+        >
           Backfill area
         </text>
-        <text x="360" y="35" textAnchor="middle" fontSize="18" fontWeight="800" fill="#0f172a">
+
+        <text
+          x="360"
+          y="35"
+          textAnchor="middle"
+          fontSize="18"
+          fontWeight="800"
+          fill="#0f172a"
+        >
           Brick Wall Estimation
         </text>
       </svg>
+
       <figcaption className="px-2 pt-3 text-sm leading-6 text-slate-500">
-        Illustrative diagram only. Actual wall height, thickness, foundation,
-        reinforcement and drainage must follow the project design.
+        Illustrative diagram only. Actual wall height, thickness,
+        foundation, reinforcement and drainage must follow the
+        project design.
       </figcaption>
     </figure>
   );
@@ -194,11 +239,15 @@ export default function RetainingWallArticle() {
           <Link href="/" className="hover:text-blue-700">
             Home
           </Link>
+
           <span aria-hidden="true">/</span>
+
           <Link href="/blog" className="hover:text-blue-700">
             Blog
           </Link>
+
           <span aria-hidden="true">/</span>
+
           <span className="font-medium text-slate-700">
             Brick Retaining Wall
           </span>
@@ -227,6 +276,7 @@ export default function RetainingWallArticle() {
               >
                 Calculate Bricks →
               </Link>
+
               <a
                 href="#brick-estimate-table"
                 className="inline-flex min-h-12 items-center justify-center rounded-xl border border-white/30 px-5 py-3 text-sm font-bold text-white transition hover:bg-white/10"
@@ -242,9 +292,14 @@ export default function RetainingWallArticle() {
 
           <div className="grid gap-4 p-5 sm:grid-cols-3 sm:p-7">
             <div className="rounded-2xl bg-blue-50 p-4">
-              <p className="text-sm font-medium text-blue-800">Wall length</p>
-              <p className="mt-1 text-2xl font-black text-slate-950">10 ft</p>
+              <p className="text-sm font-medium text-blue-800">
+                Wall length
+              </p>
+              <p className="mt-1 text-2xl font-black text-slate-950">
+                10 ft
+              </p>
             </div>
+
             <div className="rounded-2xl bg-orange-50 p-4">
               <p className="text-sm font-medium text-orange-800">
                 Example coverage
@@ -252,8 +307,11 @@ export default function RetainingWallArticle() {
               <p className="mt-1 text-2xl font-black text-slate-950">
                 6.86 bricks
               </p>
-              <p className="mt-1 text-xs text-slate-600">Per sq ft, assumed</p>
+              <p className="mt-1 text-xs text-slate-600">
+                Per sq ft, assumed
+              </p>
             </div>
+
             <div className="rounded-2xl bg-emerald-50 p-4">
               <p className="text-sm font-medium text-emerald-800">
                 Example wall
@@ -262,7 +320,7 @@ export default function RetainingWallArticle() {
                 2 ft high
               </p>
               <p className="mt-1 text-xs text-slate-600">
-                About 137 bricks before waste
+                About 138 bricks before waste
               </p>
             </div>
           </div>
@@ -272,11 +330,12 @@ export default function RetainingWallArticle() {
           <p className="font-bold text-amber-950">
             Important: This is a preliminary quantity estimate.
           </p>
+
           <p className="mt-2 text-sm leading-7 text-amber-900">
-            Brick counts do not determine whether a retaining wall is structurally
-            safe. Retaining soil can require an engineered design, appropriate
-            foundation and drainage. Do not use this material estimate as a
-            construction plan.
+            Brick counts do not determine whether a retaining wall is
+            structurally safe. Retaining soil can require an engineered
+            design, appropriate foundation and drainage. Do not use this
+            material estimate as a construction plan.
           </p>
         </div>
 
@@ -285,9 +344,11 @@ export default function RetainingWallArticle() {
             <h2 className="text-lg font-extrabold text-slate-950">
               Table of Contents
             </h2>
+
             <p className="mt-1 text-sm text-slate-500">
               Jump to any section
             </p>
+
             <nav aria-label="Table of Contents" className="mt-4">
               <ol className="space-y-2">
                 {sections.map((section, index) => (
@@ -311,10 +372,9 @@ export default function RetainingWallArticle() {
             <div className="mb-8 border-b border-slate-100 pb-6">
               <p className="text-lg leading-8 text-slate-700">
                 The number of bricks for a 10-foot-long wall depends on its
-                height, the brick dimensions, mortar joints and wall design.
-                For a quick estimate, this guide uses an assumed coverage rate
-                of approximately 6.86 standard modular bricks per square foot
-                of wall face.
+                height, brick dimensions, mortar joints and wall design.
+                This guide uses an assumed coverage rate of approximately
+                6.86 standard modular bricks per square foot of wall face.
               </p>
             </div>
 
@@ -322,15 +382,18 @@ export default function RetainingWallArticle() {
               <h2 className="text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">
                 Quick Answer: How Many Bricks Do You Need?
               </h2>
+
               <p className="mt-4 leading-8 text-slate-700">
                 A 10-foot-long wall that is 2 feet high has a face area of
                 20 square feet. At the assumed rate of 6.86 bricks per square
-                foot, the estimate is about 137 bricks before waste. With an
-                illustrative 10% allowance, plan for about 151 bricks.
+                foot, the calculation gives 137.2 bricks. Round up to 138
+                bricks before waste. With an illustrative 10% allowance,
+                plan for approximately 152 bricks.
               </p>
+
               <p className="mt-3 leading-8 text-slate-700">
                 Your actual quantity may differ. Confirm the coverage rate
-                for the exact brick product and the construction details.
+                for the exact brick product and construction details.
               </p>
             </section>
 
@@ -340,10 +403,11 @@ export default function RetainingWallArticle() {
               <h2 className="text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">
                 Brick Estimate Table for a 10-Foot Wall
               </h2>
+
               <p className="mt-3 leading-8 text-slate-700">
-                Use this table for initial planning. It assumes one wall face
-                and approximately 6.86 bricks per square foot. The extra column
-                adds an example 10% allowance and rounds to whole bricks.
+                This table assumes one wall face and approximately 6.86 bricks
+                per square foot. The extra column adds an example 10% allowance.
+                Quantities are rounded up for ordering estimates.
               </p>
 
               <div className="mt-5 overflow-x-auto rounded-2xl border border-slate-200">
@@ -351,33 +415,45 @@ export default function RetainingWallArticle() {
                   <caption className="sr-only">
                     Estimated bricks for a 10-foot-long wall at different heights
                   </caption>
+
                   <thead className="bg-slate-900 text-white">
                     <tr>
-                      <th scope="col" className="p-4 font-bold">Wall Height</th>
-                      <th scope="col" className="p-4 font-bold">Wall Area</th>
-                      <th scope="col" className="p-4 font-bold">Estimated Bricks</th>
-                      <th scope="col" className="p-4 font-bold">With 10% Extra</th>
+                      <th scope="col" className="p-4 font-bold">
+                        Wall Height
+                      </th>
+                      <th scope="col" className="p-4 font-bold">
+                        Wall Area
+                      </th>
+                      <th scope="col" className="p-4 font-bold">
+                        Estimated Bricks
+                      </th>
+                      <th scope="col" className="p-4 font-bold">
+                        With 10% Extra
+                      </th>
                     </tr>
                   </thead>
+
                   <tbody>
                     {estimates.map((item, index) => (
                       <tr
                         key={item.height}
-                        className={
-                          index % 2 === 0
-                            ? "bg-slate-50"
-                            : "bg-white"
-                        }
+                        className={index % 2 === 0 ? "bg-slate-50" : "bg-white"}
                       >
-                        <th scope="row" className="border-t border-slate-200 p-4 font-semibold">
+                        <th
+                          scope="row"
+                          className="border-t border-slate-200 p-4 font-semibold"
+                        >
                           {item.height}
                         </th>
+
                         <td className="border-t border-slate-200 p-4">
                           {item.area} sq ft
                         </td>
+
                         <td className="border-t border-slate-200 p-4">
                           {item.bricks}
                         </td>
+
                         <td className="border-t border-slate-200 p-4 font-extrabold text-blue-800">
                           {item.extra}
                         </td>
@@ -388,9 +464,9 @@ export default function RetainingWallArticle() {
               </div>
 
               <p className="mt-3 text-sm leading-6 text-slate-500">
-                Estimates are rounded and are not a substitute for a product-specific
-                takeoff. Mortar, footings, reinforcement, caps and additional wall
-                faces are not included.
+                These are estimates, not a product-specific material takeoff.
+                Mortar, footings, reinforcement, caps and additional wall faces
+                are not included.
               </p>
             </section>
 
@@ -398,6 +474,7 @@ export default function RetainingWallArticle() {
               <h2 className="text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">
                 How to Calculate Bricks for a 10-Foot Wall
               </h2>
+
               <p className="mt-3 leading-8 text-slate-700">
                 First calculate the wall face area. Then multiply that area
                 by the estimated number of bricks per square foot.
@@ -407,15 +484,18 @@ export default function RetainingWallArticle() {
                 <p className="text-xs font-bold uppercase tracking-widest text-blue-800">
                   Brick calculation formula
                 </p>
+
                 <p className="mt-3 text-xl font-black leading-8 text-slate-950 sm:text-2xl">
                   Wall Area = Length × Height
                 </p>
+
                 <p className="mt-2 text-xl font-black leading-8 text-slate-950 sm:text-2xl">
                   Bricks ≈ Wall Area × 6.86
                 </p>
+
                 <p className="mt-3 text-sm leading-6 text-slate-700">
-                  Add a suitable waste allowance only after calculating the
-                  base quantity.
+                  Add a suitable waste allowance after calculating the base
+                  quantity.
                 </p>
               </div>
 
@@ -424,8 +504,7 @@ export default function RetainingWallArticle() {
                   <strong>Measure the length:</strong> this example uses 10 feet.
                 </li>
                 <li>
-                  <strong>Measure the height:</strong> use the actual planned
-                  height in feet.
+                  <strong>Measure the height:</strong> use the planned height in feet.
                 </li>
                 <li>
                   <strong>Calculate the area:</strong> multiply length by height.
@@ -445,35 +524,43 @@ export default function RetainingWallArticle() {
               <h2 className="text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">
                 Worked Example: A 10-Foot-Long, 2-Foot-High Wall
               </h2>
+
               <p className="mt-3 leading-8 text-slate-700">
                 Suppose your wall is 10 feet long and 2 feet high.
               </p>
 
               <div className="mt-5 space-y-3">
                 <div className="rounded-xl border border-slate-200 p-4">
-                  <p className="text-sm font-medium text-slate-500">Step 1 · Area</p>
+                  <p className="text-sm font-medium text-slate-500">
+                    Step 1 · Area
+                  </p>
                   <p className="mt-1 text-lg font-bold text-slate-950">
                     10 × 2 = 20 sq ft
                   </p>
                 </div>
+
                 <div className="rounded-xl border border-slate-200 p-4">
-                  <p className="text-sm font-medium text-slate-500">Step 2 · Base quantity</p>
+                  <p className="text-sm font-medium text-slate-500">
+                    Step 2 · Base quantity
+                  </p>
                   <p className="mt-1 text-lg font-bold text-slate-950">
-                    20 × 6.86 = 137.2 ≈ 137 bricks
+                    20 × 6.86 = 137.2, rounded up to 138 bricks
                   </p>
                 </div>
+
                 <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4">
-                  <p className="text-sm font-medium text-emerald-800">Step 3 · Example 10% allowance</p>
+                  <p className="text-sm font-medium text-emerald-800">
+                    Step 3 · Example 10% allowance
+                  </p>
                   <p className="mt-1 text-lg font-black text-emerald-950">
-                    137.2 × 1.10 = 150.92 ≈ 151 bricks
+                    138 × 1.10 = 151.8, rounded up to 152 bricks
                   </p>
                 </div>
               </div>
 
               <p className="mt-4 leading-8 text-slate-700">
-                The result is a planning estimate for one wall face. Confirm
-                the final quantity with your mason or supplier before placing
-                an order.
+                This is a planning estimate for one wall face. Confirm the
+                final quantity with your mason or supplier before ordering.
               </p>
             </section>
 
@@ -481,16 +568,19 @@ export default function RetainingWallArticle() {
               <h2 className="text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">
                 Why Brick Size and Mortar Joints Matter
               </h2>
+
               <p className="mt-3 leading-8 text-slate-700">
-                Bricks are available in different dimensions, and mortar joints
-                affect how many units fit across a wall. A coverage rate that
-                works for one brick size may not work for another.
+                Bricks come in different dimensions, and mortar joints affect
+                how many units fit across a wall. A coverage rate for one brick
+                size may not apply to another.
               </p>
+
               <p className="mt-3 leading-8 text-slate-700">
-                Check the manufacturer's actual dimensions and coverage guidance.
-                Account for corners, returns, openings, piers, wall thickness and
-                any special units in your project.
+                Check the manufacturer's dimensions and coverage guidance.
+                Account for corners, returns, openings, piers, wall thickness
+                and special units.
               </p>
+
               <p className="mt-3 leading-8 text-slate-700">
                 For more background, see our{" "}
                 <Link
@@ -507,16 +597,18 @@ export default function RetainingWallArticle() {
               <h2 className="text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">
                 How Much Extra Material Should You Buy?
               </h2>
+
               <p className="mt-3 leading-8 text-slate-700">
                 Extra bricks can cover breakage, cuts and minor measurement
                 differences. The appropriate allowance depends on the brick,
-                bond pattern, workmanship and complexity of the wall.
+                bond pattern, workmanship and wall complexity.
               </p>
+
               <p className="mt-3 leading-8 text-slate-700">
                 The 10% allowance in this guide is an example, not a universal
                 requirement. Ask your supplier or mason what is appropriate
-                for the specific product and layout. Also check whether the
-                bricks are sold individually, by bundle or by pallet.
+                for your product and layout. Also check whether bricks are
+                sold individually, by bundle or by pallet.
               </p>
             </section>
 
@@ -524,27 +616,32 @@ export default function RetainingWallArticle() {
               <h2 className="text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">
                 Important Retaining Wall Safety Considerations
               </h2>
+
               <p className="mt-3 leading-8 text-slate-700">
                 A retaining wall must resist pressure from the soil it holds
                 back. Water, soil conditions, slopes, nearby buildings and
-                vehicle loads can affect the design. A brick quantity estimate
+                vehicle loads can affect its design. A brick quantity estimate
                 does not determine the required wall thickness or foundation.
               </p>
+
               <p className="mt-3 leading-8 text-slate-700">
-                Depending on the project, the design may need suitable footing,
-                reinforcement, drainage and a professional stability assessment.
-                Check local building requirements and consult a qualified
-                engineer or designer before construction.
+                Depending on the project, the design may need a suitable
+                footing, reinforcement, drainage and professional stability
+                assessment. Check local building requirements and consult a
+                qualified engineer or designer before construction.
               </p>
+
               <div className="mt-5 rounded-2xl border border-amber-200 bg-amber-50 p-5">
                 <p className="font-bold text-amber-950">
                   Do not build from the brick count alone.
                 </p>
+
                 <p className="mt-2 text-sm leading-7 text-amber-900">
-                  Retaining-wall design depends on site conditions and structural
-                  requirements. Use project-specific plans for construction.
+                  Retaining-wall design depends on site conditions and
+                  structural requirements. Use project-specific plans.
                 </p>
               </div>
+
               <p className="mt-4 leading-8 text-slate-700">
                 For additional technical background, read the{" "}
                 <a
@@ -553,11 +650,11 @@ export default function RetainingWallArticle() {
                   rel="noopener noreferrer"
                   className="font-semibold text-blue-700 underline decoration-blue-200 underline-offset-4 hover:text-blue-900"
                 >
-                  Concrete Masonry &amp; Hardscapes Association's retaining wall
+                  Concrete Masonry &amp; Hardscapes Association retaining wall
                   design resource
                 </a>
-                . It discusses design considerations for segmental retaining
-                walls; it is not a substitute for a project-specific design.
+                . It discusses segmental retaining-wall design considerations
+                and is not a substitute for a project-specific design.
               </p>
             </section>
 
@@ -565,6 +662,7 @@ export default function RetainingWallArticle() {
               <h2 className="text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">
                 Common Brick Estimation Mistakes
               </h2>
+
               <ul className="mt-4 list-disc space-y-3 pl-6 leading-8 text-slate-700">
                 <li>Forgetting to multiply wall length by wall height.</li>
                 <li>Mixing inches and feet without converting units.</li>
@@ -579,9 +677,9 @@ export default function RetainingWallArticle() {
               <h2 className="text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">
                 Related CornerSpan Resources
               </h2>
+
               <p className="mt-3 leading-8 text-slate-700">
-                Continue with these tools and guides to plan your material
-                quantities more carefully.
+                Continue with these tools and guides to plan material quantities.
               </p>
 
               <div className="mt-5 grid gap-4 sm:grid-cols-2">
@@ -596,6 +694,7 @@ export default function RetainingWallArticle() {
                     Estimate bricks from your wall dimensions.
                   </p>
                 </Link>
+
                 <Link
                   href="/guides/brick-calculation"
                   className="group rounded-2xl border border-slate-200 p-5 transition hover:border-blue-300 hover:bg-blue-50"
@@ -607,6 +706,7 @@ export default function RetainingWallArticle() {
                     Learn the basics of calculating wall brick quantities.
                   </p>
                 </Link>
+
                 <Link
                   href="/guides/us-brick-sizes"
                   className="group rounded-2xl border border-slate-200 p-5 transition hover:border-blue-300 hover:bg-blue-50"
@@ -618,6 +718,7 @@ export default function RetainingWallArticle() {
                     Review brick dimensions and product differences.
                   </p>
                 </Link>
+
                 <Link
                   href="/blog"
                   className="group rounded-2xl border border-slate-200 p-5 transition hover:border-blue-300 hover:bg-blue-50"
@@ -647,25 +748,28 @@ export default function RetainingWallArticle() {
                     before waste, or about 76 with an illustrative 10% allowance.
                   </p>
                 </div>
+
                 <div className="py-5">
                   <h3 className="text-lg font-bold text-slate-950">
                     How many bricks do I need for a 10-foot-long wall that is 2 feet high?
                   </h3>
                   <p className="mt-2 leading-7 text-slate-700">
-                    Approximately 137 bricks before waste, or about 151 with the
-                    example allowance, for one wall face.
+                    Approximately 138 bricks before waste, or about 152 with
+                    the example allowance, for one wall face.
                   </p>
                 </div>
+
                 <div className="py-5">
                   <h3 className="text-lg font-bold text-slate-950">
                     Does this estimate include mortar?
                   </h3>
                   <p className="mt-2 leading-7 text-slate-700">
-                    No. It estimates brick units only. Mortar quantity depends on
-                    brick dimensions, joint thickness, bond pattern and mortar
-                    specifications.
+                    No. It estimates brick units only. Mortar quantity depends
+                    on brick dimensions, joint thickness, bond pattern and
+                    mortar specifications.
                   </p>
                 </div>
+
                 <div className="py-5">
                   <h3 className="text-lg font-bold text-slate-950">
                     Does this estimate prove that my retaining wall is safe?
@@ -683,14 +787,17 @@ export default function RetainingWallArticle() {
               <p className="text-sm font-bold uppercase tracking-wider text-blue-300">
                 Next step
               </p>
+
               <h2 className="mt-2 text-2xl font-black sm:text-3xl">
                 Estimate Your Brick Quantity
               </h2>
+
               <p className="mt-3 leading-7 text-slate-300">
                 Enter your wall dimensions in the CornerSpan Brick Calculator.
                 Confirm the brick product, wall details and final order quantity
                 with your supplier or mason.
               </p>
+
               <Link
                 href="/calculators/brick"
                 className="mt-6 inline-flex min-h-12 items-center justify-center rounded-xl bg-blue-500 px-5 py-3 font-bold text-white transition hover:bg-blue-400"
@@ -708,6 +815,7 @@ export default function RetainingWallArticle() {
           __html: JSON.stringify(articleSchema),
         }}
       />
+
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
