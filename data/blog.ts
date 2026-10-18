@@ -39,4 +39,14 @@ export const blogPosts: BlogPost[] = [
     publishedAt: "2026-08-25",
     calculatorHref: "/calculators/square-footage",
   },
+  {
+    slug: "how-many-bricks-10-foot-retaining-wall",
+    title: "How Many Bricks Do I Need for a 10-Foot Retaining Wall?",
+    description:
+      "Estimate bricks for a 10-foot retaining wall using wall height, standard modular brick dimensions and a waste allowance.",
+    category: "Brick",
+    tags: ["brick", "retaining-wall", "masonry", "construction"],
+    publishedAt: "2026-10-18",
+    calculatorHref: "/calculators/brick",
+  },
 ];
