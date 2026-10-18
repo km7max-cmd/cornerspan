@@ -48,15 +48,11 @@ function toMeters(
     safeNumber(value)
   );
 
-  return lengthToMeters(
-    number,
-    unit
-  );
+  return lengthToMeters(number, unit);
 }
 
 /* =========================================================
    MORTAR JOINT → METERS
-
    Mortar joint is stored in inches.
 ========================================================= */
 
@@ -84,32 +80,21 @@ function calculateOpeningArea(
 ): number {
   const qty = Math.max(
     0,
-    Math.floor(
-      safeNumber(quantity)
-    )
+    Math.floor(safeNumber(quantity))
   );
 
   if (qty <= 0) {
     return 0;
   }
 
-  const widthMeters =
-    toMeters(
-      width,
-      widthUnit
-    );
+  const widthMeters = toMeters(width, widthUnit);
+  const heightMeters = toMeters(height, heightUnit);
 
-  const heightMeters =
-    toMeters(
-      height,
-      heightUnit
-    );
+  if (widthMeters <= 0 || heightMeters <= 0) {
+    return 0;
+  }
 
-  return (
-    qty *
-    widthMeters *
-    heightMeters
-  );
+  return qty * widthMeters * heightMeters;
 }
 
 /* =========================================================
@@ -121,10 +106,8 @@ function getMortarRatio(
 ) {
   return (
     MORTAR_RATIO_OPTIONS.find(
-      (item) =>
-        item.value === ratio
-    ) ??
-    MORTAR_RATIO_OPTIONS[0]
+      (item) => item.value === ratio
+    ) ?? MORTAR_RATIO_OPTIONS[0]
   );
 }
 
@@ -139,46 +122,30 @@ export function calculateBrick(
      1. WALL DIMENSIONS
   ======================================================= */
 
-  const wallLengthMeters =
-    toMeters(
-      state.wallLength,
-      state.wallLengthUnit
-    );
+  const wallLengthMeters = toMeters(
+    state.wallLength,
+    state.wallLengthUnit
+  );
 
-  const wallHeightMeters =
-    toMeters(
-      state.wallHeight,
-      state.wallHeightUnit
-    );
+  const wallHeightMeters = toMeters(
+    state.wallHeight,
+    state.wallHeightUnit
+  );
 
   const wallQuantity = Math.max(
     1,
-    Math.floor(
-      safeNumber(
-        state.quantity,
-        1
-      )
-    )
+    Math.floor(safeNumber(state.quantity, 1))
   );
 
   /* =======================================================
      2. WALL LAYERS
-
-     Single wall = 1 brick layer
-     Double wall = 2 brick layers
   ======================================================= */
 
   const wallLayers =
-    state.wallType === "double"
-      ? 2
-      : 1;
+    state.wallType === "double" ? 2 : 1;
 
   /* =======================================================
      3. GROSS WALL AREA
-
-     This is the face area of the wall.
-     Wall layers are NOT applied here because openings
-     are measured against the wall face.
   ======================================================= */
 
   const grossWallArea =
@@ -188,6 +155,7 @@ export function calculateBrick(
 
   /* =======================================================
      4. DOOR OPENINGS
+     Opening count and dimensions apply to each wall.
   ======================================================= */
 
   const doorArea =
@@ -197,7 +165,7 @@ export function calculateBrick(
       state.doorHeight,
       state.doorWidthUnit,
       state.doorHeightUnit
-    );
+    ) * wallQuantity;
 
   /* =======================================================
      5. WINDOW OPENINGS
@@ -210,82 +178,65 @@ export function calculateBrick(
       state.windowHeight,
       state.windowWidthUnit,
       state.windowHeightUnit
-    );
+    ) * wallQuantity;
 
   /* =======================================================
      6. TOTAL OPENINGS
-
-     Never allow openings to exceed the wall area.
+     Do not allow openings to exceed gross wall area.
   ======================================================= */
 
-  const openingArea =
-    Math.min(
-      grossWallArea,
-      doorArea + windowArea
-    );
+  const openingArea = Math.min(
+    grossWallArea,
+    doorArea + windowArea
+  );
 
   /* =======================================================
      7. NET WALL AREA
   ======================================================= */
 
-  const netWallArea =
-    Math.max(
-      0,
-      grossWallArea -
-        openingArea
-    );
+  const netWallArea = Math.max(
+    0,
+    grossWallArea - openingArea
+  );
 
   /* =======================================================
      8. BRICK DIMENSIONS
   ======================================================= */
 
-  const brickLengthMeters =
-    toMeters(
-      state.brickLength,
-      state.brickUnit
-    );
+  const brickLengthMeters = toMeters(
+    state.brickLength,
+    state.brickUnit
+  );
 
-  const brickHeightMeters =
-    toMeters(
-      state.brickHeight,
-      state.brickUnit
-    );
+  const brickHeightMeters = toMeters(
+    state.brickHeight,
+    state.brickUnit
+  );
 
-  const brickWidthMeters =
-    toMeters(
-      state.brickWidth,
-      state.brickUnit
-    );
+  const brickWidthMeters = toMeters(
+    state.brickWidth,
+    state.brickUnit
+  );
 
   /* =======================================================
      9. MORTAR JOINT
   ======================================================= */
 
   const mortarJointMeters =
-    mortarJointToMeters(
-      state.mortarJoint
-    );
+    mortarJointToMeters(state.mortarJoint);
 
   /* =======================================================
      10. EFFECTIVE BRICK MODULE
-
-     Brick face + mortar joint.
-
-     This is an estimating model. Actual field quantities
-     vary with bond pattern, edge conditions and workmanship.
   ======================================================= */
 
   const effectiveLength =
-    brickLengthMeters +
-    mortarJointMeters;
+    brickLengthMeters + mortarJointMeters;
 
   const effectiveHeight =
-    brickHeightMeters +
-    mortarJointMeters;
+    brickHeightMeters + mortarJointMeters;
 
   const effectiveBrickFaceArea =
-    effectiveLength *
-    effectiveHeight;
+    effectiveLength * effectiveHeight;
 
   /* =======================================================
      11. BRICKS PER SQUARE METER
@@ -293,14 +244,11 @@ export function calculateBrick(
 
   const bricksPerSqM =
     effectiveBrickFaceArea > 0
-      ? 1 /
-        effectiveBrickFaceArea
+      ? 1 / effectiveBrickFaceArea
       : 0;
 
   /* =======================================================
      12. BASE BRICKS
-
-     Apply wall layers here.
   ======================================================= */
 
   const baseBricks =
@@ -312,83 +260,55 @@ export function calculateBrick(
      13. BRICK WASTE
   ======================================================= */
 
-  const wastePercent =
-    Math.max(
-      0,
-      Math.min(
-        100,
-        safeNumber(
-          state.waste
-        )
-      )
-    );
+  const wastePercent = Math.max(
+    0,
+    Math.min(100, safeNumber(state.waste))
+  );
 
   const wasteBricks =
-    baseBricks *
-    (
-      wastePercent /
-      100
-    );
+    baseBricks * (wastePercent / 100);
 
-  const totalBricks =
-    Math.ceil(
-      baseBricks +
-      wasteBricks
-    );
+  const totalBricks = Math.ceil(
+    baseBricks + wasteBricks
+  );
 
   /* =======================================================
      14. BRICKS PER SQUARE FOOT
   ======================================================= */
 
   const bricksPerSqFt =
-    bricksPerSqM *
-    0.09290304 *
-    wallLayers;
+    bricksPerSqM * 0.09290304 * wallLayers;
 
   /* =======================================================
      15. BRICKS PER AREA
-
-     Bricks per square meter including wall layers.
   ======================================================= */
 
   const bricksPerArea =
-    bricksPerSqM *
-    wallLayers;
+    bricksPerSqM * wallLayers;
 
   /* =======================================================
      16. BRICK COST
   ======================================================= */
 
-  const pricePerBrick =
-    Math.max(
-      0,
-      safeNumber(
-        state.pricePerBrick
-      )
-    );
+  const pricePerBrick = Math.max(
+    0,
+    safeNumber(state.pricePerBrick)
+  );
 
   const brickCost =
-    totalBricks *
-    pricePerBrick;
+    totalBricks * pricePerBrick;
 
   /* =======================================================
      MORTAR VARIABLES
   ======================================================= */
 
   let mortarWetVolume = 0;
-
   let mortarDryVolume = 0;
-
   let mortarTotalDryVolume = 0;
-
   let cementVolume = 0;
-
   let cementWeight = 0;
-
   let cementBags = 0;
-
   let sandVolume = 0;
-
   let mortarCost = 0;
 
   /* =======================================================
@@ -402,34 +322,11 @@ export function calculateBrick(
     brickHeightMeters > 0 &&
     brickWidthMeters > 0
   ) {
-    /* -----------------------------------------------------
-       WALL THICKNESS
-
-       For a single wall:
-       brick width × 1 layer
-
-       For a double wall:
-       brick width × 2 layers
-    ----------------------------------------------------- */
-
     const wallThickness =
-      brickWidthMeters *
-      wallLayers;
-
-    /* -----------------------------------------------------
-       TOTAL WALL VOLUME
-    ----------------------------------------------------- */
+      brickWidthMeters * wallLayers;
 
     const wallVolume =
-      netWallArea *
-      wallThickness;
-
-    /* -----------------------------------------------------
-       ACTUAL BRICK SOLID VOLUME
-
-       Use the same base brick quantity used for the
-       selected wall layers.
-    ----------------------------------------------------- */
+      netWallArea * wallThickness;
 
     const brickVolumeEach =
       brickLengthMeters *
@@ -437,160 +334,101 @@ export function calculateBrick(
       brickWidthMeters;
 
     const brickSolidVolume =
-      baseBricks *
-      brickVolumeEach;
+      baseBricks * brickVolumeEach;
 
-    /* -----------------------------------------------------
-       WET MORTAR
+    mortarWetVolume = Math.max(
+      0,
+      wallVolume - brickSolidVolume
+    );
 
-       Approximate void volume between bricks.
-    ----------------------------------------------------- */
-
-    mortarWetVolume =
-      Math.max(
-        0,
-        wallVolume -
-        brickSolidVolume
-      );
-
-    /* -----------------------------------------------------
-       WET → DRY FACTOR
-
-       Default = 1.33
-    ----------------------------------------------------- */
-
-    const wetToDry =
-      Math.max(
-        1,
-        safeNumber(
-          state.mortarWetToDryRatio,
-          1.33
-        )
-      );
+    const wetToDry = Math.max(
+      1,
+      safeNumber(state.mortarWetToDryRatio, 1.33)
+    );
 
     mortarDryVolume =
-      mortarWetVolume *
-      wetToDry;
+      mortarWetVolume * wetToDry;
 
-    /* -----------------------------------------------------
-       MORTAR WASTE
-    ----------------------------------------------------- */
-
-    const mortarWastePercent =
-      Math.max(
-        0,
-        Math.min(
-          100,
-          safeNumber(
-            state.mortarWaste
-          )
-        )
-      );
+    const mortarWastePercent = Math.max(
+      0,
+      Math.min(100, safeNumber(state.mortarWaste))
+    );
 
     mortarTotalDryVolume =
       mortarDryVolume *
-      (
-        1 +
-        mortarWastePercent /
-          100
-      );
+      (1 + mortarWastePercent / 100);
 
-    /* =====================================================
-       MORTAR RATIO
-    ===================================================== */
+    /* Mortar ratio */
 
-    const ratio =
-      getMortarRatio(
-        state.mortarRatio
-      );
+    const ratio = getMortarRatio(
+      state.mortarRatio
+    );
 
     const totalRatio =
-      ratio.cement +
-      ratio.sand;
+      ratio.cement + ratio.sand;
 
-    /* =====================================================
-       CEMENT
-    ===================================================== */
+    /* Cement volume */
 
     cementVolume =
       totalRatio > 0
         ? mortarTotalDryVolume *
-          (
-            ratio.cement /
-            totalRatio
-          )
+          (ratio.cement / totalRatio)
         : 0;
 
-    const cementDensity =
-      Math.max(
-        1,
-        safeNumber(
-          state.cementDensity,
-          1440
-        )
-      );
+    /* Cement weight */
+
+    const cementDensity = Math.max(
+      1,
+      safeNumber(state.cementDensity, 1440)
+    );
 
     cementWeight =
-      cementVolume *
-      cementDensity;
+      cementVolume * cementDensity;
 
-    const bagSize =
-      Math.max(
-        1,
-        safeNumber(
-          state.cementBagSize,
-          50
-        )
-      );
+    /* Cement bags
+       Display full bags required for purchasing.
+    */
+
+    const bagSize = Math.max(
+      1,
+      safeNumber(state.cementBagSize, 50)
+    );
 
     cementBags =
-      cementWeight /
-      bagSize;
+      cementWeight > 0
+        ? Math.ceil(cementWeight / bagSize)
+        : 0;
 
-    /* =====================================================
-       SAND
-    ===================================================== */
+    /* Sand volume */
 
     sandVolume =
       totalRatio > 0
         ? mortarTotalDryVolume *
-          (
-            ratio.sand /
-            totalRatio
-          )
+          (ratio.sand / totalRatio)
         : 0;
 
-    /* =====================================================
-       MORTAR COST
-    ===================================================== */
+    /* Material prices */
 
-    const cementPrice =
-      Math.max(
-        0,
-        safeNumber(
-          state.cementPrice
-        )
-      );
+    const cementPrice = Math.max(
+      0,
+      safeNumber(state.cementPrice)
+    );
 
-    const sandPrice =
-      Math.max(
-        0,
-        safeNumber(
-          state.sandPrice
-        )
-      );
+    const sandPrice = Math.max(
+      0,
+      safeNumber(state.sandPrice)
+    );
+
+    /* Cost uses full cement bags for purchasing. */
 
     const cementCost =
-      cementBags *
-      cementPrice;
+      cementBags * cementPrice;
 
     const sandCost =
-      sandVolume *
-      sandPrice;
+      sandVolume * sandPrice;
 
     mortarCost =
-      cementCost +
-      sandCost;
+      cementCost + sandCost;
   }
 
   /* =======================================================
@@ -598,117 +436,62 @@ export function calculateBrick(
   ======================================================= */
 
   const totalMaterialCost =
-    brickCost +
-    mortarCost;
+    brickCost + mortarCost;
 
   /* =======================================================
      19. RETURN RESULT
   ======================================================= */
 
   return {
-    /* -----------------------------------------------------
-       WALL
-    ----------------------------------------------------- */
+    /* Wall */
 
-    wallArea:
-      grossWallArea,
+    wallArea: grossWallArea,
+    wallAreaUnit: "m²",
 
-    wallAreaUnit:
-      "m²",
+    openingArea,
+    openingAreaUnit: "m²",
 
-    openingArea:
-      openingArea,
+    netWallArea,
+    netWallAreaUnit: "m²",
 
-    openingAreaUnit:
-      "m²",
+    /* Bricks */
 
-    netWallArea:
-      netWallArea,
+    bricksPerSqFt,
+    bricksPerArea,
+    bricksPerAreaUnit: "m²",
 
-    netWallAreaUnit:
-      "m²",
+    baseBricks,
+    wasteBricks,
+    totalBricks,
+    brickCost,
 
-    /* -----------------------------------------------------
-       BRICKS
-    ----------------------------------------------------- */
+    /* Mortar */
 
-    bricksPerSqFt:
-      bricksPerSqFt,
+    mortarWetVolume,
+    mortarWetVolumeUnit: "m³",
 
-    bricksPerArea:
-      bricksPerArea,
+    mortarDryVolume,
+    mortarDryVolumeUnit: "m³",
 
-    bricksPerAreaUnit:
-      "m²",
+    mortarTotalDryVolume,
+    mortarTotalDryVolumeUnit: "m³",
 
-    baseBricks:
-      baseBricks,
+    /* Cement */
 
-    wasteBricks:
-      wasteBricks,
+    cementVolume,
+    cementVolumeUnit: "m³",
 
-    totalBricks:
-      totalBricks,
+    cementWeight,
+    cementBags,
 
-    brickCost:
-      brickCost,
+    /* Sand */
 
-    /* -----------------------------------------------------
-       MORTAR
-    ----------------------------------------------------- */
+    sandVolume,
+    sandVolumeUnit: "m³",
 
-    mortarWetVolume:
-      mortarWetVolume,
+    /* Cost */
 
-    mortarWetVolumeUnit:
-      "m³",
-
-    mortarDryVolume:
-      mortarDryVolume,
-
-    mortarDryVolumeUnit:
-      "m³",
-
-    mortarTotalDryVolume:
-      mortarTotalDryVolume,
-
-    mortarTotalDryVolumeUnit:
-      "m³",
-
-    /* -----------------------------------------------------
-       CEMENT
-    ----------------------------------------------------- */
-
-    cementVolume:
-      cementVolume,
-
-    cementVolumeUnit:
-      "m³",
-
-    cementWeight:
-      cementWeight,
-
-    cementBags:
-      cementBags,
-
-    /* -----------------------------------------------------
-       SAND
-    ----------------------------------------------------- */
-
-    sandVolume:
-      sandVolume,
-
-    sandVolumeUnit:
-      "m³",
-
-    /* -----------------------------------------------------
-       COST
-    ----------------------------------------------------- */
-
-    mortarCost:
-      mortarCost,
-
-    totalMaterialCost:
-      totalMaterialCost,
+    mortarCost,
+    totalMaterialCost,
   };
 }
