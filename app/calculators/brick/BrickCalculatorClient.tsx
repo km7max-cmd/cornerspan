@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 
 import Breadcrumb from "../../../components/Breadcrumb";
 import CalculatorHero from "../../components/CalculatorHero";
@@ -22,49 +22,33 @@ import {
 } from "./utils/calculations";
 
 export default function BrickCalculator() {
-  /* =====================================================
-     ACCORDION
-  ===================================================== */
-
   const [openSection, setOpenSection] =
     useState<string | null>("wall");
-
-  /* =====================================================
-     CALCULATOR STATE
-  ===================================================== */
 
   const [state, setState] =
     useState<BrickCalculatorState>(
       BRICK_DEFAULTS
     );
 
-  /* =====================================================
-     CALCULATION
-  ===================================================== */
+  // Results section reference
+  const resultRef = useRef<HTMLDivElement>(null);
 
   const result = useMemo(() => {
     return calculateBrick(state);
   }, [state]);
 
-  /* =====================================================
-     PAGE
-  ===================================================== */
+  const handleViewResults = () => {
+    resultRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-slate-100">
       <div className="mx-auto w-full max-w-7xl px-4 py-5 sm:px-6 sm:py-8">
 
-        {/* =================================================
-            BREADCRUMB
-        ================================================= */}
-
-        <Breadcrumb
-          current="Brick Calculator"
-        />
-
-        {/* =================================================
-            HERO
-        ================================================= */}
+        <Breadcrumb current="Brick Calculator" />
 
         <CalculatorHero
           title="Brick"
@@ -72,131 +56,86 @@ export default function BrickCalculator() {
           description="Calculate the number of bricks required for a wall, including mortar joints, openings, waste and estimated material cost."
         />
 
-        {/* =================================================
-            MAIN CALCULATOR AREA
-        ================================================= */}
-
         <div className="mx-auto mt-6 max-w-6xl">
           <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(340px,0.8fr)]">
 
-            {/* =================================================
-                LEFT — CALCULATOR INPUTS
-            ================================================= */}
-
+            {/* Calculator Inputs */}
             <div className="min-w-0">
 
-              {/* =================================================
-                  BRICK DIAGRAM
-              ================================================= */}
-
               <BrickDiagram
-                brickLength={
-                  state.brickLength
-                }
-                brickHeight={
-                  state.brickHeight
-                }
-                brickWidth={
-                  state.brickWidth
-                }
-                brickUnit={
-                  state.brickUnit
-                }
-                mortarJoint={
-                  state.mortarJoint
-                }
+                brickLength={state.brickLength}
+                brickHeight={state.brickHeight}
+                brickWidth={state.brickWidth}
+                brickUnit={state.brickUnit}
+                mortarJoint={state.mortarJoint}
               />
-
-              {/* =================================================
-                  CALCULATOR SECTIONS
-              ================================================= */}
 
               <div className="mt-5">
                 <CalculatorSections
                   state={state}
                   setState={setState}
                   openSection={openSection}
-                  setOpenSection={
-                    setOpenSection
-                  }
+                  setOpenSection={setOpenSection}
                 />
               </div>
 
+              {/* View Results Button */}
+              <button
+                type="button"
+                onClick={handleViewResults}
+                className="mt-5 w-full rounded-xl bg-blue-600 px-5 py-3.5 text-base font-bold text-white shadow-md transition-colors hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-200"
+              >
+                View Results
+              </button>
+
             </div>
 
-            {/* =================================================
-                RIGHT — CALCULATION RESULT
-            ================================================= */}
-
-            <div className="min-w-0 lg:sticky lg:top-24">
+            {/* Calculation Results */}
+            <div
+              ref={resultRef}
+              className="min-w-0 scroll-mt-24 lg:sticky lg:top-24"
+            >
               <ResultCard
                 result={result}
-                currency={
-                  state.currency
-                }
+                currency={state.currency}
               />
             </div>
 
           </div>
 
-          {/* =================================================
-              TIPS
-          ================================================= */}
-
+          {/* Tips */}
           <section className="mx-auto mt-7 max-w-6xl rounded-2xl border border-blue-100 bg-blue-50 p-5 sm:p-6">
-
             <h2 className="text-lg font-bold text-slate-900">
               Brick Calculator Tips
             </h2>
 
             <ul className="mt-3 list-disc space-y-2 pl-5 text-sm leading-6 text-slate-700">
-
               <li>
-                Measure the wall length and height
-                accurately before calculating.
+                Measure the wall length and height accurately before calculating.
               </li>
-
               <li>
-                Door and window openings are deducted
-                from the total wall area.
+                Door and window openings are deducted from the total wall area.
               </li>
-
               <li>
-                Mortar joint thickness affects the
-                number of bricks required.
+                Mortar joint thickness affects the number of bricks required.
               </li>
-
               <li>
-                A 5–10% brick waste allowance is
-                commonly used for breakage and cutting.
+                A 5–10% brick waste allowance is commonly used for breakage and cutting.
               </li>
-
               <li>
-                Brick sizes can vary by region,
-                manufacturer and construction method.
+                Brick sizes can vary by region, manufacturer and construction method.
               </li>
-
             </ul>
-
           </section>
 
-          {/* =================================================
-              RELATED CALCULATORS
-              Automatically discovered from data/calculators.ts
-          ================================================= */}
-
+          {/* Related Calculators */}
           <RelatedCalculators />
 
-          {/* =================================================
-              DISCLAIMER
-          ================================================= */}
-
+          {/* Disclaimer */}
           <p className="mx-auto mt-6 max-w-4xl px-2 pb-6 text-center text-xs leading-5 text-slate-500">
-            This brick calculator provides an estimate
-            for planning purposes only. Actual quantities
-            may vary depending on brick dimensions,
-            mortar joint thickness, openings, wall
-            construction method, waste and site conditions.
+            This brick calculator provides an estimate for planning purposes only.
+            Actual quantities may vary depending on brick dimensions, mortar joint
+            thickness, openings, wall construction method, waste and site conditions.
           </p>
 
         </div>
