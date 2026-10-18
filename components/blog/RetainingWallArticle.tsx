@@ -1,5 +1,4 @@
 import Link from "next/link";
-
 const articleUrl =
   "https://www.cornerspan.com/blog/how-many-bricks-10-foot-retaining-wall";
 
@@ -8,6 +7,9 @@ const articleTitle =
 
 const articleDescription =
   "Estimate bricks for a 10-foot-long retaining wall with a clear brick-count table, calculation formula, waste allowance, and important retaining-wall safety considerations.";
+
+const imageUrl =
+  "https://www.cornerspan.com/retaining-wall-brick-estimate.webp";
 
 const sections = [
   { id: "quick-answer", label: "Quick Answer" },
@@ -34,7 +36,7 @@ const articleSchema = {
   "@type": "Article",
   headline: articleTitle,
   description: articleDescription,
-  image: ["https://www.cornerspan.com/logo.webp"],
+  image: [imageUrl],
   mainEntityOfPage: {
     "@type": "WebPage",
     "@id": articleUrl,
@@ -78,156 +80,6 @@ const breadcrumbSchema = {
   ],
 };
 
-function RetainingWallIllustration() {
-  return (
-    <figure className="my-8 overflow-hidden rounded-2xl border border-slate-200 bg-white p-3 sm:p-5">
-      <svg
-        viewBox="0 0 720 320"
-        role="img"
-        aria-labelledby="wall-diagram-title wall-diagram-description"
-        className="h-auto w-full"
-      >
-        <title id="wall-diagram-title">
-          Ten-foot-long brick retaining wall illustration
-        </title>
-
-        <desc id="wall-diagram-description">
-          Illustrative brick wall showing a ten-foot length,
-          wall height, retained soil and backfill area.
-          This is not a structural construction plan.
-        </desc>
-
-        <rect width="720" height="320" rx="16" fill="#f8fafc" />
-
-        <path
-          d="M30 245 L30 105 L365 105 L365 245 Z"
-          fill="#d6b58b"
-          opacity="0.55"
-        />
-
-        <path
-          d="M365 105 L690 105 L690 245 L365 245 Z"
-          fill="#bbd7a5"
-          opacity="0.65"
-        />
-
-        {Array.from({ length: 5 }).map((_, row) =>
-          Array.from({ length: 7 }).map((__, col) => (
-            <rect
-              key={`${row}-${col}`}
-              x={105 + col * 38 + (row % 2 ? 19 : 0)}
-              y={115 + row * 25}
-              width="35"
-              height="21"
-              rx="2"
-              fill={row % 2 ? "#c66a4d" : "#b9543b"}
-              stroke="#f8e4d7"
-              strokeWidth="2"
-            />
-          ))
-        )}
-
-        <rect
-          x="90"
-          y="240"
-          width="310"
-          height="14"
-          rx="3"
-          fill="#64748b"
-        />
-
-        <path
-          d="M75 270 H420"
-          stroke="#334155"
-          strokeWidth="2"
-          strokeLinecap="round"
-        />
-
-        <path
-          d="M75 262 V278 M420 262 V278"
-          stroke="#334155"
-          strokeWidth="2"
-        />
-
-        <text
-          x="247"
-          y="295"
-          textAnchor="middle"
-          fontSize="16"
-          fontWeight="700"
-          fill="#334155"
-        >
-          10 ft wall length
-        </text>
-
-        <path
-          d="M445 115 V239"
-          stroke="#2563eb"
-          strokeWidth="2"
-          strokeDasharray="5 5"
-        />
-
-        <path
-          d="M437 115 H453 M437 239 H453"
-          stroke="#2563eb"
-          strokeWidth="2"
-        />
-
-        <text
-          x="465"
-          y="178"
-          fontSize="15"
-          fontWeight="700"
-          fill="#1d4ed8"
-        >
-          Height
-        </text>
-
-        <text x="465" y="198" fontSize="12" fill="#475569">
-          Varies by project
-        </text>
-
-        <text
-          x="48"
-          y="78"
-          fontSize="15"
-          fontWeight="700"
-          fill="#854d0e"
-        >
-          Retained soil
-        </text>
-
-        <text
-          x="490"
-          y="78"
-          fontSize="15"
-          fontWeight="700"
-          fill="#166534"
-        >
-          Backfill area
-        </text>
-
-        <text
-          x="360"
-          y="35"
-          textAnchor="middle"
-          fontSize="18"
-          fontWeight="800"
-          fill="#0f172a"
-        >
-          Brick Wall Estimation
-        </text>
-      </svg>
-
-      <figcaption className="px-2 pt-3 text-sm leading-6 text-slate-500">
-        Illustrative diagram only. Actual wall height, thickness,
-        foundation, reinforcement and drainage must follow the
-        project design.
-      </figcaption>
-    </figure>
-  );
-}
-
 export default function RetainingWallArticle() {
   return (
     <main className="min-h-screen bg-slate-50 text-slate-800">
@@ -239,15 +91,11 @@ export default function RetainingWallArticle() {
           <Link href="/" className="hover:text-blue-700">
             Home
           </Link>
-
           <span aria-hidden="true">/</span>
-
           <Link href="/blog" className="hover:text-blue-700">
             Blog
           </Link>
-
           <span aria-hidden="true">/</span>
-
           <span className="font-medium text-slate-700">
             Brick Retaining Wall
           </span>
@@ -330,12 +178,11 @@ export default function RetainingWallArticle() {
           <p className="font-bold text-amber-950">
             Important: This is a preliminary quantity estimate.
           </p>
-
           <p className="mt-2 text-sm leading-7 text-amber-900">
             Brick counts do not determine whether a retaining wall is
-            structurally safe. Retaining soil can require an engineered
-            design, appropriate foundation and drainage. Do not use this
-            material estimate as a construction plan.
+            structurally safe. Retaining soil can require an engineered design,
+            appropriate foundation and drainage. Do not use this material
+            estimate as a construction plan.
           </p>
         </div>
 
@@ -344,7 +191,6 @@ export default function RetainingWallArticle() {
             <h2 className="text-lg font-extrabold text-slate-950">
               Table of Contents
             </h2>
-
             <p className="mt-1 text-sm text-slate-500">
               Jump to any section
             </p>
@@ -397,7 +243,21 @@ export default function RetainingWallArticle() {
               </p>
             </section>
 
-            <RetainingWallIllustration />
+            <figure className="my-8">
+              <img
+                src="/retaining-wall-brick-estimate.webp"
+                alt="10-foot-long brick retaining wall showing wall height, retained soil, gravel backfill, and drainage pipe"
+                width="1648"
+                height="944"
+                loading="lazy"
+                decoding="async"
+                className="h-auto w-full rounded-2xl border border-slate-200"
+              />
+              <figcaption className="mt-2 text-sm leading-6 text-slate-500">
+                Illustrative brick retaining wall diagram. Actual wall design,
+                foundation and drainage depend on site conditions.
+              </figcaption>
+            </figure>
 
             <section id="brick-estimate-table" className="mt-10 scroll-mt-6">
               <h2 className="text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">
@@ -415,24 +275,14 @@ export default function RetainingWallArticle() {
                   <caption className="sr-only">
                     Estimated bricks for a 10-foot-long wall at different heights
                   </caption>
-
                   <thead className="bg-slate-900 text-white">
                     <tr>
-                      <th scope="col" className="p-4 font-bold">
-                        Wall Height
-                      </th>
-                      <th scope="col" className="p-4 font-bold">
-                        Wall Area
-                      </th>
-                      <th scope="col" className="p-4 font-bold">
-                        Estimated Bricks
-                      </th>
-                      <th scope="col" className="p-4 font-bold">
-                        With 10% Extra
-                      </th>
+                      <th scope="col" className="p-4 font-bold">Wall Height</th>
+                      <th scope="col" className="p-4 font-bold">Wall Area</th>
+                      <th scope="col" className="p-4 font-bold">Estimated Bricks</th>
+                      <th scope="col" className="p-4 font-bold">With 10% Extra</th>
                     </tr>
                   </thead>
-
                   <tbody>
                     {estimates.map((item, index) => (
                       <tr
@@ -445,15 +295,12 @@ export default function RetainingWallArticle() {
                         >
                           {item.height}
                         </th>
-
                         <td className="border-t border-slate-200 p-4">
                           {item.area} sq ft
                         </td>
-
                         <td className="border-t border-slate-200 p-4">
                           {item.bricks}
                         </td>
-
                         <td className="border-t border-slate-200 p-4 font-extrabold text-blue-800">
                           {item.extra}
                         </td>
@@ -484,15 +331,12 @@ export default function RetainingWallArticle() {
                 <p className="text-xs font-bold uppercase tracking-widest text-blue-800">
                   Brick calculation formula
                 </p>
-
                 <p className="mt-3 text-xl font-black leading-8 text-slate-950 sm:text-2xl">
                   Wall Area = Length × Height
                 </p>
-
                 <p className="mt-2 text-xl font-black leading-8 text-slate-950 sm:text-2xl">
                   Bricks ≈ Wall Area × 6.86
                 </p>
-
                 <p className="mt-3 text-sm leading-6 text-slate-700">
                   Add a suitable waste allowance after calculating the base
                   quantity.
@@ -635,7 +479,6 @@ export default function RetainingWallArticle() {
                 <p className="font-bold text-amber-950">
                   Do not build from the brick count alone.
                 </p>
-
                 <p className="mt-2 text-sm leading-7 text-amber-900">
                   Retaining-wall design depends on site conditions and
                   structural requirements. Use project-specific plans.
