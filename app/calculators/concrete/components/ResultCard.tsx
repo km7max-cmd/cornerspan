@@ -13,6 +13,25 @@ type Props = {
   onDownload: () => void;
 };
 
+const M3_TO_YD3 = 1.30795062;
+const M3_TO_FT3 = 35.3146667;
+const LITERS_TO_GALLONS = 0.264172052;
+
+function formatNumber(value: number, digits = 2) {
+  return value.toLocaleString("en-US", {
+    minimumFractionDigits: digits,
+    maximumFractionDigits: digits,
+  });
+}
+
+function formatMoney(value: number, currency: string) {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency,
+    maximumFractionDigits: 2,
+  }).format(value);
+}
+
 export default function ResultCard({
   volume,
   dryVolume,
@@ -27,379 +46,285 @@ export default function ResultCard({
   onShare,
   onDownload,
 }: Props) {
-  const currencySymbol =
-    {
-      USD: "$",
-      INR: "₹",
-      EUR: "€",
-      GBP: "£",
-      AED: "AED ",
-      AUD: "A$",
-      CAD: "C$",
-    }[currency] || "$";
-
   const hasResult = volume > 0;
 
+  const volumeYards = volume * M3_TO_YD3;
+  const volumeFeet = volume * M3_TO_FT3;
+
+  const dryYards = dryVolume * M3_TO_YD3;
+  const sandYards = sand * M3_TO_YD3;
+  const aggregateYards = aggregate * M3_TO_YD3;
+
+  const waterGallons = water * LITERS_TO_GALLONS;
+
   return (
-    <section className="w-full overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+    <section className="w-full overflow-hidden rounded-xl border border-slate-200 bg-white">
+      <header className="border-b border-slate-200 px-5 py-5">
+        <p className="text-xs font-semibold uppercase tracking-wider text-blue-700">
+          CONCRETE ESTIMATE
+        </p>
 
-      {/* =====================================================
-          HEADER
-      ===================================================== */}
+        <h2 className="mt-1 text-xl font-bold tracking-tight text-slate-900">
+          Your Results
+        </h2>
 
-      <div className="border-b border-slate-100 px-5 py-5 sm:px-7">
-
-        <div className="flex items-center justify-between gap-4">
-
-          <div>
-            <p className="text-xs font-bold uppercase tracking-[0.16em] text-blue-600">
-              Concrete Calculator
-            </p>
-
-            <h2 className="mt-1 text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">
-              Your Result
-            </h2>
-          </div>
-
-          {hasResult && (
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-green-50 text-lg">
-              ✓
-            </div>
-          )}
-
-        </div>
-
-      </div>
-
-      {/* =====================================================
-          EMPTY STATE
-      ===================================================== */}
+        <p className="mt-1 text-sm text-slate-500">
+          Estimated quantities for your project
+        </p>
+      </header>
 
       {!hasResult ? (
-
-        <div className="p-5 sm:p-7">
-
-          <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-5 py-12 text-center">
-
-            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-blue-50 text-2xl">
-              =
-            </div>
-
-            <h3 className="mt-4 text-lg font-bold text-slate-900">
-              Ready to Calculate
-            </h3>
-
-            <p className="mx-auto mt-2 max-w-sm text-sm leading-6 text-slate-500">
-              Enter your concrete dimensions and tap Calculate
-              to see the required concrete volume and materials.
-            </p>
-
+        <div className="px-5 py-12 text-center">
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-lg bg-slate-100 text-slate-600">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              className="h-6 w-6"
+              aria-hidden="true"
+            >
+              <rect x="4" y="3" width="16" height="18" rx="2" />
+              <path d="M8 7h8M8 11h2m4 0h2M8 15h2m4 0h2M8 19h8" />
+            </svg>
           </div>
 
+          <h3 className="mt-4 font-semibold text-slate-900">
+            Ready to Calculate
+          </h3>
+
+          <p className="mx-auto mt-2 max-w-xs text-sm leading-6 text-slate-500">
+            Enter your dimensions and select Calculate to see
+            the concrete volume and material estimates.
+          </p>
         </div>
-
       ) : (
+        <div className="space-y-6 p-5">
+          {/* Main result */}
 
-        <div className="p-5 sm:p-7">
-
-          {/* =================================================
-              PRIMARY RESULT
-          ================================================= */}
-
-          <div className="rounded-2xl bg-blue-50 px-5 py-6 sm:px-6 sm:py-7">
-
-            <p className="text-sm font-semibold text-blue-700">
+          <div className="rounded-lg bg-blue-50 p-5">
+            <p className="text-sm font-medium text-blue-900">
               Concrete Volume
             </p>
 
-            <div className="mt-2 flex items-baseline gap-2">
-
-              <span className="text-4xl font-black tracking-tight text-blue-700 sm:text-5xl">
-                {volume.toFixed(2)}
+            <div className="mt-2 flex flex-wrap items-baseline gap-x-2">
+              <span className="text-4xl font-bold tracking-tight text-blue-800 sm:text-5xl">
+                {formatNumber(volumeYards)}
               </span>
 
-              <span className="text-lg font-bold text-blue-600">
-                m³
+              <span className="text-lg font-semibold text-blue-800">
+                yd³
               </span>
-
             </div>
 
-            <p className="mt-2 text-xs text-blue-600 sm:text-sm">
-              Required wet concrete volume
-            </p>
+            <div className="mt-4 flex flex-wrap gap-x-5 gap-y-1 border-t border-blue-100 pt-3 text-sm text-blue-900">
+              <span>
+                {formatNumber(volumeFeet)} ft³
+              </span>
 
+              <span>
+                {formatNumber(volume)} m³
+              </span>
+            </div>
           </div>
 
-          {/* =================================================
-              MATERIAL BREAKDOWN
-          ================================================= */}
+          {/* Material estimates */}
 
-          <div className="mt-6">
-
+          <div>
             <div className="mb-3 flex items-center justify-between">
-
-              <h3 className="text-base font-bold text-slate-900 sm:text-lg">
+              <h3 className="font-semibold text-slate-900">
                 Material Estimate
               </h3>
 
-              <span className="text-xs font-medium text-slate-400">
-                Estimated
+              <span className="text-xs text-slate-500">
+                Approximate
               </span>
-
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
-
-              {/* Dry Volume */}
-
-              <ResultItem
+            <div className="divide-y divide-slate-100 rounded-lg border border-slate-200">
+              <MaterialRow
                 label="Dry Volume"
-                value={dryVolume.toFixed(2)}
-                unit="m³"
+                value={formatNumber(dryYards)}
+                unit="yd³"
+                secondary={`${formatNumber(dryVolume)} m³`}
               />
 
-              {/* Cement */}
-
-              <ResultItem
+              <MaterialRow
                 label="Cement"
                 value={String(cementBags)}
-                unit="bags"
+                unit="50 kg bags"
               />
 
-              {/* Sand */}
-
-              <ResultItem
+              <MaterialRow
                 label="Sand"
-                value={sand.toFixed(2)}
-                unit="m³"
+                value={formatNumber(sandYards)}
+                unit="yd³"
+                secondary={`${formatNumber(sand)} m³`}
               />
 
-              {/* Aggregate */}
-
-              <ResultItem
+              <MaterialRow
                 label="Aggregate"
-                value={aggregate.toFixed(2)}
-                unit="m³"
+                value={formatNumber(aggregateYards)}
+                unit="yd³"
+                secondary={`${formatNumber(aggregate)} m³`}
               />
 
-              {/* Water */}
-
-              <div className="col-span-2">
-                <ResultItem
-                  label="Water"
-                  value={water.toFixed(0)}
-                  unit="L"
-                  wide
-                />
-              </div>
-
+              <MaterialRow
+                label="Water"
+                value={formatNumber(waterGallons)}
+                unit="US gal"
+                secondary={`${formatNumber(water, 1)} L`}
+              />
             </div>
 
+            <p className="mt-2 text-xs leading-5 text-slate-500">
+              Cement bags use the existing 50 kg cement-bag
+              calculation. They are not 80 lb premixed concrete bags.
+            </p>
           </div>
 
-          {/* =================================================
-              MATERIAL COST
-          ================================================= */}
+          {/* Estimated cost */}
 
-          <div className="mt-6">
-
-            {hasMaterialPrices ? (
-
-              <div className="rounded-2xl bg-green-50 px-5 py-5">
-
-                <div className="flex items-center justify-between gap-4">
-
-                  <div>
-                    <p className="text-sm font-semibold text-green-700">
-                      Total Material Cost
-                    </p>
-
-                    <p className="mt-1 text-xs text-green-600">
-                      Cement + sand + aggregate
-                    </p>
-                  </div>
-
-                  <div className="text-right">
-
-                    <p className="text-2xl font-black text-green-700 sm:text-3xl">
-                      {currencySymbol}
-                      {totalCost.toLocaleString(
-                        undefined,
-                        {
-                          minimumFractionDigits: 2,
-                          maximumFractionDigits: 2,
-                        }
-                      )}
-                    </p>
-
-                  </div>
-
-                </div>
-
-              </div>
-
-            ) : (
-
-              <div className="rounded-2xl border border-amber-200 bg-amber-50 px-5 py-5">
-
-                <div className="flex gap-3">
-
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white text-sm shadow-sm">
-                    $
-                  </div>
-
-                  <div>
-
-                    <p className="text-sm font-bold text-amber-900">
-                      Material Cost
-                    </p>
-
-                    <p className="mt-1 text-sm leading-6 text-amber-700">
-                      Enter cement, sand and aggregate prices
-                      to calculate the total material cost.
-                    </p>
-
-                  </div>
-
-                </div>
-
-              </div>
-
-            )}
-
-          </div>
-
-          {/* =================================================
-              ACTIONS
-          ================================================= */}
-
-          <div className="mt-6">
-
-            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">
-              Result Actions
+          <div className="rounded-lg border border-slate-200 p-4">
+            <p className="text-sm font-medium text-slate-600">
+              Estimated Material Cost
             </p>
 
-            <div className="grid grid-cols-3 gap-2">
+            {hasMaterialPrices ? (
+              <p className="mt-1 text-2xl font-bold text-slate-900">
+                {formatMoney(totalCost, currency)}
+              </p>
+            ) : (
+              <>
+                <p className="mt-1 text-lg font-semibold text-slate-700">
+                  Add material prices
+                </p>
 
+                <p className="mt-1 text-sm leading-5 text-slate-500">
+                  Enter material prices in the calculator to
+                  estimate the total cost.
+                </p>
+              </>
+            )}
+
+            <p className="mt-2 text-xs text-slate-500">
+              Based on the prices and mix settings you enter.
+            </p>
+          </div>
+
+          {/* Actions */}
+
+          <div>
+            <h3 className="mb-3 text-sm font-semibold text-slate-800">
+              Export Results
+            </h3>
+
+            <div className="grid grid-cols-3 gap-2">
               <ActionButton
                 label="Copy"
-                icon="⧉"
                 onClick={onCopy}
+                icon={
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="h-5 w-5" aria-hidden="true">
+                    <rect x="8" y="8" width="12" height="12" rx="2" />
+                    <path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3" />
+                  </svg>
+                }
               />
 
               <ActionButton
                 label="Share"
-                icon="↗"
                 onClick={onShare}
+                icon={
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="h-5 w-5" aria-hidden="true">
+                    <circle cx="18" cy="5" r="3" />
+                    <circle cx="6" cy="12" r="3" />
+                    <circle cx="18" cy="19" r="3" />
+                    <path d="m8.7 10.7 6.6-4.4m-6.6 9.4 6.6 2.6" />
+                  </svg>
+                }
               />
 
               <ActionButton
-                label="PDF"
-                icon="↓"
+                label="Download PDF"
                 onClick={onDownload}
+                icon={
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="h-5 w-5" aria-hidden="true">
+                    <path d="M12 3v12m-5-5 5 5 5-5M5 17v4h14v-4" />
+                  </svg>
+                }
               />
-
             </div>
-
           </div>
 
-          {/* =================================================
-              DISCLAIMER
-          ================================================= */}
+          {/* Disclaimer */}
 
-          <p className="mt-5 text-xs leading-5 text-slate-400">
-            Material quantities are estimates and may vary based
-            on mix design, material properties and site conditions.
+          <p className="text-xs leading-5 text-slate-500">
+            Estimates are for planning purposes only. Actual
+            material quantities depend on mix design, material
+            yield, waste, and site conditions. Verify quantities
+            before ordering concrete.
           </p>
-
         </div>
-
       )}
-
     </section>
   );
 }
 
-
-/* =========================================================
-   RESULT ITEM
-========================================================= */
-
-type ResultItemProps = {
-  label: string;
-  value: string;
-  unit: string;
-  wide?: boolean;
-};
-
-function ResultItem({
+function MaterialRow({
   label,
   value,
   unit,
-  wide = false,
-}: ResultItemProps) {
+  secondary,
+}: {
+  label: string;
+  value: string;
+  unit: string;
+  secondary?: string;
+}) {
   return (
-    <div
-      className={`rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4 ${
-        wide ? "flex items-center justify-between gap-4" : ""
-      }`}
-    >
-
-      <div>
-
-        <p className="text-xs font-medium text-slate-500 sm:text-sm">
+    <div className="flex items-center justify-between gap-3 px-4 py-3">
+      <div className="min-w-0">
+        <p className="text-sm font-medium text-slate-700">
           {label}
         </p>
 
-        <div className="mt-1 flex items-baseline gap-1.5">
-
-          <span className="text-xl font-black text-slate-900 sm:text-2xl">
-            {value}
-          </span>
-
-          <span className="text-xs font-semibold text-slate-500 sm:text-sm">
-            {unit}
-          </span>
-
-        </div>
-
+        {secondary && (
+          <p className="mt-0.5 text-xs text-slate-500">
+            {secondary}
+          </p>
+        )}
       </div>
 
+      <div className="shrink-0 text-right">
+        <span className="font-semibold tabular-nums text-slate-900">
+          {value}
+        </span>
+
+        <span className="ml-1 text-xs text-slate-500">
+          {unit}
+        </span>
+      </div>
     </div>
   );
 }
-
-
-/* =========================================================
-   ACTION BUTTON
-========================================================= */
-
-type ActionButtonProps = {
-  label: string;
-  icon: string;
-  onClick: () => void;
-};
 
 function ActionButton({
   label,
   icon,
   onClick,
-}: ActionButtonProps) {
+}: {
+  label: string;
+  icon: React.ReactNode;
+  onClick: () => void;
+}) {
   return (
     <button
       type="button"
       onClick={onClick}
-      className="flex min-h-[52px] flex-col items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-600 active:scale-[0.98]"
+      className="flex min-h-14 flex-col items-center justify-center gap-1 rounded-lg border border-slate-200 bg-white px-2 py-3 text-xs font-semibold text-slate-700 transition hover:border-blue-300 hover:bg-blue-50 hover:text-blue-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 active:bg-blue-100"
     >
-
-      <span className="text-lg leading-none">
-        {icon}
-      </span>
-
-      <span className="mt-1 text-xs font-bold">
-        {label}
-      </span>
-
+      {icon}
+      <span>{label}</span>
     </button>
   );
 }
