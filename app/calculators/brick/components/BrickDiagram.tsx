@@ -1,3 +1,4 @@
+
 "use client";
 
 import type { LengthUnit } from "../types";
@@ -10,6 +11,22 @@ type BrickDiagramProps = {
   mortarJoint: string;
 };
 
+function displayDimension(value: string): string {
+  const trimmed = value.trim();
+
+  if (trimmed === "") {
+    return "—";
+  }
+
+  const parsed = Number(trimmed);
+
+  if (!Number.isFinite(parsed) || parsed <= 0) {
+    return "—";
+  }
+
+  return trimmed;
+}
+
 export default function BrickDiagram({
   brickLength,
   brickHeight,
@@ -17,47 +34,48 @@ export default function BrickDiagram({
   brickUnit,
   mortarJoint,
 }: BrickDiagramProps) {
-  const length = brickLength || "8";
-  const height = brickHeight || "2.25";
-  const width = brickWidth || "3.625";
-  const joint = mortarJoint || "0.375";
+  const length = displayDimension(brickLength);
+  const height = displayDimension(brickHeight);
+  const width = displayDimension(brickWidth);
+
+  const jointValue = Number(mortarJoint);
+
+  const joint =
+    Number.isFinite(jointValue) &&
+    jointValue >= 0
+      ? `${mortarJoint} in`
+      : "—";
+
+  const dimensionsComplete =
+    length !== "—" &&
+    height !== "—" &&
+    width !== "—";
 
   return (
     <section className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
-
-      {/* =====================================================
-          HEADER
-      ===================================================== */}
-
       <div className="border-b border-slate-100 px-5 py-5 sm:px-7">
-        <h2 className="text-2xl font-bold tracking-tight text-slate-900">
+        <h2 className="text-xl font-bold tracking-tight text-slate-900 sm:text-2xl">
           Brick Dimensions
         </h2>
 
         <p className="mt-1 text-sm leading-6 text-slate-500">
-          Visual reference for brick length, height, width and mortar joint.
+          Visual reference for brick length, height,
+          width and mortar joint.
         </p>
       </div>
 
-      {/* =====================================================
-          DIAGRAM
-      ===================================================== */}
-
-      <div className="bg-gradient-to-b from-slate-50 to-blue-50 px-4 py-6 sm:px-7 sm:py-8">
-
+      <div className="bg-gradient-to-b from-slate-50 to-blue-50 px-3 py-6 sm:px-6">
         <div className="mx-auto max-w-xl">
-
           <svg
             viewBox="0 0 700 430"
             className="h-auto w-full"
             role="img"
-            aria-label={`Brick dimension diagram showing ${length} ${brickUnit} length, ${height} ${brickUnit} height and ${width} ${brickUnit} width`}
+            aria-label={
+              dimensionsComplete
+                ? `Brick diagram. Length ${length} ${brickUnit}, height ${height} ${brickUnit}, width ${width} ${brickUnit}, mortar joint ${joint}.`
+                : "Illustration of a brick showing length, height, width and mortar joint. Enter brick dimensions to display their values."
+            }
           >
-
-            {/* =================================================
-                FLOOR SHADOW
-            ================================================= */}
-
             <ellipse
               cx="350"
               cy="355"
@@ -67,10 +85,7 @@ export default function BrickDiagram({
               opacity="0.45"
             />
 
-            {/* =================================================
-                BRICK FRONT FACE
-            ================================================= */}
-
+            {/* Front face */}
             <polygon
               points="155,145 535,145 535,285 155,285"
               fill="#d97752"
@@ -78,10 +93,7 @@ export default function BrickDiagram({
               strokeWidth="4"
             />
 
-            {/* =================================================
-                BRICK TOP FACE
-            ================================================= */}
-
+            {/* Top face */}
             <polygon
               points="155,145 245,95 625,95 535,145"
               fill="#ed9675"
@@ -89,10 +101,7 @@ export default function BrickDiagram({
               strokeWidth="4"
             />
 
-            {/* =================================================
-                BRICK SIDE FACE
-            ================================================= */}
-
+            {/* Side face */}
             <polygon
               points="535,145 625,95 625,235 535,285"
               fill="#b95637"
@@ -100,10 +109,7 @@ export default function BrickDiagram({
               strokeWidth="4"
             />
 
-            {/* =================================================
-                FRONT BRICK DETAIL
-            ================================================= */}
-
+            {/* Illustrative brick joints */}
             <line
               x1="250"
               y1="145"
@@ -131,24 +137,7 @@ export default function BrickDiagram({
               strokeWidth="3"
             />
 
-            {/* =================================================
-                TOP HIGHLIGHT
-            ================================================= */}
-
-            <line
-              x1="170"
-              y1="140"
-              x2="530"
-              y2="140"
-              stroke="#f5b49c"
-              strokeWidth="4"
-              opacity="0.8"
-            />
-
-            {/* =================================================
-                LENGTH DIMENSION LINE
-            ================================================= */}
-
+            {/* Length dimension */}
             <line
               x1="155"
               y1="65"
@@ -158,21 +147,15 @@ export default function BrickDiagram({
               strokeWidth="4"
             />
 
-            {/* Left arrow */}
-
             <polygon
               points="155,65 172,55 172,75"
               fill="#2563eb"
             />
 
-            {/* Right arrow */}
-
             <polygon
               points="535,65 518,55 518,75"
               fill="#2563eb"
             />
-
-            {/* Length label background */}
 
             <rect
               x="280"
@@ -196,10 +179,7 @@ export default function BrickDiagram({
               {length} {brickUnit}
             </text>
 
-            {/* =================================================
-                HEIGHT DIMENSION LINE
-            ================================================= */}
-
+            {/* Height dimension */}
             <line
               x1="110"
               y1="145"
@@ -209,26 +189,20 @@ export default function BrickDiagram({
               strokeWidth="4"
             />
 
-            {/* Top arrow */}
-
             <polygon
               points="110,145 100,162 120,162"
               fill="#2563eb"
             />
-
-            {/* Bottom arrow */}
 
             <polygon
               points="110,285 100,268 120,268"
               fill="#2563eb"
             />
 
-            {/* Height label */}
-
             <rect
-              x="25"
+              x="20"
               y="195"
-              width="90"
+              width="95"
               height="34"
               rx="10"
               fill="white"
@@ -237,20 +211,17 @@ export default function BrickDiagram({
             />
 
             <text
-              x="70"
+              x="67"
               y="218"
               textAnchor="middle"
               fill="#1d4ed8"
-              fontSize="17"
+              fontSize="16"
               fontWeight="700"
             >
               {height} {brickUnit}
             </text>
 
-            {/* =================================================
-                WIDTH DIMENSION
-            ================================================= */}
-
+            {/* Width dimension */}
             <line
               x1="545"
               y1="315"
@@ -260,26 +231,20 @@ export default function BrickDiagram({
               strokeWidth="4"
             />
 
-            {/* Arrow 1 */}
-
             <polygon
               points="545,315 555,297 564,313"
               fill="#2563eb"
             />
-
-            {/* Arrow 2 */}
 
             <polygon
               points="625,270 606,271 616,287"
               fill="#2563eb"
             />
 
-            {/* Width label */}
-
             <rect
-              x="540"
+              x="535"
               y="320"
-              width="125"
+              width="130"
               height="34"
               rx="10"
               fill="white"
@@ -288,20 +253,17 @@ export default function BrickDiagram({
             />
 
             <text
-              x="602"
+              x="600"
               y="343"
               textAnchor="middle"
               fill="#1d4ed8"
-              fontSize="17"
+              fontSize="16"
               fontWeight="700"
             >
               {width} {brickUnit}
             </text>
 
-            {/* =================================================
-                MORTAR JOINT INDICATOR
-            ================================================= */}
-
+            {/* Mortar joint indicator */}
             <line
               x1="160"
               y1="385"
@@ -337,28 +299,31 @@ export default function BrickDiagram({
               y="391"
               textAnchor="middle"
               fill="#475569"
-              fontSize="16"
+              fontSize="15"
               fontWeight="600"
             >
-              Joint: {joint} in
+              Joint: {joint}
             </text>
-
           </svg>
-
         </div>
 
-        {/* =================================================
-            DIMENSION SUMMARY
-        ================================================= */}
+        {!dimensionsComplete && (
+          <p
+            className="mx-auto mt-3 max-w-xl rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm leading-6 text-amber-800"
+            role="status"
+          >
+            Enter the brick length, height and width
+            in Brick Details. The diagram is illustrative
+            until all three dimensions are provided.
+          </p>
+        )}
 
         <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
-
           <div className="rounded-xl bg-white p-3 text-center shadow-sm">
             <p className="text-xs text-slate-500">
               Length
             </p>
-
-            <p className="mt-1 text-base font-bold text-slate-900">
+            <p className="mt-1 break-words text-base font-bold text-slate-900">
               {length} {brickUnit}
             </p>
           </div>
@@ -367,8 +332,7 @@ export default function BrickDiagram({
             <p className="text-xs text-slate-500">
               Height
             </p>
-
-            <p className="mt-1 text-base font-bold text-slate-900">
+            <p className="mt-1 break-words text-base font-bold text-slate-900">
               {height} {brickUnit}
             </p>
           </div>
@@ -377,8 +341,7 @@ export default function BrickDiagram({
             <p className="text-xs text-slate-500">
               Width
             </p>
-
-            <p className="mt-1 text-base font-bold text-slate-900">
+            <p className="mt-1 break-words text-base font-bold text-slate-900">
               {width} {brickUnit}
             </p>
           </div>
@@ -387,16 +350,12 @@ export default function BrickDiagram({
             <p className="text-xs text-slate-500">
               Mortar Joint
             </p>
-
-            <p className="mt-1 text-base font-bold text-slate-900">
-              {joint} in
+            <p className="mt-1 break-words text-base font-bold text-slate-900">
+              {joint}
             </p>
           </div>
-
         </div>
-
       </div>
-
     </section>
   );
 }
