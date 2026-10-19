@@ -17,7 +17,7 @@ type ResultCardProps = {
 function formatNumber(
   value: number,
   decimals = 2
-) {
+): string {
   if (!Number.isFinite(value)) {
     return "0";
   }
@@ -28,11 +28,40 @@ function formatNumber(
   });
 }
 
+function getDisplayedBrickBreakdown(
+  result: BrickCalculationResult
+) {
+  const totalBricks = Math.max(
+    0,
+    Math.ceil(result.totalBricks)
+  );
+
+  const baseBricks = Math.min(
+    totalBricks,
+    Math.max(0, Math.ceil(result.baseBricks))
+  );
+
+  // Keep the displayed breakdown consistent with Total Bricks.
+  const wasteBricks = Math.max(
+    0,
+    totalBricks - baseBricks
+  );
+
+  return {
+    totalBricks,
+    baseBricks,
+    wasteBricks,
+  };
+}
+
 export default function ResultCard({
   result,
   currency,
 }: ResultCardProps) {
   const currencySymbol = getCurrencySymbol(currency);
+
+  const brickBreakdown =
+    getDisplayedBrickBreakdown(result);
 
   return (
     <section className="overflow-hidden rounded-2xl border border-blue-100 bg-white shadow-sm">
@@ -63,7 +92,7 @@ export default function ResultCard({
             </p>
 
             <p className="mt-1 text-2xl font-bold tracking-tight sm:text-3xl">
-              {result.totalBricks.toLocaleString()}
+              {brickBreakdown.totalBricks.toLocaleString()}
             </p>
 
             <p className="mt-1 text-xs text-blue-100">
@@ -96,7 +125,7 @@ export default function ResultCard({
               </p>
 
               <p className="mt-1 text-lg font-bold text-slate-900">
-                {Math.ceil(result.baseBricks).toLocaleString()}
+                {brickBreakdown.baseBricks.toLocaleString()}
               </p>
             </div>
 
@@ -106,7 +135,7 @@ export default function ResultCard({
               </p>
 
               <p className="mt-1 text-lg font-bold text-slate-900">
-                {Math.ceil(result.wasteBricks).toLocaleString()}
+                {brickBreakdown.wasteBricks.toLocaleString()}
               </p>
             </div>
           </div>
