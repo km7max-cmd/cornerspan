@@ -184,13 +184,13 @@ export default function ConcreteCalculator() {
   // ==================================================
 
   const [lengthUnit, setLengthUnit] =
-    useState<Unit>("Meter");
+  useState<Unit>("Feet");
 
-  const [widthUnit, setWidthUnit] =
-    useState<Unit>("Meter");
+const [widthUnit, setWidthUnit] =
+  useState<Unit>("Feet");
 
-  const [depthUnit, setDepthUnit] =
-    useState<Unit>("Meter");
+const [depthUnit, setDepthUnit] =
+  useState<Unit>("Inch");
 
   // ==================================================
   // Currency
