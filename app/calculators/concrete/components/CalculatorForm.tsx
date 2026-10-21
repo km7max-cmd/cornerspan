@@ -71,61 +71,54 @@ const CURRENCY_SYMBOLS: Record<string, string> = {
   CAD: "C$",
 };
 
+const PROJECT_TYPES = [
+  { value: "Slab", label: "Slab / Floor" },
+  { value: "Wall", label: "Wall" },
+  { value: "Footer", label: "Footing / Footer" },
+  { value: "Column", label: "Rectangular Column" },
+] as const;
+
 export default function CalculatorForm({
   length,
   width,
   depth,
   quantity,
-
   cementPrice,
   sandPrice,
   aggregatePrice,
-
   cementUnit,
   sandUnit,
   aggregateUnit,
-
   sandDensity,
   aggregateDensity,
-
   currency,
   setCurrency,
-
   lengthUnit,
   widthUnit,
   depthUnit,
-
   setLengthUnit,
   setWidthUnit,
   setDepthUnit,
-
   setCementUnit,
   setSandUnit,
   setAggregateUnit,
-
   setSandDensity,
   setAggregateDensity,
-
   error,
-
   setLength,
   setWidth,
   setDepth,
   setQuantity,
-
   setCementPrice,
   setSandPrice,
   setAggregatePrice,
-
   onCalculate,
 }: CalculatorFormProps) {
   const [concreteForm, setConcreteForm] = useState("Slab");
   const [mixRatioType, setMixRatioType] = useState("M20");
-
   const [customCement, setCustomCement] = useState("1");
   const [customSand, setCustomSand] = useState("1.5");
   const [customAggregate, setCustomAggregate] = useState("3");
-
   const [showMaterials, setShowMaterials] = useState(false);
 
   const currencySymbol = CURRENCY_SYMBOLS[currency] || "$";
@@ -133,7 +126,8 @@ export default function CalculatorForm({
   const inputClass =
     "h-11 w-full rounded-lg border border-slate-300 bg-white px-3 text-base text-slate-900 outline-none transition focus:border-blue-600 focus:ring-2 focus:ring-blue-100";
 
-  const labelClass = "mb-1.5 block text-sm font-semibold text-slate-700";
+  const labelClass =
+    "mb-1.5 block text-sm font-semibold text-slate-700";
 
   const unitSelectClass =
     "h-11 w-[76px] shrink-0 border-l border-slate-200 bg-slate-50 px-2 text-sm font-semibold text-blue-700 outline-none";
@@ -145,23 +139,18 @@ export default function CalculatorForm({
     switch (mixRatioType) {
       case "M10":
         return { cement: 1, sand: 3, aggregate: 6 };
-
       case "M15":
         return { cement: 1, sand: 2, aggregate: 4 };
-
       case "M20":
         return { cement: 1, sand: 1.5, aggregate: 3 };
-
       case "M25":
         return { cement: 1, sand: 1, aggregate: 2 };
-
       case "Custom":
         return {
           cement: Number(customCement),
           sand: Number(customSand),
           aggregate: Number(customAggregate),
         };
-
       default:
         return { cement: 1, sand: 1.5, aggregate: 3 };
     }
@@ -181,7 +170,6 @@ export default function CalculatorForm({
   ) => (
     <div>
       <label className={labelClass}>{label}</label>
-
       <div className="flex overflow-hidden rounded-lg border border-slate-300 bg-white transition focus-within:border-blue-600 focus-within:ring-2 focus-within:ring-blue-100">
         <input
           type="number"
@@ -194,7 +182,6 @@ export default function CalculatorForm({
           className="h-11 min-w-0 flex-1 bg-transparent px-3 text-base font-medium text-slate-900 outline-none placeholder:text-slate-400"
           aria-label={label}
         />
-
         <select
           value={unit}
           onChange={(e) => setUnit(e.target.value as Unit)}
@@ -208,7 +195,6 @@ export default function CalculatorForm({
           ))}
         </select>
       </div>
-
       <p className="mt-1 text-xs text-slate-500">{hint}</p>
     </div>
   );
@@ -223,12 +209,10 @@ export default function CalculatorForm({
   ) => (
     <div>
       <label className={labelClass}>{label}</label>
-
       <div className="flex overflow-hidden rounded-lg border border-slate-300 bg-white focus-within:border-blue-600 focus-within:ring-2 focus-within:ring-blue-100">
         <span className="flex h-11 shrink-0 items-center border-r border-slate-200 bg-slate-50 px-3 text-sm font-semibold text-slate-600">
           {currencySymbol}
         </span>
-
         <input
           type="number"
           min="0"
@@ -240,7 +224,6 @@ export default function CalculatorForm({
           className={priceInputClass}
           aria-label={`${label} amount`}
         />
-
         <select
           value={unit}
           onChange={(e) => setUnit(e.target.value)}
@@ -259,7 +242,6 @@ export default function CalculatorForm({
 
   return (
     <section className="w-full overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-      {/* Calculator header */}
       <div className="border-b border-slate-200 bg-slate-50 px-4 py-4 sm:px-6">
         <h2 className="text-xl font-bold text-slate-900">
           Concrete Calculator
@@ -269,7 +251,6 @@ export default function CalculatorForm({
         </p>
       </div>
 
-      {/* Main calculator */}
       <div className="space-y-5 p-4 sm:p-6">
         <div>
           <label className={labelClass}>Project type</label>
@@ -279,20 +260,21 @@ export default function CalculatorForm({
             className={inputClass}
             aria-label="Concrete project type"
           >
-            <option value="Slab">Slab / Floor</option>
-            <option value="Wall">Wall</option>
-            <option value="Footer">Footing / Footer</option>
-            <option value="Column">Column</option>
-            <option value="Curbs, Gutter Barrier">Curb / Gutter / Barrier</option>
-            <option value="Stairs">Stairs</option>
+            {PROJECT_TYPES.map((type) => (
+              <option key={type.value} value={type.value}>
+                {type.label}
+              </option>
+            ))}
           </select>
+          <p className="mt-1 text-xs text-slate-500">
+            Use rectangular dimensions for this volume estimate.
+          </p>
         </div>
 
         <div>
           <h3 className="mb-3 text-base font-bold text-slate-900">
             Enter dimensions
           </h3>
-
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             {renderDimension(
               "Length",
@@ -314,18 +296,25 @@ export default function CalculatorForm({
 
             {renderDimension(
               concreteForm === "Wall" || concreteForm === "Column"
-                ? "Height / Depth"
-                : "Thickness / Depth",
+                ? "Height"
+                : concreteForm === "Footer"
+                  ? "Footing Depth"
+                  : "Thickness",
               depth,
               setDepth,
               depthUnit,
               setDepthUnit,
-              "For a slab, enter thickness"
+              concreteForm === "Slab"
+                ? "Enter the slab thickness"
+                : concreteForm === "Wall"
+                  ? "Enter the wall height"
+                  : concreteForm === "Column"
+                    ? "Enter the column height"
+                    : "Enter the footing depth"
             )}
 
             <div>
               <label className={labelClass}>Quantity</label>
-
               <div className="flex h-11 overflow-hidden rounded-lg border border-slate-300 bg-white">
                 <button
                   type="button"
@@ -338,7 +327,6 @@ export default function CalculatorForm({
                 >
                   −
                 </button>
-
                 <input
                   type="number"
                   min="1"
@@ -349,7 +337,6 @@ export default function CalculatorForm({
                   className="min-w-0 flex-1 text-center text-base font-semibold text-slate-900 outline-none"
                   aria-label="Quantity"
                 />
-
                 <button
                   type="button"
                   onClick={() => {
@@ -362,7 +349,6 @@ export default function CalculatorForm({
                   +
                 </button>
               </div>
-
               <p className="mt-1 text-xs text-slate-500">
                 Number of identical sections
               </p>
@@ -372,7 +358,7 @@ export default function CalculatorForm({
 
         <div className="rounded-lg bg-blue-50 px-3 py-3 text-sm text-blue-900">
           <span className="font-semibold">Formula:</span>{" "}
-          Length × Width × Thickness × Quantity
+          Length × Width × Thickness/Height × Quantity
         </div>
 
         {error && (
@@ -393,7 +379,6 @@ export default function CalculatorForm({
         </button>
       </div>
 
-      {/* Optional material estimate */}
       <div className="border-t border-slate-200">
         <button
           type="button"
@@ -409,7 +394,6 @@ export default function CalculatorForm({
               Mix ratio, material prices and density
             </span>
           </span>
-
           <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-300 text-lg text-slate-700">
             {showMaterials ? "−" : "+"}
           </span>
@@ -445,7 +429,6 @@ export default function CalculatorForm({
                     className={inputClass}
                   />
                 </div>
-
                 <div>
                   <label className={labelClass}>Sand ratio</label>
                   <input
@@ -457,7 +440,6 @@ export default function CalculatorForm({
                     className={inputClass}
                   />
                 </div>
-
                 <div>
                   <label className={labelClass}>Aggregate ratio</label>
                   <input
@@ -565,7 +547,7 @@ export default function CalculatorForm({
             <p className="text-xs leading-5 text-slate-600">
               Material quantities are estimates based on the selected mix ratio.
               Actual requirements and costs vary by material, supplier and project.
-              Use a project-specific mix design for structural work.
+              For structural concrete, follow a project-specific mix design.
             </p>
           </div>
         )}
