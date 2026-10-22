@@ -1,3 +1,4 @@
+
 type Props = {
   volume: number;
   dryVolume: number;
@@ -25,11 +26,15 @@ function formatNumber(value: number, digits = 2) {
 }
 
 function formatMoney(value: number, currency: string) {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency,
-    maximumFractionDigits: 2,
-  }).format(value);
+  try {
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency,
+      maximumFractionDigits: 2,
+    }).format(value);
+  } catch {
+    return `${currency} ${value.toFixed(2)}`;
+  }
 }
 
 export default function ResultCard({
@@ -50,109 +55,129 @@ export default function ResultCard({
 
   const volumeYards = volume * M3_TO_YD3;
   const volumeFeet = volume * M3_TO_FT3;
-
   const dryYards = dryVolume * M3_TO_YD3;
   const sandYards = sand * M3_TO_YD3;
   const aggregateYards = aggregate * M3_TO_YD3;
-
   const waterGallons = water * LITERS_TO_GALLONS;
 
   return (
-    <section className="w-full overflow-hidden rounded-xl border border-slate-200 bg-white">
-      <header className="border-b border-slate-200 px-5 py-5">
-        <p className="text-xs font-semibold uppercase tracking-wider text-blue-700">
-          CONCRETE ESTIMATE
+    <section
+      className="w-full min-w-0 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm shadow-slate-200/60"
+      aria-live="polite"
+    >
+      <header className="border-b border-slate-100 px-4 py-4 sm:px-6 sm:py-5">
+        <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-blue-700">
+          Concrete Estimate
         </p>
-
-        <h2 className="mt-1 text-xl font-bold tracking-tight text-slate-900">
-          Your Results
-        </h2>
-
-        <p className="mt-1 text-sm text-slate-500">
-          Estimated quantities for your project
-        </p>
+        <div className="mt-1 flex items-start justify-between gap-3">
+          <div>
+            <h2 className="text-xl font-bold tracking-tight text-slate-900">
+              Your Results
+            </h2>
+            <p className="mt-1 text-sm text-slate-500">
+              Estimated quantities for your project
+            </p>
+          </div>
+          {hasResult && (
+            <span className="shrink-0 rounded-full border border-blue-100 bg-blue-50 px-2.5 py-1 text-xs font-semibold text-blue-700">
+              Estimate
+            </span>
+          )}
+        </div>
       </header>
 
       {!hasResult ? (
-        <div className="px-5 py-12 text-center">
-          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-lg bg-slate-100 text-slate-600">
+        <div className="px-5 py-12 text-center sm:py-16">
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
             <svg
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
-              strokeWidth="1.8"
-              className="h-6 w-6"
+              strokeWidth="1.7"
+              className="h-7 w-7"
               aria-hidden="true"
             >
               <rect x="4" y="3" width="16" height="18" rx="2" />
               <path d="M8 7h8M8 11h2m4 0h2M8 15h2m4 0h2M8 19h8" />
             </svg>
           </div>
-
-          <h3 className="mt-4 font-semibold text-slate-900">
+          <h3 className="mt-4 font-bold text-slate-900">
             Ready to Calculate
           </h3>
-
           <p className="mx-auto mt-2 max-w-xs text-sm leading-6 text-slate-500">
-            Enter your dimensions and select Calculate to see
-            the concrete volume and material estimates.
+            Enter your dimensions and select Calculate to see the concrete
+            volume and material estimates.
           </p>
         </div>
       ) : (
-        <div className="space-y-6 p-5">
-          {/* Main result */}
+        <div className="space-y-5 p-4 sm:space-y-6 sm:p-6">
+          {/* Main volume */}
+          <div className="relative overflow-hidden rounded-2xl border border-blue-100 bg-gradient-to-br from-blue-50 via-blue-50 to-white p-4 sm:p-6">
+            <div className="absolute -right-8 -top-8 h-28 w-28 rounded-full bg-blue-100/60" />
+            <div className="relative">
+              <div className="flex items-center gap-2">
+                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-white text-blue-700 shadow-sm">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    className="h-4 w-4"
+                    aria-hidden="true"
+                  >
+                    <path d="m12 3 9 5-9 5-9-5 9-5Z" />
+                    <path d="m3 12 9 5 9-5M3 16l9 5 9-5" />
+                  </svg>
+                </span>
+                <p className="text-sm font-semibold text-blue-900">
+                  Concrete Volume
+                </p>
+              </div>
 
-          <div className="rounded-lg bg-blue-50 p-5">
-            <p className="text-sm font-medium text-blue-900">
-              Concrete Volume
-            </p>
+              <div className="mt-3 flex flex-wrap items-baseline gap-x-2">
+                <span className="text-4xl font-extrabold tracking-tight text-blue-800 sm:text-5xl">
+                  {formatNumber(volumeYards)}
+                </span>
+                <span className="text-lg font-bold text-blue-800">yd³</span>
+              </div>
 
-            <div className="mt-2 flex flex-wrap items-baseline gap-x-2">
-              <span className="text-4xl font-bold tracking-tight text-blue-800 sm:text-5xl">
-                {formatNumber(volumeYards)}
-              </span>
-
-              <span className="text-lg font-semibold text-blue-800">
-                yd³
-              </span>
-            </div>
-
-            <div className="mt-4 flex flex-wrap gap-x-5 gap-y-1 border-t border-blue-100 pt-3 text-sm text-blue-900">
-              <span>
-                {formatNumber(volumeFeet)} ft³
-              </span>
-
-              <span>
-                {formatNumber(volume)} m³
-              </span>
+              <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 border-t border-blue-200/70 pt-3 text-sm font-medium text-slate-600">
+                <span>{formatNumber(volumeFeet)} ft³</span>
+                <span>{formatNumber(volume)} m³</span>
+              </div>
             </div>
           </div>
 
-          {/* Material estimates */}
-
+          {/* Material quantities */}
           <div>
-            <div className="mb-3 flex items-center justify-between">
-              <h3 className="font-semibold text-slate-900">
-                Material Estimate
-              </h3>
-
-              <span className="text-xs text-slate-500">
-                Approximate
+            <div className="mb-3 flex items-center justify-between gap-3">
+              <div>
+                <h3 className="text-base font-bold text-slate-900">
+                  Material Estimate
+                </h3>
+                <p className="mt-0.5 text-xs text-slate-500">
+                  Approximate quantities
+                </p>
+              </div>
+              <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-semibold text-slate-600">
+                M³ / US units
               </span>
             </div>
 
-            <div className="divide-y divide-slate-100 rounded-lg border border-slate-200">
+            <div className="overflow-hidden rounded-xl border border-slate-200">
               <MaterialRow
                 label="Dry Volume"
                 value={formatNumber(dryYards)}
                 unit="yd³"
                 secondary={`${formatNumber(dryVolume)} m³`}
+                tone="blue"
               />
 
               <MaterialRow
                 label="Cement"
                 value={String(cementBags)}
                 unit="50 kg bags"
+                tone="neutral"
               />
 
               <MaterialRow
@@ -160,6 +185,7 @@ export default function ResultCard({
                 value={formatNumber(sandYards)}
                 unit="yd³"
                 secondary={`${formatNumber(sand)} m³`}
+                tone="neutral"
               />
 
               <MaterialRow
@@ -167,6 +193,7 @@ export default function ResultCard({
                 value={formatNumber(aggregateYards)}
                 unit="yd³"
                 secondary={`${formatNumber(aggregate)} m³`}
+                tone="neutral"
               />
 
               <MaterialRow
@@ -174,52 +201,60 @@ export default function ResultCard({
                 value={formatNumber(waterGallons)}
                 unit="US gal"
                 secondary={`${formatNumber(water, 1)} L`}
+                tone="neutral"
               />
             </div>
 
-            <p className="mt-2 text-xs leading-5 text-slate-500">
-              Cement bags use the existing 50 kg cement-bag
-              calculation. They are not 80 lb premixed concrete bags.
+            <p className="mt-2 rounded-lg bg-slate-50 px-3 py-2 text-xs leading-5 text-slate-500">
+              Cement bags use the existing 50 kg cement-bag calculation.
+              They are not 80 lb premixed concrete bags.
             </p>
           </div>
 
-          {/* Estimated cost */}
-
-          <div className="rounded-lg border border-slate-200 p-4">
-            <p className="text-sm font-medium text-slate-600">
-              Estimated Material Cost
-            </p>
-
-            {hasMaterialPrices ? (
-              <p className="mt-1 text-2xl font-bold text-slate-900">
-                {formatMoney(totalCost, currency)}
+          {/* Cost */}
+          <div className="overflow-hidden rounded-2xl border border-blue-100 bg-white">
+            <div className="border-b border-blue-50 bg-blue-50/70 px-4 py-3">
+              <p className="text-sm font-semibold text-slate-700">
+                Estimated Material Cost
               </p>
-            ) : (
-              <>
-                <p className="mt-1 text-lg font-semibold text-slate-700">
-                  Add material prices
-                </p>
+            </div>
 
-                <p className="mt-1 text-sm leading-5 text-slate-500">
-                  Enter material prices in the calculator to
-                  estimate the total cost.
-                </p>
-              </>
-            )}
-
-            <p className="mt-2 text-xs text-slate-500">
-              Based on the prices and mix settings you enter.
-            </p>
+            <div className="p-4">
+              {hasMaterialPrices ? (
+                <>
+                  <p className="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
+                    {formatMoney(totalCost, currency)}
+                  </p>
+                  <p className="mt-2 text-xs leading-5 text-slate-500">
+                    Based on the material prices and mix settings you entered.
+                  </p>
+                </>
+              ) : (
+                <>
+                  <p className="text-lg font-bold text-slate-800">
+                    Add material prices
+                  </p>
+                  <p className="mt-1 text-sm leading-5 text-slate-500">
+                    Enter cement, sand and aggregate prices to estimate the
+                    total cost.
+                  </p>
+                </>
+              )}
+            </div>
           </div>
 
-          {/* Actions */}
-
+          {/* Export actions */}
           <div>
-            <h3 className="mb-3 text-sm font-semibold text-slate-800">
-              Export Results
-            </h3>
+            <div className="mb-3">
+              <h3 className="text-sm font-bold text-slate-900">
+                Export Results
+              </h3>
+              <p className="mt-1 text-xs text-slate-500">
+                Copy, share or save your calculation as a PDF.
+              </p>
+            </div>
 
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-3 gap-2 sm:gap-3">
               <ActionButton
                 label="Copy"
                 onClick={onCopy}
@@ -256,13 +291,10 @@ export default function ResultCard({
             </div>
           </div>
 
-          {/* Disclaimer */}
-
-          <p className="text-xs leading-5 text-slate-500">
-            Estimates are for planning purposes only. Actual
-            material quantities depend on mix design, material
-            yield, waste, and site conditions. Verify quantities
-            before ordering concrete.
+          <p className="border-t border-slate-100 pt-4 text-xs leading-5 text-slate-500">
+            Estimates are for planning purposes only. Actual material quantities
+            depend on mix design, material yield, waste, and site conditions.
+            Verify quantities before ordering concrete.
           </p>
         </div>
       )}
@@ -275,32 +307,32 @@ function MaterialRow({
   value,
   unit,
   secondary,
+  tone = "neutral",
 }: {
   label: string;
   value: string;
   unit: string;
   secondary?: string;
+  tone?: "blue" | "neutral";
 }) {
   return (
-    <div className="flex items-center justify-between gap-3 px-4 py-3">
+    <div className="flex items-center justify-between gap-3 border-b border-slate-100 px-3.5 py-3 last:border-b-0 sm:px-4">
       <div className="min-w-0">
-        <p className="text-sm font-medium text-slate-700">
-          {label}
-        </p>
-
+        <p className="text-sm font-semibold text-slate-800">{label}</p>
         {secondary && (
-          <p className="mt-0.5 text-xs text-slate-500">
-            {secondary}
-          </p>
+          <p className="mt-0.5 text-xs text-slate-500">{secondary}</p>
         )}
       </div>
 
       <div className="shrink-0 text-right">
-        <span className="font-semibold tabular-nums text-slate-900">
+        <span
+          className={`text-sm font-bold tabular-nums sm:text-base ${
+            tone === "blue" ? "text-blue-700" : "text-slate-900"
+          }`}
+        >
           {value}
         </span>
-
-        <span className="ml-1 text-xs text-slate-500">
+        <span className="ml-1 text-[11px] text-slate-500 sm:text-xs">
           {unit}
         </span>
       </div>
@@ -321,10 +353,10 @@ function ActionButton({
     <button
       type="button"
       onClick={onClick}
-      className="flex min-h-14 flex-col items-center justify-center gap-1 rounded-lg border border-slate-200 bg-white px-2 py-3 text-xs font-semibold text-slate-700 transition hover:border-blue-300 hover:bg-blue-50 hover:text-blue-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 active:bg-blue-100"
+      className="flex min-h-[68px] min-w-0 flex-col items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white px-1.5 py-3 text-center text-xs font-semibold text-slate-700 transition hover:border-blue-300 hover:bg-blue-50 hover:text-blue-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 active:bg-blue-100 sm:min-h-[76px] sm:text-sm"
     >
-      {icon}
-      <span>{label}</span>
+      <span className="text-blue-700">{icon}</span>
+      <span className="leading-4">{label}</span>
     </button>
   );
 }
