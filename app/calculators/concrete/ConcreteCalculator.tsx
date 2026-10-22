@@ -377,7 +377,9 @@ export default function ConcreteCalculator() {
       const wasteVolume = output.wasteVolume * q;
       const cementVolume = output.cementVolume * q;
       const cementWeight = output.cementWeight * q;
-      const cementBags = output.cementBags * q;
+      const cementBags = Math.ceil(
+  (output.cementWeightLb * q) / 94
+);
       const sand = output.sand * q;
       const aggregate = output.aggregate * q;
 
