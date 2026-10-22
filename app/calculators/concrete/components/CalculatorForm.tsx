@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import type { MixRatio, Unit } from "../types";
-
+import type { MixRatio, Unit } from "../utils/calculateConcrete";
 type CalculatorFormProps = {
   length: string;
   width: string;
