@@ -86,9 +86,16 @@ const CURRENCY_SYMBOLS: Record<CurrencyCode, string> = {
   CAD: "C$",
 };
 
+const KG_PER_US_TON = 907.18474;
+const KG_PER_LB = 0.45359237;
+const M3_PER_YD3 = 0.764554857984;
+const FT3_PER_M3 = 35.3146667;
+
 function toNumber(value: string): number {
-  const n = Number(value);
-  return Number.isFinite(n) ? n : 0;
+  if (!value.trim()) return 0;
+
+  const number = Number(value);
+  return Number.isFinite(number) ? number : Number.NaN;
 }
 
 function convertMaterialQuantity(
@@ -96,23 +103,40 @@ function convertMaterialQuantity(
   unit: string,
   densityKgPerM3: number
 ): number {
-  if (!Number.isFinite(quantityM3) || quantityM3 <= 0) {
+  if (
+    !Number.isFinite(quantityM3) ||
+    quantityM3 < 0 ||
+    !Number.isFinite(densityKgPerM3) ||
+    densityKgPerM3 <= 0
+  ) {
     return 0;
   }
 
-  if (!Number.isFinite(densityKgPerM3) || densityKgPerM3 <= 0) {
-    return 0;
-  }
+  const weightKg = quantityM3 * densityKgPerM3;
 
   switch (unit) {
     case "m³":
       return quantityM3;
+
     case "yd³":
-      return quantityM3 * 1.30795062;
+      return quantityM3 / M3_PER_YD3;
+
+    case "ft³":
+      return quantityM3 * FT3_PER_M3;
+
+    case "kg":
+      return weightKg;
+
+    case "lb":
+      return weightKg / KG_PER_LB;
+
     case "tonne":
-      return (quantityM3 * densityKgPerM3) / 1000;
+      return weightKg / 1000;
+
+    case "ton":
     case "US ton":
-      return (quantityM3 * densityKgPerM3) / 907.18474;
+      return weightKg / KG_PER_US_TON;
+
     default:
       return quantityM3;
   }
@@ -124,20 +148,34 @@ function calculateCementCost(
   price: number,
   unit: string
 ): number {
-  if (!Number.isFinite(price) || price < 0) {
+  if (
+    !Number.isFinite(price) ||
+    price < 0 ||
+    !Number.isFinite(cementWeightKg) ||
+    cementWeightKg < 0
+  ) {
     return 0;
   }
 
   switch (unit) {
     case "Bag":
-      // Price is per full 50 kg bag.
-      return cementBags * price;
+    case "bag":
+      // US cement bag: 94 lb.
+      return Math.ceil(cementBags) * price;
+
+    case "lb":
+      return (cementWeightKg / KG_PER_LB) * price;
+
     case "kg":
       return cementWeightKg * price;
+
     case "tonne":
       return (cementWeightKg / 1000) * price;
+
+    case "ton":
     case "US ton":
-      return (cementWeightKg / 907.18474) * price;
+      return (cementWeightKg / KG_PER_US_TON) * price;
+
     default:
       return 0;
   }
@@ -160,23 +198,30 @@ export default function ConcreteCalculator() {
   const [aggregatePrice, setAggregatePrice] = useState("");
 
   const [cementUnit, setCementUnit] = useState("Bag");
-  const [sandUnit, setSandUnit] = useState("m³");
-  const [aggregateUnit, setAggregateUnit] = useState("m³");
+  const [sandUnit, setSandUnit] = useState("yd³");
+  const [aggregateUnit, setAggregateUnit] = useState("yd³");
 
   const [sandDensity, setSandDensity] = useState("1600");
   const [aggregateDensity, setAggregateDensity] = useState("1500");
 
   const [error, setError] = useState("");
-  const [result, setResult] = useState<CalculationResult>(ZERO_RESULT);
+  const [result, setResult] =
+    useState<CalculationResult>(ZERO_RESULT);
   const [history, setHistory] = useState<HistoryItem[]>([]);
 
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+  const [toastType, setToastType] =
+    useState<"success" | "error">("success");
+
   useEffect(() => {
-    const savedHistory = localStorage.getItem("concrete-history");
-
-    if (!savedHistory) return;
-
     try {
+      const savedHistory = localStorage.getItem("concrete-history");
+
+      if (!savedHistory) return;
+
       const parsed: unknown = JSON.parse(savedHistory);
+
       if (Array.isArray(parsed)) {
         setHistory(parsed as HistoryItem[]);
       }
@@ -185,14 +230,13 @@ export default function ConcreteCalculator() {
     }
   }, []);
 
-  const [showToast, setShowToast] = useState(false);
-  const [toastMessage, setToastMessage] = useState("");
-  const [toastType, setToastType] = useState<"success" | "error">("success");
-
   useEffect(() => {
     if (!showToast) return;
 
-    const timer = setTimeout(() => setShowToast(false), 2500);
+    const timer = setTimeout(() => {
+      setShowToast(false);
+    }, 2500);
+
     return () => clearTimeout(timer);
   }, [showToast]);
 
@@ -214,7 +258,10 @@ export default function ConcreteCalculator() {
     if (!length.trim() || !width.trim() || !depth.trim()) {
       setError("Please fill in all dimension fields.");
       setResult(ZERO_RESULT);
-      showNotification("Please fill in all dimension fields.", "error");
+      showNotification(
+        "Please fill in all dimension fields.",
+        "error"
+      );
       return;
     }
 
@@ -226,16 +273,24 @@ export default function ConcreteCalculator() {
       w <= 0 ||
       d <= 0
     ) {
-      setError("Length, Width and Depth must be greater than zero.");
+      setError(
+        "Length, width and depth must be greater than zero."
+      );
       setResult(ZERO_RESULT);
-      showNotification("Dimension values must be greater than zero.", "error");
+      showNotification(
+        "Dimension values must be greater than zero.",
+        "error"
+      );
       return;
     }
 
     if (!Number.isFinite(q) || q <= 0) {
       setError("Quantity must be greater than zero.");
       setResult(ZERO_RESULT);
-      showNotification("Quantity must be greater than zero.", "error");
+      showNotification(
+        "Quantity must be greater than zero.",
+        "error"
+      );
       return;
     }
 
@@ -254,33 +309,39 @@ export default function ConcreteCalculator() {
       return;
     }
 
-    const hasAnyPrice =
-      cementPrice.trim() !== "" ||
-      sandPrice.trim() !== "" ||
-      aggregatePrice.trim() !== "";
+    const priceInputs = [
+      cementPrice,
+      sandPrice,
+      aggregatePrice,
+    ];
 
-    const cementRate = toNumber(cementPrice);
-    const sandRate = toNumber(sandPrice);
-    const aggregateRate = toNumber(aggregatePrice);
+    const invalidPrice = priceInputs.some((value) => {
+      if (!value.trim()) return false;
 
-    if (
-      hasAnyPrice &&
-      (
-        (cementPrice.trim() !== "" && cementRate < 0) ||
-        (sandPrice.trim() !== "" && sandRate < 0) ||
-        (aggregatePrice.trim() !== "" && aggregateRate < 0)
-      )
-    ) {
-      setError("Material prices cannot be negative.");
+      const parsed = Number(value);
+
+      return !Number.isFinite(parsed) || parsed < 0;
+    });
+
+    if (invalidPrice) {
+      setError(
+        "Material prices must be valid numbers and cannot be negative."
+      );
       setResult(ZERO_RESULT);
-      showNotification("Material prices cannot be negative.", "error");
+      showNotification(
+        "Enter valid non-negative material prices.",
+        "error"
+      );
       return;
     }
 
     const sandDensityValue = Number(sandDensity);
     const aggregateDensityValue = Number(aggregateDensity);
 
-    if (!Number.isFinite(sandDensityValue) || sandDensityValue <= 0) {
+    if (
+      !Number.isFinite(sandDensityValue) ||
+      sandDensityValue <= 0
+    ) {
       setError("Please select a valid sand density.");
       setResult(ZERO_RESULT);
       showNotification("Invalid sand density.", "error");
@@ -299,121 +360,157 @@ export default function ConcreteCalculator() {
 
     setError("");
 
-    const output = calculateConcrete(
-      l,
-      w,
-      d,
-      lengthUnit,
-      widthUnit,
-      depthUnit,
-      mixRatio
-    );
-
-    output.volume *= q;
-    output.dryVolume *= q;
-    output.totalVolume *= q;
-    output.wasteVolume *= q;
-    output.cementVolume *= q;
-    output.cementWeight *= q;
-    output.cementBags *= q;
-
-    output.sand = Number((output.sand * q).toFixed(3));
-    output.aggregate = Number((output.aggregate * q).toFixed(3));
-    output.water = Number((output.water * q).toFixed(1));
-
-    // Material cost is calculated using the selected price units.
-    let totalCost = 0;
-
-    if (cementPrice.trim() !== "" && cementRate > 0) {
-      totalCost += calculateCementCost(
-        output.cementWeight,
-        Math.ceil(output.cementBags),
-        cementRate,
-        cementUnit
+    try {
+      const output = calculateConcrete(
+        l,
+        w,
+        d,
+        lengthUnit,
+        widthUnit,
+        depthUnit,
+        mixRatio
       );
-    }
 
-    if (sandPrice.trim() !== "" && sandRate > 0) {
-      const sandQuantity = convertMaterialQuantity(
-        output.sand,
-        sandUnit,
-        sandDensityValue
+      const volume = output.volume * q;
+      const dryVolume = output.dryVolume * q;
+      const totalVolume = output.totalVolume * q;
+      const wasteVolume = output.wasteVolume * q;
+      const cementVolume = output.cementVolume * q;
+      const cementWeight = output.cementWeight * q;
+      const cementBags = output.cementBags * q;
+      const sand = output.sand * q;
+      const aggregate = output.aggregate * q;
+
+      // The result card expects water in litres.
+      // One kg of mixing water is approximately one litre.
+      const water = output.water * q;
+
+      const cementRate = toNumber(cementPrice);
+      const sandRate = toNumber(sandPrice);
+      const aggregateRate = toNumber(aggregatePrice);
+
+      let totalCost = 0;
+
+      if (cementPrice.trim() !== "") {
+        totalCost += calculateCementCost(
+          cementWeight,
+          cementBags,
+          cementRate,
+          cementUnit
+        );
+      }
+
+      if (sandPrice.trim() !== "") {
+        const sandQuantity = convertMaterialQuantity(
+          sand,
+          sandUnit,
+          sandDensityValue
+        );
+
+        totalCost += sandQuantity * sandRate;
+      }
+
+      if (aggregatePrice.trim() !== "") {
+        const aggregateQuantity = convertMaterialQuantity(
+          aggregate,
+          aggregateUnit,
+          aggregateDensityValue
+        );
+
+        totalCost += aggregateQuantity * aggregateRate;
+      }
+
+      totalCost = Number(totalCost.toFixed(2));
+
+      const nextResult: CalculationResult = {
+        volume: Number(volume.toFixed(3)),
+        dryVolume: Number(dryVolume.toFixed(3)),
+        totalVolume: Number(totalVolume.toFixed(3)),
+        wasteVolume: Number(wasteVolume.toFixed(3)),
+        cementVolume: Number(cementVolume.toFixed(3)),
+        cementWeight: Number(cementWeight.toFixed(1)),
+        cementBags: Math.ceil(cementBags),
+        sand: Number(sand.toFixed(3)),
+        aggregate: Number(aggregate.toFixed(3)),
+        water: Number(water.toFixed(1)),
+        totalCost,
+      };
+
+      setResult(nextResult);
+
+      const newHistory: HistoryItem[] = [
+        {
+          length: l,
+          width: w,
+          depth: d,
+          volume: Number(volume.toFixed(3)),
+        },
+        ...history,
+      ].slice(0, 5);
+
+      setHistory(newHistory);
+
+      try {
+        localStorage.setItem(
+          "concrete-history",
+          JSON.stringify(newHistory)
+        );
+      } catch {
+        // Calculation remains usable if browser storage is unavailable.
+      }
+
+      addGlobalHistory(
+        "Concrete Calculator",
+        `${l} × ${w} × ${d}`,
+        `${volume.toFixed(2)} m³`
       );
-      totalCost += sandQuantity * sandRate;
-    }
 
-    if (aggregatePrice.trim() !== "" && aggregateRate > 0) {
-      const aggregateQuantity = convertMaterialQuantity(
-        output.aggregate,
-        aggregateUnit,
-        aggregateDensityValue
+      const hasAnyPrice = priceInputs.some(
+        (value) => value.trim() !== ""
       );
-      totalCost += aggregateQuantity * aggregateRate;
-    }
 
-    totalCost = Number(totalCost.toFixed(2));
-
-    setResult({
-      volume: Number(output.volume.toFixed(3)),
-      dryVolume: Number(output.dryVolume.toFixed(3)),
-      totalVolume: Number(output.totalVolume.toFixed(3)),
-      wasteVolume: Number(output.wasteVolume.toFixed(3)),
-      cementVolume: Number(output.cementVolume.toFixed(3)),
-      cementWeight: Number(output.cementWeight.toFixed(1)),
-      cementBags: Math.ceil(output.cementBags),
-      sand: Number(output.sand.toFixed(3)),
-      aggregate: Number(output.aggregate.toFixed(3)),
-      water: Number(output.water.toFixed(1)),
-      totalCost,
-    });
-
-    const calculatedVolume = Number(output.volume.toFixed(3));
-
-    const newHistory: HistoryItem[] = [
-      {
-        length: l,
-        width: w,
-        depth: d,
-        volume: calculatedVolume,
-      },
-      ...history,
-    ].slice(0, 5);
-
-    setHistory(newHistory);
-    localStorage.setItem("concrete-history", JSON.stringify(newHistory));
-
-    addGlobalHistory(
-      "Concrete Calculator",
-      `${l} × ${w} × ${d}`,
-      `${calculatedVolume.toFixed(2)} m³`
-    );
-
-    if (!hasAnyPrice) {
+      if (!hasAnyPrice) {
+        showNotification(
+          "Calculation completed. Enter material prices to estimate cost."
+        );
+      } else {
+        showNotification("Calculation completed successfully!");
+      }
+    } catch {
+      setError("Unable to calculate. Please check your inputs.");
+      setResult(ZERO_RESULT);
       showNotification(
-        "Calculation completed. Enter local material prices to calculate cost."
+        "Unable to calculate. Please check your inputs.",
+        "error"
       );
-    } else {
-      showNotification("Calculation completed successfully!");
     }
   };
 
   const buildResultText = () => {
     const symbol = CURRENCY_SYMBOLS[currency];
+    const volumeYd3 = result.volume / M3_PER_YD3;
+    const volumeFt3 = result.volume * FT3_PER_M3;
+    const dryVolumeYd3 = result.dryVolume / M3_PER_YD3;
+    const sandYd3 = result.sand / M3_PER_YD3;
+    const aggregateYd3 = result.aggregate / M3_PER_YD3;
+    const waterGallons = result.water / 3.785411784;
 
     return `Concrete Calculator Result
 
-Concrete Volume : ${result.volume.toFixed(2)} m³
-Dry Volume      : ${result.dryVolume.toFixed(2)} m³
-Cement Bags     : ${result.cementBags} Bags
-Sand            : ${result.sand.toFixed(2)} m³
-Aggregate       : ${result.aggregate.toFixed(2)} m³
-Water           : ${result.water.toFixed(0)} L
-Material Cost   : ${
+Concrete Volume: ${volumeYd3.toFixed(2)} yd³
+Concrete Volume: ${volumeFt3.toFixed(2)} ft³
+Concrete Volume: ${result.volume.toFixed(3)} m³
+Dry Volume: ${dryVolumeYd3.toFixed(2)} yd³
+Cement: ${result.cementBags} bags (94 lb each)
+Sand: ${sandYd3.toFixed(2)} yd³
+Aggregate: ${aggregateYd3.toFixed(2)} yd³
+Water: ${waterGallons.toFixed(2)} US gal
+Material Cost: ${
       result.totalCost > 0
         ? `${symbol}${result.totalCost.toFixed(2)}`
         : "Not available"
     }
-Currency        : ${currency}`;
+Currency: ${currency}`;
   };
 
   const handleCopy = async () => {
@@ -436,6 +533,7 @@ Currency        : ${currency}`;
           title: "Concrete Calculator Result",
           text: buildResultText(),
         });
+
         showNotification("Results shared successfully!");
       } else {
         showNotification(
@@ -444,7 +542,7 @@ Currency        : ${currency}`;
         );
       }
     } catch {
-      // Sharing was cancelled by the user.
+      // The user may cancel the share dialog.
     }
   };
 
@@ -454,30 +552,41 @@ Currency        : ${currency}`;
     const doc = new jsPDF();
     const symbol = CURRENCY_SYMBOLS[currency];
 
+    const volumeYd3 = result.volume / M3_PER_YD3;
+    const volumeFt3 = result.volume * FT3_PER_M3;
+    const dryVolumeYd3 = result.dryVolume / M3_PER_YD3;
+    const sandYd3 = result.sand / M3_PER_YD3;
+    const aggregateYd3 = result.aggregate / M3_PER_YD3;
+    const waterGallons = result.water / 3.785411784;
+
     doc.setFontSize(20);
     doc.text("Concrete Calculator Result", 20, 20);
 
-    doc.setFontSize(12);
-    doc.text(
-      `Currency : ${CURRENCY_NAMES[currency]} (${currency})`,
-      20,
-      35
-    );
-    doc.text(`Concrete Volume : ${result.volume.toFixed(2)} m3`, 20, 50);
-    doc.text(`Dry Volume      : ${result.dryVolume.toFixed(2)} m3`, 20, 60);
-    doc.text(`Cement Bags     : ${result.cementBags} Bags`, 20, 70);
-    doc.text(`Sand            : ${result.sand.toFixed(2)} m3`, 20, 80);
-    doc.text(`Aggregate       : ${result.aggregate.toFixed(2)} m3`, 20, 90);
-    doc.text(`Water           : ${result.water.toFixed(0)} L`, 20, 100);
-    doc.text(
-      `Material Cost   : ${
+    doc.setFontSize(11);
+
+    const lines = [
+      `Currency: ${CURRENCY_NAMES[currency]} (${currency})`,
+      `Concrete Volume: ${volumeYd3.toFixed(2)} yd3`,
+      `Concrete Volume: ${volumeFt3.toFixed(2)} ft3`,
+      `Concrete Volume: ${result.volume.toFixed(3)} m3`,
+      `Dry Volume: ${dryVolumeYd3.toFixed(2)} yd3`,
+      `Cement: ${result.cementBags} bags (94 lb each)`,
+      `Sand: ${sandYd3.toFixed(2)} yd3`,
+      `Aggregate: ${aggregateYd3.toFixed(2)} yd3`,
+      `Water: ${waterGallons.toFixed(2)} US gal`,
+      `Material Cost: ${
         result.totalCost > 0
           ? `${symbol}${result.totalCost.toFixed(2)}`
           : "Not available"
       }`,
-      20,
-      110
-    );
+    ];
+
+    let y = 38;
+
+    lines.forEach((line) => {
+      doc.text(line, 20, y);
+      y += 10;
+    });
 
     doc.save("Concrete-Calculation.pdf");
     showNotification("PDF downloaded successfully!");
@@ -485,9 +594,20 @@ Currency        : ${currency}`;
 
   const handleClearHistory = () => {
     setHistory([]);
-    localStorage.removeItem("concrete-history");
+
+    try {
+      localStorage.removeItem("concrete-history");
+    } catch {
+      // Ignore storage errors.
+    }
+
     showNotification("History cleared successfully!");
   };
+
+  const hasMaterialPrices =
+    cementPrice.trim() !== "" ||
+    sandPrice.trim() !== "" ||
+    aggregatePrice.trim() !== "";
 
   return (
     <>
@@ -496,7 +616,7 @@ Currency        : ${currency}`;
           <CalculatorHero
             title="Concrete"
             highlight="Calculator"
-            description="Calculate concrete volume, cement bags, sand, aggregate, water, and material cost."
+            description="Calculate concrete volume in cubic yards and cubic feet, estimate 94 lb cement bags, sand, aggregate, water, and material cost."
           />
 
           <div className="mt-4 grid w-full min-w-0 grid-cols-1 gap-5 lg:mt-6 lg:grid-cols-2 lg:gap-6">
@@ -516,7 +636,9 @@ Currency        : ${currency}`;
               sandPrice={sandPrice}
               aggregatePrice={aggregatePrice}
               currency={currency}
-              setCurrency={(value) => setCurrency(value as CurrencyCode)}
+              setCurrency={(value) =>
+                setCurrency(value as CurrencyCode)
+              }
               lengthUnit={lengthUnit}
               widthUnit={widthUnit}
               depthUnit={depthUnit}
@@ -546,11 +668,7 @@ Currency        : ${currency}`;
               aggregate={result.aggregate}
               totalCost={result.totalCost}
               currency={currency}
-              hasMaterialPrices={
-                cementPrice.trim() !== "" &&
-                sandPrice.trim() !== "" &&
-                aggregatePrice.trim() !== ""
-              }
+              hasMaterialPrices={hasMaterialPrices}
               onCopy={handleCopy}
               onShare={handleShare}
               onDownload={handleDownloadPDF}
@@ -573,11 +691,18 @@ Currency        : ${currency}`;
             <AboutCalculator />
           </div>
 
-          <History history={history} onClear={handleClearHistory} />
+          <History
+            history={history}
+            onClear={handleClearHistory}
+          />
         </div>
       </main>
 
-      <Toast show={showToast} message={toastMessage} type={toastType} />
+      <Toast
+        show={showToast}
+        message={toastMessage}
+        type={toastType}
+      />
     </>
   );
 }
