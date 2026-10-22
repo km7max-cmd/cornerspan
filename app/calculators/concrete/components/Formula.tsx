@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -13,27 +14,37 @@ const formulaItems: FormulaItem[] = [
   {
     title: "Concrete Volume",
     description:
-      "Wet concrete volume is calculated from the converted length, width and depth.",
-    formula:
-      "Volume = Length × Width × Depth",
+      "Calculate the wet concrete volume from length, width and depth after converting all dimensions to a common unit.",
+    formula: "Volume = Length × Width × Depth",
   },
   {
     title: "Dimension Conversion",
     description:
-      "All dimensions are converted to meters before the volume calculation.",
+      "The calculator converts dimensions to meters internally, regardless of the units selected.",
     formulas: [
       "1 ft = 0.3048 m",
       "1 in = 0.0254 m",
+      "1 yd = 0.9144 m",
       "1 cm = 0.01 m",
       "1 mm = 0.001 m",
     ],
   },
   {
-    title: "Dry Volume",
+    title: "US Volume Conversion",
     description:
-      "The calculator uses a standard 1.54 estimation factor to convert wet volume to dry material volume.",
-    formula:
-      "Dry Volume = Wet Volume × 1.54",
+      "Results can be expressed in cubic yards and cubic feet, which are commonly used for US concrete projects.",
+    formulas: [
+      "1 yd³ = 0.764554858 m³",
+      "1 m³ ≈ 1.30795062 yd³",
+      "1 m³ ≈ 35.3146667 ft³",
+      "1 yd³ = 27 ft³",
+    ],
+  },
+  {
+    title: "Dry Material Volume",
+    description:
+      "A standard estimation factor is used to account for the difference between wet concrete volume and the combined dry ingredients.",
+    formula: "Dry Volume = Wet Volume × 1.54",
   },
   {
     title: "Concrete Mix Ratio",
@@ -47,83 +58,89 @@ const formulaItems: FormulaItem[] = [
   {
     title: "Cement Volume",
     description:
-      "Cement volume is the cement portion of the dry volume.",
+      "The cement portion is calculated from the total dry volume and the cement ratio.",
     formula:
       "Cement Volume = Dry Volume × (Cement Ratio ÷ Total Ratio)",
   },
   {
     title: "Sand Quantity",
     description:
-      "Sand quantity is calculated from the sand portion of the dry volume.",
+      "The sand quantity is calculated using the sand portion of the mix ratio.",
     formula:
-      "Sand = Dry Volume × (Sand Ratio ÷ Total Ratio)",
+      "Sand Volume = Dry Volume × (Sand Ratio ÷ Total Ratio)",
   },
   {
     title: "Aggregate Quantity",
     description:
-      "Aggregate quantity is calculated from the aggregate portion of the dry volume.",
+      "The aggregate quantity is calculated using the aggregate portion of the mix ratio.",
     formula:
-      "Aggregate = Dry Volume × (Aggregate Ratio ÷ Total Ratio)",
+      "Aggregate Volume = Dry Volume × (Aggregate Ratio ÷ Total Ratio)",
   },
   {
     title: "Cement Weight",
     description:
-      "The calculator uses a cement density of 1440 kg/m³.",
-    formula:
-      "Cement Weight = Cement Volume × 1440 kg/m³",
+      "Cement weight is estimated using a cement bulk density of 1440 kg/m³.",
+    formulas: [
+      "Cement Weight (kg) = Cement Volume (m³) × 1440",
+      "Cement Weight (lb) = Cement Weight (kg) ÷ 0.45359237",
+    ],
   },
   {
-    title: "Cement Bags",
+    title: "94 lb Cement Bags",
     description:
-      "One standard cement bag is treated as 50 kg. The displayed bag requirement is rounded up.",
+      "For the US estimate, one cement bag is treated as 94 lb (approximately 42.64 kg). The number of bags is rounded up to a whole bag.",
     formulas: [
-      "Cement Bags = Cement Weight ÷ 50",
-      "Displayed Bags = Round Up(Cement Weight ÷ 50)",
+      "1 bag = 94 lb ≈ 42.64 kg",
+      "Bag Estimate = Cement Weight (lb) ÷ 94",
+      "Displayed Bags = Round Up(Bag Estimate)",
     ],
   },
   {
     title: "Water Requirement",
     description:
-      "Water is estimated using a water-cement ratio of 0.50.",
-    formula:
-      "Water = Cement Weight × 0.50",
+      "Water is estimated using a water-cement ratio of 0.50. Actual water requirements depend on the mix design, aggregate moisture and workability requirements.",
+    formulas: [
+      "Water (kg) = Cement Weight (kg) × 0.50",
+      "Water (L) ≈ Water (kg)",
+      "US Gallons = Liters ÷ 3.785411784",
+    ],
   },
   {
     title: "Material Cost",
     description:
-      "Material cost is calculated from cement, sand and aggregate quantities and their entered prices.",
+      "Enter the price for each material using the same unit selected in the material pricing controls. Only materials with entered prices contribute to the total.",
     formulas: [
-      "Cement Cost = Cement Quantity × Cement Price",
-      "Sand Cost = Sand Quantity × Sand Price",
-      "Aggregate Cost = Aggregate Quantity × Aggregate Price",
+      "Cement Cost = Cement Quantity × Cement Unit Price",
+      "Sand Cost = Sand Quantity × Sand Unit Price",
+      "Aggregate Cost = Aggregate Quantity × Aggregate Unit Price",
       "Total Cost = Cement Cost + Sand Cost + Aggregate Cost",
     ],
   },
   {
-    title: "Sand & Aggregate Price Conversion",
+    title: "Material Price Unit Conversion",
     description:
-      "When sand or aggregate prices use kg, tonne, cubic yard or US ton, the calculator converts the material quantity to the selected pricing unit.",
+      "Sand and aggregate quantities are converted to the selected pricing unit using the material density where weight-based pricing is selected.",
     formulas: [
-      "1 yd³ = 0.764554857 m³",
-      "Quantity in yd³ = Quantity in m³ × 1.30795062",
-      "Quantity in tonne = Quantity in m³ × Density ÷ 1000",
-      "Quantity in US ton = Quantity in m³ × Density ÷ 907.18474",
-      "Quantity in kg = Quantity in m³ × Density",
+      "yd³ = m³ ÷ 0.764554858",
+      "ft³ = m³ × 35.3146667",
+      "kg = Volume (m³) × Density (kg/m³)",
+      "lb = Weight (kg) ÷ 0.45359237",
+      "tonne = Weight (kg) ÷ 1000",
+      "US ton = Weight (kg) ÷ 907.18474",
     ],
-  },
-  {
-    title: "Waste Allowance",
-    description:
-      "The current calculator does not add a separate waste allowance.",
-    formula:
-      "Waste Volume = 0",
   },
   {
     title: "Multiple Pieces",
     description:
-      "When Quantity is greater than one, the calculated requirement is multiplied by the number of identical pieces.",
+      "If multiple identical slabs, footings, walls or other shapes are entered, the calculated quantities are multiplied by the quantity.",
     formula:
       "Total Requirement = Requirement per Piece × Quantity",
+  },
+  {
+    title: "Waste Allowance",
+    description:
+      "The current calculation does not add a separate waste allowance. Consider ordering extra material based on project conditions and supplier guidance.",
+    formula: "Current Waste Allowance = 0",
   },
 ];
 
@@ -132,11 +149,6 @@ export default function Formula() {
 
   return (
     <section className="w-full overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
-
-      {/* =====================================================
-          HEADER
-      ===================================================== */}
-
       <button
         type="button"
         onClick={() => setOpen((previous) => !previous)}
@@ -153,38 +165,30 @@ export default function Formula() {
           </h2>
 
           <p className="mt-1 text-sm text-slate-500 sm:text-base">
-            See how the concrete calculation works.
+            Understand the concrete volume, material and cost calculations.
           </p>
         </div>
 
-        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-100 text-xl font-semibold text-slate-700">
+        <span
+          aria-hidden="true"
+          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-100 text-xl font-semibold text-slate-700"
+        >
           {open ? "−" : "+"}
         </span>
       </button>
 
-      {/* =====================================================
-          CONTENT
-      ===================================================== */}
-
       {open && (
         <div className="border-t border-slate-100 px-5 py-5 sm:px-7 sm:py-7">
-
           <div className="rounded-2xl bg-blue-50 px-5 py-4">
-
             <p className="text-sm leading-6 text-blue-800 sm:text-base">
-              The calculator first converts the entered dimensions to
-              meters, calculates wet concrete volume, then estimates
-              dry material quantities using the selected concrete mix.
+              Dimensions are converted to meters for calculation. The
+              calculator estimates wet volume, dry material quantities,
+              cement bags, water and material costs. US customary units
+              are shown for convenient project planning.
             </p>
-
           </div>
 
-          {/* =================================================
-              FORMULA LIST
-          ================================================= */}
-
           <div className="mt-5 space-y-3">
-
             {formulaItems.map((item, index) => (
               <FormulaBox
                 key={item.title}
@@ -195,41 +199,27 @@ export default function Formula() {
                 formulas={item.formulas}
               />
             ))}
-
           </div>
 
-          {/* =================================================
-              IMPORTANT NOTE
-          ================================================= */}
-
           <div className="mt-6 rounded-2xl border border-amber-200 bg-amber-50 p-5">
-
             <h3 className="text-base font-bold text-amber-900 sm:text-lg">
               Important Note
             </h3>
 
             <p className="mt-2 text-sm leading-6 text-amber-800 sm:text-base">
-              These calculations are estimates for quantity and cost
-              planning. Actual concrete mix proportions, water
-              requirement, material density, moisture content,
-              aggregate grading and structural requirements may vary.
-              For structural work, use the project-specific mix design
-              and applicable engineering standards.
+              These results are estimates for material planning, not a
+              structural mix design. Actual quantities can vary with
+              moisture content, aggregate grading, material density,
+              compaction, placement losses and the specified concrete
+              strength. For structural work, follow the project
+              specifications and applicable engineering standards.
             </p>
-
           </div>
-
         </div>
       )}
-
     </section>
   );
 }
-
-
-/* =========================================================
-   FORMULA BOX
-========================================================= */
 
 type FormulaBoxProps = {
   number: number;
@@ -248,19 +238,12 @@ function FormulaBox({
 }: FormulaBoxProps) {
   return (
     <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:p-5">
-
       <div className="flex gap-3">
-
-        {/* Number */}
-
         <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-100 text-xs font-bold text-blue-700">
           {number}
         </div>
 
-        {/* Content */}
-
         <div className="min-w-0 flex-1">
-
           <h3 className="text-base font-bold text-slate-900 sm:text-lg">
             {title}
           </h3>
@@ -268,8 +251,6 @@ function FormulaBox({
           <p className="mt-1 text-sm leading-6 text-slate-500 sm:text-base">
             {description}
           </p>
-
-          {/* Single Formula */}
 
           {formula && (
             <div className="mt-3 overflow-hidden rounded-xl border border-slate-200 bg-white px-4 py-3">
@@ -279,14 +260,11 @@ function FormulaBox({
             </div>
           )}
 
-          {/* Multiple Formulas */}
-
           {formulas && formulas.length > 0 && (
             <div className="mt-3 space-y-2">
-
-              {formulas.map((item, index) => (
+              {formulas.map((item) => (
                 <div
-                  key={index}
+                  key={item}
                   className="overflow-hidden rounded-xl border border-slate-200 bg-white px-4 py-3"
                 >
                   <code className="block whitespace-normal break-words text-sm font-medium leading-6 text-blue-700 sm:text-base">
@@ -294,14 +272,10 @@ function FormulaBox({
                   </code>
                 </div>
               ))}
-
             </div>
           )}
-
         </div>
-
       </div>
-
     </div>
   );
 }
