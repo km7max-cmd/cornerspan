@@ -51,11 +51,11 @@ const MIXES: Record<string, MixRatio> = {
 };
 
 const UNIT_OPTIONS: { label: string; value: Unit }[] = [
-  { label: "Meter", value: "Meter" as Unit },
-  { label: "Feet", value: "Feet" as Unit },
-  { label: "Centimeter", value: "Centimeter" as Unit },
-  { label: "Millimeter", value: "Millimeter" as Unit },
-  { label: "Inch", value: "Inch" as Unit },
+  { label: "Feet (ft)", value: "Feet" },
+  { label: "Inches (in)", value: "Inch" },
+  { label: "Meters (m)", value: "Meter" },
+  { label: "Centimeters (cm)", value: "Centimeter" },
+  { label: "Millimeters (mm)", value: "Millimeter" },
 ];
 
 const INPUT =
@@ -111,9 +111,7 @@ function DimensionDiagram({
     <div className="rounded-2xl border border-blue-100 bg-gradient-to-br from-blue-50 to-white p-3 sm:p-4">
       <div className="flex items-start justify-between gap-2">
         <div>
-          <h3 className="text-sm font-bold text-slate-900">
-            {config.title}
-          </h3>
+          <h3 className="text-sm font-bold text-slate-900">{config.title}</h3>
           <p className="mt-1 text-xs text-slate-500">
             {config.description}
           </p>
@@ -130,16 +128,16 @@ function DimensionDiagram({
         className="mt-2 h-auto w-full"
       >
         <defs>
-          <linearGradient id="slabTop" x1="0" y1="0" x2="1" y2="1">
+          <linearGradient id="concreteTop" x1="0" y1="0" x2="1" y2="1">
             <stop offset="0%" stopColor="#dbeafe" />
             <stop offset="100%" stopColor="#93c5fd" />
           </linearGradient>
-          <linearGradient id="slabSide" x1="0" y1="0" x2="0" y2="1">
+          <linearGradient id="concreteSide" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stopColor="#60a5fa" />
             <stop offset="100%" stopColor="#1d4ed8" />
           </linearGradient>
           <marker
-            id="dimArrow"
+            id="concreteArrow"
             markerWidth="6"
             markerHeight="6"
             refX="3"
@@ -152,123 +150,58 @@ function DimensionDiagram({
 
         {project === "Slab" && (
           <>
-            <polygon
-              points="52,70 190,35 288,72 148,109"
-              fill="url(#slabTop)"
-              stroke="#2563eb"
-              strokeWidth="1.5"
-            />
-            <polygon
-              points="52,70 148,109 148,128 52,89"
-              fill="#93c5fd"
-              stroke="#2563eb"
-              strokeWidth="1.5"
-            />
-            <polygon
-              points="148,109 288,72 288,91 148,128"
-              fill="url(#slabSide)"
-              stroke="#2563eb"
-              strokeWidth="1.5"
-            />
+            <polygon points="52,70 190,35 288,72 148,109" fill="url(#concreteTop)" stroke="#2563eb" strokeWidth="1.5" />
+            <polygon points="52,70 148,109 148,128 52,89" fill="#93c5fd" stroke="#2563eb" strokeWidth="1.5" />
+            <polygon points="148,109 288,72 288,91 148,128" fill="url(#concreteSide)" stroke="#2563eb" strokeWidth="1.5" />
             <text x="165" y="20" fontSize="11" fill="#1d4ed8" textAnchor="middle" fontWeight="700">Length</text>
             <text x="266" y="40" fontSize="11" fill="#1d4ed8" textAnchor="middle" fontWeight="700">Width</text>
             <text x="290" y="111" fontSize="10" fill="#1d4ed8" textAnchor="end" fontWeight="700">Thickness</text>
-            <line x1="65" y1="48" x2="188" y2="17" stroke="#1d4ed8" strokeWidth="1.3" markerStart="url(#dimArrow)" markerEnd="url(#dimArrow)" />
-            <line x1="204" y1="38" x2="299" y2="73" stroke="#1d4ed8" strokeWidth="1.3" markerStart="url(#dimArrow)" markerEnd="url(#dimArrow)" />
-            <line x1="306" y1="74" x2="306" y2="91" stroke="#1d4ed8" strokeWidth="1.3" markerStart="url(#dimArrow)" markerEnd="url(#dimArrow)" />
+            <line x1="65" y1="48" x2="188" y2="17" stroke="#1d4ed8" strokeWidth="1.3" markerStart="url(#concreteArrow)" markerEnd="url(#concreteArrow)" />
+            <line x1="204" y1="38" x2="299" y2="73" stroke="#1d4ed8" strokeWidth="1.3" markerStart="url(#concreteArrow)" markerEnd="url(#concreteArrow)" />
+            <line x1="306" y1="74" x2="306" y2="91" stroke="#1d4ed8" strokeWidth="1.3" markerStart="url(#concreteArrow)" markerEnd="url(#concreteArrow)" />
           </>
         )}
 
         {project === "Wall" && (
           <>
-            <polygon
-              points="82,42 240,42 280,62 122,62"
-              fill="url(#slabTop)"
-              stroke="#2563eb"
-              strokeWidth="1.5"
-            />
-            <polygon
-              points="82,42 122,62 122,143 82,123"
-              fill="#93c5fd"
-              stroke="#2563eb"
-              strokeWidth="1.5"
-            />
-            <polygon
-              points="122,62 280,62 280,143 122,143"
-              fill="url(#slabSide)"
-              stroke="#2563eb"
-              strokeWidth="1.5"
-            />
-            <line x1="82" y1="28" x2="240" y2="28" stroke="#1d4ed8" strokeWidth="1.3" markerStart="url(#dimArrow)" markerEnd="url(#dimArrow)" />
+            <polygon points="82,42 240,42 280,62 122,62" fill="url(#concreteTop)" stroke="#2563eb" strokeWidth="1.5" />
+            <polygon points="82,42 122,62 122,143 82,123" fill="#93c5fd" stroke="#2563eb" strokeWidth="1.5" />
+            <polygon points="122,62 280,62 280,143 122,143" fill="url(#concreteSide)" stroke="#2563eb" strokeWidth="1.5" />
+            <line x1="82" y1="28" x2="240" y2="28" stroke="#1d4ed8" strokeWidth="1.3" markerStart="url(#concreteArrow)" markerEnd="url(#concreteArrow)" />
             <text x="160" y="20" fontSize="11" fill="#1d4ed8" textAnchor="middle" fontWeight="700">Length</text>
-            <line x1="297" y1="64" x2="297" y2="140" stroke="#1d4ed8" strokeWidth="1.3" markerStart="url(#dimArrow)" markerEnd="url(#dimArrow)" />
+            <line x1="297" y1="64" x2="297" y2="140" stroke="#1d4ed8" strokeWidth="1.3" markerStart="url(#concreteArrow)" markerEnd="url(#concreteArrow)" />
             <text x="292" y="103" fontSize="10" fill="#1d4ed8" textAnchor="end" fontWeight="700">Height</text>
-            <line x1="245" y1="36" x2="288" y2="56" stroke="#1d4ed8" strokeWidth="1.3" markerStart="url(#dimArrow)" markerEnd="url(#dimArrow)" />
+            <line x1="245" y1="36" x2="288" y2="56" stroke="#1d4ed8" strokeWidth="1.3" markerStart="url(#concreteArrow)" markerEnd="url(#concreteArrow)" />
             <text x="280" y="28" fontSize="10" fill="#1d4ed8" textAnchor="middle" fontWeight="700">Thickness</text>
           </>
         )}
 
         {project === "Footing" && (
           <>
-            <polygon
-              points="58,79 178,45 287,79 166,113"
-              fill="url(#slabTop)"
-              stroke="#2563eb"
-              strokeWidth="1.5"
-            />
-            <polygon
-              points="58,79 166,113 166,146 58,112"
-              fill="#93c5fd"
-              stroke="#2563eb"
-              strokeWidth="1.5"
-            />
-            <polygon
-              points="166,113 287,79 287,112 166,146"
-              fill="url(#slabSide)"
-              stroke="#2563eb"
-              strokeWidth="1.5"
-            />
+            <polygon points="58,79 178,45 287,79 166,113" fill="url(#concreteTop)" stroke="#2563eb" strokeWidth="1.5" />
+            <polygon points="58,79 166,113 166,146 58,112" fill="#93c5fd" stroke="#2563eb" strokeWidth="1.5" />
+            <polygon points="166,113 287,79 287,112 166,146" fill="url(#concreteSide)" stroke="#2563eb" strokeWidth="1.5" />
             <rect x="151" y="30" width="24" height="33" rx="2" fill="#64748b" stroke="#475569" />
-            <line x1="58" y1="58" x2="178" y2="24" stroke="#1d4ed8" strokeWidth="1.3" markerStart="url(#dimArrow)" markerEnd="url(#dimArrow)" />
+            <line x1="58" y1="58" x2="178" y2="24" stroke="#1d4ed8" strokeWidth="1.3" markerStart="url(#concreteArrow)" markerEnd="url(#concreteArrow)" />
             <text x="112" y="22" fontSize="10" fill="#1d4ed8" textAnchor="middle" fontWeight="700">Length</text>
-            <line x1="197" y1="45" x2="300" y2="78" stroke="#1d4ed8" strokeWidth="1.3" markerStart="url(#dimArrow)" markerEnd="url(#dimArrow)" />
+            <line x1="197" y1="45" x2="300" y2="78" stroke="#1d4ed8" strokeWidth="1.3" markerStart="url(#concreteArrow)" markerEnd="url(#concreteArrow)" />
             <text x="264" y="44" fontSize="10" fill="#1d4ed8" textAnchor="middle" fontWeight="700">Width</text>
-            <line x1="305" y1="81" x2="305" y2="111" stroke="#1d4ed8" strokeWidth="1.3" markerStart="url(#dimArrow)" markerEnd="url(#dimArrow)" />
+            <line x1="305" y1="81" x2="305" y2="111" stroke="#1d4ed8" strokeWidth="1.3" markerStart="url(#concreteArrow)" markerEnd="url(#concreteArrow)" />
             <text x="299" y="127" fontSize="10" fill="#1d4ed8" textAnchor="end" fontWeight="700">Depth</text>
           </>
         )}
 
         {project === "Column" && (
           <>
-            <polygon
-              points="118,48 190,28 231,45 158,67"
-              fill="url(#slabTop)"
-              stroke="#2563eb"
-              strokeWidth="1.5"
-            />
-            <polygon
-              points="118,48 158,67 158,143 118,124"
-              fill="#93c5fd"
-              stroke="#2563eb"
-              strokeWidth="1.5"
-            />
-            <polygon
-              points="158,67 231,45 231,121 158,143"
-              fill="url(#slabSide)"
-              stroke="#2563eb"
-              strokeWidth="1.5"
-            />
-            <polygon
-              points="102,126 158,150 246,124 190,103"
-              fill="#bfdbfe"
-              stroke="#2563eb"
-              strokeWidth="1.5"
-            />
-            <line x1="98" y1="46" x2="98" y2="122" stroke="#1d4ed8" strokeWidth="1.3" markerStart="url(#dimArrow)" markerEnd="url(#dimArrow)" />
+            <polygon points="118,48 190,28 231,45 158,67" fill="url(#concreteTop)" stroke="#2563eb" strokeWidth="1.5" />
+            <polygon points="118,48 158,67 158,143 118,124" fill="#93c5fd" stroke="#2563eb" strokeWidth="1.5" />
+            <polygon points="158,67 231,45 231,121 158,143" fill="url(#concreteSide)" stroke="#2563eb" strokeWidth="1.5" />
+            <polygon points="102,126 158,150 246,124 190,103" fill="#bfdbfe" stroke="#2563eb" strokeWidth="1.5" />
+            <line x1="98" y1="46" x2="98" y2="122" stroke="#1d4ed8" strokeWidth="1.3" markerStart="url(#concreteArrow)" markerEnd="url(#concreteArrow)" />
             <text x="91" y="88" fontSize="10" fill="#1d4ed8" textAnchor="end" fontWeight="700">Height</text>
-            <line x1="118" y1="32" x2="190" y2="12" stroke="#1d4ed8" strokeWidth="1.3" markerStart="url(#dimArrow)" markerEnd="url(#dimArrow)" />
+            <line x1="118" y1="32" x2="190" y2="12" stroke="#1d4ed8" strokeWidth="1.3" markerStart="url(#concreteArrow)" markerEnd="url(#concreteArrow)" />
             <text x="155" y="12" fontSize="10" fill="#1d4ed8" textAnchor="middle" fontWeight="700">Length</text>
-            <line x1="198" y1="17" x2="242" y2="35" stroke="#1d4ed8" strokeWidth="1.3" markerStart="url(#dimArrow)" markerEnd="url(#dimArrow)" />
+            <line x1="198" y1="17" x2="242" y2="35" stroke="#1d4ed8" strokeWidth="1.3" markerStart="url(#concreteArrow)" markerEnd="url(#concreteArrow)" />
             <text x="255" y="24" fontSize="10" fill="#1d4ed8" textAnchor="middle" fontWeight="700">Width</text>
           </>
         )}
@@ -326,10 +259,12 @@ export default function CalculatorForm(props: CalculatorFormProps) {
     value: string,
     setter: (value: string) => void,
     unit: Unit,
-    setUnit: (value: Unit) => void,
+    setUnit: (value: Unit) => void
   ) => (
     <div className="min-w-0">
-      <label className="mb-1 block truncate text-xs font-semibold text-slate-700">{label}</label>
+      <label className="mb-1 block truncate text-xs font-semibold text-slate-700">
+        {label}
+      </label>
       <input
         type="number"
         min="0"
@@ -346,7 +281,9 @@ export default function CalculatorForm(props: CalculatorFormProps) {
         aria-label={`${label} unit`}
       >
         {UNIT_OPTIONS.map((option) => (
-          <option key={option.value} value={option.value}>{option.label}</option>
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
         ))}
       </select>
     </div>
@@ -354,12 +291,17 @@ export default function CalculatorForm(props: CalculatorFormProps) {
 
   return (
     <section className="w-full min-w-0 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm sm:p-5">
-      <h2 className="text-xl font-extrabold text-slate-950">Concrete Calculator</h2>
+      <h2 className="text-xl font-extrabold text-slate-950">
+        Concrete Calculator
+      </h2>
       <p className="mb-4 mt-1 text-sm text-slate-500">
-        Enter dimensions to estimate concrete volume and materials.
+        Estimate concrete volume, cement bags, sand, aggregate, water, and
+        material cost.
       </p>
 
-      <label className="mb-2 block text-sm font-semibold text-slate-800">Project Type</label>
+      <label className="mb-2 block text-sm font-semibold text-slate-800">
+        Project Type
+      </label>
       <div className="mb-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
         {(["Slab", "Wall", "Footing", "Column"] as ProjectType[]).map((item) => (
           <button
@@ -389,18 +331,30 @@ export default function CalculatorForm(props: CalculatorFormProps) {
 
       <div className="mt-4 grid grid-cols-3 gap-2">
         {dimension("Length", length, setLength, lengthUnit, setLengthUnit)}
-        {dimension(project === "Wall" ? "Thickness" : "Width", width, setWidth, widthUnit, setWidthUnit)}
         {dimension(
-          project === "Slab" ? "Thickness" : project === "Footing" ? "Depth" : "Height",
+          project === "Wall" ? "Thickness" : "Width",
+          width,
+          setWidth,
+          widthUnit,
+          setWidthUnit
+        )}
+        {dimension(
+          project === "Slab"
+            ? "Thickness"
+            : project === "Footing"
+              ? "Depth"
+              : "Height",
           depth,
           setDepth,
           depthUnit,
-          setDepthUnit,
+          setDepthUnit
         )}
       </div>
 
       <div className="mt-4">
-        <label className="mb-1 block text-xs font-semibold text-slate-700">Quantity</label>
+        <label className="mb-1 block text-xs font-semibold text-slate-700">
+          Quantity
+        </label>
         <input
           type="number"
           min="1"
@@ -412,13 +366,19 @@ export default function CalculatorForm(props: CalculatorFormProps) {
       </div>
 
       <div className="mt-4">
-        <label className="mb-1 block text-xs font-semibold text-slate-700">Concrete Mix Ratio</label>
-        <select value={mix} onChange={(event) => setMix(event.target.value)} className={INPUT}>
+        <label className="mb-1 block text-xs font-semibold text-slate-700">
+          Concrete Mix Ratio
+        </label>
+        <select
+          value={mix}
+          onChange={(event) => setMix(event.target.value)}
+          className={INPUT}
+        >
           <option value="M10">M10 (1:3:6)</option>
           <option value="M15">M15 (1:2:4)</option>
           <option value="M20">M20 (1:1.5:3)</option>
           <option value="M25">M25 (1:1:2)</option>
-          <option value="Custom">Custom</option>
+          <option value="Custom">Custom mix</option>
         </select>
       </div>
 
@@ -429,14 +389,18 @@ export default function CalculatorForm(props: CalculatorFormProps) {
             ["Sand", customSand, setCustomSand],
             ["Aggregate", customAggregate, setCustomAggregate],
           ].map(([label, value, setter]) => (
-            <div key={label as string}>
-              <label className="mb-1 block text-xs font-semibold text-slate-700">{label as string}</label>
+            <div key={label as string} className="min-w-0">
+              <label className="mb-1 block text-xs font-semibold text-slate-700">
+                {label as string}
+              </label>
               <input
                 type="number"
                 min="0"
                 step="any"
                 value={value as string}
-                onChange={(event) => (setter as (value: string) => void)(event.target.value)}
+                onChange={(event) =>
+                  (setter as (value: string) => void)(event.target.value)
+                }
                 className={INPUT}
               />
             </div>
@@ -458,54 +422,153 @@ export default function CalculatorForm(props: CalculatorFormProps) {
         {showMaterials && (
           <div className="mt-3 space-y-3 rounded-xl border border-slate-200 p-3">
             <div>
-              <label className="mb-1 block text-xs font-semibold text-slate-700">Currency</label>
-              <select value={currency} onChange={(event) => setCurrency(event.target.value)} className={INPUT}>
+              <label className="mb-1 block text-xs font-semibold text-slate-700">
+                Currency
+              </label>
+              <select
+                value={currency}
+                onChange={(event) => setCurrency(event.target.value)}
+                className={INPUT}
+              >
                 <option value="USD">USD ($)</option>
                 <option value="INR">INR (₹)</option>
                 <option value="GBP">GBP (£)</option>
                 <option value="EUR">EUR (€)</option>
-                <option value="CAD">CAD ($)</option>
-                <option value="AUD">AUD ($)</option>
+                <option value="CAD">CAD (C$)</option>
+                <option value="AUD">AUD (A$)</option>
+                <option value="AED">AED</option>
               </select>
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <div>
-                <label className="mb-1 block text-xs font-semibold text-slate-700">Cement Price</label>
-                <input type="number" min="0" step="any" value={cementPrice} onChange={(event) => setCementPrice(event.target.value)} className={INPUT} />
-                <select value={cementUnit} onChange={(event) => setCementUnit(event.target.value)} className="mt-1 h-8 w-full rounded-lg border border-slate-300 bg-white px-2 text-xs">
-                  <option value="bag">Per bag</option><option value="ton">Per ton</option><option value="kg">Per kg</option>
+                <label className="mb-1 block text-xs font-semibold text-slate-700">
+                  Cement Price
+                </label>
+                <input
+                  type="number"
+                  min="0"
+                  step="any"
+                  value={cementPrice}
+                  onChange={(event) => setCementPrice(event.target.value)}
+                  className={INPUT}
+                  placeholder="Price"
+                />
+                <select
+                  value={cementUnit}
+                  onChange={(event) => setCementUnit(event.target.value)}
+                  className="mt-1 h-9 w-full rounded-lg border border-slate-300 bg-white px-2 text-xs"
+                  aria-label="Cement price unit"
+                >
+                  <option value="Bag">Per 94 lb bag</option>
+                  <option value="lb">Per lb</option>
+                  <option value="kg">Per kg</option>
+                  <option value="US ton">Per US ton</option>
+                  <option value="tonne">Per metric tonne</option>
                 </select>
               </div>
+
               <div>
-                <label className="mb-1 block text-xs font-semibold text-slate-700">Sand Price</label>
-                <input type="number" min="0" step="any" value={sandPrice} onChange={(event) => setSandPrice(event.target.value)} className={INPUT} />
-                <select value={sandUnit} onChange={(event) => setSandUnit(event.target.value)} className="mt-1 h-8 w-full rounded-lg border border-slate-300 bg-white px-2 text-xs">
-                  <option value="m3">Per m³</option><option value="ft3">Per ft³</option><option value="ton">Per ton</option><option value="yard">Per yd³</option>
+                <label className="mb-1 block text-xs font-semibold text-slate-700">
+                  Sand Price
+                </label>
+                <input
+                  type="number"
+                  min="0"
+                  step="any"
+                  value={sandPrice}
+                  onChange={(event) => setSandPrice(event.target.value)}
+                  className={INPUT}
+                  placeholder="Price"
+                />
+                <select
+                  value={sandUnit}
+                  onChange={(event) => setSandUnit(event.target.value)}
+                  className="mt-1 h-9 w-full rounded-lg border border-slate-300 bg-white px-2 text-xs"
+                  aria-label="Sand price unit"
+                >
+                  <option value="yd³">Per cubic yard (yd³)</option>
+                  <option value="m³">Per cubic meter (m³)</option>
+                  <option value="ft³">Per cubic foot (ft³)</option>
+                  <option value="US ton">Per US ton</option>
+                  <option value="tonne">Per metric tonne</option>
+                  <option value="kg">Per kg</option>
+                  <option value="lb">Per lb</option>
                 </select>
               </div>
+
               <div>
-                <label className="mb-1 block text-xs font-semibold text-slate-700">Aggregate Price</label>
-                <input type="number" min="0" step="any" value={aggregatePrice} onChange={(event) => setAggregatePrice(event.target.value)} className={INPUT} />
-                <select value={aggregateUnit} onChange={(event) => setAggregateUnit(event.target.value)} className="mt-1 h-8 w-full rounded-lg border border-slate-300 bg-white px-2 text-xs">
-                  <option value="m3">Per m³</option><option value="ft3">Per ft³</option><option value="ton">Per ton</option><option value="yard">Per yd³</option>
+                <label className="mb-1 block text-xs font-semibold text-slate-700">
+                  Aggregate Price
+                </label>
+                <input
+                  type="number"
+                  min="0"
+                  step="any"
+                  value={aggregatePrice}
+                  onChange={(event) => setAggregatePrice(event.target.value)}
+                  className={INPUT}
+                  placeholder="Price"
+                />
+                <select
+                  value={aggregateUnit}
+                  onChange={(event) => setAggregateUnit(event.target.value)}
+                  className="mt-1 h-9 w-full rounded-lg border border-slate-300 bg-white px-2 text-xs"
+                  aria-label="Aggregate price unit"
+                >
+                  <option value="yd³">Per cubic yard (yd³)</option>
+                  <option value="m³">Per cubic meter (m³)</option>
+                  <option value="ft³">Per cubic foot (ft³)</option>
+                  <option value="US ton">Per US ton</option>
+                  <option value="tonne">Per metric tonne</option>
+                  <option value="kg">Per kg</option>
+                  <option value="lb">Per lb</option>
                 </select>
               </div>
+
               <div>
-                <label className="mb-1 block text-xs font-semibold text-slate-700">Sand Density (kg/m³)</label>
-                <input type="number" min="0" step="any" value={sandDensity} onChange={(event) => setSandDensity(event.target.value)} className={INPUT} />
+                <label className="mb-1 block text-xs font-semibold text-slate-700">
+                  Sand Density (kg/m³)
+                </label>
+                <input
+                  type="number"
+                  min="1"
+                  step="any"
+                  value={sandDensity}
+                  onChange={(event) => setSandDensity(event.target.value)}
+                  className={INPUT}
+                />
               </div>
+
               <div>
-                <label className="mb-1 block text-xs font-semibold text-slate-700">Aggregate Density (kg/m³)</label>
-                <input type="number" min="0" step="any" value={aggregateDensity} onChange={(event) => setAggregateDensity(event.target.value)} className={INPUT} />
+                <label className="mb-1 block text-xs font-semibold text-slate-700">
+                  Aggregate Density (kg/m³)
+                </label>
+                <input
+                  type="number"
+                  min="1"
+                  step="any"
+                  value={aggregateDensity}
+                  onChange={(event) => setAggregateDensity(event.target.value)}
+                  className={INPUT}
+                />
               </div>
             </div>
+
+            <p className="text-xs leading-5 text-slate-500">
+              Cement bag pricing uses a standard 94 lb US cement bag. Sand and
+              aggregate prices are calculated using the selected unit and
+              density. Enter local supplier prices for a cost estimate.
+            </p>
           </div>
         )}
       </div>
 
       {error && (
-        <p role="alert" className="mt-3 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
+        <p
+          role="alert"
+          className="mt-3 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700"
+        >
           {error}
         </p>
       )}
@@ -519,7 +582,8 @@ export default function CalculatorForm(props: CalculatorFormProps) {
       </button>
 
       <p className="mt-3 text-center text-xs text-slate-500">
-        Estimates are approximate. Actual material needs may vary by site conditions and mix design.
+        Estimates are approximate. Actual material needs vary with mix design,
+        moisture, compaction, and site conditions.
       </p>
     </section>
   );
