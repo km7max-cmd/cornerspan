@@ -69,6 +69,7 @@ export default function ResultCard({
         <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-blue-700">
           Concrete Estimate
         </p>
+
         <div className="mt-1 flex items-start justify-between gap-3">
           <div>
             <h2 className="text-xl font-bold tracking-tight text-slate-900">
@@ -78,6 +79,7 @@ export default function ResultCard({
               Estimated quantities for your project
             </p>
           </div>
+
           {hasResult && (
             <span className="shrink-0 rounded-full border border-blue-100 bg-blue-50 px-2.5 py-1 text-xs font-semibold text-blue-700">
               Estimate
@@ -101,19 +103,21 @@ export default function ResultCard({
               <path d="M8 7h8M8 11h2m4 0h2M8 15h2m4 0h2M8 19h8" />
             </svg>
           </div>
+
           <h3 className="mt-4 font-bold text-slate-900">
             Ready to Calculate
           </h3>
+
           <p className="mx-auto mt-2 max-w-xs text-sm leading-6 text-slate-500">
-            Enter your dimensions and select Calculate to see the concrete
-            volume and material estimates.
+            Enter your dimensions and select Calculate to see concrete volume
+            and material estimates.
           </p>
         </div>
       ) : (
         <div className="space-y-5 p-4 sm:space-y-6 sm:p-6">
-          {/* Main volume */}
           <div className="relative overflow-hidden rounded-2xl border border-blue-100 bg-gradient-to-br from-blue-50 via-blue-50 to-white p-4 sm:p-6">
             <div className="absolute -right-8 -top-8 h-28 w-28 rounded-full bg-blue-100/60" />
+
             <div className="relative">
               <div className="flex items-center gap-2">
                 <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-white text-blue-700 shadow-sm">
@@ -129,6 +133,7 @@ export default function ResultCard({
                     <path d="m3 12 9 5 9-5M3 16l9 5 9-5" />
                   </svg>
                 </span>
+
                 <p className="text-sm font-semibold text-blue-900">
                   Concrete Volume
                 </p>
@@ -138,7 +143,9 @@ export default function ResultCard({
                 <span className="text-4xl font-extrabold tracking-tight text-blue-800 sm:text-5xl">
                   {formatNumber(volumeYards)}
                 </span>
-                <span className="text-lg font-bold text-blue-800">yd³</span>
+                <span className="text-lg font-bold text-blue-800">
+                  yd³
+                </span>
               </div>
 
               <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 border-t border-blue-200/70 pt-3 text-sm font-medium text-slate-600">
@@ -148,7 +155,6 @@ export default function ResultCard({
             </div>
           </div>
 
-          {/* Material quantities */}
           <div>
             <div className="mb-3 flex items-center justify-between gap-3">
               <div>
@@ -159,8 +165,9 @@ export default function ResultCard({
                   Approximate quantities
                 </p>
               </div>
+
               <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-semibold text-slate-600">
-                M³ / US units
+                US Units
               </span>
             </div>
 
@@ -175,9 +182,9 @@ export default function ResultCard({
 
               <MaterialRow
                 label="Cement"
-                value={String(cementBags)}
-                unit="50 kg bags"
-                tone="neutral"
+                value={String(Math.ceil(cementBags))}
+                unit="94 lb bags"
+                secondary="Standard US cement bag estimate"
               />
 
               <MaterialRow
@@ -185,7 +192,6 @@ export default function ResultCard({
                 value={formatNumber(sandYards)}
                 unit="yd³"
                 secondary={`${formatNumber(sand)} m³`}
-                tone="neutral"
               />
 
               <MaterialRow
@@ -193,7 +199,6 @@ export default function ResultCard({
                 value={formatNumber(aggregateYards)}
                 unit="yd³"
                 secondary={`${formatNumber(aggregate)} m³`}
-                tone="neutral"
               />
 
               <MaterialRow
@@ -201,17 +206,16 @@ export default function ResultCard({
                 value={formatNumber(waterGallons)}
                 unit="US gal"
                 secondary={`${formatNumber(water, 1)} L`}
-                tone="neutral"
               />
             </div>
 
             <p className="mt-2 rounded-lg bg-slate-50 px-3 py-2 text-xs leading-5 text-slate-500">
-              Cement bags use the existing 50 kg cement-bag calculation.
-              They are not 80 lb premixed concrete bags.
+              Cement is shown as 94 lb cement bags, not 80 lb bags of
+              premixed concrete. Actual cement requirements depend on the
+              specified mix design and material properties.
             </p>
           </div>
 
-          {/* Cost */}
           <div className="overflow-hidden rounded-2xl border border-blue-100 bg-white">
             <div className="border-b border-blue-50 bg-blue-50/70 px-4 py-3">
               <p className="text-sm font-semibold text-slate-700">
@@ -226,7 +230,8 @@ export default function ResultCard({
                     {formatMoney(totalCost, currency)}
                   </p>
                   <p className="mt-2 text-xs leading-5 text-slate-500">
-                    Based on the material prices and mix settings you entered.
+                    Based on the material prices entered. This estimate
+                    excludes labor, delivery, tax, and other project costs.
                   </p>
                 </>
               ) : (
@@ -235,15 +240,13 @@ export default function ResultCard({
                     Add material prices
                   </p>
                   <p className="mt-1 text-sm leading-5 text-slate-500">
-                    Enter cement, sand and aggregate prices to estimate the
-                    total cost.
+                    Enter one or more material prices to estimate their cost.
                   </p>
                 </>
               )}
             </div>
           </div>
 
-          {/* Export actions */}
           <div>
             <div className="mb-3">
               <h3 className="text-sm font-bold text-slate-900">
@@ -259,7 +262,14 @@ export default function ResultCard({
                 label="Copy"
                 onClick={onCopy}
                 icon={
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="h-5 w-5" aria-hidden="true">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    className="h-5 w-5"
+                    aria-hidden="true"
+                  >
                     <rect x="8" y="8" width="12" height="12" rx="2" />
                     <path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3" />
                   </svg>
@@ -270,7 +280,14 @@ export default function ResultCard({
                 label="Share"
                 onClick={onShare}
                 icon={
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="h-5 w-5" aria-hidden="true">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    className="h-5 w-5"
+                    aria-hidden="true"
+                  >
                     <circle cx="18" cy="5" r="3" />
                     <circle cx="6" cy="12" r="3" />
                     <circle cx="18" cy="19" r="3" />
@@ -283,7 +300,14 @@ export default function ResultCard({
                 label="Download PDF"
                 onClick={onDownload}
                 icon={
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="h-5 w-5" aria-hidden="true">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    className="h-5 w-5"
+                    aria-hidden="true"
+                  >
                     <path d="M12 3v12m-5-5 5 5 5-5M5 17v4h14v-4" />
                   </svg>
                 }
@@ -294,7 +318,8 @@ export default function ResultCard({
           <p className="border-t border-slate-100 pt-4 text-xs leading-5 text-slate-500">
             Estimates are for planning purposes only. Actual material quantities
             depend on mix design, material yield, waste, and site conditions.
-            Verify quantities before ordering concrete.
+            Verify quantities with your concrete supplier or project
+            specifications before ordering.
           </p>
         </div>
       )}
