@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -6,52 +7,62 @@ const faqs = [
   {
     question: "How is concrete volume calculated?",
     answer:
-      "Concrete volume is calculated by multiplying Length × Width × Depth. The calculator first converts the selected dimension units to meters and then calculates the volume in cubic meters.",
+      "Concrete volume is calculated by multiplying length × width × depth. This calculator converts the entered dimensions to meters internally and displays the result in cubic yards, cubic feet and cubic meters.",
   },
   {
-    question: "How do I calculate the amount of concrete I need?",
+    question: "How much concrete do I need for my project?",
     answer:
-      "Enter the length, width, depth or thickness, and quantity of the concrete work. The calculator uses these measurements to estimate the total concrete volume required.",
+      "Enter the length, width, thickness or depth, and number of identical pieces. The calculator estimates the total concrete volume. For ordering ready-mix concrete, confirm the required quantity and any additional allowance with your supplier.",
   },
   {
-    question: "How many cement bags are needed for 1 m³ of concrete?",
+    question: "How many cubic feet are in a cubic yard of concrete?",
     answer:
-      "The number of cement bags depends on the selected concrete mix ratio. This calculator uses the selected mix ratio, a cement density of 1440 kg/m³, and a standard 50 kg cement bag to estimate the required bags.",
+      "One cubic yard equals 27 cubic feet. To convert cubic feet to cubic yards, divide the cubic-foot quantity by 27. For example, 54 cubic feet equals 2 cubic yards.",
   },
   {
-    question: "How much sand and aggregate are needed for concrete?",
+    question: "How many 94 lb cement bags do I need?",
     answer:
-      "Sand and aggregate quantities depend on the concrete volume and selected mix ratio. The calculator applies the mix ratio to the estimated dry volume to calculate the required quantities.",
+      "The estimated number of cement bags depends on the concrete volume and selected mix ratio. This calculator estimates cement using a cement density of 1440 kg/m³ and a 94 lb bag size, then rounds the bag count up to a whole bag. This is an estimate of cement ingredients, not the number of premixed concrete bags.",
   },
   {
-    question: "Can I calculate concrete using feet and inches?",
+    question: "How much sand and aggregate are needed?",
     answer:
-      "Yes. The calculator supports meters, feet, centimeters, millimeters, and inches. Each dimension can have its own unit, and all dimensions are converted to meters before calculating the volume.",
+      "Sand and aggregate quantities depend on the concrete volume, selected mix ratio and the calculator's dry-volume estimate. Actual quantities can vary with material grading, moisture content and the specified concrete mix design.",
   },
   {
-    question: "Can this concrete calculator calculate material cost?",
+    question: "Can I enter measurements in feet and inches?",
     answer:
-      "Yes. You can enter cement, sand, and aggregate prices and select the appropriate pricing unit. The calculator then estimates the total material cost using the calculated quantities.",
+      "Yes. The calculator supports feet, inches, meters, centimeters and millimeters. You can choose a unit for each dimension, and the calculator converts the measurements internally before calculating volume.",
   },
   {
-    question: "What is dry volume in a concrete calculation?",
+    question: "Can I estimate concrete material costs?",
     answer:
-      "Dry volume is an estimation of the material volume needed before producing the final wet concrete. This calculator estimates dry volume by multiplying wet concrete volume by 1.54.",
+      "Yes. Enter prices for cement, sand and aggregate and select the matching price unit. Supported units include 94 lb cement bags, cubic yards, cubic feet, kilograms, pounds, metric tonnes and US short tons where available. The total includes materials for which you enter a price.",
   },
   {
-    question: "What concrete mix ratios are supported?",
+    question: "What is dry volume in concrete estimation?",
     answer:
-      "The calculator includes M10 (1:3:6), M15 (1:2:4), M20 (1:1.5:3), M25 (1:1:2), and a Custom Mix option.",
+      "Dry volume estimates the combined volume of ingredients before mixing. This calculator uses a standard factor of 1.54 multiplied by wet concrete volume. It is an estimating assumption, not a substitute for a project-specific mix design.",
   },
   {
-    question: "How is water requirement calculated?",
+    question: "Which concrete mix ratios can I use?",
     answer:
-      "For estimation purposes, this calculator uses a water-cement ratio of 0.50. Water is therefore estimated by multiplying the calculated cement weight by 0.50.",
+      "The calculator offers preset mix ratios and a custom mix option. Mix ratios are estimating inputs; the appropriate concrete proportions depend on the required strength, exposure conditions, materials and project specifications.",
   },
   {
-    question: "Is this concrete calculator free to use?",
+    question: "How is the water requirement estimated?",
     answer:
-      "Yes. CornerSpan's online concrete calculator is free to use on a phone, tablet, or computer. No account is required to perform a calculation.",
+      "The calculator estimates water using a water-cement ratio of 0.50. Actual water requirements depend on the specified mix design, aggregate moisture, admixtures and required workability. Do not use this estimate as a substitute for an approved concrete mix design.",
+  },
+  {
+    question: "Does the calculator include a waste allowance?",
+    answer:
+      "The current calculator does not add a separate waste allowance. Actual ordering quantities may need an allowance for uneven subgrades, formwork variation, spillage or placement losses. Check the requirements with your concrete supplier.",
+  },
+  {
+    question: "Is the CornerSpan concrete calculator free?",
+    answer:
+      "Yes. The online concrete calculator is free to use on a phone, tablet or computer. You can calculate estimated quantities without creating an account.",
   },
 ];
 
@@ -63,13 +74,7 @@ export default function FAQ() {
       className="w-full overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm"
       aria-labelledby="concrete-calculator-faq"
     >
-
-      {/* =====================================================
-          HEADER
-      ===================================================== */}
-
       <div className="border-b border-slate-100 px-5 py-5 sm:px-7">
-
         <p className="text-xs font-bold uppercase tracking-[0.16em] text-blue-600">
           FAQ
         </p>
@@ -82,20 +87,13 @@ export default function FAQ() {
         </h2>
 
         <p className="mt-1 max-w-2xl text-sm leading-6 text-slate-500 sm:text-base">
-          Common questions about concrete volume, mix ratios, materials,
-          water requirements, and material cost.
+          Answers about concrete volume, cement bags, mix ratios,
+          material quantities and cost estimates.
         </p>
-
       </div>
 
-      {/* =====================================================
-          FAQ ITEMS
-      ===================================================== */}
-
       <div>
-
         {faqs.map((faq, index) => {
-
           const isOpen = openIndex === index;
 
           return (
@@ -103,18 +101,14 @@ export default function FAQ() {
               key={faq.question}
               className="border-b border-slate-100 last:border-b-0"
             >
-
               <button
                 type="button"
                 onClick={() =>
-                  setOpenIndex(
-                    isOpen ? null : index
-                  )
+                  setOpenIndex(isOpen ? null : index)
                 }
                 aria-expanded={isOpen}
                 className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left transition hover:bg-slate-50 sm:px-7 sm:py-5"
               >
-
                 <span className="text-sm font-bold leading-6 text-slate-900 sm:text-base">
                   {faq.question}
                 </span>
@@ -129,29 +123,21 @@ export default function FAQ() {
                 >
                   {isOpen ? "−" : "+"}
                 </span>
-
               </button>
 
               {isOpen && (
                 <div className="px-5 pb-5 sm:px-7">
-
                   <div className="rounded-2xl bg-slate-50 px-4 py-4 sm:px-5">
-
                     <p className="text-sm leading-6 text-slate-600 sm:text-base">
                       {faq.answer}
                     </p>
-
                   </div>
-
                 </div>
               )}
-
             </div>
           );
         })}
-
       </div>
-
     </section>
   );
 }
