@@ -1,80 +1,244 @@
 "use client";
+
 import { useState } from "react";
-import type { Unit, MixRatio } from "../utils/calculateConcrete";
+import type { MixRatio, Unit } from "../types";
 
 type CalculatorFormProps = {
   length: string;
   width: string;
   depth: string;
   quantity: string;
-
   cementPrice: string;
   sandPrice: string;
   aggregatePrice: string;
-
   cementUnit: string;
   sandUnit: string;
   aggregateUnit: string;
-
   sandDensity: string;
   aggregateDensity: string;
-
   currency: string;
   setCurrency: (value: string) => void;
-
   lengthUnit: Unit;
   widthUnit: Unit;
   depthUnit: Unit;
-
   setLengthUnit: (value: Unit) => void;
   setWidthUnit: (value: Unit) => void;
   setDepthUnit: (value: Unit) => void;
-
   setCementUnit: (value: string) => void;
   setSandUnit: (value: string) => void;
   setAggregateUnit: (value: string) => void;
-
   setSandDensity: (value: string) => void;
   setAggregateDensity: (value: string) => void;
-
   error: string;
-
   setLength: (value: string) => void;
   setWidth: (value: string) => void;
   setDepth: (value: string) => void;
   setQuantity: (value: string) => void;
-
   setCementPrice: (value: string) => void;
   setSandPrice: (value: string) => void;
   setAggregatePrice: (value: string) => void;
-
   onCalculate: (mixRatio: MixRatio) => void;
 };
 
-const units: { value: Unit; label: string }[] = [
-  { value: "Feet", label: "ft" },
-  { value: "Inch", label: "in" },
-  { value: "Meter", label: "m" },
-  { value: "Centimeter", label: "cm" },
-  { value: "Millimeter", label: "mm" },
-];
+type ProjectType = "Slab" | "Wall" | "Footing" | "Column";
 
-const CURRENCY_SYMBOLS: Record<string, string> = {
-  USD: "$",
-  INR: "₹",
-  EUR: "€",
-  GBP: "£",
-  AED: "AED",
-  AUD: "A$",
-  CAD: "C$",
-};
-
-const PROJECT_TYPES = [
-  { value: "Slab", label: "Slab / Floor" },
-  { value: "Wall", label: "Wall" },
-  { value: "Footer", label: "Footing / Footer" },
-  { value: "Column", label: "Rectangular Column" },
+const MIX_RATIOS = [
+  { label: "M10 (1:3:6)", value: "M10" },
+  { label: "M15 (1:2:4)", value: "M15" },
+  { label: "M20 (1:1.5:3)", value: "M20" },
+  { label: "M25 (1:1:2)", value: "M25" },
+  { label: "Custom", value: "Custom" },
 ] as const;
+
+function DimensionDiagram({
+  project,
+  length,
+  width,
+  depth,
+  lengthUnit,
+  widthUnit,
+  depthUnit,
+}: {
+  project: ProjectType;
+  length: string;
+  width: string;
+  depth: string;
+  lengthUnit: string;
+  widthUnit: string;
+  depthUnit: string;
+}) {
+  const labels = {
+    Slab: ["Length", "Width", "Thickness"],
+    Wall: ["Length", "Thickness", "Height"],
+    Footing: ["Length", "Width", "Depth"],
+    Column: ["Length", "Width", "Height"],
+  }[project];
+
+  const values =
+    project === "Wall"
+      ? [
+          `${length || "—"} ${lengthUnit}`,
+          `${width || "—"} ${widthUnit}`,
+          `${depth || "—"} ${depthUnit}`,
+        ]
+      : [
+          `${length || "—"} ${lengthUnit}`,
+          `${width || "—"} ${widthUnit}`,
+          `${depth || "—"} ${depthUnit}`,
+        ];
+
+  return (
+    <div className="rounded-2xl border border-blue-100 bg-gradient-to-br from-blue-50 to-white p-3 sm:p-4">
+      <div className="mb-2 flex items-center justify-between gap-2">
+        <h3 className="text-sm font-bold text-slate-900">
+          {project} Dimensions
+        </h3>
+        <span className="rounded-full bg-blue-100 px-2 py-1 text-[10px] font-semibold text-blue-700">
+          LIVE PREVIEW
+        </span>
+      </div>
+
+      <svg
+        viewBox="0 0 340 170"
+        role="img"
+        aria-label={`${project} concrete dimension diagram`}
+        className="h-auto w-full"
+      >
+        <defs>
+          <linearGradient id="concreteTop" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="#dbeafe" />
+            <stop offset="100%" stopColor="#93c5fd" />
+          </linearGradient>
+          <linearGradient id="concreteFront" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#60a5fa" />
+            <stop offset="100%" stopColor="#2563eb" />
+          </linearGradient>
+          <marker
+            id="dimensionArrow"
+            markerWidth="6"
+            markerHeight="6"
+            refX="3"
+            refY="3"
+            orient="auto-start-reverse"
+          >
+            <path d="M0,0 L6,3 L0,6 Z" fill="#1d4ed8" />
+          </marker>
+        </defs>
+
+        {/* Concrete block */}
+        <polygon
+          points="65,62 190,32 275,65 150,97"
+          fill="url(#concreteTop)"
+          stroke="#2563eb"
+          strokeWidth="1.5"
+        />
+        <polygon
+          points="65,62 150,97 150,132 65,96"
+          fill="#93c5fd"
+          stroke="#2563eb"
+          strokeWidth="1.5"
+        />
+        <polygon
+          points="150,97 275,65 275,100 150,132"
+          fill="url(#concreteFront)"
+          stroke="#2563eb"
+          strokeWidth="1.5"
+        />
+
+        {/* Length dimension */}
+        <line
+          x1="65"
+          y1="47"
+          x2="190"
+          y2="17"
+          stroke="#1d4ed8"
+          strokeWidth="1.4"
+          markerStart="url(#dimensionArrow)"
+          markerEnd="url(#dimensionArrow)"
+        />
+        <text
+          x="125"
+          y="17"
+          textAnchor="middle"
+          fontSize="10"
+          fontWeight="700"
+          fill="#1d4ed8"
+        >
+          {labels[0]}
+        </text>
+
+        {/* Width dimension */}
+        <line
+          x1="202"
+          y1="28"
+          x2="287"
+          y2="61"
+          stroke="#1d4ed8"
+          strokeWidth="1.4"
+          markerStart="url(#dimensionArrow)"
+          markerEnd="url(#dimensionArrow)"
+        />
+        <text
+          x="260"
+          y="29"
+          textAnchor="middle"
+          fontSize="10"
+          fontWeight="700"
+          fill="#1d4ed8"
+        >
+          {labels[1]}
+        </text>
+
+        {/* Depth / thickness / height dimension */}
+        <line
+          x1="294"
+          y1="67"
+          x2="294"
+          y2="101"
+          stroke="#1d4ed8"
+          strokeWidth="1.4"
+          markerStart="url(#dimensionArrow)"
+          markerEnd="url(#dimensionArrow)"
+        />
+        <text
+          x="290"
+          y="116"
+          textAnchor="end"
+          fontSize="10"
+          fontWeight="700"
+          fill="#1d4ed8"
+        >
+          {labels[2]}
+        </text>
+
+        <text
+          x="170"
+          y="157"
+          textAnchor="middle"
+          fontSize="11"
+          fontWeight="700"
+          fill="#0f172a"
+        >
+          {values[0]} × {values[1]} × {values[2]}
+        </text>
+      </svg>
+
+      <div className="grid grid-cols-3 gap-2">
+        {labels.map((label, index) => (
+          <div
+            key={label}
+            className="min-w-0 rounded-lg border border-slate-200 bg-white px-2 py-2 text-center"
+          >
+            <p className="truncate text-[10px] text-slate-500">{label}</p>
+            <p className="truncate text-xs font-bold text-slate-900">
+              {values[index]}
+            </p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 export default function CalculatorForm({
   length,
@@ -112,47 +276,30 @@ export default function CalculatorForm({
   setAggregatePrice,
   onCalculate,
 }: CalculatorFormProps) {
-  const [concreteForm, setConcreteForm] = useState("Slab");
-  const [mixRatioType, setMixRatioType] = useState("M20");
+  const [project, setProject] = useState<ProjectType>("Slab");
+  const [mix, setMix] = useState<string>("M20");
   const [customCement, setCustomCement] = useState("1");
   const [customSand, setCustomSand] = useState("1.5");
   const [customAggregate, setCustomAggregate] = useState("3");
   const [showMaterials, setShowMaterials] = useState(false);
 
-  const currencySymbol = CURRENCY_SYMBOLS[currency] || "$";
+  const getMixRatio = () =>
+    ({
+      type: mix,
+      cement: Number(customCement),
+      sand: Number(customSand),
+      aggregate: Number(customAggregate),
+    }) as MixRatio;
+
+  const unitOptions = [
+    { label: "ft", value: "Feet" },
+    { label: "in", value: "Inch" },
+    { label: "m", value: "Meters" },
+    { label: "cm", value: "Centimeters" },
+  ];
 
   const inputClass =
-    "h-10 w-full min-w-0 rounded-md border border-slate-300 bg-white px-2 text-sm text-slate-900 outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-100";
-
-  const labelClass =
-    "mb-1 block text-xs font-semibold text-slate-700";
-
-  const unitSelectClass =
-    "h-10 w-[54px] shrink-0 border-l border-slate-200 bg-slate-50 px-1 text-xs font-semibold text-blue-700 outline-none";
-
-  const priceInputClass =
-    "h-10 min-w-0 flex-1 bg-white px-2 text-sm text-slate-900 outline-none focus:bg-blue-50/30";
-
-  const getMixRatio = (): MixRatio => {
-    switch (mixRatioType) {
-      case "M10":
-        return { cement: 1, sand: 3, aggregate: 6 };
-      case "M15":
-        return { cement: 1, sand: 2, aggregate: 4 };
-      case "M20":
-        return { cement: 1, sand: 1.5, aggregate: 3 };
-      case "M25":
-        return { cement: 1, sand: 1, aggregate: 2 };
-      case "Custom":
-        return {
-          cement: Number(customCement),
-          sand: Number(customSand),
-          aggregate: Number(customAggregate),
-        };
-      default:
-        return { cement: 1, sand: 1.5, aggregate: 3 };
-    }
-  };
+    "h-10 w-full min-w-0 rounded-lg border border-slate-300 bg-white px-2 text-sm text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100";
 
   const renderDimension = (
     label: string,
@@ -160,411 +307,316 @@ export default function CalculatorForm({
     setValue: (value: string) => void,
     unit: Unit,
     setUnit: (value: Unit) => void,
-    hint: string
   ) => (
     <div className="min-w-0">
-      <label className={labelClass}>{label}</label>
-
-      <div className="flex min-w-0 overflow-hidden rounded-md border border-slate-300 bg-white focus-within:border-blue-600 focus-within:ring-2 focus-within:ring-blue-100">
-        <input
-          type="number"
-          min="0"
-          step="any"
-          inputMode="decimal"
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          placeholder="0"
-          className="h-10 min-w-0 w-full flex-1 bg-transparent px-2 text-sm font-semibold text-slate-900 outline-none placeholder:text-slate-400"
-          aria-label={label}
-        />
-
-        <select
-          value={unit}
-          onChange={(e) => setUnit(e.target.value as Unit)}
-          className={unitSelectClass}
-          aria-label={`${label} unit`}
-        >
-          {units.map((item) => (
-            <option key={item.value} value={item.value}>
-              {item.label}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <p className="mt-1 truncate text-[10px] leading-4 text-slate-500">
-        {hint}
-      </p>
-    </div>
-  );
-
-  const renderPriceInput = (
-    label: string,
-    price: string,
-    setPrice: (value: string) => void,
-    unit: string,
-    setUnit: (value: string) => void,
-    options: { value: string; label: string }[]
-  ) => (
-    <div className="min-w-0">
-      <label className={labelClass}>{label}</label>
-
-      <div className="flex min-w-0 overflow-hidden rounded-md border border-slate-300 bg-white focus-within:border-blue-600 focus-within:ring-2 focus-within:ring-blue-100">
-        <span className="flex h-10 shrink-0 items-center border-r border-slate-200 bg-slate-50 px-2 text-xs font-semibold text-slate-600">
-          {currencySymbol}
-        </span>
-
-        <input
-          type="number"
-          min="0"
-          step="any"
-          inputMode="decimal"
-          value={price}
-          onChange={(e) => setPrice(e.target.value)}
-          placeholder="0.00"
-          className={priceInputClass}
-          aria-label={`${label} amount`}
-        />
-
-        <select
-          value={unit}
-          onChange={(e) => setUnit(e.target.value)}
-          className="h-10 max-w-[92px] shrink-0 border-l border-slate-200 bg-slate-50 px-1 text-[11px] text-slate-700 outline-none"
-          aria-label={`${label} unit`}
-        >
-          {options.map((item) => (
-            <option key={item.value} value={item.value}>
-              / {item.label}
-            </option>
-          ))}
-        </select>
-      </div>
+      <label className="mb-1 block truncate text-xs font-semibold text-slate-700">
+        {label}
+      </label>
+      <input
+        type="number"
+        min="0"
+        step="any"
+        value={value}
+        onChange={(event) => setValue(event.target.value)}
+        className={inputClass}
+        placeholder="0"
+      />
+      <select
+        value={unit}
+        onChange={(event) => setUnit(event.target.value as Unit)}
+        className="mt-1 h-8 w-full rounded-lg border border-slate-300 bg-white px-1 text-xs text-slate-700"
+        aria-label={`${label} unit`}
+      >
+        {unitOptions.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
     </div>
   );
 
   return (
-    <section className="w-full min-w-0 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-      <div className="border-b border-slate-200 bg-white px-3 py-3 sm:px-4">
-        <h2 className="text-lg font-extrabold tracking-tight text-black">
+    <section className="w-full min-w-0 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm sm:p-5">
+      <div className="mb-4">
+        <h2 className="text-xl font-extrabold tracking-tight text-slate-950">
           Concrete Calculator
         </h2>
-        <p className="mt-1 text-xs text-slate-600">
-          Calculate concrete volume for your project.
+        <p className="mt-1 text-sm text-slate-500">
+          Enter your dimensions to estimate concrete materials.
         </p>
       </div>
 
-      <div className="space-y-4 p-3 sm:p-4">
-        <div>
-          <label className={labelClass}>Project type</label>
-          <select
-            value={concreteForm}
-            onChange={(e) => setConcreteForm(e.target.value)}
-            className={inputClass}
-            aria-label="Concrete project type"
-          >
-            {PROJECT_TYPES.map((type) => (
-              <option key={type.value} value={type.value}>
-                {type.label}
-              </option>
-            ))}
-          </select>
-          <p className="mt-1 text-[10px] text-slate-500">
-            Use rectangular dimensions for this volume estimate.
-          </p>
+      <div className="mb-4">
+        <label className="mb-2 block text-sm font-semibold text-slate-800">
+          Project Type
+        </label>
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+          {(["Slab", "Wall", "Footing", "Column"] as ProjectType[]).map(
+            (item) => (
+              <button
+                type="button"
+                key={item}
+                onClick={() => setProject(item)}
+                className={`rounded-lg border px-2 py-2.5 text-sm font-semibold transition ${
+                  project === item
+                    ? "border-blue-600 bg-blue-600 text-white"
+                    : "border-slate-200 bg-white text-slate-700 hover:border-blue-300"
+                }`}
+              >
+                {item}
+              </button>
+            ),
+          )}
         </div>
-
-        <div>
-          <div className="mb-2 flex items-center justify-between gap-2">
-            <h3 className="text-sm font-bold text-black">
-              Enter dimensions
-            </h3>
-            <span className="rounded-full bg-blue-50 px-2 py-1 text-[10px] font-bold text-blue-700">
-              Step 1
-            </span>
-          </div>
-
-          {/* Three compact dimension inputs stay in one row on mobile. */}
-          <div className="grid grid-cols-3 gap-2">
-            {renderDimension(
-              "Length",
-              length,
-              setLength,
-              lengthUnit,
-              setLengthUnit,
-              "End-to-end"
-            )}
-
-            {renderDimension(
-              "Width",
-              width,
-              setWidth,
-              widthUnit,
-              setWidthUnit,
-              "Side-to-side"
-            )}
-
-            {renderDimension(
-              concreteForm === "Wall" || concreteForm === "Column"
-                ? "Height"
-                : concreteForm === "Footer"
-                  ? "Depth"
-                  : "Thickness",
-              depth,
-              setDepth,
-              depthUnit,
-              setDepthUnit,
-              concreteForm === "Slab"
-                ? "Slab thickness"
-                : concreteForm === "Wall"
-                  ? "Wall height"
-                  : concreteForm === "Column"
-                    ? "Column height"
-                    : "Footing depth"
-            )}
-          </div>
-        </div>
-
-        <div className="max-w-[220px]">
-          <label className={labelClass}>Quantity</label>
-          <div className="flex h-10 overflow-hidden rounded-md border border-slate-300 bg-white">
-            <button
-              type="button"
-              onClick={() => {
-                const current = Number(quantity) || 1;
-                setQuantity(String(Math.max(1, current - 1)));
-              }}
-              className="w-10 shrink-0 border-r border-slate-200 text-lg font-semibold text-slate-700 hover:bg-slate-100"
-              aria-label="Decrease quantity"
-            >
-              −
-            </button>
-
-            <input
-              type="number"
-              min="1"
-              step="1"
-              inputMode="numeric"
-              value={quantity}
-              onChange={(e) => setQuantity(e.target.value)}
-              className="min-w-0 flex-1 text-center text-sm font-bold text-slate-900 outline-none"
-              aria-label="Quantity"
-            />
-
-            <button
-              type="button"
-              onClick={() => {
-                const current = Number(quantity) || 1;
-                setQuantity(String(current + 1));
-              }}
-              className="w-10 shrink-0 border-l border-slate-200 text-lg font-semibold text-slate-700 hover:bg-slate-100"
-              aria-label="Increase quantity"
-            >
-              +
-            </button>
-          </div>
-          <p className="mt-1 text-[10px] text-slate-500">
-            Number of identical sections
-          </p>
-        </div>
-
-        <div className="flex gap-2 rounded-md border border-blue-100 bg-blue-50 px-3 py-2 text-xs text-blue-900">
-          <span className="font-bold">ƒx</span>
-          <p>
-            <span className="font-bold">Volume formula:</span>{" "}
-            Length × Width × Thickness / Height × Quantity
-          </p>
-        </div>
-
-        {error && (
-          <div
-            role="alert"
-            className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-xs font-medium text-red-700"
-          >
-            {error}
-          </div>
-        )}
-
-        <button
-          type="button"
-          onClick={() => onCalculate(getMixRatio())}
-          className="flex h-11 w-full items-center justify-center rounded-md bg-blue-700 px-4 text-sm font-bold text-white transition hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-200 active:scale-[0.99]"
-        >
-          Calculate Concrete
-        </button>
       </div>
 
-      <div className="border-t border-slate-200">
+      <DimensionDiagram
+        project={project}
+        length={length}
+        width={width}
+        depth={depth}
+        lengthUnit={String(lengthUnit)}
+        widthUnit={String(widthUnit)}
+        depthUnit={String(depthUnit)}
+      />
+
+      <div className="mt-4 grid grid-cols-3 gap-2">
+        {renderDimension("Length", length, setLength, lengthUnit, setLengthUnit)}
+        {renderDimension(
+          project === "Wall" ? "Thickness" : "Width",
+          width,
+          setWidth,
+          widthUnit,
+          setWidthUnit,
+        )}
+        {renderDimension(
+          project === "Slab"
+            ? "Thickness"
+            : project === "Footing"
+              ? "Depth"
+              : "Height",
+          depth,
+          setDepth,
+          depthUnit,
+          setDepthUnit,
+        )}
+      </div>
+
+      <div className="mt-4">
+        <label className="mb-1 block text-xs font-semibold text-slate-700">
+          Quantity
+        </label>
+        <input
+          type="number"
+          min="1"
+          step="1"
+          value={quantity}
+          onChange={(event) => setQuantity(event.target.value)}
+          className={inputClass}
+          placeholder="1"
+        />
+      </div>
+
+      <div className="mt-4">
+        <label className="mb-1 block text-xs font-semibold text-slate-700">
+          Concrete Mix Ratio
+        </label>
+        <select
+          value={mix}
+          onChange={(event) => setMix(event.target.value)}
+          className={inputClass}
+        >
+          {MIX_RATIOS.map((ratio) => (
+            <option key={ratio.value} value={ratio.value}>
+              {ratio.label}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {mix === "Custom" && (
+        <div className="mt-3 grid grid-cols-3 gap-2">
+          {[
+            ["Cement", customCement, setCustomCement],
+            ["Sand", customSand, setCustomSand],
+            ["Aggregate", customAggregate, setCustomAggregate],
+          ].map(([label, value, setter]) => (
+            <div key={label as string}>
+              <label className="mb-1 block text-xs font-semibold text-slate-700">
+                {label as string}
+              </label>
+              <input
+                type="number"
+                min="0"
+                step="any"
+                value={value as string}
+                onChange={(event) =>
+                  (setter as (value: string) => void)(event.target.value)
+                }
+                className={inputClass}
+              />
+            </div>
+          ))}
+        </div>
+      )}
+
+      <div className="mt-4">
         <button
           type="button"
-          onClick={() => setShowMaterials(!showMaterials)}
-          className="flex w-full items-center justify-between gap-3 px-3 py-3 text-left hover:bg-slate-50 sm:px-4"
+          onClick={() => setShowMaterials((current) => !current)}
+          className="flex w-full items-center justify-between rounded-xl border border-slate-200 bg-slate-50 px-3 py-3 text-sm font-bold text-slate-800"
           aria-expanded={showMaterials}
         >
-          <span>
-            <span className="block text-sm font-bold text-black">
-              Material Estimate
-            </span>
-            <span className="mt-1 block text-xs text-slate-600">
-              Mix ratio, prices and density
-            </span>
-          </span>
-
-          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-slate-300 text-base text-slate-700">
-            {showMaterials ? "−" : "+"}
-          </span>
+          <span>Material Estimate & Prices</span>
+          <span>{showMaterials ? "−" : "+"}</span>
         </button>
 
         {showMaterials && (
-          <div className="space-y-3 border-t border-slate-200 bg-slate-50 p-3 sm:p-4">
+          <div className="mt-3 space-y-3 rounded-xl border border-slate-200 p-3">
             <div>
-              <label className={labelClass}>Concrete grade / mix</label>
-              <select
-                value={mixRatioType}
-                onChange={(e) => setMixRatioType(e.target.value)}
-                className={inputClass}
-              >
-                <option value="M10">M10 — 1 : 3 : 6</option>
-                <option value="M15">M15 — 1 : 2 : 4</option>
-                <option value="M20">M20 — 1 : 1.5 : 3</option>
-                <option value="M25">M25 — 1 : 1 : 2</option>
-                <option value="Custom">Custom mix</option>
-              </select>
-            </div>
-
-            {mixRatioType === "Custom" && (
-              <div className="grid grid-cols-3 gap-2">
-                {[
-                  {
-                    label: "Cement ratio",
-                    value: customCement,
-                    setValue: setCustomCement,
-                  },
-                  {
-                    label: "Sand ratio",
-                    value: customSand,
-                    setValue: setCustomSand,
-                  },
-                  {
-                    label: "Aggregate ratio",
-                    value: customAggregate,
-                    setValue: setCustomAggregate,
-                  },
-                ].map((item) => (
-                  <div key={item.label} className="min-w-0">
-                    <label className={labelClass}>{item.label}</label>
-                    <input
-                      type="number"
-                      min="0"
-                      step="any"
-                      value={item.value}
-                      onChange={(e) => item.setValue(e.target.value)}
-                      className={inputClass}
-                    />
-                  </div>
-                ))}
-              </div>
-            )}
-
-            <div>
-              <label className={labelClass}>Currency</label>
+              <label className="mb-1 block text-xs font-semibold text-slate-700">
+                Currency
+              </label>
               <select
                 value={currency}
-                onChange={(e) => setCurrency(e.target.value)}
+                onChange={(event) => setCurrency(event.target.value)}
                 className={inputClass}
               >
-                <option value="USD">US Dollar ($)</option>
-                <option value="INR">Indian Rupee (₹)</option>
-                <option value="EUR">Euro (€)</option>
-                <option value="GBP">British Pound (£)</option>
-                <option value="AED">UAE Dirham (AED)</option>
-                <option value="AUD">Australian Dollar (A$)</option>
-                <option value="CAD">Canadian Dollar (C$)</option>
+                <option value="USD">USD ($)</option>
+                <option value="INR">INR (₹)</option>
+                <option value="GBP">GBP (£)</option>
+                <option value="EUR">EUR (€)</option>
+                <option value="CAD">CAD ($)</option>
+                <option value="AUD">AUD ($)</option>
               </select>
             </div>
 
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-              {renderPriceInput(
-                "Cement price",
-                cementPrice,
-                setCementPrice,
-                cementUnit,
-                setCementUnit,
-                [
-                  { value: "Bag", label: "Bag" },
-                  { value: "kg", label: "kg" },
-                  { value: "tonne", label: "tonne" },
-                  { value: "US ton", label: "US ton" },
-                ]
-              )}
-
-              {renderPriceInput(
-                "Sand price",
-                sandPrice,
-                setSandPrice,
-                sandUnit,
-                setSandUnit,
-                [
-                  { value: "m³", label: "m³" },
-                  { value: "yd³", label: "yd³" },
-                  { value: "tonne", label: "tonne" },
-                  { value: "US ton", label: "US ton" },
-                ]
-              )}
-
-              <div className="min-w-0">
-                <label className={labelClass}>Sand density</label>
-                <select
-                  value={sandDensity}
-                  onChange={(e) => setSandDensity(e.target.value)}
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="mb-1 block text-xs font-semibold text-slate-700">
+                  Cement Price
+                </label>
+                <input
+                  type="number"
+                  min="0"
+                  step="any"
+                  value={cementPrice}
+                  onChange={(event) => setCementPrice(event.target.value)}
                   className={inputClass}
+                />
+                <select
+                  value={cementUnit}
+                  onChange={(event) => setCementUnit(event.target.value)}
+                  className="mt-1 h-8 w-full rounded-lg border border-slate-300 bg-white px-2 text-xs"
                 >
-                  <option value="1600">1600 kg/m³</option>
-                  <option value="1650">1650 kg/m³</option>
-                  <option value="1700">1700 kg/m³</option>
-                  <option value="1750">1750 kg/m³</option>
-                  <option value="1800">1800 kg/m³</option>
+                  <option value="bag">Per bag</option>
+                  <option value="ton">Per ton</option>
+                  <option value="kg">Per kg</option>
                 </select>
               </div>
 
-              {renderPriceInput(
-                "Aggregate price",
-                aggregatePrice,
-                setAggregatePrice,
-                aggregateUnit,
-                setAggregateUnit,
-                [
-                  { value: "m³", label: "m³" },
-                  { value: "yd³", label: "yd³" },
-                  { value: "tonne", label: "tonne" },
-                  { value: "US ton", label: "US ton" },
-                ]
-              )}
-
-              <div className="min-w-0">
-                <label className={labelClass}>Aggregate density</label>
-                <select
-                  value={aggregateDensity}
-                  onChange={(e) => setAggregateDensity(e.target.value)}
+              <div>
+                <label className="mb-1 block text-xs font-semibold text-slate-700">
+                  Sand Price
+                </label>
+                <input
+                  type="number"
+                  min="0"
+                  step="any"
+                  value={sandPrice}
+                  onChange={(event) => setSandPrice(event.target.value)}
                   className={inputClass}
+                />
+                <select
+                  value={sandUnit}
+                  onChange={(event) => setSandUnit(event.target.value)}
+                  className="mt-1 h-8 w-full rounded-lg border border-slate-300 bg-white px-2 text-xs"
                 >
-                  <option value="1400">1400 kg/m³</option>
-                  <option value="1450">1450 kg/m³</option>
-                  <option value="1500">1500 kg/m³</option>
-                  <option value="1550">1550 kg/m³</option>
-                  <option value="1600">1600 kg/m³</option>
-                  <option value="1650">1650 kg/m³</option>
+                  <option value="m3">Per m³</option>
+                  <option value="ft3">Per ft³</option>
+                  <option value="ton">Per ton</option>
+                  <option value="yard">Per yd³</option>
                 </select>
+              </div>
+
+              <div>
+                <label className="mb-1 block text-xs font-semibold text-slate-700">
+                  Aggregate Price
+                </label>
+                <input
+                  type="number"
+                  min="0"
+                  step="any"
+                  value={aggregatePrice}
+                  onChange={(event) => setAggregatePrice(event.target.value)}
+                  className={inputClass}
+                />
+                <select
+                  value={aggregateUnit}
+                  onChange={(event) => setAggregateUnit(event.target.value)}
+                  className="mt-1 h-8 w-full rounded-lg border border-slate-300 bg-white px-2 text-xs"
+                >
+                  <option value="m3">Per m³</option>
+                  <option value="ft3">Per ft³</option>
+                  <option value="ton">Per ton</option>
+                  <option value="yard">Per yd³</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="mb-1 block text-xs font-semibold text-slate-700">
+                  Sand Density (kg/m³)
+                </label>
+                <input
+                  type="number"
+                  min="0"
+                  step="any"
+                  value={sandDensity}
+                  onChange={(event) => setSandDensity(event.target.value)}
+                  className={inputClass}
+                />
+              </div>
+
+              <div>
+                <label className="mb-1 block text-xs font-semibold text-slate-700">
+                  Aggregate Density (kg/m³)
+                </label>
+                <input
+                  type="number"
+                  min="0"
+                  step="any"
+                  value={aggregateDensity}
+                  onChange={(event) => setAggregateDensity(event.target.value)}
+                  className={inputClass}
+                />
               </div>
             </div>
-
-            <p className="text-[10px] leading-4 text-slate-600">
-              Material quantities are estimates based on the selected mix ratio.
-              Actual requirements and costs vary by material, supplier and project.
-              For structural concrete, follow a project-specific mix design.
-            </p>
           </div>
         )}
       </div>
+
+      {error && (
+        <p
+          role="alert"
+          className="mt-3 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700"
+        >
+          {error}
+        </p>
+      )}
+
+      <button
+        type="button"
+        onClick={() => onCalculate(getMixRatio())}
+        className="mt-5 h-12 w-full rounded-xl bg-blue-600 px-4 text-sm font-bold text-white shadow-sm transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-offset-2"
+      >
+        Calculate Concrete
+      </button>
+
+      <p className="mt-3 text-center text-xs text-slate-500">
+        Estimates are approximate. Actual material needs may vary by site
+        conditions and mix design.
+      </p>
     </section>
   );
 }
