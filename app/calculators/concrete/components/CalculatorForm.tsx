@@ -9,47 +9,35 @@ type CalculatorFormProps = {
   width: string;
   depth: string;
   quantity: string;
-
   cementPrice: string;
   sandPrice: string;
   aggregatePrice: string;
-
   cementUnit: string;
   sandUnit: string;
   aggregateUnit: string;
-
   sandDensity: string;
   aggregateDensity: string;
-
   currency: string;
   setCurrency: (value: string) => void;
-
   lengthUnit: Unit;
   widthUnit: Unit;
   depthUnit: Unit;
-
   setLengthUnit: (value: Unit) => void;
   setWidthUnit: (value: Unit) => void;
   setDepthUnit: (value: Unit) => void;
-
   setCementUnit: (value: string) => void;
   setSandUnit: (value: string) => void;
   setAggregateUnit: (value: string) => void;
-
   setSandDensity: (value: string) => void;
   setAggregateDensity: (value: string) => void;
-
   error: string;
-
   setLength: (value: string) => void;
   setWidth: (value: string) => void;
   setDepth: (value: string) => void;
   setQuantity: (value: string) => void;
-
   setCementPrice: (value: string) => void;
   setSandPrice: (value: string) => void;
   setAggregatePrice: (value: string) => void;
-
   onCalculate: (mixRatio: MixRatio) => void;
 };
 
@@ -77,6 +65,15 @@ const PROJECT_TYPES = [
   { value: "Footer", label: "Footing / Footer" },
   { value: "Column", label: "Rectangular Column" },
 ] as const;
+
+const inputClass =
+  "h-11 w-full min-w-0 rounded-xl border border-slate-200 bg-white px-3 text-base text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-100";
+
+const labelClass =
+  "mb-1.5 block text-sm font-semibold text-slate-700";
+
+const unitSelectClass =
+  "h-11 w-[72px] shrink-0 border-l border-slate-200 bg-slate-50 px-2 text-sm font-semibold text-blue-700 outline-none focus:bg-blue-50";
 
 export default function CalculatorForm({
   length,
@@ -123,18 +120,6 @@ export default function CalculatorForm({
 
   const currencySymbol = CURRENCY_SYMBOLS[currency] || "$";
 
-  const inputClass =
-    "h-11 w-full rounded-lg border border-slate-300 bg-white px-3 text-base text-slate-900 outline-none transition focus:border-blue-600 focus:ring-2 focus:ring-blue-100";
-
-  const labelClass =
-    "mb-1.5 block text-sm font-semibold text-slate-700";
-
-  const unitSelectClass =
-    "h-11 w-[76px] shrink-0 border-l border-slate-200 bg-slate-50 px-2 text-sm font-semibold text-blue-700 outline-none";
-
-  const priceInputClass =
-    "h-11 min-w-0 flex-1 bg-white px-3 text-base text-slate-900 outline-none focus:bg-blue-50/30";
-
   const getMixRatio = (): MixRatio => {
     switch (mixRatioType) {
       case "M10":
@@ -156,10 +141,6 @@ export default function CalculatorForm({
     }
   };
 
-  const handleCalculate = () => {
-    onCalculate(getMixRatio());
-  };
-
   const renderDimension = (
     label: string,
     value: string,
@@ -168,9 +149,9 @@ export default function CalculatorForm({
     setUnit: (value: Unit) => void,
     hint: string
   ) => (
-    <div>
+    <div className="min-w-0">
       <label className={labelClass}>{label}</label>
-      <div className="flex overflow-hidden rounded-lg border border-slate-300 bg-white transition focus-within:border-blue-600 focus-within:ring-2 focus-within:ring-blue-100">
+      <div className="flex min-w-0 overflow-hidden rounded-xl border border-slate-200 bg-white transition focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-100">
         <input
           type="number"
           min="0"
@@ -179,7 +160,7 @@ export default function CalculatorForm({
           value={value}
           onChange={(e) => setValue(e.target.value)}
           placeholder="0"
-          className="h-11 min-w-0 flex-1 bg-transparent px-3 text-base font-medium text-slate-900 outline-none placeholder:text-slate-400"
+          className="h-11 min-w-0 flex-1 bg-transparent px-3 text-base font-semibold text-slate-900 outline-none placeholder:text-slate-400"
           aria-label={label}
         />
         <select
@@ -195,7 +176,7 @@ export default function CalculatorForm({
           ))}
         </select>
       </div>
-      <p className="mt-1 text-xs text-slate-500">{hint}</p>
+      <p className="mt-1.5 text-xs leading-4 text-slate-500">{hint}</p>
     </div>
   );
 
@@ -207,10 +188,10 @@ export default function CalculatorForm({
     setUnit: (value: string) => void,
     options: { value: string; label: string }[]
   ) => (
-    <div>
+    <div className="min-w-0">
       <label className={labelClass}>{label}</label>
-      <div className="flex overflow-hidden rounded-lg border border-slate-300 bg-white focus-within:border-blue-600 focus-within:ring-2 focus-within:ring-blue-100">
-        <span className="flex h-11 shrink-0 items-center border-r border-slate-200 bg-slate-50 px-3 text-sm font-semibold text-slate-600">
+      <div className="flex min-w-0 overflow-hidden rounded-xl border border-slate-200 bg-white transition focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-100">
+        <span className="flex h-11 shrink-0 items-center border-r border-slate-100 bg-slate-50 px-3 text-sm font-semibold text-slate-600">
           {currencySymbol}
         </span>
         <input
@@ -221,13 +202,13 @@ export default function CalculatorForm({
           value={price}
           onChange={(e) => setPrice(e.target.value)}
           placeholder="0.00"
-          className={priceInputClass}
+          className="h-11 min-w-0 flex-1 bg-white px-3 text-base text-slate-900 outline-none"
           aria-label={`${label} amount`}
         />
         <select
           value={unit}
           onChange={(e) => setUnit(e.target.value)}
-          className="h-11 max-w-[110px] shrink-0 border-l border-slate-200 bg-slate-50 px-2 text-xs font-medium text-slate-700 outline-none"
+          className="h-11 max-w-[105px] shrink-0 border-l border-slate-200 bg-slate-50 px-2 text-xs font-semibold text-slate-700 outline-none"
           aria-label={`${label} unit`}
         >
           {options.map((item) => (
@@ -241,17 +222,34 @@ export default function CalculatorForm({
   );
 
   return (
-    <section className="w-full overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-      <div className="border-b border-slate-200 bg-slate-50 px-4 py-4 sm:px-6">
-        <h2 className="text-xl font-bold text-slate-900">
-          Concrete Calculator
-        </h2>
-        <p className="mt-1 text-sm text-slate-600">
-          Calculate concrete volume for your project.
-        </p>
-      </div>
+    <section className="w-full min-w-0 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm shadow-slate-200/60">
+      <header className="border-b border-slate-100 bg-gradient-to-r from-blue-50 to-white px-4 py-4 sm:px-6 sm:py-5">
+        <div className="flex items-start gap-3">
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-600 text-white shadow-sm shadow-blue-200">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              className="h-6 w-6"
+              aria-hidden="true"
+            >
+              <path d="M4 20V8l8-5 8 5v12H4Z" />
+              <path d="M8 20v-6h8v6M8 9h2m4 0h2m-8 3h2m4 0h2" />
+            </svg>
+          </div>
+          <div className="min-w-0">
+            <h2 className="text-lg font-bold tracking-tight text-slate-900 sm:text-xl">
+              Concrete Calculator
+            </h2>
+            <p className="mt-1 text-sm leading-5 text-slate-600">
+              Enter dimensions to estimate concrete and material quantities.
+            </p>
+          </div>
+        </div>
+      </header>
 
-      <div className="space-y-5 p-4 sm:p-6">
+      <div className="space-y-5 p-4 sm:space-y-6 sm:p-6">
         <div>
           <label className={labelClass}>Project type</label>
           <select
@@ -266,16 +264,22 @@ export default function CalculatorForm({
               </option>
             ))}
           </select>
-          <p className="mt-1 text-xs text-slate-500">
+          <p className="mt-1.5 text-xs text-slate-500">
             Use rectangular dimensions for this volume estimate.
           </p>
         </div>
 
         <div>
-          <h3 className="mb-3 text-base font-bold text-slate-900">
-            Enter dimensions
-          </h3>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div className="mb-3 flex items-center justify-between gap-2">
+            <h3 className="text-base font-bold text-slate-900">
+              Enter dimensions
+            </h3>
+            <span className="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-semibold text-blue-700">
+              Step 1
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 gap-x-4 gap-y-4 sm:grid-cols-2">
             {renderDimension(
               "Length",
               length,
@@ -313,16 +317,16 @@ export default function CalculatorForm({
                     : "Enter the footing depth"
             )}
 
-            <div>
+            <div className="min-w-0">
               <label className={labelClass}>Quantity</label>
-              <div className="flex h-11 overflow-hidden rounded-lg border border-slate-300 bg-white">
+              <div className="flex h-11 overflow-hidden rounded-xl border border-slate-200 bg-white focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-100">
                 <button
                   type="button"
                   onClick={() => {
                     const current = Number(quantity) || 1;
                     setQuantity(String(Math.max(1, current - 1)));
                   }}
-                  className="w-11 border-r border-slate-200 text-lg font-semibold text-slate-700 hover:bg-slate-100"
+                  className="w-11 shrink-0 border-r border-slate-200 text-xl font-medium text-slate-600 transition hover:bg-blue-50 hover:text-blue-700"
                   aria-label="Decrease quantity"
                 >
                   −
@@ -334,7 +338,7 @@ export default function CalculatorForm({
                   inputMode="numeric"
                   value={quantity}
                   onChange={(e) => setQuantity(e.target.value)}
-                  className="min-w-0 flex-1 text-center text-base font-semibold text-slate-900 outline-none"
+                  className="min-w-0 flex-1 text-center text-base font-bold text-slate-900 outline-none"
                   aria-label="Quantity"
                 />
                 <button
@@ -343,28 +347,37 @@ export default function CalculatorForm({
                     const current = Number(quantity) || 1;
                     setQuantity(String(current + 1));
                   }}
-                  className="w-11 border-l border-slate-200 text-lg font-semibold text-slate-700 hover:bg-slate-100"
+                  className="w-11 shrink-0 border-l border-slate-200 text-xl font-medium text-slate-600 transition hover:bg-blue-50 hover:text-blue-700"
                   aria-label="Increase quantity"
                 >
                   +
                 </button>
               </div>
-              <p className="mt-1 text-xs text-slate-500">
+              <p className="mt-1.5 text-xs leading-4 text-slate-500">
                 Number of identical sections
               </p>
             </div>
           </div>
         </div>
 
-        <div className="rounded-lg bg-blue-50 px-3 py-3 text-sm text-blue-900">
-          <span className="font-semibold">Formula:</span>{" "}
-          Length × Width × Thickness/Height × Quantity
+        <div className="flex items-start gap-3 rounded-xl border border-blue-100 bg-blue-50/80 p-3">
+          <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-white text-blue-700">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="h-4 w-4" aria-hidden="true">
+              <path d="M12 3v18M3 12h18" />
+            </svg>
+          </span>
+          <div>
+            <p className="text-sm font-semibold text-blue-900">Volume formula</p>
+            <p className="mt-0.5 text-sm leading-5 text-blue-800">
+              Length × Width × Thickness / Height × Quantity
+            </p>
+          </div>
         </div>
 
         {error && (
           <div
             role="alert"
-            className="rounded-lg border border-red-200 bg-red-50 px-3 py-3 text-sm font-medium text-red-700"
+            className="rounded-xl border border-red-200 bg-red-50 px-3 py-3 text-sm font-medium text-red-700"
           >
             {error}
           </div>
@@ -372,35 +385,49 @@ export default function CalculatorForm({
 
         <button
           type="button"
-          onClick={handleCalculate}
-          className="flex h-12 w-full items-center justify-center rounded-lg bg-blue-700 px-4 text-base font-bold text-white transition hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-200 active:scale-[0.99]"
+          onClick={() => onCalculate(getMixRatio())}
+          className="flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-3 text-base font-bold text-white shadow-sm shadow-blue-200 transition hover:bg-blue-700 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-200 active:scale-[0.99]"
         >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-5 w-5" aria-hidden="true">
+            <rect x="5" y="3" width="14" height="18" rx="2" />
+            <path d="M8 7h8M8 11h2m4 0h2m-8 4h2m4 0h2m-8 3h8" />
+          </svg>
           Calculate Concrete
         </button>
       </div>
 
-      <div className="border-t border-slate-200">
+      <div className="border-t border-slate-100">
         <button
           type="button"
           onClick={() => setShowMaterials(!showMaterials)}
-          className="flex w-full items-center justify-between gap-4 px-4 py-4 text-left hover:bg-slate-50 sm:px-6"
+          className="flex w-full items-center justify-between gap-3 px-4 py-4 text-left transition hover:bg-slate-50 sm:px-6"
           aria-expanded={showMaterials}
         >
-          <span>
-            <span className="block text-base font-bold text-slate-900">
-              Material Estimate
+          <span className="flex min-w-0 items-center gap-3">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-700">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="h-5 w-5" aria-hidden="true">
+                <path d="M4 7h16M6 12h12M8 17h8" />
+                <circle cx="6" cy="7" r="1.5" />
+                <circle cx="16" cy="12" r="1.5" />
+                <circle cx="10" cy="17" r="1.5" />
+              </svg>
             </span>
-            <span className="mt-1 block text-sm text-slate-600">
-              Mix ratio, material prices and density
+            <span className="min-w-0">
+              <span className="block text-sm font-bold text-slate-900 sm:text-base">
+                Material Estimate
+              </span>
+              <span className="mt-0.5 block text-xs leading-5 text-slate-500 sm:text-sm">
+                Mix ratio, material prices and density
+              </span>
             </span>
           </span>
-          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-300 text-lg text-slate-700">
+          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-blue-100 bg-white text-lg font-medium text-blue-700">
             {showMaterials ? "−" : "+"}
           </span>
         </button>
 
         {showMaterials && (
-          <div className="space-y-4 border-t border-slate-200 bg-slate-50 p-4 sm:p-6">
+          <div className="space-y-4 border-t border-slate-100 bg-slate-50/70 p-4 sm:p-6">
             <div>
               <label className={labelClass}>Concrete grade / mix</label>
               <select
@@ -417,7 +444,7 @@ export default function CalculatorForm({
             </div>
 
             {mixRatioType === "Custom" && (
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
                 <div>
                   <label className={labelClass}>Cement ratio</label>
                   <input
@@ -544,7 +571,7 @@ export default function CalculatorForm({
               </select>
             </div>
 
-            <p className="text-xs leading-5 text-slate-600">
+            <p className="rounded-xl border border-blue-100 bg-white p-3 text-xs leading-5 text-slate-600">
               Material quantities are estimates based on the selected mix ratio.
               Actual requirements and costs vary by material, supplier and project.
               For structural concrete, follow a project-specific mix design.
