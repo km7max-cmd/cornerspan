@@ -1,3 +1,4 @@
+
 type HistoryItem = {
   length: number;
   width: number;
@@ -10,25 +11,18 @@ type Props = {
   onClear: () => void;
 };
 
-export default function History({
-  history,
-  onClear,
-}: Props) {
+const M3_PER_YD3 = 0.764554857984;
+const FT3_PER_M3 = 35.3146667;
+
+export default function History({ history, onClear }: Props) {
   if (history.length === 0) {
     return null;
   }
 
   return (
     <section className="w-full overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
-
-      {/* =====================================================
-          HEADER
-      ===================================================== */}
-
       <div className="flex items-center justify-between gap-4 border-b border-slate-100 px-5 py-5 sm:px-7">
-
         <div>
-
           <p className="text-xs font-bold uppercase tracking-[0.16em] text-blue-600">
             Saved on this device
           </p>
@@ -38,9 +32,8 @@ export default function History({
           </h2>
 
           <p className="mt-1 text-sm text-slate-500">
-            Your latest concrete calculations.
+            Your latest concrete volume estimates.
           </p>
-
         </div>
 
         <button
@@ -50,64 +43,59 @@ export default function History({
         >
           Clear
         </button>
-
       </div>
 
-      {/* =====================================================
-          HISTORY LIST
-      ===================================================== */}
-
       <div className="p-5 sm:p-7">
-
         <div className="space-y-3">
+          {history.map((item, index) => {
+            const volume = Number.isFinite(item.volume)
+              ? Math.max(0, item.volume)
+              : 0;
 
-          {history.map((item, index) => (
-            <div
-              key={index}
-              className="flex items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4"
-            >
+            const volumeYd3 = volume / M3_PER_YD3;
+            const volumeFt3 = volume * FT3_PER_M3;
 
-              {/* Dimensions */}
+            return (
+              <div
+                key={`${item.length}-${item.width}-${item.depth}-${index}`}
+                className="flex items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4"
+              >
+                <div className="min-w-0">
+                  <p className="text-xs font-medium text-slate-500">
+                    Dimensions entered
+                  </p>
 
-              <div className="min-w-0">
+                  <p className="mt-1 truncate text-sm font-bold text-slate-900 sm:text-base">
+                    {item.length} × {item.width} × {item.depth}
+                  </p>
+                </div>
 
-                <p className="text-xs font-medium text-slate-500">
-                  Dimensions
-                </p>
+                <div className="shrink-0 text-right">
+                  <p className="text-xs font-medium text-slate-500">
+                    Concrete Volume
+                  </p>
 
-                <p className="mt-1 truncate text-sm font-bold text-slate-900 sm:text-base">
-                  {item.length} × {item.width} × {item.depth}
-                </p>
+                  <p className="mt-1 text-base font-black text-blue-600 sm:text-lg">
+                    {volumeYd3.toFixed(2)} yd³
+                  </p>
 
+                  <p className="text-xs text-slate-500">
+                    {volumeFt3.toFixed(2)} ft³
+                  </p>
+
+                  <p className="text-xs text-slate-500">
+                    {volume.toFixed(3)} m³
+                  </p>
+                </div>
               </div>
-
-              {/* Volume */}
-
-              <div className="shrink-0 text-right">
-
-                <p className="text-xs font-medium text-slate-500">
-                  Concrete
-                </p>
-
-                <p className="mt-1 text-base font-black text-blue-600 sm:text-lg">
-                  {item.volume.toFixed(2)} m³
-                </p>
-
-              </div>
-
-            </div>
-          ))}
-
+            );
+          })}
         </div>
-
-        {/* Note */}
 
         <p className="mt-4 text-xs leading-5 text-slate-400">
           Recent calculations are stored locally on this device.
         </p>
-
       </div>
-
     </section>
   );
 }
