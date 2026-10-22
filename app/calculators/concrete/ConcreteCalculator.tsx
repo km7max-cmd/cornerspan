@@ -492,14 +492,14 @@ Currency        : ${currency}`;
   return (
     <>
       <main className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-slate-100">
-        <div className="mx-auto max-w-7xl px-6 py-10">
+        <div className="mx-auto w-full max-w-[1600px] px-2 py-4 sm:px-4 sm:py-6 lg:px-8 lg:py-10">
           <CalculatorHero
             title="Concrete"
             highlight="Calculator"
             description="Calculate concrete volume, cement bags, sand, aggregate, water, and material cost."
           />
 
-          <div className="mt-6 grid gap-6 lg:grid-cols-2">
+          <div className="mt-4 grid w-full min-w-0 grid-cols-1 gap-5 lg:mt-6 lg:grid-cols-2 lg:gap-6">
             <CalculatorForm
               length={length}
               width={width}
