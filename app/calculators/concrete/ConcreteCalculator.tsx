@@ -1,8 +1,5 @@
-
 "use client";
-
 import { useEffect, useState } from "react";
-
 import CalculatorHero from "../../components/CalculatorHero";
 import CalculatorForm from "./components/CalculatorForm";
 import ResultCard from "./components/ResultCard";
@@ -90,6 +87,7 @@ const KG_PER_US_TON = 907.18474;
 const KG_PER_LB = 0.45359237;
 const M3_PER_YD3 = 0.764554857984;
 const FT3_PER_M3 = 35.3146667;
+const US_CEMENT_BAG_LB = 94;
 
 function toNumber(value: string): number {
   if (!value.trim()) return 0;
@@ -160,7 +158,6 @@ function calculateCementCost(
   switch (unit) {
     case "Bag":
     case "bag":
-      // US cement bag: 94 lb.
       return Math.ceil(cementBags) * price;
 
     case "lb":
@@ -319,7 +316,6 @@ export default function ConcreteCalculator() {
       if (!value.trim()) return false;
 
       const parsed = Number(value);
-
       return !Number.isFinite(parsed) || parsed < 0;
     });
 
@@ -377,14 +373,16 @@ export default function ConcreteCalculator() {
       const wasteVolume = output.wasteVolume * q;
       const cementVolume = output.cementVolume * q;
       const cementWeight = output.cementWeight * q;
+
+      // Calculate bags from total cement weight, then round once.
       const cementBags = Math.ceil(
-  (output.cementWeightLb * q) / 94
-);
+        (output.cementWeightLb * q) / US_CEMENT_BAG_LB
+      );
+
       const sand = output.sand * q;
       const aggregate = output.aggregate * q;
 
-      // The result card expects water in litres.
-      // One kg of mixing water is approximately one litre.
+      // One kilogram of water is approximately one litre.
       const water = output.water * q;
 
       const cementRate = toNumber(cementPrice);
@@ -431,7 +429,7 @@ export default function ConcreteCalculator() {
         wasteVolume: Number(wasteVolume.toFixed(3)),
         cementVolume: Number(cementVolume.toFixed(3)),
         cementWeight: Number(cementWeight.toFixed(1)),
-        cementBags: Math.ceil(cementBags),
+        cementBags,
         sand: Number(sand.toFixed(3)),
         aggregate: Number(aggregate.toFixed(3)),
         water: Number(water.toFixed(1)),
@@ -621,6 +619,7 @@ Currency: ${currency}`;
             description="Calculate concrete volume in cubic yards and cubic feet, estimate 94 lb cement bags, sand, aggregate, water, and material cost."
           />
 
+          {/* Calculator form and results */}
           <div className="mt-4 grid w-full min-w-0 grid-cols-1 gap-5 lg:mt-6 lg:grid-cols-2 lg:gap-6">
             <CalculatorForm
               length={length}
@@ -677,6 +676,11 @@ Currency: ${currency}`;
             />
           </div>
 
+          {/* Image, TOC and guide content directly below results */}
+          <div className="mt-6">
+            <AboutCalculator />
+          </div>
+
           <div className="mt-6">
             <Formula />
           </div>
@@ -687,10 +691,6 @@ Currency: ${currency}`;
 
           <div className="mt-6">
             <FAQ />
-          </div>
-
-          <div className="mt-6">
-            <AboutCalculator />
           </div>
 
           <History
