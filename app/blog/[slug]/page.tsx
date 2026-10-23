@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { blogPosts } from "../../../data/blog";
-
+import TrapezoidAreaArticle from "../../../components/blog/TrapezoidAreaArticle";
 import RetainingWallArticle from "../../../components/blog/RetainingWallArticle";
 type Props = {
   params: Promise<{ slug: string }>;
@@ -12,6 +12,7 @@ type Props = {
 const squareFootageSlug = "square-footage-calculation-guide";
 const concreteSlug = "concrete-calculation-guide";
 const retainingWallSlug = "how-many-bricks-10-foot-retaining-wall";
+const trapezoidSlug = "trapezoid-area-calculation";
 
 export function generateStaticParams() {
   return blogPosts.map((post) => ({
@@ -162,6 +163,9 @@ export default async function BlogPostPage({ params }: Props) {
   if (!post) {
     notFound();
   }
+  if (slug === trapezoidSlug) {
+  return <TrapezoidAreaArticle />;
+}
     if (slug === retainingWallSlug) {
     return <RetainingWallArticle />;
   }
