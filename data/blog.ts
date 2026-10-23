@@ -1,3 +1,4 @@
+
 export type BlogPost = {
   slug: string;
   title: string;
@@ -48,5 +49,21 @@ export const blogPosts: BlogPost[] = [
     tags: ["brick", "retaining-wall", "masonry", "construction"],
     publishedAt: "2026-10-18",
     calculatorHref: "/calculators/brick",
+  },
+  {
+    slug: "trapezoid-area-calculation",
+    title: "How to Calculate the Area of a Trapezoid",
+    description:
+      "Learn the trapezoid area formula with worked examples in square feet and square meters, a calculation table, measurement tips, and common mistakes.",
+    category: "Measurements",
+    tags: [
+      "trapezoid area",
+      "area calculation",
+      "geometry",
+      "square feet",
+      "measurements",
+    ],
+    publishedAt: "2026-10-23",
+    calculatorHref: "/calculators/square-footage",
   },
 ];
