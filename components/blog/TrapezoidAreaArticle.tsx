@@ -1,5 +1,5 @@
-
 import Link from "next/link";
+import Image from "next/image";
 
 const ARTICLE_URL =
   "https://www.cornerspan.com/blog/trapezoid-area-calculation";
@@ -192,7 +192,17 @@ export default function TrapezoidAreaArticle() {
         </span>
       </nav>
 
-      <header className="mb-10">
+            <header className="mb-10">
+        <div className="relative mb-8 aspect-[16/9] w-full overflow-hidden rounded-2xl">
+          <Image
+            src="/trapezoid-area-guide.webp"
+            alt="Trapezoid area formula and calculation guide"
+            fill
+            priority
+            sizes="(max-width: 768px) 100vw, 1024px"
+            className="object-cover"
+          />
+        </div>
         <p className="mb-3 text-sm font-bold uppercase tracking-wider text-blue-700">
           Measurement Guide · Geometry
         </p>
