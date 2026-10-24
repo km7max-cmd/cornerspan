@@ -73,7 +73,8 @@ export default function TrapezoidAreaArticle() {
       "Learn the trapezoid area formula with worked examples, measurement tips, and common mistakes.",
     mainEntityOfPage: {
       "@type": "WebPage",
-      "@id": "https://www.cornerspan.com/blog/trapezoid-area-calculation",
+      "@id":
+        "https://www.cornerspan.com/blog/trapezoid-area-calculation",
     },
     author: {
       "@type": "Organization",
@@ -110,10 +111,7 @@ export default function TrapezoidAreaArticle() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
 
-      <nav
-        aria-label="Breadcrumb"
-        className="mb-6 text-sm text-slate-500"
-      >
+      <nav aria-label="Breadcrumb" className="mb-6 text-sm text-slate-500">
         <Link href="/" className="hover:text-blue-700">
           Home
         </Link>
@@ -287,9 +285,7 @@ export default function TrapezoidAreaArticle() {
       <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_280px]">
         <div className="min-w-0">
           <section className="mb-10 rounded-2xl border border-slate-200 p-5 sm:p-6">
-            <h2 className="text-xl font-bold text-slate-950">
-              On this page
-            </h2>
+            <h2 className="text-xl font-bold text-slate-950">On this page</h2>
             <ul className="mt-4 grid gap-2 sm:grid-cols-2">
               {toc.map((item) => (
                 <li key={item.id}>
@@ -390,9 +386,7 @@ export default function TrapezoidAreaArticle() {
                   key={example.title}
                   className="rounded-2xl border border-slate-200 p-5 sm:p-6"
                 >
-                  <h3 className="font-bold text-slate-950">
-                    {example.title}
-                  </h3>
+                  <h3 className="font-bold text-slate-950">{example.title}</h3>
                   <div className="mt-4 grid grid-cols-3 gap-2">
                     <div className="rounded-lg bg-slate-50 p-3">
                       <p className="text-xs text-slate-500">Base a</p>
@@ -566,12 +560,8 @@ export default function TrapezoidAreaArticle() {
             <div className="mt-5 divide-y divide-slate-200 rounded-2xl border border-slate-200 px-5">
               {faqs.map((faq) => (
                 <div key={faq.question} className="py-5">
-                  <h3 className="font-bold text-slate-950">
-                    {faq.question}
-                  </h3>
-                  <p className="mt-2 leading-7 text-slate-700">
-                    {faq.answer}
-                  </p>
+                  <h3 className="font-bold text-slate-950">{faq.question}</h3>
+                  <p className="mt-2 leading-7 text-slate-700">{faq.answer}</p>
                 </div>
               ))}
             </div>
@@ -585,16 +575,15 @@ export default function TrapezoidAreaArticle() {
               Calculate Area for Your Next Project
             </h2>
             <p className="mt-3 leading-7 text-slate-300">
-              Explore CornerSpan&apos;s area calculator for supported
-              measurements and common area calculations. For a trapezoid,
-              use the formula in this guide unless the calculator explicitly
-              supports trapezoid dimensions.
+              Explore CornerSpan&apos;s Area Calculator for supported
+              measurements and common area calculations. If the tool does
+              not include trapezoid inputs, use the formula in this guide.
             </p>
             <Link
-              href="/calculators/square-footage"
+              href="/calculators/area"
               className="mt-5 inline-flex items-center justify-center rounded-xl bg-blue-500 px-5 py-3 font-bold text-white transition hover:bg-blue-400"
             >
-              Explore Area Calculator
+              Open Area Calculator
               <span aria-hidden="true" className="ml-2">
                 →
               </span>
@@ -623,7 +612,7 @@ export default function TrapezoidAreaArticle() {
               <li>• Write the answer in square units.</li>
             </ul>
             <Link
-              href="/calculators/square-footage"
+              href="/calculators/area"
               className="mt-5 inline-flex w-full items-center justify-center rounded-xl border border-blue-200 px-4 py-3 text-center text-sm font-bold text-blue-700 transition hover:bg-blue-50"
             >
               Browse Area Tools
