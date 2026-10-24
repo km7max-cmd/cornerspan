@@ -141,13 +141,18 @@ export async function generateMetadata({
 
 
   /*
+   
+  /*
    * Trapezoid Area Calculation Guide SEO
    */
   if (slug === trapezoidSlug) {
+    const imageUrl =
+      "https://www.cornerspan.com/trapezoid-area-guide.webp";
+
     return {
       title: "How to Calculate the Area of a Trapezoid | CornerSpan",
       description:
-        "Learn the trapezoid area formula with step-by-step examples in square feet and square meters, a calculation table, and measurement tips.",
+        "Learn the trapezoid area formula with step-by-step examples in square feet and square meters, a calculation table, and practical measurement tips.",
       keywords: [
         "trapezoid area",
         "area of a trapezoid",
@@ -155,23 +160,36 @@ export async function generateMetadata({
         "how to calculate trapezoid area",
         "trapezoid area calculator",
         "trapezoid formula",
-        "area calculation",
+        "trapezoid area examples",
+        "calculate trapezoid area in square feet",
       ],
       alternates: {
-        canonical: `/blog/${trapezoidSlug}`,
+        canonical:
+          "https://www.cornerspan.com/blog/trapezoid-area-calculation",
       },
       openGraph: {
         title: "How to Calculate the Area of a Trapezoid",
         description:
-          "Understand the trapezoid area formula with clear worked examples, measurement guidance, and common mistakes.",
+          "Learn the trapezoid area formula with worked examples, measurement guidance, and common mistakes.",
         type: "article",
-        url: `https://www.cornerspan.com/blog/${trapezoidSlug}`,
+        url:
+          "https://www.cornerspan.com/blog/trapezoid-area-calculation",
+        siteName: "CornerSpan",
+        images: [
+          {
+            url: imageUrl,
+            width: 1672,
+            height: 941,
+            alt: "How to Calculate the Area of a Trapezoid - CornerSpan",
+          },
+        ],
       },
       twitter: {
-        card: "summary",
-        title: "How to Calculate the Area of a Trapezoid",
+        card: "summary_large_image",
+        title: "How to Calculate the Area of a Trapezoid | CornerSpan",
         description:
-          "Learn the trapezoid area formula with worked examples and measurement tips.",
+          "Understand the trapezoid area formula with clear examples in square feet and square meters.",
+        images: [imageUrl],
       },
       robots: {
         index: true,
@@ -184,6 +202,7 @@ export async function generateMetadata({
       },
     };
   }
+
 
   /*
    * Other blog posts
