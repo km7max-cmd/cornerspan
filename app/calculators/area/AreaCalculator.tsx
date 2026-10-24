@@ -37,10 +37,13 @@ function number(value: string): number {
   return Number.isFinite(n) ? n : 0;
 }
 
-function formatNumber(value: number): string {
-  return new Intl.NumberFormat("en-US", {
-    maximumFractionDigits: 2,
-  }).format(value);
+function formatNumber(value: number, maximumFractionDigits = 2): string {
+  // Preserve small nonzero areas instead of rounding them to zero.
+  const isTiny = value !== 0 && Math.abs(value) < 10 ** -maximumFractionDigits;
+  return new Intl.NumberFormat(
+    "en-US",
+    isTiny ? { maximumSignificantDigits: 3 } : { maximumFractionDigits },
+  ).format(value);
 }
 
 function Field({
@@ -733,7 +736,7 @@ export default function AreaCalculator() {
                     </div>
 
                     <div className="mt-1 font-bold text-slate-900">
-                      {formatNumber(result.acres)}
+                      {formatNumber(result.acres, 5)}
                     </div>
                   </div>
                 </div>
