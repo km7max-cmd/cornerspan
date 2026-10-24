@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { calculators as calculatorDirectory } from "../data/calculators";
 
 type SearchBarProps = {
   onClose: () => void;
 };
 
-const calculators = [
+const searchDetails = [
   {
     name: "Concrete Calculator",
     description: "Concrete volume & material estimation",
@@ -52,6 +53,20 @@ const calculators = [
   },
 ];
 
+// Use the same generated route list as the calculator directory and sitemap.
+// New calculator pages remain searchable even without custom search details.
+const calculators = calculatorDirectory.map((calculator) => {
+  const details = searchDetails.find((item) => item.href === calculator.href);
+
+  return {
+    name: calculator.title,
+    href: calculator.href,
+    description: details?.description ?? "Construction measurements and material estimates",
+    icon: details?.icon ?? "📐",
+    keywords: `${calculator.slug.replace(/-/g, " ")} ${details?.keywords ?? ""}`,
+  };
+});
+
 export default function SearchBar({ onClose }: SearchBarProps) {
   const [query, setQuery] = useState("");
 
@@ -70,7 +85,7 @@ export default function SearchBar({ onClose }: SearchBarProps) {
   }, [query]);
 
   return (
-    <div className="absolute left-0 right-0 top-[76px] border-t border-slate-200 bg-white shadow-2xl">
+    <div className="absolute left-0 right-0 top-[76px] max-h-[calc(100dvh-76px)] overflow-y-auto overscroll-contain border-t border-slate-200 bg-white shadow-2xl">
 
       <div className="mx-auto max-w-4xl px-4 py-5 md:px-6">
 
@@ -85,6 +100,7 @@ export default function SearchBar({ onClose }: SearchBarProps) {
           <input
             autoFocus
             type="text"
+            aria-label="Search construction calculators"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search construction calculators..."
@@ -109,7 +125,7 @@ export default function SearchBar({ onClose }: SearchBarProps) {
 
           {!query.trim() && (
             <p className="mb-3 px-1 text-xs font-bold uppercase tracking-wider text-slate-400">
-              Popular Calculators
+              All Calculators
             </p>
           )}
 
@@ -159,7 +175,7 @@ export default function SearchBar({ onClose }: SearchBarProps) {
               </h3>
 
               <p className="mt-1 text-sm text-slate-500">
-                Try concrete, brick, steel, paint, tile or roofing.
+                Try a calculator name such as gravel, concrete, area or topsoil.
               </p>
 
             </div>
@@ -170,7 +186,7 @@ export default function SearchBar({ onClose }: SearchBarProps) {
         <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-4">
 
           <span className="text-xs font-medium text-slate-400">
-            100+ Free Construction Calculators
+            {calculators.length} Free Construction Calculators
           </span>
 
           <button
