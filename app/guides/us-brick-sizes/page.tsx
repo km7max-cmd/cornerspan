@@ -66,7 +66,7 @@ const brickSizes = [
 
 export default function USBrickSizesGuide() {
   return (
-    <main className="min-h-screen bg-white pt-[80px] text-slate-900">
+    <div className="min-h-screen bg-white pt-[80px] text-slate-900">
       {/* HERO */}
       <section className="border-b border-slate-200 bg-slate-50">
         <div className="mx-auto max-w-5xl px-5 py-12 sm:px-6 md:py-16">
@@ -635,6 +635,6 @@ export default function USBrickSizesGuide() {
           </p>
         </div>
       </section>
-    </main>
+    </div>
   );
 }

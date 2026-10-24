@@ -343,7 +343,7 @@ export default function TileCalculator() {
   }
 
   return (
-    <main className="mx-auto max-w-5xl px-4 pb-10 sm:px-6">
+    <div className="mx-auto max-w-5xl px-4 pb-10 sm:px-6">
 
       {/* Breadcrumb */}
       <Breadcrumb current="Tile Calculator" />
@@ -993,7 +993,7 @@ export default function TileCalculator() {
 
       </div>
 
-    </main>
+    </div>
   );
 }
 

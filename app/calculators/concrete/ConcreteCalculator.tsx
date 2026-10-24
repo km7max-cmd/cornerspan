@@ -611,9 +611,10 @@ Currency: ${currency}`;
 
   return (
     <>
-      <main className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-slate-100">
+      <div className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-slate-100">
         <div className="mx-auto w-full max-w-[1600px] px-2 py-4 sm:px-4 sm:py-6 lg:px-8 lg:py-10">
           <CalculatorHero
+            headingLevel="h2"
             title="Concrete"
             highlight="Calculator"
             description="Calculate concrete volume in cubic yards and cubic feet, estimate 94 lb cement bags, sand, aggregate, water, and material cost."
@@ -698,7 +699,7 @@ Currency: ${currency}`;
             onClear={handleClearHistory}
           />
         </div>
-      </main>
+      </div>
 
       <Toast
         show={showToast}

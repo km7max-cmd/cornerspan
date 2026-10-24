@@ -74,7 +74,7 @@ export const metadata: Metadata = {
 
 export default function CalculatorsPage() {
   return (
-    <main className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white">
 
       {/* BREADCRUMB */}
 
@@ -159,6 +159,6 @@ export default function CalculatorsPage() {
 
       </section>
 
-    </main>
+    </div>
   );
 }

@@ -8,7 +8,7 @@ export const metadata = {
 
 export default function SteelWeightGuide() {
   return (
-    <main className="min-h-screen bg-white pt-[80px] text-slate-900">
+    <div className="min-h-screen bg-white pt-[80px] text-slate-900">
 
       {/* HERO */}
       <section className="border-b border-slate-200 bg-slate-50">
@@ -450,6 +450,6 @@ export default function SteelWeightGuide() {
         </section>
 
       </article>
-    </main>
+    </div>
   );
 }

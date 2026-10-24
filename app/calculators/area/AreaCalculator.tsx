@@ -351,7 +351,7 @@ export default function AreaCalculator() {
     "h-12 w-full rounded-xl border border-slate-300 bg-white px-3 text-base text-slate-900 outline-none transition focus:border-blue-600 focus:ring-4 focus:ring-blue-100";
 
   return (
-    <main className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-slate-50">
       <div className="mx-auto max-w-4xl px-5 py-7 sm:px-6 sm:py-10">
 
         {/* Breadcrumb */}
@@ -1155,6 +1155,6 @@ export default function AreaCalculator() {
           ordering materials or beginning construction work.
         </p>
       </div>
-    </main>
+    </div>
   );
 }

@@ -195,7 +195,7 @@ function GuideIllustration({
 
 export default function BlogPage() {
   return (
-    <main className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-slate-50">
       {/* Hero */}
       <section className="border-b border-slate-200 bg-gradient-to-b from-blue-50 to-white">
         <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
@@ -445,6 +445,6 @@ export default function BlogPage() {
           </Link>
         </div>
       </section>
-    </main>
+    </div>
   );
 }

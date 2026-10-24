@@ -43,7 +43,7 @@ export default function HistoryPage() {
   }
 
   return (
-    <main className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-slate-50">
       <div className="mx-auto max-w-4xl px-5 py-8">
 
         {/* Header */}
@@ -182,6 +182,6 @@ export default function HistoryPage() {
         )}
 
       </div>
-    </main>
+    </div>
   );
 }

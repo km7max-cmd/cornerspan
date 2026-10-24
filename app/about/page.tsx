@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   return (
-    <main className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-slate-50">
 
       {/* Hero */}
       <section className="relative overflow-hidden bg-gradient-to-b from-blue-50 via-white to-slate-50">
@@ -196,6 +196,6 @@ export default function AboutPage() {
         </div>
       </section>
 
-    </main>
+    </div>
   );
 }

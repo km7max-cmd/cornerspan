@@ -299,7 +299,7 @@ export default async function BlogPostPage({ params }: Props) {
     };
 
     return (
-      <main className="min-h-screen bg-slate-50">
+      <div className="min-h-screen bg-slate-50">
         <article className="mx-auto max-w-5xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
           {/* Breadcrumb */}
           <nav
@@ -725,7 +725,7 @@ export default async function BlogPostPage({ params }: Props) {
             __html: JSON.stringify(breadcrumbSchema),
           }}
         />
-      </main>
+      </div>
     );
   }
 
@@ -796,7 +796,7 @@ export default async function BlogPostPage({ params }: Props) {
     };
 
     return (
-      <main className="min-h-screen bg-slate-50">
+      <div className="min-h-screen bg-slate-50">
         <article className="mx-auto max-w-5xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
           {/* Breadcrumb */}
           <nav
@@ -1205,7 +1205,7 @@ export default async function BlogPostPage({ params }: Props) {
             __html: JSON.stringify(breadcrumbSchema),
           }}
         />
-      </main>
+      </div>
     );
   }
 
@@ -1217,7 +1217,7 @@ export default async function BlogPostPage({ params }: Props) {
    */
 
   return (
-    <main className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-slate-50">
       <article className="mx-auto max-w-4xl px-5 py-10 sm:px-6 sm:py-14">
         <nav
           aria-label="Breadcrumb"
@@ -1284,6 +1284,6 @@ export default async function BlogPostPage({ params }: Props) {
           </div>
         </div>
       </article>
-    </main>
+    </div>
   );
 }

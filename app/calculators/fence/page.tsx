@@ -127,7 +127,7 @@ function ExampleBox({
 
 export default function FencePage() {
   return (
-    <main className="bg-white">
+    <div className="bg-white">
       <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
         <Breadcrumb current="Fence Calculator" />
 
@@ -911,6 +911,6 @@ export default function FencePage() {
           <RelatedCalculators />
         </section>
       </div>
-    </main>
+    </div>
   );
 }

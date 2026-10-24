@@ -101,7 +101,7 @@ function TableOfContents() {
 
 export default function PaverCalculatorPage() {
   return (
-    <main>
+    <div>
       <div className="mx-auto max-w-7xl px-4 pt-5 sm:px-6 sm:pt-6">
         <Breadcrumb current="Paver Calculator" />
 
@@ -559,7 +559,7 @@ export default function PaverCalculatorPage() {
       <div className="mx-auto max-w-7xl px-4 pb-10 sm:px-6 sm:pb-12">
         <RelatedCalculators />
       </div>
-    </main>
+    </div>
   );
 }
 

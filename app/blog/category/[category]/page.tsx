@@ -59,7 +59,7 @@ export default async function CategoryPage({ params }: Props) {
   const categoryName = posts[0].category;
 
   return (
-    <main className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-slate-50">
       <section className="border-b border-slate-200 bg-white">
         <div className="mx-auto max-w-6xl px-5 py-10 sm:px-6 sm:py-14">
           <nav
@@ -136,6 +136,6 @@ export default async function CategoryPage({ params }: Props) {
           ))}
         </div>
       </section>
-    </main>
+    </div>
   );
 }

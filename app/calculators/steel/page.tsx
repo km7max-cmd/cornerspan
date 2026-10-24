@@ -89,7 +89,7 @@ export default function SteelPage() {
     <>
       <SteelCalculator />
 
-      <main className="mx-auto max-w-5xl px-4 pb-12 sm:px-6">
+      <div className="mx-auto max-w-5xl px-4 pb-12 sm:px-6">
         <section className="mt-10 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
           <h2 className="text-2xl font-bold text-slate-900">
             Steel Weight Formula
@@ -307,7 +307,7 @@ export default function SteelPage() {
             </a>
           </div>
         </section>
-      </main>
+      </div>
     </>
   );
 }

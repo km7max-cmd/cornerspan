@@ -1,6 +1,6 @@
 export default function PrivacyPage() {
   return (
-    <main className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-slate-50">
       {/* Hero */}
       <section className="bg-gradient-to-b from-blue-50 via-white to-slate-50">
         <div className="mx-auto max-w-4xl px-5 py-12 text-center sm:px-6 sm:py-16">
@@ -345,6 +345,6 @@ export default function PrivacyPage() {
           </div>
         </div>
       </section>
-    </main>
+    </div>
   );
 }

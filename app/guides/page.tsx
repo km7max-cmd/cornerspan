@@ -47,7 +47,7 @@ const guides = [
 
 export default function GuidesPage() {
   return (
-    <main className="min-h-screen bg-white pt-[80px]">
+    <div className="min-h-screen bg-white pt-[80px]">
 
       {/* Intro */}
       <section className="border-b border-slate-200 bg-slate-50">
@@ -215,6 +215,6 @@ export default function GuidesPage() {
         </div>
       </section>
 
-    </main>
+    </div>
   );
 }

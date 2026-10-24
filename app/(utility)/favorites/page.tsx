@@ -116,7 +116,7 @@ export default function FavoritesPage() {
     .filter((item) => item.data);
 
   return (
-    <main className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-slate-50">
 
       {/* Header */}
       <section className="bg-gradient-to-b from-blue-50 via-white to-slate-50">
@@ -231,6 +231,6 @@ export default function FavoritesPage() {
         </div>
       </section>
 
-    </main>
+    </div>
   );
 }

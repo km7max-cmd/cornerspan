@@ -78,7 +78,7 @@ const faqSchema = {
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-slate-50">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -113,6 +113,6 @@ export default function Home() {
       <FAQ />
 
       <CTA />
-    </main>
+    </div>
   );
 }

@@ -9,7 +9,7 @@ export const metadata = {
 
 export default function BrickCalculationGuide() {
   return (
-    <main className="min-h-screen bg-white pt-[80px] text-slate-900">
+    <div className="min-h-screen bg-white pt-[80px] text-slate-900">
       {/* HERO */}
       <section className="border-b border-slate-200 bg-slate-50">
         <div className="mx-auto max-w-4xl px-6 py-12 md:py-16">
@@ -526,6 +526,6 @@ export default function BrickCalculationGuide() {
           </div>
         </section>
       </article>
-    </main>
+    </div>
   );
 }

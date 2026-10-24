@@ -82,7 +82,7 @@ const breadcrumbSchema = {
 
 export default function RetainingWallArticle() {
   return (
-    <main className="min-h-screen bg-slate-50 text-slate-800">
+    <div className="min-h-screen bg-slate-50 text-slate-800">
       <article className="mx-auto max-w-5xl px-4 py-6 sm:px-6 sm:py-10 lg:px-8">
         <nav
           aria-label="Breadcrumb"
@@ -665,6 +665,6 @@ export default function RetainingWallArticle() {
           __html: JSON.stringify(breadcrumbSchema),
         }}
       />
-    </main>
+    </div>
   );
 }

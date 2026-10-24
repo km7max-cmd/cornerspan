@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function TermsPage() {
   return (
-    <main className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-slate-50">
 
       {/* Hero */}
       <section className="bg-gradient-to-b from-blue-50 via-white to-slate-50">
@@ -192,6 +192,6 @@ export default function TermsPage() {
         </div>
       </section>
 
-    </main>
+    </div>
   );
 }

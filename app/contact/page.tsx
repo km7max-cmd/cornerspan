@@ -50,7 +50,7 @@ export default function ContactPage() {
   }
 
   return (
-    <main className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-slate-50">
       {/* Hero */}
       <section className="bg-gradient-to-b from-blue-50 via-white to-slate-50">
         <div className="mx-auto max-w-6xl px-5 py-14 text-center sm:px-6 md:py-20">
@@ -245,6 +245,6 @@ export default function ContactPage() {
           </Link>
         </div>
       </section>
-    </main>
+    </div>
   );
 }

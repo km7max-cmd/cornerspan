@@ -127,7 +127,7 @@ export default function TopsoilPage() {
     <>
       <Breadcrumb current="Topsoil Calculator" />
 
-      <main className="mx-auto w-full max-w-7xl px-4 pb-16 sm:px-6 lg:px-8">
+      <div className="mx-auto w-full max-w-7xl px-4 pb-16 sm:px-6 lg:px-8">
 
         {/* Calculator */}
         <div className="mx-auto max-w-3xl">
@@ -311,7 +311,7 @@ export default function TopsoilPage() {
           </p>
         </section>
 
-      </main>
+      </div>
     </>
   );
 }

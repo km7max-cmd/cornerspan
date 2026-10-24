@@ -113,7 +113,7 @@ export default function GravelPage() {
         description="Free gravel calculator to estimate cubic yards, US tons, metric tonnes, waste and material cost."
       />
 
-      <main className="mx-auto w-full max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
+      <div className="mx-auto w-full max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
 
         <GravelCalculator />
 
@@ -549,7 +549,7 @@ export default function GravelPage() {
 
         </section>
 
-      </main>
+      </div>
     </>
   );
 }

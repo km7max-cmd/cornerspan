@@ -12,7 +12,7 @@ export default function CalculatorLayout({
   children,
 }: Props) {
   return (
-    <main className="mx-auto max-w-4xl p-6">
+    <div className="mx-auto max-w-4xl p-6">
       
       <div className="mb-6 flex items-start justify-between gap-4">
         <div>
@@ -32,6 +32,6 @@ export default function CalculatorLayout({
         {children}
       </div>
 
-    </main>
+    </div>
   );
 }

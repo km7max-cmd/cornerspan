@@ -212,7 +212,7 @@ export default function SquareFootagePage() {
       <JsonLd data={calculatorSchema} />
       <JsonLd data={breadcrumbSchema} />
 
-      <main className="min-h-screen bg-slate-50 text-slate-800">
+      <div className="min-h-screen bg-slate-50 text-slate-800">
         <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
           <Breadcrumb current="Square Footage Calculator" />
 
@@ -762,7 +762,7 @@ export default function SquareFootagePage() {
             <RelatedCalculators />
           </section>
         </div>
-      </main>
+      </div>
     </>
   );
 }

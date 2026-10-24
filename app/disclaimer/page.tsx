@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function DisclaimerPage() {
   return (
-    <main className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-slate-50">
 
       {/* Hero */}
       <section className="bg-gradient-to-b from-blue-50 via-white to-slate-50">
@@ -159,6 +159,6 @@ export default function DisclaimerPage() {
         </div>
       </section>
 
-    </main>
+    </div>
   );
 }

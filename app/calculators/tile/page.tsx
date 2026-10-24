@@ -130,7 +130,7 @@ export default function TileCalculatorPage() {
     <>
       <TileCalculator />
 
-      <main className="mx-auto max-w-5xl px-4 pb-12 sm:px-6">
+      <div className="mx-auto max-w-5xl px-4 pb-12 sm:px-6">
 
         {/* How to Calculate */}
         <section className="mt-10">
@@ -321,7 +321,7 @@ export default function TileCalculatorPage() {
 
         </section>
 
-      </main>
+      </div>
     </>
   );
 }

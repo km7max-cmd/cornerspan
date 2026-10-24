@@ -153,7 +153,7 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
 
 export default function ConcreteVolumeGuide() {
   return (
-    <main className="min-h-screen bg-white pt-0 text-slate-900">
+    <div className="min-h-screen bg-white pt-0 text-slate-900">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -660,6 +660,6 @@ export default function ConcreteVolumeGuide() {
           </div>
         </section>
       </article>
-    </main>
+    </div>
   );
 }
