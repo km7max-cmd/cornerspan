@@ -4,7 +4,7 @@ import Link from "next/link";
 import { blogPosts } from "../../data/blog";
 
 export const metadata: Metadata = {
-  title: "Construction Articles & Guides | CornerSpan",
+  title: "Construction Articles & Guides",
   description:
     "Practical construction articles and guides covering concrete, brick, square footage, measurements and construction material estimates.",
   alternates: {

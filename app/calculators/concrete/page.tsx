@@ -5,7 +5,7 @@ const SITE_URL = "https://www.cornerspan.com";
 const PAGE_URL = `${SITE_URL}/calculators/concrete`;
 
 export const metadata: Metadata = {
-  title: "Concrete Calculator | Volume, Materials & Cost | CornerSpan",
+  title: "Concrete Calculator | Volume, Materials & Cost",
 
   description:
     "Use this free concrete calculator to estimate concrete volume, cement, sand, aggregate, water, and material cost for slabs, footings, walls, columns, and other construction projects.",

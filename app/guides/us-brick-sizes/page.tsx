@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "US Brick Dimensions & Sizes Chart | CornerSpan",
+  title: "US Brick Dimensions & Sizes Chart",
   description:
     "US brick dimensions and sizes chart for common modular, Norman, Queen, King and Utility bricks. Compare brick measurements, mortar joints and bricks per square foot.",
   alternates: {

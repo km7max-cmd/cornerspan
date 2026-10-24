@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Construction Guides | CornerSpan",
+  title: "Construction Guides",
   description:
     "Practical construction guides for concrete, brick dimensions, brick quantity and steel weight calculations. Learn the formulas and use the right construction calculator.",
   alternates: {

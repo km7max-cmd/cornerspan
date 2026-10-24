@@ -15,7 +15,7 @@ const pageUrl =
 const diagramPath = "/square-footage-diagram.webp";
 
 export const metadata: Metadata = {
-  title: "Square Footage Calculator: Sq Ft & Area | CornerSpan",
+  title: "Square Footage Calculator: Sq Ft & Area",
   description:
     "Calculate square footage for rooms, floors, walls and floor plans. Enter feet and inches, calculate multiple shapes, convert area units and estimate material waste.",
   keywords: [

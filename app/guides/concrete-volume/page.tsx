@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 export const metadata = {
   title:
-    "Concrete Volume Calculator Guide: Slabs, Cubic Yards & Examples | CornerSpan",
+    "Concrete Volume Calculator Guide: Slabs, Cubic Yards & Examples",
   description:
     "Learn how to calculate concrete volume for slabs, beams and columns with formulas, cubic yard conversions, worked examples and ordering tips.",
   alternates: {

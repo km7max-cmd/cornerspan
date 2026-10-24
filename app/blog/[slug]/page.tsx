@@ -37,7 +37,7 @@ export async function generateMetadata({
   if (slug === concreteSlug) {
     return {
       title:
-        "Concrete Calculation Guide: Volume, Formula & Examples | CornerSpan",
+        "Concrete Calculation Guide: Volume, Formula & Examples",
       description:
         "Learn how to calculate concrete volume for slabs, footings, beams and columns using practical formulas, unit conversions and worked examples.",
       keywords: [
@@ -87,7 +87,7 @@ export async function generateMetadata({
    */
   if (slug === squareFootageSlug) {
     return {
-      title: "How to Calculate Square Footage: Complete Guide | CornerSpan",
+      title: "How to Calculate Square Footage: Complete Guide",
       description:
         "Learn how to calculate square footage for rooms, floors, walls and irregular areas. Includes feet-and-inches examples, waste calculations and practical tips.",
       keywords: [
@@ -150,7 +150,7 @@ export async function generateMetadata({
       "https://www.cornerspan.com/trapezoid-area-guide.webp";
 
     return {
-      title: "How to Calculate the Area of a Trapezoid | CornerSpan",
+      title: "How to Calculate the Area of a Trapezoid",
       description:
         "Learn the trapezoid area formula with step-by-step examples in square feet and square meters, a calculation table, and practical measurement tips.",
       keywords: [
@@ -208,7 +208,7 @@ export async function generateMetadata({
    * Other blog posts
    */
   return {
-    title: `${post.title} | CornerSpan`,
+    title: post.title,
     description: post.description,
     alternates: {
       canonical: `/blog/${post.slug}`,

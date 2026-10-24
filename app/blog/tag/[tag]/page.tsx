@@ -38,7 +38,7 @@ export async function generateMetadata({
       ) ?? tag;
 
   return {
-    title: `${displayTag} Construction Guides | CornerSpan`,
+    title: `${displayTag} Construction Guides`,
     description: `Explore CornerSpan construction guides, calculation methods, and practical information about ${displayTag.toLowerCase()}.`,
     alternates: {
       canonical: `/blog/tag/${tag.toLowerCase()}`,

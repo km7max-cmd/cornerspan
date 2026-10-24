@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export const metadata = {
   title:
-    "How to Calculate Bricks for a Wall: Formula & Examples | CornerSpan",
+    "How to Calculate Bricks for a Wall: Formula & Examples",
   description:
     "Learn how to calculate bricks for a wall using square feet, brick dimensions, mortar joints, openings, and a worked US modular brick example.",
 };

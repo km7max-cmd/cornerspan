@@ -32,7 +32,7 @@ export async function generateMetadata({
   const categoryName = posts[0].category;
 
   return {
-    title: `${categoryName} Construction Guides | CornerSpan`,
+    title: `${categoryName} Construction Guides`,
     description: `Explore CornerSpan's ${categoryName.toLowerCase()} construction guides, calculation methods, and practical material estimation tips.`,
     alternates: {
       canonical: `/blog/category/${category.toLowerCase()}`,
