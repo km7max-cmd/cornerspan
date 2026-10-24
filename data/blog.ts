@@ -64,6 +64,6 @@ export const blogPosts: BlogPost[] = [
       "measurements",
     ],
     publishedAt: "2026-10-23",
-    calculatorHref: "/calculators/square-footage",
+    calculatorHref: "/calculators/area",
   },
 ];
