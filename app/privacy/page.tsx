@@ -1,3 +1,25 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Privacy Policy",
+  description: "Read how CornerSpan handles information, cookies, analytics and advertising when you use our construction calculators and website.",
+  alternates: { canonical: "/privacy" },
+  openGraph: {
+    title: "Privacy Policy | CornerSpan",
+    description: "Read how CornerSpan handles information, cookies, analytics and advertising when you use our construction calculators and website.",
+    url: "/privacy",
+    type: "website",
+    siteName: "CornerSpan",
+    images: ["/og-image.png"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Privacy Policy | CornerSpan",
+    description: "Read how CornerSpan handles information, cookies, analytics and advertising when you use our construction calculators and website.",
+    images: ["/og-image.png"],
+  },
+};
+
 export default function PrivacyPage() {
   return (
     <div className="min-h-screen bg-slate-50">

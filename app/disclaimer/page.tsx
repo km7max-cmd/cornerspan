@@ -1,3 +1,25 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Disclaimer",
+  description: "Understand the purpose and limitations of CornerSpan construction estimates, calculator results and educational information.",
+  alternates: { canonical: "/disclaimer" },
+  openGraph: {
+    title: "Disclaimer | CornerSpan",
+    description: "Understand the purpose and limitations of CornerSpan construction estimates, calculator results and educational information.",
+    url: "/disclaimer",
+    type: "website",
+    siteName: "CornerSpan",
+    images: ["/og-image.png"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Disclaimer | CornerSpan",
+    description: "Understand the purpose and limitations of CornerSpan construction estimates, calculator results and educational information.",
+    images: ["/og-image.png"],
+  },
+};
+
 import Link from "next/link";
 
 export default function DisclaimerPage() {

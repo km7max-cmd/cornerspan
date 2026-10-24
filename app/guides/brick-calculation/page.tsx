@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 export const metadata = {
+  alternates: { canonical: "/guides/brick-calculation" },
   title:
     "How to Calculate Bricks for a Wall: Formula & Examples",
   description:

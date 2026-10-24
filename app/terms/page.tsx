@@ -1,3 +1,25 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Terms & Conditions",
+  description: "Read the terms for using CornerSpan construction calculators, guides and website content, including estimate limitations and user responsibilities.",
+  alternates: { canonical: "/terms" },
+  openGraph: {
+    title: "Terms & Conditions | CornerSpan",
+    description: "Read the terms for using CornerSpan construction calculators, guides and website content, including estimate limitations and user responsibilities.",
+    url: "/terms",
+    type: "website",
+    siteName: "CornerSpan",
+    images: ["/og-image.png"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Terms & Conditions | CornerSpan",
+    description: "Read the terms for using CornerSpan construction calculators, guides and website content, including estimate limitations and user responsibilities.",
+    images: ["/og-image.png"],
+  },
+};
+
 import Link from "next/link";
 
 export default function TermsPage() {

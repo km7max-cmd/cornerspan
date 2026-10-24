@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 export const metadata = {
+  alternates: { canonical: "/guides/steel-weight" },
   title: "Steel Weight Calculator Guide: Rebar Weight Formula",
   description:
     "Learn how to calculate steel bar and rebar weight using diameter, length and the standard steel weight formula, with practical examples.",
