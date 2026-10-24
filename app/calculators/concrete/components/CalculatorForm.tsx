@@ -265,7 +265,7 @@ export default function CalculatorForm(props: CalculatorFormProps) {
       <label className="mb-1 block truncate text-xs font-semibold text-slate-700">
         {label}
       </label>
-      <input
+      <input aria-label={label}
         type="number"
         min="0"
         step="any"
@@ -352,10 +352,10 @@ export default function CalculatorForm(props: CalculatorFormProps) {
       </div>
 
       <div className="mt-4">
-        <label className="mb-1 block text-xs font-semibold text-slate-700">
+        <label htmlFor="concrete-quantity" className="mb-1 block text-xs font-semibold text-slate-700">
           Quantity
         </label>
-        <input
+        <input id="concrete-quantity"
           type="number"
           min="1"
           step="1"
@@ -366,10 +366,10 @@ export default function CalculatorForm(props: CalculatorFormProps) {
       </div>
 
       <div className="mt-4">
-        <label className="mb-1 block text-xs font-semibold text-slate-700">
+        <label htmlFor="concrete-mix" className="mb-1 block text-xs font-semibold text-slate-700">
           Concrete Mix Ratio
         </label>
-        <select
+        <select id="concrete-mix"
           value={mix}
           onChange={(event) => setMix(event.target.value)}
           className={INPUT}
@@ -393,7 +393,7 @@ export default function CalculatorForm(props: CalculatorFormProps) {
               <label className="mb-1 block text-xs font-semibold text-slate-700">
                 {label as string}
               </label>
-              <input
+              <input aria-label={`${label as string} mix ratio`}
                 type="number"
                 min="0"
                 step="any"
@@ -422,10 +422,10 @@ export default function CalculatorForm(props: CalculatorFormProps) {
         {showMaterials && (
           <div className="mt-3 space-y-3 rounded-xl border border-slate-200 p-3">
             <div>
-              <label className="mb-1 block text-xs font-semibold text-slate-700">
+              <label htmlFor="concrete-currency" className="mb-1 block text-xs font-semibold text-slate-700">
                 Currency
               </label>
-              <select
+              <select id="concrete-currency"
                 value={currency}
                 onChange={(event) => setCurrency(event.target.value)}
                 className={INPUT}
@@ -442,10 +442,10 @@ export default function CalculatorForm(props: CalculatorFormProps) {
 
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <div>
-                <label className="mb-1 block text-xs font-semibold text-slate-700">
+                <label htmlFor="concrete-cement-price" className="mb-1 block text-xs font-semibold text-slate-700">
                   Cement Price
                 </label>
-                <input
+                <input id="concrete-cement-price"
                   type="number"
                   min="0"
                   step="any"
@@ -469,10 +469,10 @@ export default function CalculatorForm(props: CalculatorFormProps) {
               </div>
 
               <div>
-                <label className="mb-1 block text-xs font-semibold text-slate-700">
+                <label htmlFor="concrete-sand-price" className="mb-1 block text-xs font-semibold text-slate-700">
                   Sand Price
                 </label>
-                <input
+                <input id="concrete-sand-price"
                   type="number"
                   min="0"
                   step="any"
@@ -498,10 +498,10 @@ export default function CalculatorForm(props: CalculatorFormProps) {
               </div>
 
               <div>
-                <label className="mb-1 block text-xs font-semibold text-slate-700">
+                <label htmlFor="concrete-aggregate-price" className="mb-1 block text-xs font-semibold text-slate-700">
                   Aggregate Price
                 </label>
-                <input
+                <input id="concrete-aggregate-price"
                   type="number"
                   min="0"
                   step="any"
@@ -527,10 +527,10 @@ export default function CalculatorForm(props: CalculatorFormProps) {
               </div>
 
               <div>
-                <label className="mb-1 block text-xs font-semibold text-slate-700">
+                <label htmlFor="concrete-sand-density" className="mb-1 block text-xs font-semibold text-slate-700">
                   Sand Density (kg/m³)
                 </label>
-                <input
+                <input id="concrete-sand-density"
                   type="number"
                   min="1"
                   step="any"
@@ -541,10 +541,10 @@ export default function CalculatorForm(props: CalculatorFormProps) {
               </div>
 
               <div>
-                <label className="mb-1 block text-xs font-semibold text-slate-700">
+                <label htmlFor="concrete-aggregate-density" className="mb-1 block text-xs font-semibold text-slate-700">
                   Aggregate Density (kg/m³)
                 </label>
-                <input
+                <input id="concrete-aggregate-density"
                   type="number"
                   min="1"
                   step="any"

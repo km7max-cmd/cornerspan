@@ -46,7 +46,7 @@ function InputField({
       </label>
 
       <div className="flex overflow-hidden rounded-xl border border-slate-300 bg-white focus-within:border-blue-500">
-        <input
+        <input aria-label={label}
           type="number"
           min="0"
           step="any"
@@ -431,11 +431,11 @@ export default function AsphaltCalculator() {
                 />
 
                 <div>
-                  <label className="mb-1.5 block text-xs font-bold text-slate-600">
+                  <label htmlFor="asphalt-waste" className="mb-1.5 block text-xs font-bold text-slate-600">
                     Waste / Overage
                   </label>
 
-                  <select
+                  <select id="asphalt-waste"
                     value={waste}
                     onChange={(e) =>
                       setWaste(e.target.value)
@@ -492,11 +492,11 @@ export default function AsphaltCalculator() {
                 />
 
                 <div>
-                  <label className="mb-1.5 block text-xs font-bold text-slate-600">
+                  <label htmlFor="asphalt-currency" className="mb-1.5 block text-xs font-bold text-slate-600">
                     Currency
                   </label>
 
-                  <select
+                  <select id="asphalt-currency"
                     value={currency}
                     onChange={(e) =>
                       setCurrency(

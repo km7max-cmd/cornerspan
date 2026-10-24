@@ -463,7 +463,7 @@ export default function TileCalculator() {
 
             <div className="grid grid-cols-[1fr_1fr_82px] gap-2">
 
-              <input
+              <input aria-label={surfaceType === "wall" ? "Wall height" : "Room / surface length"}
                 type="number"
                 min="0"
                 step="any"
@@ -482,7 +482,7 @@ export default function TileCalculator() {
                 className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-900"
               />
 
-              <input
+              <input aria-label={surfaceType === "wall" ? "Wall width" : "Room / surface width"}
                 type="number"
                 min="0"
                 step="any"
@@ -497,7 +497,7 @@ export default function TileCalculator() {
                 className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-900"
               />
 
-              <select
+              <select aria-label="Room / surface dimension unit"
                 value={roomUnit}
                 onChange={(e) => {
                   setRoomUnit(
@@ -566,7 +566,7 @@ export default function TileCalculator() {
 
             <div className="grid grid-cols-2 gap-2">
 
-              <input
+              <input aria-label={surfaceType === "wall" ? "Tile height" : "Tile length"}
                 type="number"
                 min="0"
                 step="any"
@@ -585,7 +585,7 @@ export default function TileCalculator() {
                 className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none placeholder:text-slate-400 focus:border-slate-900"
               />
 
-              <input
+              <input aria-label="Tile width"
                 type="number"
                 min="0"
                 step="any"
@@ -657,11 +657,11 @@ export default function TileCalculator() {
           <div className="mb-4 grid grid-cols-2 gap-2">
 
             <div>
-              <label className="mb-1.5 block text-xs font-semibold text-slate-700">
+              <label htmlFor="tile-tiles-per-box" className="mb-1.5 block text-xs font-semibold text-slate-700">
                 Tiles per Box
               </label>
 
-              <input
+              <input id="tile-tiles-per-box"
                 type="number"
                 min="1"
                 step="1"
@@ -677,11 +677,11 @@ export default function TileCalculator() {
             </div>
 
             <div>
-              <label className="mb-1.5 block text-xs font-semibold text-slate-700">
+              <label htmlFor="tile-waste" className="mb-1.5 block text-xs font-semibold text-slate-700">
                 Waste
               </label>
 
-              <select
+              <select id="tile-waste"
                 value={waste}
                 onChange={(e) => {
                   setWaste(
@@ -719,11 +719,11 @@ export default function TileCalculator() {
           <div className="mb-4 grid grid-cols-2 gap-2">
 
             <div>
-              <label className="mb-1.5 block text-xs font-semibold text-slate-700">
+              <label htmlFor="tile-currency" className="mb-1.5 block text-xs font-semibold text-slate-700">
                 Currency
               </label>
 
-              <select
+              <select id="tile-currency"
                 value={currencyCode}
                 onChange={(e) =>
                   setCurrencyCode(
@@ -751,7 +751,7 @@ export default function TileCalculator() {
             </div>
 
             <div>
-              <label className="mb-1.5 block text-xs font-semibold text-slate-700">
+              <label htmlFor="tile-price-per-box" className="mb-1.5 block text-xs font-semibold text-slate-700">
                 Price per Box
               </label>
 
@@ -763,7 +763,7 @@ export default function TileCalculator() {
                   }
                 </span>
 
-                <input
+                <input id="tile-price-per-box"
                   type="number"
                   min="0"
                   step="any"

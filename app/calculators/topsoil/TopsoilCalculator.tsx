@@ -298,11 +298,11 @@ export default function TopsoilCalculator() {
 
           <div className="mt-4 grid gap-4 sm:grid-cols-3">
             <div>
-              <label className="mb-2 block text-sm font-medium text-slate-700">
+              <label htmlFor="topsoil-length" className="mb-2 block text-sm font-medium text-slate-700">
                 Length ({projectUnit})
               </label>
 
-              <input
+              <input id="topsoil-length"
                 type="number"
                 min="0"
                 step="any"
@@ -317,11 +317,11 @@ export default function TopsoilCalculator() {
             </div>
 
             <div>
-              <label className="mb-2 block text-sm font-medium text-slate-700">
+              <label htmlFor="topsoil-width" className="mb-2 block text-sm font-medium text-slate-700">
                 Width ({projectUnit})
               </label>
 
-              <input
+              <input id="topsoil-width"
                 type="number"
                 min="0"
                 step="any"
@@ -336,11 +336,11 @@ export default function TopsoilCalculator() {
             </div>
 
             <div>
-              <label className="mb-2 block text-sm font-medium text-slate-700">
+              <label htmlFor="topsoil-depth" className="mb-2 block text-sm font-medium text-slate-700">
                 Depth ({depthUnit})
               </label>
 
-              <input
+              <input id="topsoil-depth"
                 type="number"
                 min="0"
                 step="any"
@@ -389,11 +389,11 @@ export default function TopsoilCalculator() {
           </h2>
 
           <div className="mt-4">
-            <label className="mb-2 block text-sm font-medium text-slate-700">
+            <label htmlFor="topsoil-type" className="mb-2 block text-sm font-medium text-slate-700">
               Soil Type
             </label>
 
-            <select
+            <select id="topsoil-type"
               value={soilType}
               onChange={(e) =>
                 handleSoilTypeChange(e.target.value)
@@ -413,11 +413,11 @@ export default function TopsoilCalculator() {
 
           <div className="mt-4 grid gap-4 sm:grid-cols-2">
             <div>
-              <label className="mb-2 block text-sm font-medium text-slate-700">
+              <label htmlFor="topsoil-density" className="mb-2 block text-sm font-medium text-slate-700">
                 Density (tons / yd³)
               </label>
 
-              <input
+              <input id="topsoil-density"
                 type="number"
                 min="0"
                 step="0.01"
@@ -460,11 +460,11 @@ export default function TopsoilCalculator() {
 
         {/* Bag Size */}
         <div className="mt-4 rounded-2xl bg-white p-4 shadow-sm">
-          <label className="mb-2 block text-sm font-semibold text-slate-800">
+          <label htmlFor="topsoil-bag-size" className="mb-2 block text-sm font-semibold text-slate-800">
             Bag Size
           </label>
 
-          <select
+          <select id="topsoil-bag-size"
             value={bagSize}
             onChange={(e) => {
               setBagSize(Number(e.target.value));

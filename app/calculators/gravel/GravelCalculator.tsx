@@ -487,13 +487,13 @@ export default function GravelCalculator() {
 
                 <div>
 
-                  <label className="mb-1.5 block text-xs font-bold text-slate-600">
+                  <label htmlFor="gravel-depth" className="mb-1.5 block text-xs font-bold text-slate-600">
                     Depth
                   </label>
 
                   <div className="flex overflow-hidden rounded-xl border border-slate-300 bg-white">
 
-                    <input
+                    <input id="gravel-depth"
                       type="number"
                       min="0"
                       step="any"
@@ -508,7 +508,7 @@ export default function GravelCalculator() {
                       className="min-w-0 flex-1 px-3 py-3 text-sm font-semibold outline-none"
                     />
 
-                    <select
+                    <select aria-label="Depth unit"
                       value={depthUnit}
                       onChange={(e) => {
                         setDepthUnit(
@@ -549,11 +549,11 @@ export default function GravelCalculator() {
 
                 <div>
 
-                  <label className="mb-1.5 block text-xs font-bold text-slate-600">
+                  <label htmlFor="gravel-type" className="mb-1.5 block text-xs font-bold text-slate-600">
                     Gravel Type
                   </label>
 
-                  <select
+                  <select id="gravel-type"
                     value={gravelType}
                     onChange={(e) =>
                       handleGravelChange(
@@ -643,11 +643,11 @@ export default function GravelCalculator() {
 
                 <div>
 
-                  <label className="mb-1.5 block text-xs font-bold text-slate-600">
+                  <label htmlFor="gravel-currency" className="mb-1.5 block text-xs font-bold text-slate-600">
                     Currency
                   </label>
 
-                  <select
+                  <select id="gravel-currency"
                     value={currency}
                     onChange={(e) => {
                       setCurrency(
@@ -961,7 +961,7 @@ function InputField({
         {label}
       </label>
 
-      <input
+      <input aria-label={label}
         type="number"
         min="0"
         step="any"

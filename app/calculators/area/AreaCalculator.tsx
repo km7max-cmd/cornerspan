@@ -65,7 +65,7 @@ function Field({
       </label>
 
       <div className="grid grid-cols-[1fr_120px] gap-2">
-        <input
+        <input aria-label={label}
           type="number"
           inputMode="decimal"
           min="0"
@@ -413,11 +413,11 @@ export default function AreaCalculator() {
 
             {/* Shape */}
             <div className="mb-6">
-              <label className="mb-2 block text-sm font-bold text-slate-800">
+              <label htmlFor="area-shape" className="mb-2 block text-sm font-bold text-slate-800">
                 Shape
               </label>
 
-              <select
+              <select id="area-shape"
                 value={shape}
                 onChange={(e) => {
                   setShape(e.target.value);
@@ -601,12 +601,12 @@ export default function AreaCalculator() {
                 />
 
                 <div>
-                  <label className="mb-2 block text-sm font-semibold text-slate-700">
+                  <label htmlFor="area-angle" className="mb-2 block text-sm font-semibold text-slate-700">
                     Angle
                   </label>
 
                   <div className="grid grid-cols-[1fr_120px] gap-2">
-                    <input
+                    <input id="area-angle"
                       type="number"
                       inputMode="decimal"
                       min="0"
@@ -628,11 +628,11 @@ export default function AreaCalculator() {
 
             {/* Quantity */}
             <div className="mt-6">
-              <label className="mb-2 block text-sm font-semibold text-slate-700">
+              <label htmlFor="area-quantity" className="mb-2 block text-sm font-semibold text-slate-700">
                 Quantity
               </label>
 
-              <input
+              <input id="area-quantity"
                 type="number"
                 inputMode="numeric"
                 min="1"

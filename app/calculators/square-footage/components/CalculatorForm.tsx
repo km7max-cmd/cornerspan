@@ -594,7 +594,7 @@ export default function CalculatorForm() {
           {label} =
         </div>
 
-        <input
+        <input aria-label={label}
           type="text"
           inputMode="decimal"
           value={String(
@@ -625,11 +625,11 @@ export default function CalculatorForm() {
 
           {/* Shape */}
           <div className="mb-3 text-center">
-            <label className="mr-2 text-sm font-semibold text-slate-800">
+            <label htmlFor="square-footage-shape" className="mr-2 text-sm font-semibold text-slate-800">
               Area or Shape:
             </label>
 
-            <select
+            <select id="square-footage-shape"
               value={values.shape}
               onChange={(e) =>
                 changeShape(
@@ -1095,7 +1095,7 @@ export default function CalculatorForm() {
                 Add an extra
               </span>
 
-              <input
+              <input aria-label="Extra material waste percentage"
                 type="text"
                 inputMode="decimal"
                 value={values.waste}
@@ -1124,11 +1124,11 @@ export default function CalculatorForm() {
 
               {/* Currency */}
               <div>
-                <label className="mb-1 block text-xs text-slate-600">
+                <label htmlFor="square-footage-currency" className="mb-1 block text-xs text-slate-600">
                   currency
                 </label>
 
-                <select
+                <select id="square-footage-currency"
                   value={currency}
                   onChange={(e) =>
                     setCurrency(
@@ -1153,11 +1153,11 @@ export default function CalculatorForm() {
 
               {/* Price */}
               <div>
-                <label className="mb-1 block text-xs text-slate-600">
+                <label htmlFor="square-footage-price" className="mb-1 block text-xs text-slate-600">
                   price
                 </label>
 
-                <input
+                <input id="square-footage-price"
                   type="text"
                   inputMode="decimal"
                   value={values.price}
@@ -1173,11 +1173,11 @@ export default function CalculatorForm() {
 
               {/* Square Unit */}
               <div>
-                <label className="mb-1 block text-xs text-slate-600">
+                <label htmlFor="square-footage-price-unit" className="mb-1 block text-xs text-slate-600">
                   square unit
                 </label>
 
-                <select
+                <select id="square-footage-price-unit"
                   value={priceUnit}
                   onChange={(e) =>
                     setPriceUnit(

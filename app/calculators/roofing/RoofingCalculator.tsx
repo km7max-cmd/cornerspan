@@ -557,7 +557,7 @@ function Field({
   return (
     <div className="min-w-0">
       <label className={labelClass}>{label}</label>
-      <input
+      <input aria-label={label}
         type="number"
         min="0"
         step="any"

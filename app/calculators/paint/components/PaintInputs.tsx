@@ -164,7 +164,7 @@ function Field({
       </label>
 
       <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-slate-50 transition-all focus-within:border-blue-500 focus-within:bg-white focus-within:ring-4 focus-within:ring-blue-500/10">
-        <input
+        <input aria-label={unit ? `${label} (${unit})` : label}
           type="number"
           min="0"
           step="any"
@@ -216,7 +216,7 @@ function MixedField({
 
       <div className="grid grid-cols-2 gap-2">
         <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-slate-50 transition-all focus-within:border-blue-500 focus-within:bg-white focus-within:ring-4 focus-within:ring-blue-500/10">
-          <input
+          <input aria-label={`${label} (${primaryUnit})`}
             type="number"
             min="0"
             step="any"
@@ -237,7 +237,7 @@ function MixedField({
         </div>
 
         <div className="flex overflow-hidden rounded-xl border border-slate-200 bg-slate-50 transition-all focus-within:border-blue-500 focus-within:bg-white focus-within:ring-4 focus-within:ring-blue-500/10">
-          <input
+          <input aria-label={`${label} (${secondaryUnit})`}
             type="number"
             min="0"
             step="any"
@@ -522,7 +522,7 @@ export default function PaintInputs({
         <div className="mt-4">
 
           <div className="mb-2 flex items-center justify-between gap-2">
-            <label className="text-sm font-semibold text-slate-700">
+            <label htmlFor="paint-unit" className="text-sm font-semibold text-slate-700">
               Measurement units
             </label>
 
@@ -531,7 +531,7 @@ export default function PaintInputs({
             </span>
           </div>
 
-          <select
+          <select id="paint-unit"
             value={unit}
             onChange={(e) => {
               const newUnit =
@@ -827,11 +827,11 @@ export default function PaintInputs({
             {/* Currency */}
             <div>
 
-              <label className="mb-1.5 block text-sm font-medium text-slate-600">
+              <label htmlFor="paint-currency" className="mb-1.5 block text-sm font-medium text-slate-600">
                 Currency
               </label>
 
-              <select
+              <select id="paint-currency"
                 value={currency}
                 onChange={(e) =>
                   setCurrency(

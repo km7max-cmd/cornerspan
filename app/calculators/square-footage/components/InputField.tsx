@@ -29,7 +29,7 @@ export default function InputField({
 
       <div className="grid grid-cols-2 gap-3">
         <div className="relative">
-          <input
+          <input aria-label={`${label} feet`}
             type="number"
             min="0"
             step="any"
@@ -48,7 +48,7 @@ export default function InputField({
         </div>
 
         <div className="relative">
-          <input
+          <input aria-label={`${label} inches`}
             type="number"
             min="0"
             step="any"

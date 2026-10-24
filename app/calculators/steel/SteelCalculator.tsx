@@ -192,7 +192,7 @@ export default function SteelCalculator() {
                   className="w-full min-w-0 rounded-xl border border-slate-300 bg-slate-50 px-4 py-3.5 text-lg font-semibold outline-none transition focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100"
                 />
 
-                <select
+                <select aria-label="Bar length unit"
                   value={unit}
                   onChange={(e) => {
                     setUnit(e.target.value as Unit);
