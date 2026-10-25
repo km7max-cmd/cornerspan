@@ -1,4 +1,5 @@
 "use client";
+import CalculatorWorkspace from "../../components/CalculatorWorkspace";
 
 import { useMemo, useState } from "react";
 
@@ -192,7 +193,7 @@ export default function RoofingCalculator() {
   }
 
   return (
-    <section className="mx-auto w-full max-w-3xl">
+    <section className="mx-auto w-full max-w-6xl">
       <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-md shadow-slate-200/50">
         {/* Compact AI-inspired header */}
         <div className="relative overflow-hidden bg-gradient-to-r from-slate-950 via-slate-900 to-blue-950 px-4 py-4 text-white sm:px-5">
@@ -227,7 +228,95 @@ export default function RoofingCalculator() {
           </div>
         </div>
 
-        <div className="space-y-3 p-3 sm:p-4">
+        <CalculatorWorkspace label="Roofing to order" value={result ? result.squares.toLocaleString("en-US") : null} unit="squares" result={<>{result && (
+            <div
+              id="roofing-result"
+              className="space-y-3 scroll-mt-4"
+              aria-live="polite"
+            >
+              <div className="overflow-hidden rounded-xl border border-blue-200 bg-blue-50/60">
+                <div className="border-b border-blue-100 px-3 py-2">
+                  <p className="text-[10px] font-extrabold uppercase tracking-widest text-blue-700">
+                    Your roofing estimate
+                  </p>
+                </div>
+                <div className="p-3">
+                  <div className="flex flex-wrap items-end justify-between gap-3">
+                    <div>
+                      <p className="text-xs font-semibold text-slate-600">
+                        Calculated quantity
+                      </p>
+                      <p className="mt-1 text-3xl font-black tracking-tight text-slate-950">
+                        {formatNumber(result.squares)}{" "}
+                        <span className="text-sm font-bold text-slate-500">
+                          squares
+                        </span>
+                      </p>
+                    </div>
+                    <div className="rounded-lg border border-blue-100 bg-white px-3 py-2 text-right">
+                      <p className="text-[10px] font-semibold text-slate-500">
+                        Rounded equivalent
+                      </p>
+                      <p className="text-lg font-extrabold text-blue-700">
+                        {Math.ceil(result.squares)} squares
+                      </p>
+                    </div>
+                  </div>
+                  <div className="mt-3 flex items-center justify-between gap-3 rounded-lg bg-white px-3 py-2">
+                    <span className="text-xs font-semibold text-slate-600">
+                      Estimated shingle bundles
+                    </span>
+                    <span className="text-sm font-extrabold text-slate-900">
+                      {result.bundles.toLocaleString("en-US")}
+                    </span>
+                  </div>
+                  <p className="mt-2 text-[10px] leading-4 text-slate-500">
+                    Rounded squares are a planning equivalent. Bundle quantities
+                    depend on the coverage entered and the product packaging.
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2">
+                <ResultCard
+                  label="Building footprint"
+                  value={`${formatNumber(result.footprint)} ${units.area}`}
+                />
+                <ResultCard
+                  label="Roof surface area"
+                  value={`${formatNumber(result.roofArea)} ${units.area}`}
+                />
+                <ResultCard
+                  label="Area including waste"
+                  value={`${formatNumber(result.orderArea)} ${units.area}`}
+                />
+                <ResultCard
+                  label="Pitch multiplier"
+                  value={formatNumber(result.multiplier, 3)}
+                />
+                <ResultCard
+                  label="Roof angle"
+                  value={`${formatNumber(result.angle, 1)}°`}
+                />
+              </div>
+
+              {result.cost !== null && (
+                <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-3">
+                  <p className="text-[10px] font-extrabold uppercase tracking-wider text-emerald-700">
+                    Estimated material cost
+                  </p>
+                  <p className="mt-1 text-2xl font-black text-emerald-900">
+                    {currencySymbols[currency]}
+                    {formatNumber(result.cost)}
+                  </p>
+                  <p className="mt-1 text-[10px] leading-4 text-emerald-800">
+                    Based on rounded roofing squares and the entered price.
+                    Labor and accessories are excluded.
+                  </p>
+                </div>
+              )}
+            </div>
+          )}</>}>
           {/* Unit selector */}
           <div className="flex flex-wrap items-center justify-between gap-2">
             <span className="text-xs font-bold text-slate-600">
@@ -442,102 +531,14 @@ export default function RoofingCalculator() {
           </button>
 
           {/* Results */}
-          {result && (
-            <div
-              id="roofing-result"
-              className="space-y-3 scroll-mt-4"
-              aria-live="polite"
-            >
-              <div className="overflow-hidden rounded-xl border border-blue-200 bg-blue-50/60">
-                <div className="border-b border-blue-100 px-3 py-2">
-                  <p className="text-[10px] font-extrabold uppercase tracking-widest text-blue-700">
-                    Your roofing estimate
-                  </p>
-                </div>
-                <div className="p-3">
-                  <div className="flex flex-wrap items-end justify-between gap-3">
-                    <div>
-                      <p className="text-xs font-semibold text-slate-600">
-                        Calculated quantity
-                      </p>
-                      <p className="mt-1 text-3xl font-black tracking-tight text-slate-950">
-                        {formatNumber(result.squares)}{" "}
-                        <span className="text-sm font-bold text-slate-500">
-                          squares
-                        </span>
-                      </p>
-                    </div>
-                    <div className="rounded-lg border border-blue-100 bg-white px-3 py-2 text-right">
-                      <p className="text-[10px] font-semibold text-slate-500">
-                        Rounded equivalent
-                      </p>
-                      <p className="text-lg font-extrabold text-blue-700">
-                        {Math.ceil(result.squares)} squares
-                      </p>
-                    </div>
-                  </div>
-                  <div className="mt-3 flex items-center justify-between gap-3 rounded-lg bg-white px-3 py-2">
-                    <span className="text-xs font-semibold text-slate-600">
-                      Estimated shingle bundles
-                    </span>
-                    <span className="text-sm font-extrabold text-slate-900">
-                      {result.bundles.toLocaleString("en-US")}
-                    </span>
-                  </div>
-                  <p className="mt-2 text-[10px] leading-4 text-slate-500">
-                    Rounded squares are a planning equivalent. Bundle quantities
-                    depend on the coverage entered and the product packaging.
-                  </p>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-2">
-                <ResultCard
-                  label="Building footprint"
-                  value={`${formatNumber(result.footprint)} ${units.area}`}
-                />
-                <ResultCard
-                  label="Roof surface area"
-                  value={`${formatNumber(result.roofArea)} ${units.area}`}
-                />
-                <ResultCard
-                  label="Area including waste"
-                  value={`${formatNumber(result.orderArea)} ${units.area}`}
-                />
-                <ResultCard
-                  label="Pitch multiplier"
-                  value={formatNumber(result.multiplier, 3)}
-                />
-                <ResultCard
-                  label="Roof angle"
-                  value={`${formatNumber(result.angle, 1)}°`}
-                />
-              </div>
-
-              {result.cost !== null && (
-                <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-3">
-                  <p className="text-[10px] font-extrabold uppercase tracking-wider text-emerald-700">
-                    Estimated material cost
-                  </p>
-                  <p className="mt-1 text-2xl font-black text-emerald-900">
-                    {currencySymbols[currency]}
-                    {formatNumber(result.cost)}
-                  </p>
-                  <p className="mt-1 text-[10px] leading-4 text-emerald-800">
-                    Based on rounded roofing squares and the entered price.
-                    Labor and accessories are excluded.
-                  </p>
-                </div>
-              )}
-            </div>
-          )}
+          
 
           <p className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-[10px] leading-4 text-amber-900">
             <strong>Note:</strong> Hips, valleys, dormers, overhangs and roof
             complexity can change material needs. Verify the final quantity
             with your supplier or roofing contractor.
           </p>
-        </div>
+        </CalculatorWorkspace>
       </div>
     </section>
   );
@@ -587,3 +588,4 @@ function ResultCard({
     </div>
   );
 }
+

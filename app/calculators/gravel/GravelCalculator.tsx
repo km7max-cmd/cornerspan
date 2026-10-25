@@ -1,4 +1,5 @@
 "use client";
+import CalculatorWorkspace from "../../components/CalculatorWorkspace";
 
 import Image from "next/image";
 import { useMemo, useState } from "react";
@@ -385,16 +386,7 @@ export default function GravelCalculator() {
 
       {/* Hero Image */}
 
-      <div className="relative mb-6 aspect-[1774/887] overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-  <Image
-    src="/cornerspan-gravel-calculator-hero.webp"
-    alt="Gravel calculator for estimating gravel volume, cubic yards, US tons and material quantity"
-    fill
-    priority
-    sizes="(max-width: 768px) 100vw, 1200px"
-    className="object-cover"
-  />
-</div>
+      
 
       {/* Calculator */}
 
@@ -418,7 +410,158 @@ export default function GravelCalculator() {
 
         </div>
 
-        <div className="bg-slate-100 p-4 sm:p-6">
+        <CalculatorWorkspace label="Gravel to order" value={calculated && result ? formatNumber(result.orderTons) : null} unit="US tons" result={<>{calculated && result && (
+        <div
+          id="gravel-results"
+          className="mt-5 scroll-mt-24 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-lg"
+        >
+
+          <div className="bg-slate-950 px-5 py-5 text-white sm:px-7">
+
+            <p className="text-xs font-bold uppercase tracking-wider text-slate-400">
+              GRAVEL TO ORDER
+            </p>
+
+            <div className="mt-1 flex flex-wrap items-end gap-x-3 gap-y-1">
+
+              <span className="text-4xl font-black tracking-tight">
+                {formatNumber(
+                  result.orderTons
+                )}
+              </span>
+
+              <span className="pb-1 text-lg font-bold text-slate-300">
+                US tons
+              </span>
+
+            </div>
+
+            <p className="mt-2 text-sm text-slate-400">
+              About{" "}
+              {formatNumber(
+                result.orderCuYd
+              )}{" "}
+              cubic yards and{" "}
+              {formatNumber(
+                result.orderMetricTonnes
+              )}{" "}
+              metric tonnes including{" "}
+              {waste}% allowance.
+            </p>
+
+          </div>
+
+          <div className="grid grid-cols-2 gap-3 bg-slate-50 p-4 sm:grid-cols-4 sm:p-5">
+
+            <ResultBox
+              label="Cubic Yards"
+              value={formatNumber(
+                result.orderCuYd
+              )}
+              unit="yd³"
+            />
+
+            <ResultBox
+              label="Cubic Feet"
+              value={formatNumber(
+                result.orderCuFt
+              )}
+              unit="ft³"
+            />
+
+            <ResultBox
+              label="Cubic Meters"
+              value={formatNumber(
+                result.orderCuM
+              )}
+              unit="m³"
+            />
+
+            <ResultBox
+              label="Area"
+              value={formatNumber(
+                result.areaSqFt
+              )}
+              unit="ft²"
+            />
+
+          </div>
+
+          <div className="border-t border-slate-200 p-5 sm:p-7">
+
+            <h2 className="text-lg font-extrabold text-slate-900">
+              Calculation Breakdown
+            </h2>
+
+            <div className="mt-4 space-y-3 text-sm">
+
+              <BreakdownRow
+                label="Exact gravel volume"
+                value={`${formatNumber(
+                  result.volumeCuYd
+                )} yd³`}
+              />
+
+              <BreakdownRow
+                label="Exact gravel weight"
+                value={`${formatNumber(
+                  result.exactTons
+                )} US tons`}
+              />
+
+              <BreakdownRow
+                label="Metric weight"
+                value={`${formatNumber(
+                  result.orderMetricTonnes
+                )} metric tonnes`}
+              />
+
+              <BreakdownRow
+                label="Waste / allowance"
+                value={`${waste}%`}
+              />
+
+              <BreakdownRow
+                label="Additional gravel"
+                value={`${formatNumber(
+                  result.wasteTons
+                )} US tons`}
+              />
+
+              <BreakdownRow
+                label="Recommended order"
+                value={`${formatNumber(
+                  result.orderTons
+                )} US tons`}
+                strong
+              />
+
+              {result.cost !== null && (
+                <BreakdownRow
+                  label="Estimated material cost"
+                  value={`${
+                    CURRENCIES[currency]
+                  }${formatNumber(
+                    result.cost
+                  )}`}
+                  strong
+                />
+              )}
+
+            </div>
+          </div>
+
+          <div className="border-t border-slate-200 bg-slate-50 px-5 py-4 text-xs leading-5 text-slate-500 sm:px-7">
+            Gravel density varies by material,
+            particle size, moisture and compaction.
+            The calculator uses US short tons for
+            its tonnage estimate. Use the density
+            supplied by your local gravel supplier
+            for the most accurate order quantity.
+          </div>
+
+        </div>
+      )}</>}>
 
           <div className="space-y-4">
 
@@ -700,163 +843,21 @@ export default function GravelCalculator() {
             </button>
 
           </div>
-        </div>
+        </CalculatorWorkspace>
+<details className="my-5 rounded-xl border border-slate-200 bg-white p-4"><summary className="cursor-pointer text-sm font-semibold text-slate-600">Project illustration</summary><div className="mx-auto mt-4 max-w-xl"><div className="relative mb-6 aspect-[1774/887] overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+  <Image
+    src="/cornerspan-gravel-calculator-hero.webp"
+    alt="Gravel calculator for estimating gravel volume, cubic yards, US tons and material quantity"
+    fill
+    sizes="(max-width: 768px) 100vw, 1200px"
+    className="object-cover"
+  />
+</div></div></details>
       </div>
 
       {/* Results */}
 
-      {calculated && result && (
-        <div
-          id="gravel-results"
-          className="mt-5 scroll-mt-24 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-lg"
-        >
-
-          <div className="bg-slate-950 px-5 py-5 text-white sm:px-7">
-
-            <p className="text-xs font-bold uppercase tracking-wider text-slate-400">
-              GRAVEL TO ORDER
-            </p>
-
-            <div className="mt-1 flex flex-wrap items-end gap-x-3 gap-y-1">
-
-              <span className="text-4xl font-black tracking-tight">
-                {formatNumber(
-                  result.orderTons
-                )}
-              </span>
-
-              <span className="pb-1 text-lg font-bold text-slate-300">
-                US tons
-              </span>
-
-            </div>
-
-            <p className="mt-2 text-sm text-slate-400">
-              About{" "}
-              {formatNumber(
-                result.orderCuYd
-              )}{" "}
-              cubic yards and{" "}
-              {formatNumber(
-                result.orderMetricTonnes
-              )}{" "}
-              metric tonnes including{" "}
-              {waste}% allowance.
-            </p>
-
-          </div>
-
-          <div className="grid grid-cols-2 gap-3 bg-slate-50 p-4 sm:grid-cols-4 sm:p-5">
-
-            <ResultBox
-              label="Cubic Yards"
-              value={formatNumber(
-                result.orderCuYd
-              )}
-              unit="yd³"
-            />
-
-            <ResultBox
-              label="Cubic Feet"
-              value={formatNumber(
-                result.orderCuFt
-              )}
-              unit="ft³"
-            />
-
-            <ResultBox
-              label="Cubic Meters"
-              value={formatNumber(
-                result.orderCuM
-              )}
-              unit="m³"
-            />
-
-            <ResultBox
-              label="Area"
-              value={formatNumber(
-                result.areaSqFt
-              )}
-              unit="ft²"
-            />
-
-          </div>
-
-          <div className="border-t border-slate-200 p-5 sm:p-7">
-
-            <h2 className="text-lg font-extrabold text-slate-900">
-              Calculation Breakdown
-            </h2>
-
-            <div className="mt-4 space-y-3 text-sm">
-
-              <BreakdownRow
-                label="Exact gravel volume"
-                value={`${formatNumber(
-                  result.volumeCuYd
-                )} yd³`}
-              />
-
-              <BreakdownRow
-                label="Exact gravel weight"
-                value={`${formatNumber(
-                  result.exactTons
-                )} US tons`}
-              />
-
-              <BreakdownRow
-                label="Metric weight"
-                value={`${formatNumber(
-                  result.orderMetricTonnes
-                )} metric tonnes`}
-              />
-
-              <BreakdownRow
-                label="Waste / allowance"
-                value={`${waste}%`}
-              />
-
-              <BreakdownRow
-                label="Additional gravel"
-                value={`${formatNumber(
-                  result.wasteTons
-                )} US tons`}
-              />
-
-              <BreakdownRow
-                label="Recommended order"
-                value={`${formatNumber(
-                  result.orderTons
-                )} US tons`}
-                strong
-              />
-
-              {result.cost !== null && (
-                <BreakdownRow
-                  label="Estimated material cost"
-                  value={`${
-                    CURRENCIES[currency]
-                  }${formatNumber(
-                    result.cost
-                  )}`}
-                  strong
-                />
-              )}
-
-            </div>
-          </div>
-
-          <div className="border-t border-slate-200 bg-slate-50 px-5 py-4 text-xs leading-5 text-slate-500 sm:px-7">
-            Gravel density varies by material,
-            particle size, moisture and compaction.
-            The calculator uses US short tons for
-            its tonnage estimate. Use the density
-            supplied by your local gravel supplier
-            for the most accurate order quantity.
-          </div>
-
-        </div>
-      )}
+      
 
       {/* Formula */}
 
@@ -1034,3 +1035,4 @@ function BreakdownRow({
     </div>
   );
 }
+

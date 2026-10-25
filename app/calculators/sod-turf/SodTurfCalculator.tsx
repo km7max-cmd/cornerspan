@@ -1,4 +1,5 @@
 "use client";
+import CalculatorWorkspace from "../../components/CalculatorWorkspace";
 
 import { useMemo, useState } from "react";
 
@@ -209,7 +210,7 @@ export default function SodTurfCalculator() {
   return (
     <section
       aria-label="Sod and turf calculator"
-      className="mx-auto w-full max-w-2xl"
+      className="mx-auto w-full max-w-6xl"
     >
       <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_8px_32px_rgba(15,23,42,0.08)]">
 
@@ -250,7 +251,86 @@ export default function SodTurfCalculator() {
         </div>
 
         {/* Pure-white body */}
-        <div className="space-y-3.5 bg-[#FFFFFF] p-3 sm:p-4">
+        <CalculatorWorkspace label="Sod to order" value={showResults ? fmt(result.pieces, 0) : null} unit="pieces" result={<>{showResults && (
+            <section
+              aria-live="polite"
+              aria-label="Sod estimate results"
+              className="overflow-hidden rounded-xl border border-blue-100 bg-white"
+            >
+              <div className="flex items-center justify-between gap-3 bg-gradient-to-r from-slate-950 to-slate-800 px-4 py-3 text-white">
+                <div className="min-w-0">
+                  <p className="text-[11px] font-medium text-slate-300">
+                    Estimated sod quantity
+                  </p>
+
+                  <p className="mt-0.5 text-3xl font-extrabold tracking-tight">
+                    {fmt(result.pieces, 0)}
+                    <span className="ml-1.5 text-sm font-medium text-slate-300">
+                      pieces / rolls
+                    </span>
+                  </p>
+                </div>
+
+                <div className="shrink-0 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-right">
+                  <p className="text-[10px] text-slate-300">
+                    Order area
+                  </p>
+
+                  <p className="mt-0.5 text-sm font-bold">
+                    {fmt(result.orderArea)} {areaUnit}
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-x-4 gap-y-3 bg-white p-3.5 sm:grid-cols-3">
+                <div>
+                  <p className="text-[11px] text-slate-500">
+                    Lawn area
+                  </p>
+                  <p className="mt-0.5 text-sm font-bold text-slate-900">
+                    {fmt(result.lawnArea)} {areaUnit}
+                  </p>
+                </div>
+
+                <div>
+                  <p className="text-[11px] text-slate-500">
+                    Extra material ({waste}%)
+                  </p>
+                  <p className="mt-0.5 text-sm font-bold text-slate-900">
+                    {fmt(result.extraArea)} {areaUnit}
+                  </p>
+                </div>
+
+                {result.pallets !== null && (
+                  <div>
+                    <p className="text-[11px] text-slate-500">
+                      Estimated pallets
+                    </p>
+                    <p className="mt-0.5 text-sm font-bold text-slate-900">
+                      {fmt(result.pallets, 0)}
+                    </p>
+                  </div>
+                )}
+
+                {result.cost !== null && (
+                  <div>
+                    <p className="text-[11px] text-slate-500">
+                      Estimated material cost
+                    </p>
+                    <p className="mt-0.5 text-sm font-extrabold text-emerald-700">
+                      {currencies[currency]}{fmt(result.cost)}
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              <p className="border-t border-slate-100 bg-white px-3.5 py-2.5 text-[11px] leading-4 text-slate-500">
+                Planning estimate only. Confirm product coverage,
+                package quantities, and pricing with your supplier.
+                Actual order quantities may vary by product.
+              </p>
+            </section>
+          )}</>}>
           <div>
             <div className="mb-2.5 flex items-center justify-between gap-2">
               <h3 className="text-sm font-bold text-slate-900">
@@ -436,92 +516,14 @@ export default function SodTurfCalculator() {
           </button>
 
           {/* Results */}
-          {showResults && (
-            <section
-              aria-live="polite"
-              aria-label="Sod estimate results"
-              className="overflow-hidden rounded-xl border border-blue-100 bg-white"
-            >
-              <div className="flex items-center justify-between gap-3 bg-gradient-to-r from-slate-950 to-slate-800 px-4 py-3 text-white">
-                <div className="min-w-0">
-                  <p className="text-[11px] font-medium text-slate-300">
-                    Estimated sod quantity
-                  </p>
-
-                  <p className="mt-0.5 text-3xl font-extrabold tracking-tight">
-                    {fmt(result.pieces, 0)}
-                    <span className="ml-1.5 text-sm font-medium text-slate-300">
-                      pieces / rolls
-                    </span>
-                  </p>
-                </div>
-
-                <div className="shrink-0 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-right">
-                  <p className="text-[10px] text-slate-300">
-                    Order area
-                  </p>
-
-                  <p className="mt-0.5 text-sm font-bold">
-                    {fmt(result.orderArea)} {areaUnit}
-                  </p>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-x-4 gap-y-3 bg-white p-3.5 sm:grid-cols-3">
-                <div>
-                  <p className="text-[11px] text-slate-500">
-                    Lawn area
-                  </p>
-                  <p className="mt-0.5 text-sm font-bold text-slate-900">
-                    {fmt(result.lawnArea)} {areaUnit}
-                  </p>
-                </div>
-
-                <div>
-                  <p className="text-[11px] text-slate-500">
-                    Extra material ({waste}%)
-                  </p>
-                  <p className="mt-0.5 text-sm font-bold text-slate-900">
-                    {fmt(result.extraArea)} {areaUnit}
-                  </p>
-                </div>
-
-                {result.pallets !== null && (
-                  <div>
-                    <p className="text-[11px] text-slate-500">
-                      Estimated pallets
-                    </p>
-                    <p className="mt-0.5 text-sm font-bold text-slate-900">
-                      {fmt(result.pallets, 0)}
-                    </p>
-                  </div>
-                )}
-
-                {result.cost !== null && (
-                  <div>
-                    <p className="text-[11px] text-slate-500">
-                      Estimated material cost
-                    </p>
-                    <p className="mt-0.5 text-sm font-extrabold text-emerald-700">
-                      {currencies[currency]}{fmt(result.cost)}
-                    </p>
-                  </div>
-                )}
-              </div>
-
-              <p className="border-t border-slate-100 bg-white px-3.5 py-2.5 text-[11px] leading-4 text-slate-500">
-                Planning estimate only. Confirm product coverage,
-                package quantities, and pricing with your supplier.
-                Actual order quantities may vary by product.
-              </p>
-            </section>
-          )}
+          
 
           <p className="text-center text-[11px] text-slate-400">
             Built for practical lawn planning in US customary units.
           </p>
-        </div>
+        </CalculatorWorkspace>
       </div>
     </section>
   );
 }
+

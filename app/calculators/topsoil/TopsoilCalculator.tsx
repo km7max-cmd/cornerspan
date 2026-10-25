@@ -1,4 +1,5 @@
 "use client";
+import CalculatorWorkspace from "../../components/CalculatorWorkspace";
 
 import Image from "next/image";
 import { useMemo, useState } from "react";
@@ -236,7 +237,7 @@ export default function TopsoilCalculator() {
     "w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-base text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100";
 
   return (
-    <section className="mx-auto w-full max-w-3xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+    <section className="mx-auto w-full max-w-6xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
       {/* Header */}
       <div className="bg-slate-950 px-5 py-5 text-white sm:px-6">
         <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
@@ -250,20 +251,124 @@ export default function TopsoilCalculator() {
       </div>
 
       {/* Hero Image */}
-      <div className="bg-white px-3 pt-3 sm:px-4 sm:pt-4">
-        <div className="relative overflow-hidden rounded-xl">
-          <Image
-            src="/cornerspan-topsoil-calculator-hero.webp"
-            alt="Topsoil Calculator for lawns, gardens and landscaping projects"
-            width={1536}
-            height={1024}
-            priority
-            className="h-auto w-full object-cover"
-          />
-        </div>
-      </div>
+      
 
-      <div className="bg-slate-100 p-4 sm:p-6">
+      <CalculatorWorkspace label="Topsoil to order" value={calculated && result ? result.orderCuYd.toLocaleString("en-US", {maximumFractionDigits: 2}) : null} unit="yd³" result={<>{calculated && result && (
+          <div
+            id="topsoil-results"
+            className="mt-4 scroll-mt-24"
+          >
+            <div className="rounded-2xl bg-slate-950 p-5 text-white shadow-lg">
+              <p className="text-sm font-medium text-slate-300">
+                Estimated Order Quantity
+              </p>
+
+              <div className="mt-2 grid grid-cols-2 gap-3 sm:grid-cols-4">
+                <div className="rounded-xl bg-white/10 p-4">
+                  <div className="text-2xl font-bold">
+                    {formatNumber(result.orderCuYd)}
+                  </div>
+
+                  <div className="mt-1 text-xs text-slate-300">
+                    Cubic Yards
+                  </div>
+                </div>
+
+                <div className="rounded-xl bg-white/10 p-4">
+                  <div className="text-2xl font-bold">
+                    {formatNumber(result.orderTons)}
+                  </div>
+
+                  <div className="mt-1 text-xs text-slate-300">
+                    Tons
+                  </div>
+                </div>
+
+                <div className="rounded-xl bg-white/10 p-4">
+                  <div className="text-2xl font-bold">
+                    {formatNumber(result.orderCuFt)}
+                  </div>
+
+                  <div className="mt-1 text-xs text-slate-300">
+                    Cubic Feet
+                  </div>
+                </div>
+
+                <div className="rounded-xl bg-blue-600 p-4">
+                  <div className="text-2xl font-bold">
+                    {result.bags}
+                  </div>
+
+                  <div className="mt-1 text-xs text-blue-100">
+                    Bags ({bagSize} ft³)
+                  </div>
+                </div>
+              </div>
+
+              {/* Breakdown */}
+              <div className="mt-5 rounded-xl bg-white p-4 text-slate-900">
+                <h3 className="font-bold">
+                  Calculation Breakdown
+                </h3>
+
+                <div className="mt-3 space-y-2 text-sm">
+                  <div className="flex justify-between gap-4">
+                    <span>Project Area</span>
+
+                    <strong>
+                      {formatNumber(result.areaSqFt)} ft²
+                    </strong>
+                  </div>
+
+                  <div className="flex justify-between gap-4">
+                    <span>Exact Volume</span>
+
+                    <strong>
+                      {formatNumber(result.volumeCuYd)} yd³
+                    </strong>
+                  </div>
+
+                  <div className="flex justify-between gap-4">
+                    <span>Waste Allowance</span>
+
+                    <strong>{waste}%</strong>
+                  </div>
+
+                  <div className="flex justify-between gap-4 border-t pt-2">
+                    <span>Order Volume</span>
+
+                    <strong>
+                      {formatNumber(result.orderCuYd)} yd³
+                    </strong>
+                  </div>
+
+                  <div className="flex justify-between gap-4">
+                    <span>Estimated Weight</span>
+
+                    <strong>
+                      {formatNumber(result.orderTons)} tons
+                    </strong>
+                  </div>
+
+                  <div className="flex justify-between gap-4">
+                    <span>Volume in Metric</span>
+
+                    <strong>
+                      {formatNumber(result.orderCuM)} m³
+                    </strong>
+                  </div>
+                </div>
+              </div>
+
+              <p className="mt-4 text-xs leading-5 text-slate-400">
+                Soil density varies with moisture, organic content
+                and compaction. For purchasing, use the density
+                supplied by your local soil supplier whenever
+                available.
+              </p>
+            </div>
+          </div>
+        )}</>}>
         {/* Project Unit */}
         <div className="rounded-2xl bg-white p-4 shadow-sm">
           <label className="mb-3 block text-sm font-semibold text-slate-800">
@@ -504,129 +609,26 @@ export default function TopsoilCalculator() {
         </button>
 
         {/* Results */}
-        {calculated && result && (
-          <div
-            id="topsoil-results"
-            className="mt-4 scroll-mt-24"
-          >
-            <div className="rounded-2xl bg-slate-950 p-5 text-white shadow-lg">
-              <p className="text-sm font-medium text-slate-300">
-                Estimated Order Quantity
-              </p>
-
-              <div className="mt-2 grid grid-cols-2 gap-3 sm:grid-cols-4">
-                <div className="rounded-xl bg-white/10 p-4">
-                  <div className="text-2xl font-bold">
-                    {formatNumber(result.orderCuYd)}
-                  </div>
-
-                  <div className="mt-1 text-xs text-slate-300">
-                    Cubic Yards
-                  </div>
-                </div>
-
-                <div className="rounded-xl bg-white/10 p-4">
-                  <div className="text-2xl font-bold">
-                    {formatNumber(result.orderTons)}
-                  </div>
-
-                  <div className="mt-1 text-xs text-slate-300">
-                    Tons
-                  </div>
-                </div>
-
-                <div className="rounded-xl bg-white/10 p-4">
-                  <div className="text-2xl font-bold">
-                    {formatNumber(result.orderCuFt)}
-                  </div>
-
-                  <div className="mt-1 text-xs text-slate-300">
-                    Cubic Feet
-                  </div>
-                </div>
-
-                <div className="rounded-xl bg-blue-600 p-4">
-                  <div className="text-2xl font-bold">
-                    {result.bags}
-                  </div>
-
-                  <div className="mt-1 text-xs text-blue-100">
-                    Bags ({bagSize} ft³)
-                  </div>
-                </div>
-              </div>
-
-              {/* Breakdown */}
-              <div className="mt-5 rounded-xl bg-white p-4 text-slate-900">
-                <h3 className="font-bold">
-                  Calculation Breakdown
-                </h3>
-
-                <div className="mt-3 space-y-2 text-sm">
-                  <div className="flex justify-between gap-4">
-                    <span>Project Area</span>
-
-                    <strong>
-                      {formatNumber(result.areaSqFt)} ft²
-                    </strong>
-                  </div>
-
-                  <div className="flex justify-between gap-4">
-                    <span>Exact Volume</span>
-
-                    <strong>
-                      {formatNumber(result.volumeCuYd)} yd³
-                    </strong>
-                  </div>
-
-                  <div className="flex justify-between gap-4">
-                    <span>Waste Allowance</span>
-
-                    <strong>{waste}%</strong>
-                  </div>
-
-                  <div className="flex justify-between gap-4 border-t pt-2">
-                    <span>Order Volume</span>
-
-                    <strong>
-                      {formatNumber(result.orderCuYd)} yd³
-                    </strong>
-                  </div>
-
-                  <div className="flex justify-between gap-4">
-                    <span>Estimated Weight</span>
-
-                    <strong>
-                      {formatNumber(result.orderTons)} tons
-                    </strong>
-                  </div>
-
-                  <div className="flex justify-between gap-4">
-                    <span>Volume in Metric</span>
-
-                    <strong>
-                      {formatNumber(result.orderCuM)} m³
-                    </strong>
-                  </div>
-                </div>
-              </div>
-
-              <p className="mt-4 text-xs leading-5 text-slate-400">
-                Soil density varies with moisture, organic content
-                and compaction. For purchasing, use the density
-                supplied by your local soil supplier whenever
-                available.
-              </p>
-            </div>
-          </div>
-        )}
+        
 
         {calculated && !result && (
           <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm font-medium text-amber-800">
             Please enter a valid length, width and depth.
           </div>
         )}
-      </div>
+      </CalculatorWorkspace>
+<details className="my-5 rounded-xl border border-slate-200 bg-white p-4"><summary className="cursor-pointer text-sm font-semibold text-slate-600">Project illustration</summary><div className="mx-auto mt-4 max-w-xl"><div className="bg-white px-3 pt-3 sm:px-4 sm:pt-4">
+        <div className="relative overflow-hidden rounded-xl">
+          <Image
+            src="/cornerspan-topsoil-calculator-hero.webp"
+            alt="Topsoil Calculator for lawns, gardens and landscaping projects"
+            width={1536}
+            height={1024}
+            className="h-auto w-full object-cover"
+          />
+        </div>
+      </div></div></details>
     </section>
   );
 }
+

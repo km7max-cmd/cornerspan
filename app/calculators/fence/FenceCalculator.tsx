@@ -1,4 +1,5 @@
 "use client";
+import CalculatorWorkspace from "../../components/CalculatorWorkspace";
 
 import { useMemo, useState } from "react";
 import {
@@ -363,14 +364,204 @@ export default function FenceCalculator() {
             </div>
           </div>
 
-          <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-600">
+          <p className="mt-3 max-w-6xl text-sm leading-6 text-slate-600">
             Enter your fence dimensions to estimate the materials
             needed for your project.
           </p>
         </div>
 
         {/* Main calculator area */}
-        <div className="grid lg:grid-cols-2">
+        <CalculatorWorkspace label="Fence area" value={result.fenceAreaSqFt.toLocaleString("en-US", {maximumFractionDigits: 1})} unit="sq ft" result={<><div
+            id="fence-results"
+            className="bg-slate-50 px-5 py-6 sm:px-8"
+          >
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-wider text-blue-700">
+                  Your Estimate
+                </p>
+
+                <h2 className="mt-1 text-2xl font-bold text-slate-900">
+                  Materials Needed
+                </h2>
+              </div>
+
+              <div className="rounded-lg bg-white px-3 py-2 text-xs font-semibold text-slate-600 shadow-sm">
+                {projectUnit.toUpperCase()}
+              </div>
+            </div>
+
+            {/* Primary result */}
+            <div className="mt-6 rounded-2xl border border-blue-200 bg-white p-5 shadow-sm">
+              <p className="text-xs font-semibold uppercase tracking-wide text-slate-600">
+                Fence Area
+              </p>
+
+              <p className="mt-1 text-4xl font-bold tracking-tight text-blue-700">
+                {result.fenceAreaSqFt.toFixed(0)}
+              </p>
+
+              <p className="mt-1 text-sm text-slate-600">
+                square feet
+              </p>
+            </div>
+
+            {/* Main materials */}
+            <div className="mt-5 grid gap-3 sm:grid-cols-2">
+              <ResultCard
+                label="Fence Sections"
+                value={`${result.sections}`}
+              />
+
+              <ResultCard
+                label="Posts Needed"
+                value={`${result.posts}`}
+                primary
+              />
+
+              {!isChainLink && (
+                <ResultCard
+                  label="Rails Needed"
+                  value={`${result.rails}`}
+                />
+              )}
+
+              {mode === "wood-picket" && (
+                <>
+                  <ResultCard
+                    label="Pickets Exact"
+                    value={`${result.picketsExact}`}
+                  />
+
+                  <ResultCard
+                    label="Pickets to Order"
+                    value={`${result.picketsToOrder}`}
+                    primary
+                  />
+                </>
+              )}
+
+              {isPanel && (
+                <>
+                  <ResultCard
+                    label="Panels Exact"
+                    value={`${result.panelsExact}`}
+                  />
+
+                  <ResultCard
+                    label="Panels to Order"
+                    value={`${result.panelsToOrder}`}
+                    primary
+                  />
+                </>
+              )}
+
+              {isChainLink && (
+                <>
+                  <ResultCard
+                    label="Line Posts"
+                    value={`${result.linePosts}`}
+                  />
+
+                  <ResultCard
+                    label="Terminal Posts"
+                    value={`${result.terminalPosts}`}
+                  />
+
+                  <ResultCard
+                    label="Fabric"
+                    value={`${result.chainFabricFt.toFixed(
+                      1,
+                    )} ft`}
+                  />
+
+                  <ResultCard
+                    label="Fabric Rolls"
+                    value={`${result.chainRolls}`}
+                    primary
+                  />
+
+                  <ResultCard
+                    label="Top Rail"
+                    value={`${result.topRailFt.toFixed(
+                      1,
+                    )} ft`}
+                  />
+                </>
+              )}
+            </div>
+
+            {/* Concrete */}
+            <div className="mt-5 rounded-2xl border border-slate-200 bg-white p-5">
+              <h3 className="font-bold text-slate-900">
+                Concrete
+              </h3>
+
+              <div className="mt-4 grid gap-3 sm:grid-cols-3">
+                <ResultCard
+                  label="Per Post"
+                  value={`${result.concretePerPostCuFt.toFixed(
+                    2,
+                  )} cu ft`}
+                />
+
+                <ResultCard
+                  label="Total"
+                  value={`${result.concreteTotalCuFt.toFixed(
+                    2,
+                  )} cu ft`}
+                />
+
+                <ResultCard
+                  label={`${concreteBagSize}-lb Bags`}
+                  value={`${result.concreteBags}`}
+                  primary
+                />
+              </div>
+            </div>
+
+            {/* Paint */}
+            <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-5">
+              <h3 className="font-bold text-slate-900">
+                Paint / Stain
+              </h3>
+
+              <div className="mt-4">
+                <ResultCard
+                  label="Estimated Paint"
+                  value={`${result.paintGallons.toFixed(
+                    2,
+                  )} gal`}
+                  primary
+                />
+              </div>
+            </div>
+
+            {/* Cost */}
+            {result.estimatedCost !== null && (
+              <div className="mt-4 rounded-2xl border border-blue-200 bg-blue-50 p-5">
+                <p className="text-xs font-bold uppercase tracking-wide text-blue-700">
+                  Estimated Material Cost
+                </p>
+
+                <p className="mt-1 text-3xl font-bold text-slate-900">
+                  ${result.estimatedCost.toFixed(2)}
+                </p>
+
+                <p className="mt-2 text-xs leading-5 text-slate-600">
+                  Based on the prices entered above. Labor,
+                  delivery, permits and taxes are not included.
+                </p>
+              </div>
+            )}
+
+            {/* Small note */}
+            <p className="mt-5 text-xs leading-5 text-slate-600">
+              Estimates are for planning purposes. Actual material
+              requirements can vary with fence layout, terrain,
+              installation method and local requirements.
+            </p>
+          </div></>}>
 
           {/* LEFT — INPUTS */}
           <div className="border-b border-slate-200 lg:border-b-0 lg:border-r">
@@ -1080,199 +1271,10 @@ export default function FenceCalculator() {
           </div>
 
           {/* RIGHT — RESULTS */}
-          <div
-            id="fence-results"
-            className="bg-slate-50 px-5 py-6 sm:px-8"
-          >
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <p className="text-xs font-bold uppercase tracking-wider text-blue-700">
-                  Your Estimate
-                </p>
-
-                <h2 className="mt-1 text-2xl font-bold text-slate-900">
-                  Materials Needed
-                </h2>
-              </div>
-
-              <div className="rounded-lg bg-white px-3 py-2 text-xs font-semibold text-slate-600 shadow-sm">
-                {projectUnit.toUpperCase()}
-              </div>
-            </div>
-
-            {/* Primary result */}
-            <div className="mt-6 rounded-2xl border border-blue-200 bg-white p-5 shadow-sm">
-              <p className="text-xs font-semibold uppercase tracking-wide text-slate-600">
-                Fence Area
-              </p>
-
-              <p className="mt-1 text-4xl font-bold tracking-tight text-blue-700">
-                {result.fenceAreaSqFt.toFixed(0)}
-              </p>
-
-              <p className="mt-1 text-sm text-slate-600">
-                square feet
-              </p>
-            </div>
-
-            {/* Main materials */}
-            <div className="mt-5 grid gap-3 sm:grid-cols-2">
-              <ResultCard
-                label="Fence Sections"
-                value={`${result.sections}`}
-              />
-
-              <ResultCard
-                label="Posts Needed"
-                value={`${result.posts}`}
-                primary
-              />
-
-              {!isChainLink && (
-                <ResultCard
-                  label="Rails Needed"
-                  value={`${result.rails}`}
-                />
-              )}
-
-              {mode === "wood-picket" && (
-                <>
-                  <ResultCard
-                    label="Pickets Exact"
-                    value={`${result.picketsExact}`}
-                  />
-
-                  <ResultCard
-                    label="Pickets to Order"
-                    value={`${result.picketsToOrder}`}
-                    primary
-                  />
-                </>
-              )}
-
-              {isPanel && (
-                <>
-                  <ResultCard
-                    label="Panels Exact"
-                    value={`${result.panelsExact}`}
-                  />
-
-                  <ResultCard
-                    label="Panels to Order"
-                    value={`${result.panelsToOrder}`}
-                    primary
-                  />
-                </>
-              )}
-
-              {isChainLink && (
-                <>
-                  <ResultCard
-                    label="Line Posts"
-                    value={`${result.linePosts}`}
-                  />
-
-                  <ResultCard
-                    label="Terminal Posts"
-                    value={`${result.terminalPosts}`}
-                  />
-
-                  <ResultCard
-                    label="Fabric"
-                    value={`${result.chainFabricFt.toFixed(
-                      1,
-                    )} ft`}
-                  />
-
-                  <ResultCard
-                    label="Fabric Rolls"
-                    value={`${result.chainRolls}`}
-                    primary
-                  />
-
-                  <ResultCard
-                    label="Top Rail"
-                    value={`${result.topRailFt.toFixed(
-                      1,
-                    )} ft`}
-                  />
-                </>
-              )}
-            </div>
-
-            {/* Concrete */}
-            <div className="mt-5 rounded-2xl border border-slate-200 bg-white p-5">
-              <h3 className="font-bold text-slate-900">
-                Concrete
-              </h3>
-
-              <div className="mt-4 grid gap-3 sm:grid-cols-3">
-                <ResultCard
-                  label="Per Post"
-                  value={`${result.concretePerPostCuFt.toFixed(
-                    2,
-                  )} cu ft`}
-                />
-
-                <ResultCard
-                  label="Total"
-                  value={`${result.concreteTotalCuFt.toFixed(
-                    2,
-                  )} cu ft`}
-                />
-
-                <ResultCard
-                  label={`${concreteBagSize}-lb Bags`}
-                  value={`${result.concreteBags}`}
-                  primary
-                />
-              </div>
-            </div>
-
-            {/* Paint */}
-            <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-5">
-              <h3 className="font-bold text-slate-900">
-                Paint / Stain
-              </h3>
-
-              <div className="mt-4">
-                <ResultCard
-                  label="Estimated Paint"
-                  value={`${result.paintGallons.toFixed(
-                    2,
-                  )} gal`}
-                  primary
-                />
-              </div>
-            </div>
-
-            {/* Cost */}
-            {result.estimatedCost !== null && (
-              <div className="mt-4 rounded-2xl border border-blue-200 bg-blue-50 p-5">
-                <p className="text-xs font-bold uppercase tracking-wide text-blue-700">
-                  Estimated Material Cost
-                </p>
-
-                <p className="mt-1 text-3xl font-bold text-slate-900">
-                  ${result.estimatedCost.toFixed(2)}
-                </p>
-
-                <p className="mt-2 text-xs leading-5 text-slate-600">
-                  Based on the prices entered above. Labor,
-                  delivery, permits and taxes are not included.
-                </p>
-              </div>
-            )}
-
-            {/* Small note */}
-            <p className="mt-5 text-xs leading-5 text-slate-600">
-              Estimates are for planning purposes. Actual material
-              requirements can vary with fence layout, terrain,
-              installation method and local requirements.
-            </p>
-          </div>
-        </div>
+          
+        </CalculatorWorkspace>
       </div>
     </div>
   );
 }
+

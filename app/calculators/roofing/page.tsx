@@ -194,7 +194,7 @@ export default function RoofingPage() {
       <Breadcrumb current="Roofing Calculator" />
 
       <div className="mx-auto w-full max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
-        <section className="mx-auto max-w-4xl">
+        <section className="mx-auto max-w-6xl">
           <div className="mb-6">
             <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
               Roofing Calculator
@@ -558,3 +558,4 @@ function ExampleRow({
     </div>
   );
 }
+

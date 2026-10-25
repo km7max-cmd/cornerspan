@@ -1,4 +1,5 @@
 "use client";
+import CalculatorWorkspace from "../../../components/CalculatorWorkspace";
 
 import { useState } from "react";
 
@@ -614,14 +615,19 @@ export default function CalculatorForm() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-3xl">
+    <div className="mx-auto w-full max-w-6xl">
       <div className="border border-slate-400 bg-slate-100 p-2">
 
         <div className="border border-blue-800 bg-blue-700 px-3 py-2 text-center text-lg font-bold text-white">
           Square Footage Calculator
         </div>
 
-        <div className="p-3 sm:p-4">
+        <CalculatorWorkspace label="Total area" value={result ? result.squareFeet.toLocaleString("en-US", {maximumFractionDigits: 2}) : null} unit="sq ft" result={<><div id="calculator-answer">
+            <ResultBox
+              result={result}
+              error={error}
+            />
+          </div></>}>
 
           {/* Shape */}
           <div className="mb-3 text-center">
@@ -1226,13 +1232,8 @@ export default function CalculatorForm() {
           </div>
 
           {/* Result */}
-          <div id="calculator-answer">
-            <ResultBox
-              result={result}
-              error={error}
-            />
-          </div>
-        </div>
+          
+        </CalculatorWorkspace>
       </div>
 
       {/* Reference-style explanation */}
@@ -1335,3 +1336,4 @@ export default function CalculatorForm() {
     </div>
   );
 }
+

@@ -1,4 +1,5 @@
 "use client";
+import CalculatorWorkspace from "../../components/CalculatorWorkspace";
 
 import { useMemo, useRef, useState } from "react";
 
@@ -57,7 +58,15 @@ export default function BrickCalculator() {
         />
 
         <div className="mx-auto mt-6 max-w-6xl">
-          <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(340px,0.8fr)]">
+          <CalculatorWorkspace label="Bricks to order" value={Math.ceil(result.totalBricks).toLocaleString("en-US")} unit="bricks" result={<><div
+              ref={resultRef}
+              className="min-w-0 scroll-mt-24 lg:sticky lg:top-24"
+            >
+              <ResultCard
+                result={result}
+                currency={state.currency}
+              />
+            </div></>}>
 
             {/* Calculator Inputs */}
             <div className="min-w-0">
@@ -91,17 +100,9 @@ export default function BrickCalculator() {
             </div>
 
             {/* Calculation Results */}
-            <div
-              ref={resultRef}
-              className="min-w-0 scroll-mt-24 lg:sticky lg:top-24"
-            >
-              <ResultCard
-                result={result}
-                currency={state.currency}
-              />
-            </div>
+            
 
-          </div>
+          </CalculatorWorkspace>
 
           {/* Tips */}
           <section className="mx-auto mt-7 max-w-6xl rounded-2xl border border-blue-100 bg-blue-50 p-5 sm:p-6">
@@ -132,7 +133,7 @@ export default function BrickCalculator() {
           <RelatedCalculators />
 
           {/* Disclaimer */}
-          <p className="mx-auto mt-6 max-w-4xl px-2 pb-6 text-center text-xs leading-5 text-slate-500">
+          <p className="mx-auto mt-6 max-w-6xl px-2 pb-6 text-center text-xs leading-5 text-slate-500">
             This brick calculator provides an estimate for planning purposes only.
             Actual quantities may vary depending on brick dimensions, mortar joint
             thickness, openings, wall construction method, waste and site conditions.
@@ -143,3 +144,4 @@ export default function BrickCalculator() {
     </div>
   );
 }
+

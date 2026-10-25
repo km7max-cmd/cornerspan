@@ -1,4 +1,5 @@
 "use client";
+import CalculatorWorkspace from "../../components/CalculatorWorkspace";
 
 import { useMemo, useState } from "react";
 import Breadcrumb from "../../../components/Breadcrumb";
@@ -86,7 +87,7 @@ export default function SteelCalculator() {
   };
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-6 sm:px-6">
+    <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6">
       <Breadcrumb current="Steel Calculator" />
 
       {/* Page Heading */}
@@ -95,7 +96,7 @@ export default function SteelCalculator() {
           Steel Calculator
         </h1>
 
-        <p className="mt-3 max-w-3xl text-base leading-7 text-slate-600 sm:text-lg">
+        <p className="mt-3 max-w-6xl text-base leading-7 text-slate-600 sm:text-lg">
           Calculate rebar weight, total steel quantity, waste and estimated
           material cost for reinforcement bars.
         </p>
@@ -131,7 +132,97 @@ export default function SteelCalculator() {
         </div>
 
         {/* Calculator Body */}
-        <div className="p-5 sm:p-7">
+        <CalculatorWorkspace label="Steel to order" value={result ? (result.totalOrderWeight * 2.2046226218).toLocaleString("en-US", {maximumFractionDigits: 2}) : null} unit="lb" result={<><section
+        id="steel-results"
+        className="mt-8 scroll-mt-24 rounded-3xl border border-slate-200 bg-white p-5 shadow-lg sm:p-7"
+      >
+        <div className="mb-5">
+          <h2 className="text-2xl font-bold text-slate-900 sm:text-3xl">
+            Steel Calculation Result
+          </h2>
+
+          <p className="mt-1 text-sm text-slate-500">
+            {result
+              ? `${diameter} mm × ${bars} bars × ${
+                  unit === "ft" ? "feet" : "meters"
+                }`
+              : "Your calculated steel quantity will appear here."}
+          </p>
+        </div>
+
+        {!result ? (
+          <div className="rounded-2xl bg-slate-50 px-5 py-10 text-center">
+            <p className="text-base font-medium text-slate-500">
+              Enter your bar length and number of bars to calculate.
+            </p>
+          </div>
+        ) : (
+          <>
+            {/* Main Result */}
+            <div className="rounded-2xl bg-slate-900 p-6 text-center">
+              <p className="text-sm font-semibold uppercase tracking-wider text-slate-400">
+                Steel to Order
+              </p>
+
+              <p className="mt-2 text-4xl font-bold text-white sm:text-5xl">
+                {formatNumber(result.totalOrderWeight)} kg
+              </p>
+
+              <p className="mt-2 text-base text-slate-400">
+                {formatNumber(result.totalTonnes, 3)} tonnes
+              </p>
+            </div>
+
+            {/* Result Breakdown */}
+            <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              <ResultCard
+                label="Weight per Meter"
+                value={`${formatNumber(
+                  result.weightPerMeter,
+                  3
+                )} kg`}
+              />
+
+              <ResultCard
+                label="Weight per Bar"
+                value={`${formatNumber(
+                  result.weightPerBar
+                )} kg`}
+              />
+
+              <ResultCard
+                label="Total Bar Length"
+                value={`${formatNumber(
+                  result.totalLengthMeters
+                )} m`}
+              />
+
+              <ResultCard
+                label="Exact Steel Weight"
+                value={`${formatNumber(
+                  result.exactWeight
+                )} kg`}
+              />
+
+              <ResultCard
+                label="Waste Quantity"
+                value={`${formatNumber(
+                  result.wasteWeight
+                )} kg`}
+              />
+
+              {result.estimatedCost !== null && (
+                <ResultCard
+                  label="Estimated Cost"
+                  value={`₹${formatNumber(
+                    result.estimatedCost
+                  )}`}
+                />
+              )}
+            </div>
+          </>
+        )}
+      </section></>}>
           {/* Bar Diameter */}
           <div>
             <label
@@ -305,101 +396,11 @@ export default function SteelCalculator() {
           >
             Calculate Steel Weight
           </button>
-        </div>
+        </CalculatorWorkspace>
       </section>
 
       {/* Results */}
-      <section
-        id="steel-results"
-        className="mt-8 scroll-mt-24 rounded-3xl border border-slate-200 bg-white p-5 shadow-lg sm:p-7"
-      >
-        <div className="mb-5">
-          <h2 className="text-2xl font-bold text-slate-900 sm:text-3xl">
-            Steel Calculation Result
-          </h2>
-
-          <p className="mt-1 text-sm text-slate-500">
-            {result
-              ? `${diameter} mm × ${bars} bars × ${
-                  unit === "ft" ? "feet" : "meters"
-                }`
-              : "Your calculated steel quantity will appear here."}
-          </p>
-        </div>
-
-        {!result ? (
-          <div className="rounded-2xl bg-slate-50 px-5 py-10 text-center">
-            <p className="text-base font-medium text-slate-500">
-              Enter your bar length and number of bars to calculate.
-            </p>
-          </div>
-        ) : (
-          <>
-            {/* Main Result */}
-            <div className="rounded-2xl bg-slate-900 p-6 text-center">
-              <p className="text-sm font-semibold uppercase tracking-wider text-slate-400">
-                Steel to Order
-              </p>
-
-              <p className="mt-2 text-4xl font-bold text-white sm:text-5xl">
-                {formatNumber(result.totalOrderWeight)} kg
-              </p>
-
-              <p className="mt-2 text-base text-slate-400">
-                {formatNumber(result.totalTonnes, 3)} tonnes
-              </p>
-            </div>
-
-            {/* Result Breakdown */}
-            <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              <ResultCard
-                label="Weight per Meter"
-                value={`${formatNumber(
-                  result.weightPerMeter,
-                  3
-                )} kg`}
-              />
-
-              <ResultCard
-                label="Weight per Bar"
-                value={`${formatNumber(
-                  result.weightPerBar
-                )} kg`}
-              />
-
-              <ResultCard
-                label="Total Bar Length"
-                value={`${formatNumber(
-                  result.totalLengthMeters
-                )} m`}
-              />
-
-              <ResultCard
-                label="Exact Steel Weight"
-                value={`${formatNumber(
-                  result.exactWeight
-                )} kg`}
-              />
-
-              <ResultCard
-                label="Waste Quantity"
-                value={`${formatNumber(
-                  result.wasteWeight
-                )} kg`}
-              />
-
-              {result.estimatedCost !== null && (
-                <ResultCard
-                  label="Estimated Cost"
-                  value={`₹${formatNumber(
-                    result.estimatedCost
-                  )}`}
-                />
-              )}
-            </div>
-          </>
-        )}
-      </section>
+      
     </div>
   );
 }
@@ -423,3 +424,4 @@ function ResultCard({
     </div>
   );
 }
+

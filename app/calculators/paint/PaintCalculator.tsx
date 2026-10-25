@@ -1,4 +1,5 @@
 "use client";
+import CalculatorWorkspace from "../../components/CalculatorWorkspace";
 
 import { useState } from "react";
 
@@ -167,7 +168,11 @@ export default function PaintCalculator() {
   }
 
   return (
-    <section className="mt-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+    <CalculatorWorkspace label="Paint needed" value={result ? result.paintQuantity.toLocaleString("en-US", {maximumFractionDigits: 2}) : null} unit={result?.quantityUnit ?? "gallons"} result={<><PaintResults
+        result={result}
+        currency={currency}
+        currencySymbol={currencySymbol}
+      /></>}>
       <PaintInputs
         jobType={jobType}
         setJobType={setJobType}
@@ -229,14 +234,11 @@ export default function PaintCalculator() {
         onClick={handleCalculate}
         className="mt-6 w-full rounded-xl bg-blue-600 px-5 py-3.5 font-bold text-white shadow-sm transition hover:bg-blue-700 active:scale-[0.99]"
       >
-        ✨ Generate Paint Estimate
+        Calculate paint
       </button>
 
-      <PaintResults
-        result={result}
-        currency={currency}
-        currencySymbol={currencySymbol}
-      />
-    </section>
+      
+    </CalculatorWorkspace>
   );
 }
+

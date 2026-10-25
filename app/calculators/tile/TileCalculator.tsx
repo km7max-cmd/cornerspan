@@ -1,4 +1,5 @@
 "use client";
+import CalculatorWorkspace from "../../components/CalculatorWorkspace";
 
 import Image from "next/image";
 import { useMemo, useState } from "react";
@@ -354,7 +355,7 @@ export default function TileCalculator() {
           Tile Calculator
         </h1>
 
-        <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600 sm:text-base">
+        <p className="mt-2 max-w-6xl text-sm leading-6 text-slate-600 sm:text-base">
           Calculate how many tiles and boxes you need
           for floors or walls, including waste and
           optional material cost.
@@ -362,16 +363,7 @@ export default function TileCalculator() {
       </section>
 
       {/* Hero Image */}
-      <section className="mb-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-        <Image
-          src="/cornerspan-tile-calculator-hero.webp"
-          alt="Tile Calculator for estimating tile quantity, boxes, waste and cost"
-          width={1774}
-          height={887}
-          priority
-          className="h-auto w-full"
-        />
-      </section>
+      
 
       {/* Calculator */}
       <section className="overflow-hidden rounded-2xl border border-slate-200 bg-slate-100 shadow-lg">
@@ -406,7 +398,188 @@ export default function TileCalculator() {
         </div>
 
         {/* Calculator Body */}
-        <div className="bg-slate-100 p-3.5 sm:p-5">
+        <CalculatorWorkspace label="Tiles to order" value={calculated && result ? result.tilesToOrder.toLocaleString("en-US") : null} unit="tiles" result={<>{calculated && result && (
+            <div
+              id="tile-results"
+              className="mt-4 overflow-hidden rounded-2xl border border-slate-300 bg-white"
+            >
+
+              {/* Result Header */}
+              <div className="border-b border-slate-200 bg-slate-50 px-3 py-2.5">
+                <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500">
+                  Calculation Results
+                </p>
+              </div>
+
+              {/* Main Results */}
+              <div className="grid grid-cols-2 gap-2 p-3">
+
+                <div className="rounded-xl bg-slate-900 p-3 text-white">
+
+                  <p className="text-[10px] uppercase tracking-wide text-slate-400">
+                    Tiles to Order
+                  </p>
+
+                  <p className="mt-1 text-2xl font-bold">
+                    {formatNumber(
+                      result.tilesToOrder,
+                      0
+                    )}
+                  </p>
+
+                  <p className="mt-0.5 text-[10px] text-slate-400">
+                    tiles
+                  </p>
+
+                </div>
+
+                <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+
+                  <p className="text-[10px] uppercase tracking-wide text-slate-500">
+                    Boxes Required
+                  </p>
+
+                  <p className="mt-1 text-2xl font-bold text-slate-900">
+                    {formatNumber(
+                      result.boxesRequired,
+                      0
+                    )}
+                  </p>
+
+                  <p className="mt-0.5 text-[10px] text-slate-500">
+                    boxes ×{" "}
+                    {result.perBox}{" "}
+                    tiles
+                  </p>
+
+                </div>
+
+              </div>
+
+              {/* Breakdown */}
+              <div className="grid grid-cols-2 gap-2 px-3 pb-3 sm:grid-cols-3">
+
+                <ResultItem
+                  label="Surface Area"
+                  value={`${formatNumber(
+                    result.surfaceArea
+                  )} ft²`}
+                />
+
+                <ResultItem
+                  label="Tile Area"
+                  value={`${formatNumber(
+                    result.tileAreaSqFt,
+                    3
+                  )} ft²`}
+                />
+
+                <ResultItem
+                  label="Exact Tiles"
+                  value={formatNumber(
+                    result.exactTiles,
+                    1
+                  )}
+                />
+
+                <ResultItem
+                  label="Area + Waste"
+                  value={`${formatNumber(
+                    result.areaWithWaste
+                  )} ft²`}
+                />
+
+                <ResultItem
+                  label="Waste Tiles"
+                  value={formatNumber(
+                    result.wasteTiles,
+                    0
+                  )}
+                />
+
+                <ResultItem
+                  label="Box Rounding Extra"
+                  value={formatNumber(
+                    result.boxRoundingExtra,
+                    0
+                  )}
+                />
+
+                <ResultItem
+                  label="Actual Coverage"
+                  value={`${formatNumber(
+                    result.actualCoverage
+                  )} ft²`}
+                />
+
+                <ResultItem
+                  label="Waste Allowance"
+                  value={`${formatNumber(
+                    result.safeWaste,
+                    0
+                  )}%`}
+                />
+
+                {result.estimatedCost !==
+                  null && (
+                  <ResultItem
+                    label="Estimated Cost"
+                    value={formatCurrency(
+                      result.estimatedCost
+                    )}
+                  />
+                )}
+
+              </div>
+
+              {/* Summary */}
+              <div className="mx-3 mb-3 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5">
+
+                <p className="text-xs leading-5 text-slate-600">
+
+                  For a{" "}
+                  <strong className="text-slate-900">
+                    {formatNumber(
+                      result.surfaceArea
+                    )}{" "}
+                    ft²
+                  </strong>{" "}
+                  {surfaceType} using{" "}
+                  <strong className="text-slate-900">
+                    {tileLength} ×{" "}
+                    {tileWidth}{" "}
+                    {tileUnit === "in"
+                      ? "in"
+                      : "cm"}
+                  </strong>{" "}
+                  tiles with{" "}
+                  <strong className="text-slate-900">
+                    {result.safeWaste}%
+                    {" "}
+                    waste
+                  </strong>
+                  , order{" "}
+                  <strong className="text-slate-900">
+                    {
+                      result.tilesToOrder
+                    }{" "}
+                    tiles
+                  </strong>{" "}
+                  or{" "}
+                  <strong className="text-slate-900">
+                    {
+                      result.boxesRequired
+                    }{" "}
+                    boxes
+                  </strong>
+                  .
+
+                </p>
+
+              </div>
+
+            </div>
+          )}</>}>
 
           {/* Surface Type */}
           <div className="mb-4">
@@ -793,190 +966,18 @@ export default function TileCalculator() {
           </button>
 
           {/* Results */}
-          {calculated && result && (
-            <div
-              id="tile-results"
-              className="mt-4 overflow-hidden rounded-2xl border border-slate-300 bg-white"
-            >
+          
 
-              {/* Result Header */}
-              <div className="border-b border-slate-200 bg-slate-50 px-3 py-2.5">
-                <p className="text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500">
-                  Calculation Results
-                </p>
-              </div>
-
-              {/* Main Results */}
-              <div className="grid grid-cols-2 gap-2 p-3">
-
-                <div className="rounded-xl bg-slate-900 p-3 text-white">
-
-                  <p className="text-[10px] uppercase tracking-wide text-slate-400">
-                    Tiles to Order
-                  </p>
-
-                  <p className="mt-1 text-2xl font-bold">
-                    {formatNumber(
-                      result.tilesToOrder,
-                      0
-                    )}
-                  </p>
-
-                  <p className="mt-0.5 text-[10px] text-slate-400">
-                    tiles
-                  </p>
-
-                </div>
-
-                <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
-
-                  <p className="text-[10px] uppercase tracking-wide text-slate-500">
-                    Boxes Required
-                  </p>
-
-                  <p className="mt-1 text-2xl font-bold text-slate-900">
-                    {formatNumber(
-                      result.boxesRequired,
-                      0
-                    )}
-                  </p>
-
-                  <p className="mt-0.5 text-[10px] text-slate-500">
-                    boxes ×{" "}
-                    {result.perBox}{" "}
-                    tiles
-                  </p>
-
-                </div>
-
-              </div>
-
-              {/* Breakdown */}
-              <div className="grid grid-cols-2 gap-2 px-3 pb-3 sm:grid-cols-3">
-
-                <ResultItem
-                  label="Surface Area"
-                  value={`${formatNumber(
-                    result.surfaceArea
-                  )} ft²`}
-                />
-
-                <ResultItem
-                  label="Tile Area"
-                  value={`${formatNumber(
-                    result.tileAreaSqFt,
-                    3
-                  )} ft²`}
-                />
-
-                <ResultItem
-                  label="Exact Tiles"
-                  value={formatNumber(
-                    result.exactTiles,
-                    1
-                  )}
-                />
-
-                <ResultItem
-                  label="Area + Waste"
-                  value={`${formatNumber(
-                    result.areaWithWaste
-                  )} ft²`}
-                />
-
-                <ResultItem
-                  label="Waste Tiles"
-                  value={formatNumber(
-                    result.wasteTiles,
-                    0
-                  )}
-                />
-
-                <ResultItem
-                  label="Box Rounding Extra"
-                  value={formatNumber(
-                    result.boxRoundingExtra,
-                    0
-                  )}
-                />
-
-                <ResultItem
-                  label="Actual Coverage"
-                  value={`${formatNumber(
-                    result.actualCoverage
-                  )} ft²`}
-                />
-
-                <ResultItem
-                  label="Waste Allowance"
-                  value={`${formatNumber(
-                    result.safeWaste,
-                    0
-                  )}%`}
-                />
-
-                {result.estimatedCost !==
-                  null && (
-                  <ResultItem
-                    label="Estimated Cost"
-                    value={formatCurrency(
-                      result.estimatedCost
-                    )}
-                  />
-                )}
-
-              </div>
-
-              {/* Summary */}
-              <div className="mx-3 mb-3 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5">
-
-                <p className="text-xs leading-5 text-slate-600">
-
-                  For a{" "}
-                  <strong className="text-slate-900">
-                    {formatNumber(
-                      result.surfaceArea
-                    )}{" "}
-                    ft²
-                  </strong>{" "}
-                  {surfaceType} using{" "}
-                  <strong className="text-slate-900">
-                    {tileLength} ×{" "}
-                    {tileWidth}{" "}
-                    {tileUnit === "in"
-                      ? "in"
-                      : "cm"}
-                  </strong>{" "}
-                  tiles with{" "}
-                  <strong className="text-slate-900">
-                    {result.safeWaste}%
-                    {" "}
-                    waste
-                  </strong>
-                  , order{" "}
-                  <strong className="text-slate-900">
-                    {
-                      result.tilesToOrder
-                    }{" "}
-                    tiles
-                  </strong>{" "}
-                  or{" "}
-                  <strong className="text-slate-900">
-                    {
-                      result.boxesRequired
-                    }{" "}
-                    boxes
-                  </strong>
-                  .
-
-                </p>
-
-              </div>
-
-            </div>
-          )}
-
-        </div>
+        </CalculatorWorkspace>
+<details className="my-5 rounded-xl border border-slate-200 bg-white p-4"><summary className="cursor-pointer text-sm font-semibold text-slate-600">Project illustration</summary><div className="mx-auto mt-4 max-w-xl"><section className="mb-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <Image
+          src="/cornerspan-tile-calculator-hero.webp"
+          alt="Tile Calculator for estimating tile quantity, boxes, waste and cost"
+          width={1774}
+          height={887}
+          className="h-auto w-full"
+        />
+      </section></div></details>
       </section>
 
       {/* Tip */}
@@ -1018,3 +1019,4 @@ function ResultItem({
     </div>
   );
 }
+

@@ -161,7 +161,7 @@ export default function SodTurfPage() {
         {/* Calculator first */}
         <section
           id="calculator"
-          className="mx-auto mt-4 max-w-4xl scroll-mt-24"
+          className="mx-auto mt-4 max-w-6xl scroll-mt-24"
         >
           <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">
             Sod Calculator
@@ -698,3 +698,4 @@ export default function SodTurfPage() {
     </div>
   );
 }
+

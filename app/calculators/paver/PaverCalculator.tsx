@@ -1,5 +1,6 @@
 
 "use client";
+import CalculatorWorkspace from "../../components/CalculatorWorkspace";
 
 import { useMemo, useState } from "react";
 import { calculatePavers, type PaverUnit } from "./calculations";
@@ -162,7 +163,7 @@ export default function PaverCalculator() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-4xl px-1.5 sm:px-3">
+    <div className="mx-auto w-full max-w-6xl px-1.5 sm:px-3">
       <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-md">
         <header className="flex items-center gap-2.5 bg-gradient-to-r from-slate-950 to-blue-800 px-3 py-2 text-white">
           <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/10 text-lg">
@@ -178,7 +179,86 @@ export default function PaverCalculator() {
           </div>
         </header>
 
-        <div className="grid lg:grid-cols-2">
+        <CalculatorWorkspace label="Pavers to order" value={showResults && result ? result.paversToOrder.toLocaleString("en-US") : null} unit="pavers" result={<><aside
+            aria-live="polite"
+            className="border-t border-slate-200 bg-slate-50 p-2.5 sm:p-3 lg:border-l lg:border-t-0"
+          >
+            {!showResults || !result ? (
+              <div className="flex flex-col items-center justify-center rounded-lg border border-dashed border-slate-300 bg-white px-3 py-4 text-center">
+                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-50 text-lg text-blue-700">
+                  ▦
+                </div>
+                <h3 className="mt-2 text-sm font-bold text-slate-800">
+                  Your results
+                </h3>
+                <p className="mt-1 max-w-xs text-xs leading-4 text-slate-500">
+                  Enter your dimensions and tap Calculate Results.
+                </p>
+              </div>
+            ) : (
+              <div>
+                <h3 className="text-sm font-extrabold text-slate-900">
+                  Calculation results
+                </h3>
+
+                <div className="mt-2 rounded-lg bg-gradient-to-br from-blue-700 to-indigo-800 p-3 text-white">
+                  <p className="text-[11px] font-semibold text-blue-100">
+                    Recommended pavers to order
+                  </p>
+                  <p className="mt-1 break-words text-3xl font-extrabold tracking-tight">
+                    {formatNumber(result.paversToOrder, 0)}
+                  </p>
+                  <p className="mt-1 text-[10px] text-blue-100">
+                    Includes {formatNumber(Number(wastePercent), 1)}% waste
+                  </p>
+                </div>
+
+                <div className="mt-2 grid grid-cols-2 gap-1.5">
+                  <ResultCard
+                    label="Exact pavers"
+                    value={formatNumber(result.exactPavers, 0)}
+                  />
+                  <ResultCard
+                    label="Project area"
+                    value={`${formatNumber(result.projectAreaSqFt)} ft²`}
+                  />
+                  <ResultCard
+                    label="Area + waste"
+                    value={`${formatNumber(result.areaWithWasteSqFt)} ft²`}
+                  />
+                  <ResultCard
+                    label="Metric area"
+                    value={`${formatNumber(result.projectAreaSqM)} m²`}
+                  />
+                </div>
+
+                {result.estimatedCost !== undefined && (
+                  <div className="mt-2 rounded-lg border border-emerald-200 bg-emerald-50 p-3">
+                    <p className="text-[11px] font-semibold text-emerald-800">
+                      Estimated material cost
+                    </p>
+                    <p className="mt-1 break-words text-xl font-extrabold text-emerald-950">
+                      {formatNumber(result.estimatedCost, 2)}
+                    </p>
+                    <p className="mt-1 text-[10px] text-emerald-800">
+                      Based on your price per paver.
+                    </p>
+                  </div>
+                )}
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowResults(false);
+                    setError("");
+                  }}
+                  className="mt-2 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-100"
+                >
+                  Back to Calculator
+                </button>
+              </div>
+            )}
+          </aside></>}>
           <div className="space-y-2.5 p-2.5 sm:p-3">
             <section>
               <div className="mb-1 flex items-center justify-between gap-2">
@@ -368,87 +448,8 @@ export default function PaverCalculator() {
             </button>
           </div>
 
-          <aside
-            aria-live="polite"
-            className="border-t border-slate-200 bg-slate-50 p-2.5 sm:p-3 lg:border-l lg:border-t-0"
-          >
-            {!showResults || !result ? (
-              <div className="flex flex-col items-center justify-center rounded-lg border border-dashed border-slate-300 bg-white px-3 py-4 text-center">
-                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-50 text-lg text-blue-700">
-                  ▦
-                </div>
-                <h3 className="mt-2 text-sm font-bold text-slate-800">
-                  Your results
-                </h3>
-                <p className="mt-1 max-w-xs text-xs leading-4 text-slate-500">
-                  Enter your dimensions and tap Calculate Results.
-                </p>
-              </div>
-            ) : (
-              <div>
-                <h3 className="text-sm font-extrabold text-slate-900">
-                  Calculation results
-                </h3>
-
-                <div className="mt-2 rounded-lg bg-gradient-to-br from-blue-700 to-indigo-800 p-3 text-white">
-                  <p className="text-[11px] font-semibold text-blue-100">
-                    Recommended pavers to order
-                  </p>
-                  <p className="mt-1 break-words text-3xl font-extrabold tracking-tight">
-                    {formatNumber(result.paversToOrder, 0)}
-                  </p>
-                  <p className="mt-1 text-[10px] text-blue-100">
-                    Includes {formatNumber(Number(wastePercent), 1)}% waste
-                  </p>
-                </div>
-
-                <div className="mt-2 grid grid-cols-2 gap-1.5">
-                  <ResultCard
-                    label="Exact pavers"
-                    value={formatNumber(result.exactPavers, 0)}
-                  />
-                  <ResultCard
-                    label="Project area"
-                    value={`${formatNumber(result.projectAreaSqFt)} ft²`}
-                  />
-                  <ResultCard
-                    label="Area + waste"
-                    value={`${formatNumber(result.areaWithWasteSqFt)} ft²`}
-                  />
-                  <ResultCard
-                    label="Metric area"
-                    value={`${formatNumber(result.projectAreaSqM)} m²`}
-                  />
-                </div>
-
-                {result.estimatedCost !== undefined && (
-                  <div className="mt-2 rounded-lg border border-emerald-200 bg-emerald-50 p-3">
-                    <p className="text-[11px] font-semibold text-emerald-800">
-                      Estimated material cost
-                    </p>
-                    <p className="mt-1 break-words text-xl font-extrabold text-emerald-950">
-                      {formatNumber(result.estimatedCost, 2)}
-                    </p>
-                    <p className="mt-1 text-[10px] text-emerald-800">
-                      Based on your price per paver.
-                    </p>
-                  </div>
-                )}
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowResults(false);
-                    setError("");
-                  }}
-                  className="mt-2 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-100"
-                >
-                  Back to Calculator
-                </button>
-              </div>
-            )}
-          </aside>
-        </div>
+          
+        </CalculatorWorkspace>
 
         <footer className="border-t border-slate-200 px-2 py-1.5">
           <p className="text-center text-[10px] leading-3 text-slate-500">
@@ -504,3 +505,4 @@ function ResultCard({
     </div>
   );
 }
+

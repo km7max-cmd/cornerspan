@@ -145,13 +145,17 @@ export default function PaintCalculatorPage() {
       </section>
 
       {/* Paint guide image with reserved space to reduce layout shifts */}
-      <figure className="mt-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+
+
+      <PaintCalculator />
+
+      <details className="mt-6 rounded-xl border border-slate-200 bg-white p-4"><summary className="cursor-pointer text-sm font-semibold text-slate-600">Project illustration</summary><div className="mx-auto max-w-xl">      <figure className="mt-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
         <div className="relative aspect-[3/2] w-full">
           <Image
             src="/paint-calculator.webp"
             alt="Paint Calculator guide showing room painting, wall dimensions, paint coverage, and cost estimation"
             fill
-            priority
+            loading="lazy"
             fetchPriority="high"
             sizes="(max-width: 768px) 100vw, 1200px"
             className="object-contain"
@@ -162,9 +166,7 @@ export default function PaintCalculatorPage() {
           Learn how room dimensions, doors, windows, paint coverage, and
           coats affect your paint quantity and cost estimate.
         </figcaption>
-      </figure>
-
-      <PaintCalculator />
+      </figure></div></details>
 
       <RelatedCalculators />
 
@@ -172,3 +174,4 @@ export default function PaintCalculatorPage() {
     </div>
   );
 }
+

@@ -130,7 +130,7 @@ export default function TopsoilPage() {
       <div className="mx-auto w-full max-w-7xl px-4 pb-16 sm:px-6 lg:px-8">
 
         {/* Calculator */}
-        <div className="mx-auto max-w-3xl">
+        <div className="mx-auto max-w-6xl">
           <TopsoilCalculator />
         </div>
 
@@ -315,3 +315,4 @@ export default function TopsoilPage() {
     </>
   );
 }
+

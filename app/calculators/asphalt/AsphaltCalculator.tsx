@@ -1,4 +1,5 @@
 "use client";
+import CalculatorWorkspace from "../../components/CalculatorWorkspace";
 
 import { useMemo, useState } from "react";
 
@@ -288,19 +289,7 @@ export default function AsphaltCalculator() {
 
       {/* HERO IMAGE */}
 
-<div className="mb-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-  <div className="relative aspect-[3/2] w-full overflow-hidden">
-    <img
-      src="/cornerspan-asphalt-calculator-hero.webp"
-      alt="Asphalt Calculator for estimating asphalt quantity, weight, volume and cost"
-      width={1536}
-      height={1024}
-      fetchPriority="high"
-      decoding="async"
-      className="absolute inset-0 h-full w-full object-cover"
-    />
-  </div>
-</div>
+
 
       {/* CALCULATOR */}
 
@@ -325,7 +314,158 @@ export default function AsphaltCalculator() {
 
         {/* BODY */}
 
-        <div className="bg-slate-100 p-4 sm:p-6">
+        <CalculatorWorkspace label="Asphalt to order" value={result ? formatNumber(isMetric ? result.orderMetricTonnes : result.orderShortTons) : null} unit={isMetric ? "metric tons" : "US tons"} result={<>{result && (
+              <div
+                id="asphalt-results"
+                className="scroll-mt-24 rounded-2xl border border-blue-200 bg-white p-4 shadow-sm sm:p-5"
+              >
+
+                {/* PRIMARY RESULT */}
+
+                <div className="rounded-xl bg-slate-950 p-5 text-center">
+                  <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-400">
+                    ASPHALT TO ORDER
+                  </p>
+
+                  <p className="mt-2 text-4xl font-black tracking-tight text-white">
+                    {formatNumber(
+                      isMetric
+                        ? result.orderMetricTonnes
+                        : result.orderShortTons
+                    )}{" "}
+                    {isMetric
+                      ? "tonnes"
+                      : "US tons"}
+                  </p>
+
+                  <p className="mt-2 text-xs text-slate-400">
+                    Includes {waste}% waste / overage
+                  </p>
+                </div>
+
+                {/* BOTH UNIT RESULTS */}
+
+                <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                  <ResultItem
+                    label="US Short Tons"
+                    value={`${formatNumber(
+                      result.orderShortTons
+                    )} US tons`}
+                  />
+
+                  <ResultItem
+                    label="Metric Tonnes"
+                    value={`${formatNumber(
+                      result.orderMetricTonnes
+                    )} tonnes`}
+                  />
+                </div>
+
+                {/* RESULT GRID */}
+
+                <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                  <ResultItem
+                    label="Base Weight"
+                    value={`${formatNumber(
+                      isMetric
+                        ? result.baseMetricTonnes
+                        : result.baseShortTons
+                    )} ${
+                      isMetric
+                        ? "tonnes"
+                        : "US tons"
+                    }`}
+                  />
+
+                  <ResultItem
+                    label="Order Weight"
+                    value={`${formatNumber(
+                      result.orderWeightKg
+                    )} kg`}
+                  />
+
+                  <ResultItem
+                    label="Exact Volume"
+                    value={`${formatNumber(
+                      isMetric
+                        ? result.volumeCuM
+                        : result.volumeCuFt
+                    )} ${
+                      isMetric
+                        ? "m³"
+                        : "ft³"
+                    }`}
+                  />
+
+                  <ResultItem
+                    label="Order Volume"
+                    value={`${formatNumber(
+                      isMetric
+                        ? result.orderCuM
+                        : result.orderCuFt
+                    )} ${
+                      isMetric
+                        ? "m³"
+                        : "ft³"
+                    }`}
+                  />
+
+                  <ResultItem
+                    label="Cubic Yards"
+                    value={`${formatNumber(
+                      result.orderCuYd
+                    )} yd³`}
+                  />
+
+                  <ResultItem
+                    label="Project Area"
+                    value={`${formatNumber(
+                      isMetric
+                        ? result.areaSqM
+                        : result.areaSqFt
+                    )} ${
+                      isMetric
+                        ? "m²"
+                        : "ft²"
+                    }`}
+                  />
+
+                  {result.cost !== null && (
+                    <ResultItem
+                      label="Estimated Material Cost"
+                      value={`${currencySymbol}${formatNumber(
+                        result.cost
+                      )}`}
+                    />
+                  )}
+                </div>
+
+                {/* FORMULA */}
+
+                <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4">
+                  <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
+                    Calculation
+                  </p>
+
+                  <p className="mt-2 text-sm leading-6 text-slate-700">
+                    Area = Length × Width
+                  </p>
+
+                  <p className="text-sm leading-6 text-slate-700">
+                    Volume = Area × Compacted Thickness
+                  </p>
+
+                  <p className="text-sm leading-6 text-slate-700">
+                    Weight = Volume × Asphalt Density
+                  </p>
+
+                  <p className="text-sm leading-6 text-slate-700">
+                    Order Quantity = Base Quantity ×
+                    (1 + Waste ÷ 100)
+                  </p>
+                </div>
+              </div>
+            )}</>}>
 
           <div className="space-y-4">
 
@@ -540,160 +680,22 @@ export default function AsphaltCalculator() {
 
             {/* RESULTS */}
 
-            {result && (
-              <div
-                id="asphalt-results"
-                className="scroll-mt-24 rounded-2xl border border-blue-200 bg-white p-4 shadow-sm sm:p-5"
-              >
-
-                {/* PRIMARY RESULT */}
-
-                <div className="rounded-xl bg-slate-950 p-5 text-center">
-                  <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-400">
-                    ASPHALT TO ORDER
-                  </p>
-
-                  <p className="mt-2 text-4xl font-black tracking-tight text-white">
-                    {formatNumber(
-                      isMetric
-                        ? result.orderMetricTonnes
-                        : result.orderShortTons
-                    )}{" "}
-                    {isMetric
-                      ? "tonnes"
-                      : "US tons"}
-                  </p>
-
-                  <p className="mt-2 text-xs text-slate-400">
-                    Includes {waste}% waste / overage
-                  </p>
-                </div>
-
-                {/* BOTH UNIT RESULTS */}
-
-                <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                  <ResultItem
-                    label="US Short Tons"
-                    value={`${formatNumber(
-                      result.orderShortTons
-                    )} US tons`}
-                  />
-
-                  <ResultItem
-                    label="Metric Tonnes"
-                    value={`${formatNumber(
-                      result.orderMetricTonnes
-                    )} tonnes`}
-                  />
-                </div>
-
-                {/* RESULT GRID */}
-
-                <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                  <ResultItem
-                    label="Base Weight"
-                    value={`${formatNumber(
-                      isMetric
-                        ? result.baseMetricTonnes
-                        : result.baseShortTons
-                    )} ${
-                      isMetric
-                        ? "tonnes"
-                        : "US tons"
-                    }`}
-                  />
-
-                  <ResultItem
-                    label="Order Weight"
-                    value={`${formatNumber(
-                      result.orderWeightKg
-                    )} kg`}
-                  />
-
-                  <ResultItem
-                    label="Exact Volume"
-                    value={`${formatNumber(
-                      isMetric
-                        ? result.volumeCuM
-                        : result.volumeCuFt
-                    )} ${
-                      isMetric
-                        ? "m³"
-                        : "ft³"
-                    }`}
-                  />
-
-                  <ResultItem
-                    label="Order Volume"
-                    value={`${formatNumber(
-                      isMetric
-                        ? result.orderCuM
-                        : result.orderCuFt
-                    )} ${
-                      isMetric
-                        ? "m³"
-                        : "ft³"
-                    }`}
-                  />
-
-                  <ResultItem
-                    label="Cubic Yards"
-                    value={`${formatNumber(
-                      result.orderCuYd
-                    )} yd³`}
-                  />
-
-                  <ResultItem
-                    label="Project Area"
-                    value={`${formatNumber(
-                      isMetric
-                        ? result.areaSqM
-                        : result.areaSqFt
-                    )} ${
-                      isMetric
-                        ? "m²"
-                        : "ft²"
-                    }`}
-                  />
-
-                  {result.cost !== null && (
-                    <ResultItem
-                      label="Estimated Material Cost"
-                      value={`${currencySymbol}${formatNumber(
-                        result.cost
-                      )}`}
-                    />
-                  )}
-                </div>
-
-                {/* FORMULA */}
-
-                <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4">
-                  <p className="text-xs font-bold uppercase tracking-wide text-slate-500">
-                    Calculation
-                  </p>
-
-                  <p className="mt-2 text-sm leading-6 text-slate-700">
-                    Area = Length × Width
-                  </p>
-
-                  <p className="text-sm leading-6 text-slate-700">
-                    Volume = Area × Compacted Thickness
-                  </p>
-
-                  <p className="text-sm leading-6 text-slate-700">
-                    Weight = Volume × Asphalt Density
-                  </p>
-
-                  <p className="text-sm leading-6 text-slate-700">
-                    Order Quantity = Base Quantity ×
-                    (1 + Waste ÷ 100)
-                  </p>
-                </div>
-              </div>
-            )}
+            
           </div>
-        </div>
+        </CalculatorWorkspace>
+<details className="my-5 rounded-xl border border-slate-200 bg-white p-4"><summary className="cursor-pointer text-sm font-semibold text-slate-600">Project illustration</summary><div className="mx-auto mt-4 max-w-xl"><div className="mb-6 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+  <div className="relative aspect-[3/2] w-full overflow-hidden">
+    <img
+      src="/cornerspan-asphalt-calculator-hero.webp"
+      alt="Asphalt Calculator for estimating asphalt quantity, weight, volume and cost"
+      width={1536}
+      height={1024}
+      loading="lazy"
+      decoding="async"
+      className="absolute inset-0 h-full w-full object-cover"
+    />
+  </div>
+</div></div></details>
       </div>
     </section>
   );
@@ -718,3 +720,4 @@ function ResultItem({
     </div>
   );
 }
+
