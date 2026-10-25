@@ -1,6 +1,7 @@
 "use client";
 import CalculatorWorkspace from "../../components/CalculatorWorkspace";
 
+import { validInput, safeEstimate, INPUT_ERROR } from "../shared/numbers";
 import { useMemo, useState } from "react";
 import {
   calculateFence,
@@ -324,6 +325,9 @@ export default function FenceCalculator() {
     pricePaintGallon,
   ]);
 
+  const validMeasurements = [projectLength, projectHeight, postSpacing, holeDiameter, holeDepth, paintCoverage, ...(mode === "wood-picket" ? [picketWidth] : mode === "wood-panel" ? [panelWidth] : [chainRollLength])].every(v => validInput(v, true));
+  const validOptions = [gateCount, gateWidth, railsPerSection, picketGap, wastePercent, chainCorners, paintCoats, pricePost, priceRail, pricePicket, pricePanel, priceConcreteBag, priceChainFabricFt, priceLinePost, priceTerminalPost, priceTopRailFt, pricePaintGallon].every(v => validInput(v));
+  const validationError = !validMeasurements || !validOptions || !safeEstimate(result) ? INPUT_ERROR : undefined;
   const isChainLink =
     mode === "chain-link";
 
@@ -371,7 +375,7 @@ export default function FenceCalculator() {
         </div>
 
         {/* Main calculator area */}
-        <CalculatorWorkspace label="Fence area" value={result.fenceAreaSqFt.toLocaleString("en-US", {maximumFractionDigits: 1})} unit="sq ft" result={<><div
+        <CalculatorWorkspace error={validationError} label="Fence area" value={validationError ? null : result.fenceAreaSqFt.toLocaleString("en-US", {maximumFractionDigits: 1})} unit="sq ft" result={<><div
             id="fence-results"
             className="bg-slate-50 px-5 py-6 sm:px-8"
           >

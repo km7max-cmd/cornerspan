@@ -382,12 +382,12 @@ export default function PaintInputs({
           Number(widthSecondary) > 0
         ) &&
         (
-          Number(height) > 0 ||
+          jobType === "ceiling" || Number(height) > 0 ||
           Number(heightSecondary) > 0
         )
       : Number(length) > 0 &&
         Number(width) > 0 &&
-        Number(height) > 0;
+        (jobType === "ceiling" || Number(height) > 0);
 
   const getStatus = () => {
     if (!dimensionsComplete) {
@@ -645,7 +645,7 @@ export default function PaintInputs({
               secondaryPlaceholder="0"
             />
 
-            <MixedField
+            {jobType !== "ceiling" && (<MixedField
               label="Height"
               primaryValue={height}
               secondaryValue={heightSecondary}
@@ -657,7 +657,7 @@ export default function PaintInputs({
               secondaryUnit="in"
               primaryPlaceholder="8"
               secondaryPlaceholder="0"
-            />
+            />)}
 
           </div>
         ) : mixedMetric ? (
@@ -691,7 +691,7 @@ export default function PaintInputs({
               secondaryPlaceholder="5"
             />
 
-            <MixedField
+            {jobType !== "ceiling" && (<MixedField
               label="Height"
               primaryValue={height}
               secondaryValue={heightSecondary}
@@ -703,11 +703,11 @@ export default function PaintInputs({
               secondaryUnit="cm"
               primaryPlaceholder="2"
               secondaryPlaceholder="44"
-            />
+            />)}
 
           </div>
         ) : (
-          <div className="grid grid-cols-3 gap-2.5">
+          <div className={`grid gap-2.5 ${jobType === "ceiling" ? "grid-cols-2" : "grid-cols-3"}`}>
 
             <Field
               label="Length"
@@ -725,13 +725,13 @@ export default function PaintInputs({
               placeholder="10"
             />
 
-            <Field
+            {jobType !== "ceiling" && (<Field
               label="Height"
               value={height}
               onChange={setHeight}
               unit={singleUnit}
               placeholder="8"
-            />
+            />)}
 
           </div>
         )}
@@ -921,3 +921,4 @@ export default function PaintInputs({
     </div>
   );
 }
+

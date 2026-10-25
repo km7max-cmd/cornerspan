@@ -24,7 +24,7 @@ const errorMessages: Record<
     "Please enter a valid Window Width.",
   "Window Height":
     "Please enter a valid Window Height.",
-  Area: "Please enter a valid Area.",
+  Area: "Enter valid non-negative measurements and costs. Use smaller values if the estimate exceeds the supported range.",
 };
 
 function format(value: number): string {
@@ -41,7 +41,7 @@ export default function ResultBox({
   return (
     <div className="mt-4 border border-slate-400 bg-white">
       {error && (
-        <div className="border-b border-red-300 bg-red-50 px-3 py-2 text-sm text-red-700">
+        <div role="alert" className="border-b border-red-300 bg-red-50 px-3 py-2 text-sm text-red-700">
           {errorMessages[error]}
         </div>
       )}
@@ -111,3 +111,4 @@ export default function ResultBox({
     </div>
   );
 }
+

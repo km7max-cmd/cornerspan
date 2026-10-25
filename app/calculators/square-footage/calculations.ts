@@ -1,3 +1,4 @@
+import { validInput, safeEstimate } from "../shared/numbers";
 import type {
   CalculationError,
   CalculationResult,
@@ -31,7 +32,8 @@ export function calculateSquareFootage(
   result: CalculationResult | null;
   error: CalculationError;
 } {
-  const quantity = number(input.quantity) || 1;
+  if (Object.entries(input).some(([key,value]) => key !== "shape" && typeof value === "string" && !validInput(value))) return {result:null,error:"Area"};
+  const quantity = input.quantity.trim() === "" ? 1 : number(input.quantity);
   const waste = Math.max(0, number(input.waste));
   const price = number(input.price);
 
@@ -450,6 +452,7 @@ export function calculateSquareFootage(
       ? squareFeet * price
       : null;
 
+  if (!safeEstimate({squareFeet, squareInches, squareYards, squareMeters, acres, cost})) return {result:null,error:"Area"};
   return {
     result: {
       squareFeet,
@@ -462,3 +465,4 @@ export function calculateSquareFootage(
     error: null,
   };
 }
+

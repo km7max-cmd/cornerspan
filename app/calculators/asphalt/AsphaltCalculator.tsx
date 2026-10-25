@@ -1,4 +1,5 @@
 "use client";
+import { validInput, safeEstimate, INPUT_ERROR } from "../shared/numbers";
 import CalculatorWorkspace from "../../components/CalculatorWorkspace";
 
 import { useMemo, useState } from "react";
@@ -68,6 +69,7 @@ function InputField({
 }
 
 export default function AsphaltCalculator() {
+  const [attempted, setAttempted] = useState(false);
   const [unitSystem, setUnitSystem] =
     useState<UnitSystem>("imperial");
 
@@ -90,6 +92,8 @@ export default function AsphaltCalculator() {
   const currencySymbol = currencySymbols[currency];
 
   const result = useMemo(() => {
+if (![length,width,thickness,density].every(v => validInput(v, true)) || ![waste,price].every(v => validInput(v))) return null;
+
     const l = Number(length);
     const w = Number(width);
     const t = Number(thickness);
@@ -192,7 +196,7 @@ export default function AsphaltCalculator() {
             : orderShortTons) * enteredPrice
         : null;
 
-    return {
+    return safeEstimate({
       areaSqM,
       areaSqFt,
       volumeCuM,
@@ -207,7 +211,7 @@ export default function AsphaltCalculator() {
       baseShortTons,
       orderShortTons,
       cost,
-    };
+    });
   }, [
     length,
     width,
@@ -314,7 +318,7 @@ export default function AsphaltCalculator() {
 
         {/* BODY */}
 
-        <CalculatorWorkspace label="Asphalt to order" value={result ? formatNumber(isMetric ? result.orderMetricTonnes : result.orderShortTons) : null} unit={isMetric ? "metric tons" : "US tons"} result={<>{result && (
+        <CalculatorWorkspace error={(attempted || length !== "" || width !== "" || thickness !== "") && !result ? INPUT_ERROR : undefined} label="Asphalt to order" value={result ? formatNumber(isMetric ? result.orderMetricTonnes : result.orderShortTons) : null} unit={isMetric ? "metric tons" : "US tons"} result={<>{result && (
               <div
                 id="asphalt-results"
                 className="scroll-mt-24 rounded-2xl border border-blue-200 bg-white p-4 shadow-sm sm:p-5"
@@ -665,14 +669,15 @@ export default function AsphaltCalculator() {
 
             <button
               type="button"
-              onClick={() =>
+              onClick={() => {
+                setAttempted(true);
                 document
                   .getElementById("asphalt-results")
                   ?.scrollIntoView({
                     behavior: "smooth",
                     block: "start",
-                  })
-              }
+                  });
+              }}
               className="w-full rounded-xl bg-blue-600 px-4 py-4 text-sm font-extrabold text-white shadow-sm transition hover:bg-blue-700 active:scale-[0.99]"
             >
               Calculate Asphalt

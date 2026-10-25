@@ -1,6 +1,7 @@
 "use client";
 import CalculatorWorkspace from "../../components/CalculatorWorkspace";
 
+import { validInput, safeEstimate, INPUT_ERROR } from "../shared/numbers";
 import { useMemo, useRef, useState } from "react";
 
 import Breadcrumb from "../../../components/Breadcrumb";
@@ -38,6 +39,9 @@ export default function BrickCalculator() {
     return calculateBrick(state);
   }, [state]);
 
+  const required = [state.wallLength, state.wallHeight, state.quantity, state.brickLength, state.brickHeight, state.brickWidth];
+  const numericOptions = [state.doorQuantity, state.doorWidth, state.doorHeight, state.windowQuantity, state.windowWidth, state.windowHeight, state.mortarWaste, state.waste, state.pricePerBrick, state.cementPrice, state.sandPrice];
+  const validationError = !required.every(v => validInput(v, true)) ? "Enter the wall measurements and select or enter a brick size in Brick Details." : !numericOptions.every(v => validInput(v)) || !safeEstimate(result) ? INPUT_ERROR : undefined;
   const handleViewResults = () => {
     resultRef.current?.scrollIntoView({
       behavior: "smooth",
@@ -58,7 +62,7 @@ export default function BrickCalculator() {
         />
 
         <div className="mx-auto mt-6 max-w-6xl">
-          <CalculatorWorkspace label="Bricks to order" value={Math.ceil(result.totalBricks).toLocaleString("en-US")} unit="bricks" result={<><div
+          <CalculatorWorkspace error={validationError} label="Bricks to order" value={validationError ? null : Math.ceil(result.totalBricks).toLocaleString("en-US")} unit="bricks" result={<><div
               ref={resultRef}
               className="min-w-0 scroll-mt-24 lg:sticky lg:top-24"
             >

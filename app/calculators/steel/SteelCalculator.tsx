@@ -1,4 +1,5 @@
 "use client";
+import { validInput, safeEstimate, INPUT_ERROR } from "../shared/numbers";
 import CalculatorWorkspace from "../../components/CalculatorWorkspace";
 
 import { useMemo, useState } from "react";
@@ -25,11 +26,13 @@ export default function SteelCalculator() {
   const [calculated, setCalculated] = useState(false);
 
   const result = useMemo(() => {
+if (![diameter,length,bars].every(v => validInput(v, true)) || ![waste,price].every(v => validInput(v))) return null;
+
     const dia = Number(diameter);
     const inputLength = Number(length);
     const numberOfBars = Number(bars);
     const wastePercent = Number(waste) || 0;
-    const pricePerKg = Number(price) || 0;
+    const pricePerLb = Number(price) || 0;
 
     if (
       !Number.isFinite(dia) ||
@@ -37,7 +40,7 @@ export default function SteelCalculator() {
       !Number.isFinite(inputLength) ||
       inputLength <= 0 ||
       !Number.isFinite(numberOfBars) ||
-      numberOfBars <= 0
+      numberOfBars <= 0 || !Number.isInteger(numberOfBars)
     ) {
       return null;
     }
@@ -60,9 +63,9 @@ export default function SteelCalculator() {
     const totalTonnes = totalOrderWeight / 1000;
 
     const estimatedCost =
-      pricePerKg > 0 ? totalOrderWeight * pricePerKg : null;
+      pricePerLb > 0 ? totalOrderWeight * 2.2046226218 * pricePerLb : null;
 
-    return {
+    return safeEstimate({
       lengthMeters,
       weightPerMeter,
       weightPerBar,
@@ -72,7 +75,7 @@ export default function SteelCalculator() {
       totalOrderWeight,
       totalTonnes,
       estimatedCost,
-    };
+    });
   }, [diameter, length, unit, bars, waste, price]);
 
   const handleCalculate = () => {
@@ -132,7 +135,7 @@ export default function SteelCalculator() {
         </div>
 
         {/* Calculator Body */}
-        <CalculatorWorkspace label="Steel to order" value={result ? (result.totalOrderWeight * 2.2046226218).toLocaleString("en-US", {maximumFractionDigits: 2}) : null} unit="lb" result={<><section
+        <CalculatorWorkspace error={(calculated || length !== "" || bars !== "") && !result ? INPUT_ERROR : undefined} label="Steel to order" value={result ? (result.totalOrderWeight * 2.2046226218).toLocaleString("en-US", {maximumFractionDigits: 2}) : null} unit="lb" result={<><section
         id="steel-results"
         className="mt-8 scroll-mt-24 rounded-3xl border border-slate-200 bg-white p-5 shadow-lg sm:p-7"
       >
@@ -214,7 +217,7 @@ export default function SteelCalculator() {
               {result.estimatedCost !== null && (
                 <ResultCard
                   label="Estimated Cost"
-                  value={`₹${formatNumber(
+                  value={`$${formatNumber(
                     result.estimatedCost
                   )}`}
                 />
@@ -359,7 +362,7 @@ export default function SteelCalculator() {
                 htmlFor="steel-price"
                 className="mb-2 block text-sm font-bold text-slate-800"
               >
-                Price per kg
+                Price per lb (USD)
                 <span className="ml-2 font-normal text-slate-400">
                   Optional
                 </span>
@@ -367,7 +370,7 @@ export default function SteelCalculator() {
 
               <div className="relative">
                 <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 font-bold text-slate-500">
-                  ₹
+                  $
                 </span>
 
                 <input
@@ -376,7 +379,7 @@ export default function SteelCalculator() {
                   min="0"
                   step="0.01"
                   inputMode="decimal"
-                  placeholder="Example: 65"
+                  placeholder="Example: 0.85"
                   value={price}
                   onChange={(e) => {
                     setPrice(e.target.value);

@@ -1,3 +1,4 @@
+import { ceilQuantity, safeEstimate, validInput } from "../shared/numbers";
 export type PaverUnit = "ft" | "m" | "in" | "cm";
 
 export type PaverCalculationInput = {
@@ -43,7 +44,7 @@ function toFeet(value: number, unit: PaverUnit): number {
 
 export function calculatePavers(
   input: PaverCalculationInput
-): PaverCalculationResult {
+): PaverCalculationResult | null {
   const {
     projectLength,
     projectWidth,
@@ -54,6 +55,8 @@ export function calculatePavers(
     wastePercent,
     pricePerPaver,
   } = input;
+
+  if (![projectLength, projectWidth, paverLength, paverWidth].every(v => validInput(v, true)) || !validInput(wastePercent) || (pricePerPaver !== undefined && !validInput(pricePerPaver))) return null;
 
   const projectLengthFt = toFeet(projectLength, projectUnit);
   const projectWidthFt = toFeet(projectWidth, projectUnit);
@@ -72,11 +75,11 @@ export function calculatePavers(
 
   const paversPerSqFt = 1 / paverAreaSqFt;
 
-  const exactPavers = Math.ceil(
+  const exactPavers = ceilQuantity(
     projectAreaSqFt / paverAreaSqFt
   );
 
-  const paversToOrder = Math.ceil(
+  const paversToOrder = ceilQuantity(
     areaWithWasteSqFt / paverAreaSqFt
   );
 
@@ -87,7 +90,7 @@ export function calculatePavers(
       ? paversToOrder * pricePerPaver
       : undefined;
 
-  return {
+  return safeEstimate({
     projectAreaSqFt,
     projectAreaSqM,
     paverAreaSqFt,
@@ -96,5 +99,6 @@ export function calculatePavers(
     paversToOrder,
     areaWithWasteSqFt,
     estimatedCost,
-  };
+  });
 }
+

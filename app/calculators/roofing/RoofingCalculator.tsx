@@ -1,4 +1,5 @@
 "use client";
+import { safeEstimate, INPUT_ERROR } from "../shared/numbers";
 import CalculatorWorkspace from "../../components/CalculatorWorkspace";
 
 import { useMemo, useState } from "react";
@@ -134,6 +135,9 @@ export default function RoofingCalculator() {
     const angle = getPitchAngle(pitchValue);
     const cost = hasPrice ? Math.ceil(squares) * price : null;
 
+    if (!safeEstimate({ footprint, roofArea, orderArea, squares, bundles, angle, cost })) {
+      setResult(null); setError(INPUT_ERROR); return;
+    }
     setResult({
       footprint,
       roofArea,

@@ -1,4 +1,5 @@
 "use client";
+import { validInput, safeEstimate, INPUT_ERROR, ceilQuantity } from "../shared/numbers";
 import CalculatorWorkspace from "../../components/CalculatorWorkspace";
 
 import Image from "next/image";
@@ -119,6 +120,8 @@ export default function TileCalculator() {
       : WALL_TILE_SIZES;
 
   const result = useMemo(() => {
+if (![roomLength,roomWidth,tileLength,tileWidth,tilesPerBox].every(v => validInput(v, true)) || ![waste,boxPrice].every(v => validInput(v))) return null;
+
     const length = Number(roomLength);
     const width = Number(roomWidth);
 
@@ -138,7 +141,7 @@ export default function TileCalculator() {
       tileL <= 0 ||
       tileW <= 0 ||
       !Number.isFinite(perBox) ||
-      perBox <= 0
+      perBox <= 0 || !Number.isInteger(perBox)
     ) {
       return null;
     }
@@ -202,7 +205,7 @@ export default function TileCalculator() {
       (1 + safeWaste / 100);
 
     const tilesWithWaste =
-      Math.ceil(
+      ceilQuantity(
         exactTiles *
           (1 + safeWaste / 100)
       );
@@ -211,7 +214,7 @@ export default function TileCalculator() {
      * Full boxes
      */
     const boxesRequired =
-      Math.ceil(
+      ceilQuantity(
         tilesWithWaste / perBox
       );
 
@@ -243,7 +246,7 @@ export default function TileCalculator() {
       Math.max(
         0,
         tilesWithWaste -
-          Math.ceil(exactTiles)
+          ceilQuantity(exactTiles)
       );
 
     /*
@@ -257,7 +260,7 @@ export default function TileCalculator() {
         ? boxesRequired * price
         : null;
 
-    return {
+    return safeEstimate({
       surfaceArea,
       tileAreaSqFt,
       exactTiles,
@@ -271,7 +274,7 @@ export default function TileCalculator() {
       estimatedCost,
       perBox,
       safeWaste,
-    };
+    });
   }, [
     roomLength,
     roomWidth,
@@ -318,9 +321,7 @@ export default function TileCalculator() {
   }
 
   function handleCalculate() {
-    if (result) {
-      setCalculated(true);
-    }
+    setCalculated(true);
   }
 
   function formatCurrency(
@@ -398,7 +399,7 @@ export default function TileCalculator() {
         </div>
 
         {/* Calculator Body */}
-        <CalculatorWorkspace label="Tiles to order" value={calculated && result ? result.tilesToOrder.toLocaleString("en-US") : null} unit="tiles" result={<>{calculated && result && (
+        <CalculatorWorkspace error={calculated && !result ? INPUT_ERROR : undefined} label="Tiles to order" value={calculated && result ? result.tilesToOrder.toLocaleString("en-US") : null} unit="tiles" result={<>{calculated && result && (
             <div
               id="tile-results"
               className="mt-4 overflow-hidden rounded-2xl border border-slate-300 bg-white"

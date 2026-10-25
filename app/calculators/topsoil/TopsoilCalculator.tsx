@@ -1,4 +1,5 @@
 "use client";
+import { validInput, safeEstimate, INPUT_ERROR } from "../shared/numbers";
 import CalculatorWorkspace from "../../components/CalculatorWorkspace";
 
 import Image from "next/image";
@@ -81,6 +82,8 @@ export default function TopsoilCalculator() {
   const [calculated, setCalculated] = useState(false);
 
   const result = useMemo(() => {
+if (![length,width,depth,density,bagSize].every(v => validInput(v, true)) || ![waste].every(v => validInput(v))) return null;
+
     const l = Number(length);
     const w = Number(width);
     const d = Number(depth);
@@ -110,7 +113,7 @@ export default function TopsoilCalculator() {
 
     const bags = Math.ceil(orderCuFt / bagSize);
 
-    return {
+    return safeEstimate({
       areaSqFt,
       volumeCuFt,
       volumeCuYd,
@@ -121,7 +124,7 @@ export default function TopsoilCalculator() {
       exactTons,
       orderTons,
       bags,
-    };
+    });
   }, [
     length,
     width,
@@ -253,7 +256,7 @@ export default function TopsoilCalculator() {
       {/* Hero Image */}
       
 
-      <CalculatorWorkspace label="Topsoil to order" value={calculated && result ? result.orderCuYd.toLocaleString("en-US", {maximumFractionDigits: 2}) : null} unit="yd³" result={<>{calculated && result && (
+      <CalculatorWorkspace error={calculated && !result ? INPUT_ERROR : undefined} label="Topsoil to order" value={calculated && result ? result.orderCuYd.toLocaleString("en-US", {maximumFractionDigits: 2}) : null} unit="yd³" result={<>{calculated && result && (
           <div
             id="topsoil-results"
             className="mt-4 scroll-mt-24"

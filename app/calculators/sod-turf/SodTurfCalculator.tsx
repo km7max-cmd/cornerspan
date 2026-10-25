@@ -1,4 +1,5 @@
 "use client";
+import { safeEstimate, INPUT_ERROR } from "../shared/numbers";
 import CalculatorWorkspace from "../../components/CalculatorWorkspace";
 
 import { useMemo, useState } from "react";
@@ -143,6 +144,7 @@ export default function SodTurfCalculator() {
   }
 
   function calculate() {
+    if (!safeEstimate(result)) { setShowResults(false); setError(INPUT_ERROR); return; }
     if (!length.trim() || !width.trim() || !coverage.trim()) {
       setError("Enter the lawn length, width, and sod coverage to continue.");
       setShowResults(false);

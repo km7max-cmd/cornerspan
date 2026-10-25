@@ -1,4 +1,5 @@
 "use client";
+import { validInput, safeEstimate, INPUT_ERROR } from "../shared/numbers";
 import CalculatorWorkspace from "../../components/CalculatorWorkspace";
 
 import Image from "next/image";
@@ -251,6 +252,8 @@ export default function GravelCalculator() {
   }
 
   const result = useMemo(() => {
+if (![length,width,depth,density].every(v => validInput(v, true)) || ![waste,pricePerTon].every(v => validInput(v))) return null;
+
     const l = Number(length);
     const w = Number(width);
     const d = Number(depth);
@@ -353,7 +356,7 @@ export default function GravelCalculator() {
         ? orderTons * price
         : null;
 
-    return {
+    return safeEstimate({
       areaSqFt,
       volumeCuFt,
       volumeCuYd,
@@ -366,7 +369,7 @@ export default function GravelCalculator() {
       orderMetricTonnes,
       wasteTons,
       cost,
-    };
+    });
   }, [
     length,
     width,
@@ -410,7 +413,7 @@ export default function GravelCalculator() {
 
         </div>
 
-        <CalculatorWorkspace label="Gravel to order" value={calculated && result ? formatNumber(result.orderTons) : null} unit="US tons" result={<>{calculated && result && (
+        <CalculatorWorkspace error={calculated && !result ? INPUT_ERROR : undefined} label="Gravel to order" value={calculated && result ? formatNumber(result.orderTons) : null} unit="US tons" result={<>{calculated && result && (
         <div
           id="gravel-results"
           className="mt-5 scroll-mt-24 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-lg"

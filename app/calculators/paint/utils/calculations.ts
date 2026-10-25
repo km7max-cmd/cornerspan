@@ -1,3 +1,4 @@
+import { safeEstimate } from "../../shared/numbers";
 export type PaintUnit =
   | "ft"
   | "in"
@@ -115,7 +116,8 @@ export function calculatePaint(
     baseAreaSqFt = lengthFt * widthFt;
   }
 
-  baseAreaSqFt = Math.max(0, safeNumber(baseAreaSqFt));
+  if (!safeEstimate({baseAreaSqFt}) || baseAreaSqFt <= 0) throw new RangeError("Invalid painted area");
+  baseAreaSqFt = Math.max(0, baseAreaSqFt);
 
   const openingsAreaSqFt =
     jobType === "ceiling"
@@ -203,3 +205,4 @@ export function calculatePaint(
     totalCost: roundToTwo(totalCost),
   };
 }
+

@@ -1,6 +1,7 @@
 "use client";
 import CalculatorWorkspace from "../../components/CalculatorWorkspace";
 
+import { validInput, safeEstimate, INPUT_ERROR } from "../shared/numbers";
 import { useState } from "react";
 
 import PaintInputs from "./components/PaintInputs";
@@ -28,6 +29,7 @@ type UnitCode =
   | "m-cm";
 
 export default function PaintCalculator() {
+  const [error, setError] = useState("");
   const [jobType, setJobType] = useState("room");
 
   const [unit, setUnit] = useState<UnitCode>("ft");
@@ -80,6 +82,9 @@ export default function PaintCalculator() {
       ?.value ?? currency;
 
   function handleCalculate() {
+    setError("");
+    const measures = [length, width, ...(jobType === "ceiling" ? [] : [height]), ...(unit === "ft-in" || unit === "m-cm" ? [lengthSecondary, widthSecondary, ...(jobType === "ceiling" ? [] : [heightSecondary])] : [])];
+    if (!measures.every(v => validInput(v)) || ![price, laborPrice, ...(jobType === "ceiling" ? [] : [doors, windows])].every(v => validInput(v)) || ![coats, coverage].every(v => validInput(v, true)) || !Number.isInteger(Number(coats))) { setResult(null); setError(INPUT_ERROR); return; }
     const l = Number(length) || 0;
     const w = Number(width) || 0;
     const h = Number(height) || 0;
@@ -106,13 +111,15 @@ export default function PaintCalculator() {
     if (
       !hasLength ||
       !hasWidth ||
-      !hasHeight
+      (jobType !== "ceiling" && !hasHeight)
     ) {
       setResult(null);
+      setError("Enter length and width greater than zero" + (jobType === "ceiling" ? "." : ", and a valid height."));
       return;
     }
 
-    const calculated = calculatePaint({
+    let calculated;
+    try { calculated = calculatePaint({
       jobType: jobType as
         | "room"
         | "walls"
@@ -164,11 +171,13 @@ export default function PaintCalculator() {
       unit,
     });
 
+    } catch { setResult(null); setError(INPUT_ERROR); return; }
+    if (!safeEstimate(calculated)) { setResult(null); setError(INPUT_ERROR); return; }
     setResult(calculated);
   }
 
   return (
-    <CalculatorWorkspace label="Paint needed" value={result ? result.paintQuantity.toLocaleString("en-US", {maximumFractionDigits: 2}) : null} unit={result?.quantityUnit ?? "gallons"} result={<><PaintResults
+    <CalculatorWorkspace error={error || undefined} label="Paint needed" value={result ? result.paintQuantity.toLocaleString("en-US", {maximumFractionDigits: 2}) : null} unit={result?.quantityUnit ?? "gallons"} result={<><PaintResults
         result={result}
         currency={currency}
         currencySymbol={currencySymbol}
