@@ -2,750 +2,137 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import { calculateArea, fields, formulas, formatNumber, shapes, type Shape, type Unit } from "./areaMath";
 
-type Unit = "feet" | "inches" | "yards" | "meters";
-
-type Result = {
-  areaSqFt: number;
-  squareInches: number;
-  squareYards: number;
-  squareMeters: number;
-  acres: number;
-  formula: string;
+const unitLabels: Record<Unit, string> = { feet: 'ft', inches: 'in', yards: 'yd', meters: 'm' };
+const paths: Record<Shape, string> = {
+  Rectangle: 'M20 30 H100 V90 H20 Z', Square: 'M30 25 H95 V90 H30 Z',
+  Circle: 'M100 60 A40 40 0 1 1 20 60 A40 40 0 1 1 100 60 Z',
+  Triangle: 'M20 95 L60 20 L105 95 Z', Trapezoid: 'M40 25 H80 L110 95 H10 Z',
+  Parallelogram: 'M40 25 H110 L80 95 H10 Z',
+  Ellipse: 'M110 60 A50 30 0 1 1 10 60 A50 30 0 1 1 110 60 Z',
+  Sector: 'M60 60 L60 15 A45 45 0 0 1 105 60 Z',
 };
-
-const unitToFeet: Record<Unit, number> = {
-  feet: 1,
-  inches: 1 / 12,
-  yards: 3,
-  meters: 3.280839895013123,
-};
-
-const shapes = [
-  "Rectangle",
-  "Square",
-  "Circle",
-  "Triangle",
-  "Trapezoid",
-  "Parallelogram",
-  "Ellipse",
-  "Sector",
-];
-
-function number(value: string): number {
-  const n = Number(value);
-  return Number.isFinite(n) ? n : 0;
-}
-
-function formatNumber(value: number, maximumFractionDigits = 2): string {
-  // Preserve small nonzero areas instead of rounding them to zero.
-  const isTiny = value !== 0 && Math.abs(value) < 10 ** -maximumFractionDigits;
-  return new Intl.NumberFormat(
-    "en-US",
-    isTiny ? { maximumSignificantDigits: 3 } : { maximumFractionDigits },
-  ).format(value);
-}
-
-function Field({
-  label,
-  value,
-  onChange,
-  unit,
-  setUnit,
-  inputClass,
-}: {
-  label: string;
-  value: string;
-  onChange: (value: string) => void;
-  unit: Unit;
-  setUnit: (unit: Unit) => void;
-  inputClass: string;
-}) {
-  return (
-    <div>
-      <label className="mb-2 block text-sm font-semibold text-slate-700">
-        {label}
-      </label>
-
-      <div className="grid grid-cols-[1fr_120px] gap-2">
-        <input aria-label={label}
-          type="number"
-          inputMode="decimal"
-          min="0"
-          step="any"
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          className={inputClass}
-          placeholder="0"
-        />
-
-        <select
-          value={unit}
-          onChange={(e) => setUnit(e.target.value as Unit)}
-          className={inputClass}
-          aria-label={`${label} unit`}
-        >
-          <option value="feet">feet</option>
-          <option value="inches">inches</option>
-          <option value="yards">yards</option>
-          <option value="meters">meters</option>
-        </select>
-      </div>
-    </div>
-  );
-}
-
-function FormulaBox({ formula }: { formula: string }) {
-  return (
-    <div className="mt-5 rounded-xl border border-blue-100 bg-blue-50 p-4">
-      <div className="text-xs font-bold uppercase tracking-wide text-blue-700">
-        Formula
-      </div>
-
-      <div className="mt-1 text-base font-semibold text-slate-900">
-        {formula}
-      </div>
-    </div>
-  );
-}
-
-function ShapeDiagram({ shape }: { shape: string }) {
-  return (
-    <div className="flex h-32 items-center justify-center rounded-xl border border-slate-200 bg-slate-50">
-      {shape === "Rectangle" && (
-        <div className="relative h-16 w-28 border-4 border-slate-800">
-          <span className="absolute -bottom-7 left-1/2 -translate-x-1/2 text-xs text-slate-500">
-            length
-          </span>
-
-          <span className="absolute -right-12 top-1/2 -translate-y-1/2 rotate-90 text-xs text-slate-500">
-            width
-          </span>
-        </div>
-      )}
-
-      {shape === "Square" && (
-        <div className="relative h-20 w-20 border-4 border-slate-800">
-          <span className="absolute -bottom-7 left-1/2 -translate-x-1/2 text-xs text-slate-500">
-            side
-          </span>
-        </div>
-      )}
-
-      {shape === "Circle" && (
-        <div className="relative h-24 w-24 rounded-full border-4 border-slate-800">
-          <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-xs text-slate-500">
-            radius
-          </span>
-        </div>
-      )}
-
-      {shape === "Triangle" && (
-        <div className="relative h-0 w-0 border-b-[90px] border-l-[55px] border-r-[55px] border-b-slate-800 border-l-transparent border-r-transparent">
-          <div className="absolute left-1/2 top-12 -translate-x-1/2 text-xs text-white">
-            triangle
-          </div>
-        </div>
-      )}
-
-      {shape === "Trapezoid" && (
-        <div className="h-0 w-0 border-b-[70px] border-l-[35px] border-r-[35px] border-b-slate-800 border-l-transparent border-r-transparent" />
-      )}
-
-      {shape === "Parallelogram" && (
-        <div className="-skew-x-12 h-16 w-32 border-4 border-slate-800" />
-      )}
-
-      {shape === "Ellipse" && (
-        <div className="h-20 w-32 rounded-[50%] border-4 border-slate-800" />
-      )}
-
-      {shape === "Sector" && (
-        <div className="relative h-24 w-24 overflow-hidden rounded-full border-4 border-slate-800">
-          <div className="absolute left-1/2 top-1/2 h-20 w-20 -translate-x-1/2 -translate-y-1/2 border-l-4 border-t-4 border-slate-800" />
-        </div>
-      )}
-    </div>
-  );
+function ShapeIcon({ shape, large = false }: { shape: Shape; large?: boolean }) {
+  return <svg viewBox="0 0 120 120" aria-hidden="true" className={large ? 'h-32 w-32' : 'h-7 w-7'}>
+    <path d={paths[shape]} fill="currentColor" fillOpacity="0.1" stroke="currentColor" strokeWidth="4" strokeLinejoin="round" />
+  </svg>;
 }
 
 export default function AreaCalculator() {
-  const [shape, setShape] = useState("Rectangle");
-
-  const [length, setLength] = useState("");
-  const [width, setWidth] = useState("");
-  const [side, setSide] = useState("");
-
-  const [base, setBase] = useState("");
-  const [height, setHeight] = useState("");
-
-  const [sideA, setSideA] = useState("");
-  const [sideB, setSideB] = useState("");
-  const [sideC, setSideC] = useState("");
-
-  const [radius, setRadius] = useState("");
-  const [majorAxis, setMajorAxis] = useState("");
-  const [minorAxis, setMinorAxis] = useState("");
-
-  const [angle, setAngle] = useState("");
-
-  const [quantity, setQuantity] = useState("1");
-
-  const [unit, setUnit] = useState<Unit>("feet");
-
-  const [result, setResult] = useState<Result | null>(null);
-  const [error, setError] = useState("");
-
-  const resetShapeFields = () => {
-    setLength("");
-    setWidth("");
-    setSide("");
-    setBase("");
-    setHeight("");
-    setSideA("");
-    setSideB("");
-    setSideC("");
-    setRadius("");
-    setMajorAxis("");
-    setMinorAxis("");
-    setAngle("");
-    setQuantity("1");
-    setResult(null);
-    setError("");
+  const [shape, setShape] = useState<Shape>('Rectangle');
+  const [values, setValues] = useState<Record<string, string>>({});
+  const [unit, setUnit] = useState<Unit>('feet');
+  const [quantity, setQuantity] = useState('1');
+  const area = calculateArea(shape, values, unit, quantity);
+  const result = area === null ? '—' : formatNumber(area);
+  const reset = () => { setValues({}); setQuantity('1'); };
+  const example = () => {
+    const samples: Record<Shape, Record<string, string>> = {
+      Rectangle: { length: '12', width: '15' }, Square: { side: '12' }, Circle: { radius: '5' },
+      Triangle: { base: '12', height: '8' }, Trapezoid: { a: '8', b: '12', height: '6' },
+      Parallelogram: { base: '12', height: '8' }, Ellipse: { a: '8', b: '5' }, Sector: { radius: '5', angle: '90' },
+    };
+    setValues(samples[shape]); setUnit('feet'); setQuantity('1');
   };
-
-  const calculate = () => {
-    setError("");
-
-    const factor = unitToFeet[unit];
-    const qty = Math.max(number(quantity), 1);
-
-    let areaSqFt = 0;
-    let formula = "";
-
-    if (shape === "Rectangle") {
-      const l = number(length) * factor;
-      const w = number(width) * factor;
-
-      if (l <= 0 || w <= 0) {
-        setError("Enter a valid length and width.");
-        setResult(null);
-        return;
-      }
-
-      areaSqFt = l * w * qty;
-      formula = "Area = Length × Width";
-    }
-
-    if (shape === "Square") {
-      const s = number(side) * factor;
-
-      if (s <= 0) {
-        setError("Enter a valid side length.");
-        setResult(null);
-        return;
-      }
-
-      areaSqFt = s * s * qty;
-      formula = "Area = Side²";
-    }
-
-    if (shape === "Circle") {
-      const r = number(radius) * factor;
-
-      if (r <= 0) {
-        setError("Enter a valid radius.");
-        setResult(null);
-        return;
-      }
-
-      areaSqFt = Math.PI * r * r * qty;
-      formula = "Area = π × r²";
-    }
-
-    if (shape === "Triangle") {
-      const b = number(base) * factor;
-      const h = number(height) * factor;
-
-      if (b <= 0 || h <= 0) {
-        setError("Enter a valid base and height.");
-        setResult(null);
-        return;
-      }
-
-      areaSqFt = (b * h) / 2 * qty;
-      formula = "Area = ½ × Base × Height";
-    }
-
-    if (shape === "Trapezoid") {
-      const a = number(sideA) * factor;
-      const b = number(sideB) * factor;
-      const h = number(height) * factor;
-
-      if (a <= 0 || b <= 0 || h <= 0) {
-        setError("Enter valid base and height values.");
-        setResult(null);
-        return;
-      }
-
-      areaSqFt = ((a + b) / 2) * h * qty;
-      formula = "Area = ½ × (Base 1 + Base 2) × Height";
-    }
-
-    if (shape === "Parallelogram") {
-      const b = number(base) * factor;
-      const h = number(height) * factor;
-
-      if (b <= 0 || h <= 0) {
-        setError("Enter a valid base and height.");
-        setResult(null);
-        return;
-      }
-
-      areaSqFt = b * h * qty;
-      formula = "Area = Base × Height";
-    }
-
-    if (shape === "Ellipse") {
-      const a = number(majorAxis) * factor;
-      const b = number(minorAxis) * factor;
-
-      if (a <= 0 || b <= 0) {
-        setError("Enter valid semi-major and semi-minor axes.");
-        setResult(null);
-        return;
-      }
-
-      areaSqFt = Math.PI * a * b * qty;
-      formula = "Area = π × a × b";
-    }
-
-    if (shape === "Sector") {
-      const r = number(radius) * factor;
-      const a = number(angle);
-
-      if (r <= 0 || a <= 0 || a > 360) {
-        setError("Enter a radius and an angle from 0° to 360°.");
-        setResult(null);
-        return;
-      }
-
-      areaSqFt = (a / 360) * Math.PI * r * r * qty;
-      formula = "Area = (θ / 360) × π × r²";
-    }
-
-    if (areaSqFt <= 0 || !Number.isFinite(areaSqFt)) {
-      setError("Enter valid measurements.");
-      setResult(null);
-      return;
-    }
-
-    setResult({
-      areaSqFt,
-      squareInches: areaSqFt * 144,
-      squareYards: areaSqFt / 9,
-      squareMeters: areaSqFt * 0.09290304,
-      acres: areaSqFt / 43560,
-      formula,
-    });
-  };
-
-  const inputClass =
-    "h-12 w-full rounded-xl border border-slate-300 bg-white px-3 text-base text-slate-900 outline-none transition focus:border-blue-600 focus:ring-4 focus:ring-blue-100";
-
   return (
-    <div className="min-h-screen bg-slate-50">
-      <div className="mx-auto max-w-4xl px-5 py-7 sm:px-6 sm:py-10">
-
-        {/* Breadcrumb */}
-        <nav
-          aria-label="Breadcrumb"
-          className="mb-4 text-sm text-slate-500"
-        >
-          <span>Home</span>
-          <span className="mx-2">/</span>
-          <span>Calculators</span>
-          <span className="mx-2">/</span>
-          <span className="text-slate-800">
-            Area Calculator
-          </span>
+    <div className="min-h-screen bg-slate-50 text-slate-900">
+      <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-8">
+        <nav aria-label="Breadcrumb" className="mb-4 flex gap-2 text-xs text-slate-500">
+          <a href="/" className="hover:underline">Home</a><span>/</span><a href="/calculators" className="hover:underline">Calculators</a><span>/</span><span aria-current="page">Area</span>
         </nav>
+        <header className="mb-6">
+          <h1 className="text-3xl font-black tracking-tight sm:text-4xl">Area Calculator</h1>
+          <p className="mt-2 text-sm leading-6 text-slate-600">Choose a shape. Enter your measurements. Your area updates instantly.</p>
+        </header>
 
-        {/* Hero */}
-        <section className="mb-7">
-          <h1 className="text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">
-            Area Calculator
-          </h1>
-
-          <p className="mt-4 max-w-3xl text-base leading-7 text-slate-600 sm:text-lg">
-            Use this area calculator to calculate the area of common
-            shapes including rectangles, squares, circles, triangles,
-            trapezoids, parallelograms, ellipses and sectors. Get results
-            in square feet, square inches, square yards, square meters
-            and acres.
-          </p>
-        </section>
-
-        {/* Area Calculator Hero Image */}
-        <div className="mb-8 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-          <Image
-            src="/cornerspan-area-calculator-hero.webp"
-            alt="Area calculator for calculating square feet, square meters and other area measurements"
-            width={1672}
-            height={941}
-            priority
-            className="h-auto w-full"
-          />
-        </div>
-
-        {/* Calculator */}
-        <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-
-          {/* Header */}
-          <div className="bg-blue-700 px-5 py-5 text-center sm:px-8">
-            <h2 className="text-2xl font-black text-white">
-              Area Calculator
-            </h2>
-
-            <p className="mt-1 text-sm text-blue-100">
-              Choose a shape and enter your measurements
-            </p>
+        <section aria-label="Interactive area calculator" className="rounded-2xl border border-slate-200 bg-white shadow-sm">
+          <div className="sticky top-[76px] z-20 flex items-center justify-between gap-3 rounded-t-2xl border-b border-blue-800 bg-slate-950 px-4 py-3 text-white lg:hidden">
+            <span className="text-xs font-semibold uppercase tracking-wider text-blue-200">Total area</span>
+            <output aria-live="polite" aria-atomic="true" className="min-w-0 break-all text-right text-2xl font-bold tabular-nums">{result} <span className="text-sm font-normal text-blue-200">sq ft</span></output>
           </div>
-
-          <div className="p-5 sm:p-8">
-
-            {/* Shape */}
-            <div className="mb-6">
-              <label htmlFor="area-shape" className="mb-2 block text-sm font-bold text-slate-800">
-                Shape
-              </label>
-
-              <select id="area-shape"
-                value={shape}
-                onChange={(e) => {
-                  setShape(e.target.value);
-                  resetShapeFields();
-                }}
-                className={inputClass}
-              >
-                {shapes.map((item) => (
-                  <option key={item} value={item}>
-                    {item}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Diagram */}
-            <ShapeDiagram shape={shape} />
-
-            {/* Rectangle */}
-            {shape === "Rectangle" && (
-              <div className="mt-6 space-y-5">
-                <Field
-                  label="Length"
-                  value={length}
-                  onChange={setLength}
-                  unit={unit}
-                  setUnit={setUnit}
-                  inputClass={inputClass}
-                />
-
-                <Field
-                  label="Width"
-                  value={width}
-                  onChange={setWidth}
-                  unit={unit}
-                  setUnit={setUnit}
-                  inputClass={inputClass}
-                />
+          <div className="grid lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]">
+            <div className="min-w-0 p-4 sm:p-6">
+              <fieldset>
+                <legend className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-500">1. Choose your shape</legend>
+                <div className="grid grid-cols-4 gap-2">
+                  {shapes.map(item => <button key={item} type="button" aria-pressed={shape === item}
+                    onClick={() => { setShape(item); reset(); }}
+                    className={`flex min-h-20 min-w-0 flex-col items-center justify-center gap-1 rounded-xl border px-1 py-2 text-[10px] font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 sm:text-xs ${shape === item ? 'border-blue-600 bg-blue-50 text-blue-700 ring-1 ring-blue-600' : 'border-slate-200 text-slate-600 hover:border-blue-300 hover:bg-slate-50'}`}>
+                    <ShapeIcon shape={item} /><span className="max-w-full break-words [overflow-wrap:anywhere]">{item}</span>
+                  </button>)}
+                </div>
+              </fieldset>
+              <div className="my-5 flex flex-wrap items-center justify-between gap-3 border-y border-slate-100 py-3">
+                <label htmlFor="area-unit" className="text-sm font-semibold">Measurement unit</label>
+                <select id="area-unit" value={unit} onChange={e => setUnit(e.target.value as Unit)} className="min-h-11 rounded-lg border border-slate-300 bg-slate-50 px-3 text-base focus:ring-2 focus:ring-blue-600">
+                  <option value="feet">Feet (ft)</option><option value="inches">Inches (in)</option><option value="yards">Yards (yd)</option><option value="meters">Meters (m)</option>
+                </select>
               </div>
-            )}
-
-            {/* Square */}
-            {shape === "Square" && (
-              <div className="mt-6">
-                <Field
-                  label="Side Length"
-                  value={side}
-                  onChange={setSide}
-                  unit={unit}
-                  setUnit={setUnit}
-                  inputClass={inputClass}
-                />
-              </div>
-            )}
-
-            {/* Circle */}
-            {shape === "Circle" && (
-              <div className="mt-6">
-                <Field
-                  label="Radius"
-                  value={radius}
-                  onChange={setRadius}
-                  unit={unit}
-                  setUnit={setUnit}
-                  inputClass={inputClass}
-                />
-              </div>
-            )}
-
-            {/* Triangle */}
-            {shape === "Triangle" && (
-              <div className="mt-6 space-y-5">
-                <Field
-                  label="Base"
-                  value={base}
-                  onChange={setBase}
-                  unit={unit}
-                  setUnit={setUnit}
-                  inputClass={inputClass}
-                />
-
-                <Field
-                  label="Height"
-                  value={height}
-                  onChange={setHeight}
-                  unit={unit}
-                  setUnit={setUnit}
-                  inputClass={inputClass}
-                />
-              </div>
-            )}
-
-            {/* Trapezoid */}
-            {shape === "Trapezoid" && (
-              <div className="mt-6 space-y-5">
-                <Field
-                  label="Base 1"
-                  value={sideA}
-                  onChange={setSideA}
-                  unit={unit}
-                  setUnit={setUnit}
-                  inputClass={inputClass}
-                />
-
-                <Field
-                  label="Base 2"
-                  value={sideB}
-                  onChange={setSideB}
-                  unit={unit}
-                  setUnit={setUnit}
-                  inputClass={inputClass}
-                />
-
-                <Field
-                  label="Height"
-                  value={height}
-                  onChange={setHeight}
-                  unit={unit}
-                  setUnit={setUnit}
-                  inputClass={inputClass}
-                />
-              </div>
-            )}
-
-            {/* Parallelogram */}
-            {shape === "Parallelogram" && (
-              <div className="mt-6 space-y-5">
-                <Field
-                  label="Base"
-                  value={base}
-                  onChange={setBase}
-                  unit={unit}
-                  setUnit={setUnit}
-                  inputClass={inputClass}
-                />
-
-                <Field
-                  label="Height"
-                  value={height}
-                  onChange={setHeight}
-                  unit={unit}
-                  setUnit={setUnit}
-                  inputClass={inputClass}
-                />
-              </div>
-            )}
-
-            {/* Ellipse */}
-            {shape === "Ellipse" && (
-              <div className="mt-6 space-y-5">
-                <Field
-                  label="Semi-major Axis"
-                  value={majorAxis}
-                  onChange={setMajorAxis}
-                  unit={unit}
-                  setUnit={setUnit}
-                  inputClass={inputClass}
-                />
-
-                <Field
-                  label="Semi-minor Axis"
-                  value={minorAxis}
-                  onChange={setMinorAxis}
-                  unit={unit}
-                  setUnit={setUnit}
-                  inputClass={inputClass}
-                />
-              </div>
-            )}
-
-            {/* Sector */}
-            {shape === "Sector" && (
-              <div className="mt-6 space-y-5">
-                <Field
-                  label="Radius"
-                  value={radius}
-                  onChange={setRadius}
-                  unit={unit}
-                  setUnit={setUnit}
-                  inputClass={inputClass}
-                />
-
-                <div>
-                  <label htmlFor="area-angle" className="mb-2 block text-sm font-semibold text-slate-700">
-                    Angle
-                  </label>
-
-                  <div className="grid grid-cols-[1fr_120px] gap-2">
-                    <input id="area-angle"
-                      type="number"
-                      inputMode="decimal"
-                      min="0"
-                      max="360"
-                      step="any"
-                      value={angle}
-                      onChange={(e) => setAngle(e.target.value)}
-                      className={inputClass}
-                      placeholder="90"
-                    />
-
-                    <div className="flex h-12 items-center justify-center rounded-xl border border-slate-300 bg-slate-50 text-sm font-semibold text-slate-600">
-                      degrees °
-                    </div>
-                  </div>
+              <fieldset>
+                <legend className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-500">2. Enter dimensions</legend>
+                <div className="grid grid-cols-2 gap-3">
+                  {fields[shape].map(field => {
+                    const val = values[field.key] ?? '';
+                    const invalid = val !== '' && (!Number.isFinite(Number(val)) || Number(val) <= 0 || (field.key === 'angle' && Number(val) > 360));
+                    return <div key={field.key}>
+                      <label htmlFor={`area-${field.key}`} className="mb-2 block text-xs font-semibold text-slate-600">{field.label} <span className="text-blue-600">{field.symbol}</span></label>
+                      <div className={`flex items-center rounded-xl border bg-white focus-within:ring-2 focus-within:ring-blue-600 ${invalid ? 'border-red-500' : 'border-slate-300'}`}>
+                        <input id={`area-${field.key}`} type="number" inputMode="decimal" min="0" max={field.key === 'angle' ? 360 : undefined} step="any"
+                          value={val} onChange={e => setValues(prev => ({ ...prev, [field.key]: e.target.value }))} placeholder="0"
+                          aria-invalid={invalid} aria-describedby={invalid ? `area-${field.key}-error` : undefined}
+                          className="h-14 w-full min-w-0 rounded-xl bg-transparent px-3 text-2xl font-semibold tabular-nums outline-none" />
+                        <span className="pr-3 text-sm text-slate-500">{field.key === 'angle' ? '°' : unitLabels[unit]}</span>
+                      </div>
+                      {invalid && <p id={`area-${field.key}-error`} className="mt-1 text-xs text-red-700">{field.key === 'angle' ? 'Enter an angle above 0 and up to 360°.' : 'Enter a number greater than zero.'}</p>}
+                    </div>;
+                  })}
+                </div>
+              </fieldset>
+              <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
+                <label htmlFor="area-quantity" className="text-sm font-semibold">Identical shapes</label>
+                <div className="flex items-center rounded-lg border border-slate-300">
+                  <button type="button" aria-label="Decrease quantity" onClick={() => setQuantity(String(Math.max(1, (Number(quantity) || 1) - 1)))} className="h-11 w-11 rounded-l-lg bg-slate-50 text-xl hover:bg-slate-100">−</button>
+                  <input id="area-quantity" type="number" inputMode="numeric" min="1" step="1" value={quantity} onChange={e => setQuantity(e.target.value)} aria-describedby="area-quantity-help" aria-invalid={!Number.isInteger(Number(quantity)) || Number(quantity) < 1} className="h-11 w-16 border-x border-slate-300 text-center text-base tabular-nums" />
+                  <button type="button" aria-label="Increase quantity" onClick={() => setQuantity(String((Number(quantity) || 0) + 1))} className="h-11 w-11 rounded-r-lg bg-slate-50 text-xl hover:bg-slate-100">+</button>
                 </div>
               </div>
-            )}
-
-            {/* Quantity */}
-            <div className="mt-6">
-              <label htmlFor="area-quantity" className="mb-2 block text-sm font-semibold text-slate-700">
-                Quantity
-              </label>
-
-              <input id="area-quantity"
-                type="number"
-                inputMode="numeric"
-                min="1"
-                step="1"
-                value={quantity}
-                onChange={(e) => setQuantity(e.target.value)}
-                className={inputClass}
-              />
-
-              <p className="mt-1.5 text-xs text-slate-500">
-                Use quantity when calculating multiple identical shapes.
-              </p>
-            </div>
-
-            {/* Buttons */}
-            <div className="mt-7 grid grid-cols-1 gap-3 sm:grid-cols-2">
-              <button
-                type="button"
-                onClick={calculate}
-                className="h-12 rounded-xl bg-blue-700 px-5 text-sm font-bold text-white transition hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-200"
-              >
-                Calculate Area
-              </button>
-
-              <button
-                type="button"
-                onClick={resetShapeFields}
-                className="h-12 rounded-xl border border-slate-300 bg-white px-5 text-sm font-bold text-slate-700 transition hover:bg-slate-50"
-              >
-                Clear
-              </button>
-            </div>
-
-            {/* Error */}
-            {error && (
-              <div
-                role="alert"
-                className="mt-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700"
-              >
-                {error}
+              <p id="area-quantity-help" className="mt-2 text-xs text-slate-500">Use a whole number of 1 or more. All dimensions use the selected unit.</p>
+              <div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-4">
+                <button type="button" onClick={example} className="min-h-11 rounded-lg bg-blue-50 px-4 text-sm font-semibold text-blue-700 hover:bg-blue-100">Try an example</button>
+                <button type="button" onClick={reset} className="min-h-11 rounded-lg px-4 text-sm font-semibold text-slate-500 hover:bg-slate-100">Clear</button>
               </div>
-            )}
-
-            {/* Result */}
-            {result && (
-              <div
-                id="area-results"
-                className="mt-7 rounded-2xl border border-blue-200 bg-blue-50 p-5 sm:p-6"
-              >
-                <div className="text-center">
-                  <div className="text-xs font-bold uppercase tracking-[0.18em] text-blue-700">
-                    Your Area
-                  </div>
-
-                  <div className="mt-2 text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">
-                    {formatNumber(result.areaSqFt)}
-                  </div>
-
-                  <div className="mt-1 text-base font-semibold text-slate-600">
-                    square feet
-                  </div>
+            </div>
+            <aside aria-label="Area result and preview" className="min-w-0 rounded-b-2xl border-t border-slate-200 bg-slate-950 p-5 text-white sm:p-6 lg:rounded-r-2xl lg:rounded-bl-none lg:border-l lg:border-t-0">
+              <div className="lg:sticky lg:top-24">
+                <div className="hidden lg:block">
+                  <p className="text-xs font-bold uppercase tracking-widest text-blue-200">Total area</p>
+                  <output aria-live="polite" aria-atomic="true" className="mt-3 block break-all text-5xl font-bold tracking-tight tabular-nums">{result}<span className="ml-2 text-lg font-normal text-blue-200">sq ft</span></output>
                 </div>
-
-                <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
-                  <div className="rounded-xl bg-white p-3 text-center">
-                    <div className="text-xs text-slate-500">
-                      Square Inches
-                    </div>
-
-                    <div className="mt-1 font-bold text-slate-900">
-                      {formatNumber(result.squareInches)}
-                    </div>
+                <p className="mt-2 text-sm text-slate-300">{area === null ? 'Enter positive dimensions to see your result.' : `${quantity} ${Number(quantity) === 1 ? 'shape' : 'identical shapes'} · updates as you type`}</p>
+                <div className="my-5 rounded-xl border border-slate-700 bg-slate-900 p-4">
+                  <div className="flex items-center justify-between gap-4">
+                    <div className="text-blue-300"><ShapeIcon shape={shape} large /></div>
+                    <dl className="min-w-0 space-y-2 text-sm">
+                      {fields[shape].map(field => <div key={field.key} className="flex flex-wrap gap-x-2"><dt className="text-slate-400">{field.symbol}</dt><dd className="break-all font-semibold tabular-nums">{values[field.key] || '—'} {field.key === 'angle' ? '°' : unitLabels[unit]}</dd></div>)}
+                    </dl>
                   </div>
-
-                  <div className="rounded-xl bg-white p-3 text-center">
-                    <div className="text-xs text-slate-500">
-                      Square Yards
-                    </div>
-
-                    <div className="mt-1 font-bold text-slate-900">
-                      {formatNumber(result.squareYards)}
-                    </div>
-                  </div>
-
-                  <div className="rounded-xl bg-white p-3 text-center">
-                    <div className="text-xs text-slate-500">
-                      Square Meters
-                    </div>
-
-                    <div className="mt-1 font-bold text-slate-900">
-                      {formatNumber(result.squareMeters)}
-                    </div>
-                  </div>
-
-                  <div className="rounded-xl bg-white p-3 text-center">
-                    <div className="text-xs text-slate-500">
-                      Acres
-                    </div>
-
-                    <div className="mt-1 font-bold text-slate-900">
-                      {formatNumber(result.acres, 5)}
-                    </div>
-                  </div>
+                  <p className="mt-3 border-t border-slate-700 pt-3 text-center text-sm text-blue-100">Area = {formulas[shape]}{Number(quantity) > 1 ? ` × ${quantity}` : ''}</p>
+                  <p className="mt-1 text-center text-[11px] text-slate-400">Dimension reference · not to scale</p>
                 </div>
-
-                <FormulaBox formula={result.formula} />
+                <h2 className="mb-2 text-xs font-bold uppercase tracking-wider text-slate-400">Equivalent areas</h2>
+                <dl className="divide-y divide-slate-800 text-sm">
+                  {([['Square meters', 'm²', area === null ? null : area * 0.09290304, 2], ['Square yards', 'yd²', area === null ? null : area / 9, 2], ['Square inches', 'in²', area === null ? null : area * 144, 2], ['Acres', 'acres', area === null ? null : area / 43560, 5]] as const).map(([label, symbol, value, precision]) => <div key={label} className="flex flex-wrap items-baseline justify-between gap-2 py-3"><dt className="text-slate-300">{label}</dt><dd className="break-all text-right font-semibold tabular-nums">{value === null ? '—' : formatNumber(value, precision)} <span className="text-xs font-normal text-slate-400">{symbol}</span></dd></div>)}
+                </dl>
               </div>
-            )}
+            </aside>
           </div>
         </section>
+
+        <details className="mt-8 rounded-xl border border-slate-200 bg-white p-4">
+          <summary className="cursor-pointer text-sm font-semibold text-slate-600">Area measurement illustration</summary>
+          <Image src="/cornerspan-area-calculator-hero.webp" alt="Area measurements for common construction shapes and floor plans" width={1672} height={941} sizes="(max-width: 1152px) 100vw, 1104px" className="mt-4 h-auto w-full rounded-lg" />
+        </details>
 
         {/* Explanation */}
         <section className="mt-10">
@@ -1161,3 +548,4 @@ export default function AreaCalculator() {
     </div>
   );
 }
+
