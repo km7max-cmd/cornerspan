@@ -126,6 +126,7 @@ export function calculateConcrete(
   }
 
   const volume = lengthM * widthM * depthM;
+  if (!Number.isFinite(volume) || volume <= 0) throw new Error("Dimensions produce an invalid volume.");
   const dryVolume = volume * DRY_VOLUME_FACTOR;
 
   const totalRatio =
@@ -217,12 +218,12 @@ export function calculateConcrete(
   );
 
   return {
-    volume: round(volume),
+    volume,
     volumeFt3: round(volume * 35.3146667),
     volumeYd3: round(volume / M3_PER_YD3),
     dryVolume: round(dryVolume),
     dryVolumeYd3: round(dryVolume / M3_PER_YD3),
-    totalVolume: round(volume),
+    totalVolume: volume,
     wasteVolume: 0,
     cementVolume: round(cementVolume),
     cementWeight: round(cementWeightKg, 1),
@@ -245,3 +246,4 @@ export function calculateConcrete(
     mixRatio,
   };
 }
+

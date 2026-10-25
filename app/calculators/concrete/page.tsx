@@ -129,11 +129,11 @@ export default function ConcreteCalculatorPage() {
 
       {/* PAGE */}
 
-      <div className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
+      <div className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
 
         {/* HERO */}
 
-        <header className="mb-8">
+        <header className="mb-5">
           <p className="mb-2 text-sm font-bold uppercase tracking-[0.16em] text-blue-600">
             Construction Calculator
           </p>
@@ -143,9 +143,7 @@ export default function ConcreteCalculatorPage() {
           </h1>
 
           <p className="mt-3 max-w-3xl text-base leading-7 text-slate-600 sm:text-lg">
-            Estimate concrete volume and common material requirements
-            for slabs, walls, footings, columns, stairs, and other
-            construction work.
+            Calculate cubic yards for slabs, rectangular footings, walls, and square or rectangular columns. Enter feet and inches to see your estimate instantly.
           </p>
         </header>
 
@@ -169,3 +167,4 @@ export default function ConcreteCalculatorPage() {
     </>
   );
 }
+

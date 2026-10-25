@@ -19,6 +19,7 @@ const M3_TO_FT3 = 35.3146667;
 const LITERS_TO_GALLONS = 0.264172052;
 
 function formatNumber(value: number, digits = 2) {
+  if (value !== 0 && Math.abs(value) < 10 ** -digits) return value.toLocaleString("en-US", { maximumSignificantDigits: 3 });
   return value.toLocaleString("en-US", {
     minimumFractionDigits: digits,
     maximumFractionDigits: digits,
@@ -62,100 +63,22 @@ export default function ResultCard({
 
   return (
     <section
-      className="w-full min-w-0 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm shadow-slate-200/60"
-      aria-live="polite"
+      className="w-full min-w-0 self-start overflow-hidden rounded-2xl lg:sticky lg:top-24 border border-slate-200 bg-white shadow-sm shadow-slate-200/60"
+
     >
-      <header className="border-b border-slate-100 px-4 py-4 sm:px-6 sm:py-5">
-        <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-blue-700">
-          Concrete Estimate
-        </p>
-
-        <div className="mt-1 flex items-start justify-between gap-3">
-          <div>
-            <h2 className="text-xl font-bold tracking-tight text-slate-900">
-              Your Results
-            </h2>
-            <p className="mt-1 text-sm text-slate-500">
-              Estimated quantities for your project
-            </p>
-          </div>
-
-          {hasResult && (
-            <span className="shrink-0 rounded-full border border-blue-100 bg-blue-50 px-2.5 py-1 text-xs font-semibold text-blue-700">
-              Estimate
-            </span>
-          )}
+      <header className="hidden bg-slate-950 p-5 text-white sm:p-6 lg:block">
+        <h2 className="text-xs font-bold uppercase tracking-widest text-blue-200">Concrete volume</h2>
+        <output aria-live="polite" aria-atomic="true" className="mt-3 block break-all text-5xl font-bold tracking-tight tabular-nums">{hasResult ? formatNumber(volumeYards) : "—"} <span className="text-lg font-normal text-blue-200">yd³</span></output>
+        <p className="mt-3 text-sm text-slate-300">{hasResult ? "Updates as you type · before any waste allowance" : "Enter positive dimensions to see your estimate."}</p>
+        <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 border-t border-slate-700 pt-3 text-sm text-blue-100">
+          <span>{hasResult ? formatNumber(volumeFeet) : "—"} ft³</span>
+          <span>{hasResult ? formatNumber(volume, 3) : "—"} m³</span>
         </div>
       </header>
-
-      {!hasResult ? (
-        <div className="px-5 py-12 text-center sm:py-16">
-          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.7"
-              className="h-7 w-7"
-              aria-hidden="true"
-            >
-              <rect x="4" y="3" width="16" height="18" rx="2" />
-              <path d="M8 7h8M8 11h2m4 0h2M8 15h2m4 0h2M8 19h8" />
-            </svg>
-          </div>
-
-          <h3 className="mt-4 font-bold text-slate-900">
-            Ready to Calculate
-          </h3>
-
-          <p className="mx-auto mt-2 max-w-xs text-sm leading-6 text-slate-500">
-            Enter your dimensions and select Calculate to see concrete volume
-            and material estimates.
-          </p>
-        </div>
-      ) : (
-        <div className="space-y-5 p-4 sm:space-y-6 sm:p-6">
-          <div className="relative overflow-hidden rounded-2xl border border-blue-100 bg-gradient-to-br from-blue-50 via-blue-50 to-white p-4 sm:p-6">
-            <div className="absolute -right-8 -top-8 h-28 w-28 rounded-full bg-blue-100/60" />
-
-            <div className="relative">
-              <div className="flex items-center gap-2">
-                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-white text-blue-700 shadow-sm">
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.8"
-                    className="h-4 w-4"
-                    aria-hidden="true"
-                  >
-                    <path d="m12 3 9 5-9 5-9-5 9-5Z" />
-                    <path d="m3 12 9 5 9-5M3 16l9 5 9-5" />
-                  </svg>
-                </span>
-
-                <p className="text-sm font-semibold text-blue-900">
-                  Concrete Volume
-                </p>
-              </div>
-
-              <div className="mt-3 flex flex-wrap items-baseline gap-x-2">
-                <span className="text-4xl font-extrabold tracking-tight text-blue-800 sm:text-5xl">
-                  {formatNumber(volumeYards)}
-                </span>
-                <span className="text-lg font-bold text-blue-800">
-                  yd³
-                </span>
-              </div>
-
-              <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 border-t border-blue-200/70 pt-3 text-sm font-medium text-slate-600">
-                <span>{formatNumber(volumeFeet)} ft³</span>
-                <span>{formatNumber(volume)} m³</span>
-              </div>
-            </div>
-          </div>
-
-          <div>
+      {hasResult && (
+        <div className="space-y-5 p-4 sm:p-6">
+          <details>
+            <summary className="mb-3 cursor-pointer text-sm font-semibold text-slate-700">View material quantities</summary>
             <div className="mb-3 flex items-center justify-between gap-3">
               <div>
                 <h3 className="text-base font-bold text-slate-900">
@@ -214,7 +137,7 @@ export default function ResultCard({
               premixed concrete. Actual cement requirements depend on the
               specified mix design and material properties.
             </p>
-          </div>
+          </details>
 
           <div className="overflow-hidden rounded-2xl border border-blue-100 bg-white">
             <div className="border-b border-blue-50 bg-blue-50/70 px-4 py-3">
@@ -385,3 +308,4 @@ function ActionButton({
     </button>
   );
 }
+

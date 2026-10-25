@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { MixRatio, Unit } from "../utils/calculateConcrete";
 
 type ProjectType = "Slab" | "Wall" | "Footing" | "Column";
@@ -40,7 +40,7 @@ type CalculatorFormProps = {
   setCementPrice: (value: string) => void;
   setSandPrice: (value: string) => void;
   setAggregatePrice: (value: string) => void;
-  onCalculate: (mixRatio: MixRatio) => void;
+  onCalculate: (mixRatio: MixRatio, preview?: boolean) => void;
 };
 
 const MIXES: Record<string, MixRatio> = {
@@ -59,7 +59,7 @@ const UNIT_OPTIONS: { label: string; value: Unit }[] = [
 ];
 
 const INPUT =
-  "h-10 w-full min-w-0 rounded-lg border border-slate-300 bg-white px-2 text-sm text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100";
+  "h-11 w-full min-w-0 rounded-lg border border-slate-300 bg-white px-2 text-base text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100";
 
 function DimensionDiagram({
   project,
@@ -245,14 +245,24 @@ export default function CalculatorForm(props: CalculatorFormProps) {
   const [customAggregate, setCustomAggregate] = useState("3");
   const [showMaterials, setShowMaterials] = useState(false);
 
-  const selectedMix: MixRatio =
-    mix === "Custom"
-      ? {
-          cement: Number(customCement),
-          sand: Number(customSand),
-          aggregate: Number(customAggregate),
-        }
-      : MIXES[mix] ?? MIXES.M20;
+  const selectedMix = useMemo<MixRatio>(() => mix === "Custom"
+    ? { cement: Number(customCement), sand: Number(customSand), aggregate: Number(customAggregate) }
+    : MIXES[mix] ?? MIXES.M20, [mix, customCement, customSand, customAggregate]);
+  const calculateRef = useRef(onCalculate);
+  useEffect(() => { calculateRef.current = onCalculate; }, [onCalculate]);
+  useEffect(() => {
+    calculateRef.current(selectedMix, true);
+  }, [length, width, depth, quantity, lengthUnit, widthUnit, depthUnit,
+    cementPrice, sandPrice, aggregatePrice, cementUnit, sandUnit, aggregateUnit,
+    sandDensity, aggregateDensity, selectedMix]);
+
+  const clear = () => { setLength(""); setWidth(""); setDepth(""); setQuantity("1"); };
+  const example = () => {
+    const dimensions = { Slab: ["12", "15", "4"], Wall: ["20", "8", "8"], Footing: ["20", "2", "12"], Column: ["1", "1", "8"] }[project];
+    setLength(dimensions[0]); setWidth(dimensions[1]); setDepth(dimensions[2]); setQuantity("1");
+    setLengthUnit("Feet"); setWidthUnit(project === "Wall" ? "Inch" : "Feet");
+    setDepthUnit(project === "Slab" || project === "Footing" ? "Inch" : "Feet");
+  };
 
   const dimension = (
     label: string,
@@ -265,71 +275,67 @@ export default function CalculatorForm(props: CalculatorFormProps) {
       <label className="mb-1 block truncate text-xs font-semibold text-slate-700">
         {label}
       </label>
+      <div className="flex min-w-0 items-center rounded-xl border border-slate-300 bg-white focus-within:ring-2 focus-within:ring-blue-600">
       <input aria-label={label}
         type="number"
+        inputMode="decimal"
         min="0"
         step="any"
         value={value}
         onChange={(event) => setter(event.target.value)}
-        className={INPUT}
+        className="h-14 w-full min-w-0 rounded-xl px-3 text-2xl font-semibold tabular-nums outline-none"
         placeholder="0"
       />
       <select
         value={unit}
         onChange={(event) => setUnit(event.target.value as Unit)}
-        className="mt-1 h-8 w-full rounded-lg border border-slate-300 bg-white px-1 text-xs"
+        className="h-14 w-16 shrink-0 rounded-r-xl bg-slate-50 px-1 text-base"
         aria-label={`${label} unit`}
       >
         {UNIT_OPTIONS.map((option) => (
           <option key={option.value} value={option.value}>
-            {option.label}
+            {{ Feet: "ft", Inch: "in", Meter: "m", Centimeter: "cm", Millimeter: "mm" }[option.value]}
           </option>
         ))}
       </select>
+      </div>
     </div>
   );
 
   return (
-    <section className="w-full min-w-0 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm sm:p-5">
+    <section className="w-full min-w-0 rounded-2xl bg-white p-4 sm:p-6">
       <h2 className="text-xl font-extrabold text-slate-950">
-        Concrete Calculator
+        Plan your concrete project
       </h2>
       <p className="mb-4 mt-1 text-sm text-slate-500">
-        Estimate concrete volume, cement bags, sand, aggregate, water, and
-        material cost.
+        Enter dimensions to see your volume instantly. US units are selected by default.
       </p>
 
-      <label className="mb-2 block text-sm font-semibold text-slate-800">
-        Project Type
-      </label>
-      <div className="mb-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
+      <p className="mb-2 text-xs font-bold uppercase tracking-wider text-slate-500">Project type</p>
+      <div className="mb-4 grid grid-cols-4 gap-2">
         {(["Slab", "Wall", "Footing", "Column"] as ProjectType[]).map((item) => (
           <button
             key={item}
             type="button"
-            onClick={() => setProject(item)}
-            className={`rounded-lg border px-2 py-2.5 text-sm font-semibold ${
+            aria-pressed={project === item}
+            onClick={() => { setProject(item); clear(); setLengthUnit("Feet"); setWidthUnit(item === "Wall" ? "Inch" : "Feet"); setDepthUnit(item === "Slab" || item === "Footing" ? "Inch" : "Feet"); }}
+            className={`rounded-xl border px-1 py-3 text-xs font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-600 ${
               project === item
-                ? "border-blue-600 bg-blue-600 text-white"
+                ? "border-blue-600 bg-blue-50 text-blue-700 ring-1 ring-blue-600"
                 : "border-slate-200 bg-white text-slate-700"
             }`}
           >
-            {item}
+            <svg viewBox="0 0 32 32" className="mx-auto mb-1 h-7 w-7" aria-hidden="true" fill="currentColor" fillOpacity="0.12" stroke="currentColor" strokeWidth="1.6">
+              <rect x={item === "Column" ? 11 : 4} y={item === "Slab" ? 16 : 6} width={item === "Column" ? 10 : 24} height={item === "Slab" ? 9 : item === "Footing" ? 16 : 22} rx="2" />
+              {item === "Footing" && <path d="M2 24h28v4H2z" />}
+            </svg>{item}
           </button>
         ))}
       </div>
 
-      <DimensionDiagram
-        project={project}
-        length={length}
-        width={width}
-        depth={depth}
-        lengthUnit={lengthUnit}
-        widthUnit={widthUnit}
-        depthUnit={depthUnit}
-      />
 
-      <div className="mt-4 grid grid-cols-3 gap-2">
+
+      <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
         {dimension("Length", length, setLength, lengthUnit, setLengthUnit)}
         {dimension(
           project === "Wall" ? "Thickness" : "Width",
@@ -351,20 +357,32 @@ export default function CalculatorForm(props: CalculatorFormProps) {
         )}
       </div>
 
+      <div className="mt-5">
+      <DimensionDiagram
+        project={project}
+        length={length}
+        width={width}
+        depth={depth}
+        lengthUnit={lengthUnit}
+        widthUnit={widthUnit}
+        depthUnit={depthUnit}
+      />
+      </div>
       <div className="mt-4">
         <label htmlFor="concrete-quantity" className="mb-1 block text-xs font-semibold text-slate-700">
           Quantity
         </label>
-        <input id="concrete-quantity"
-          type="number"
-          min="1"
-          step="1"
-          value={quantity}
-          onChange={(event) => setQuantity(event.target.value)}
-          className={INPUT}
-        />
+        <div className="flex w-fit items-center rounded-lg border border-slate-300">
+          <button type="button" aria-label="Decrease quantity" onClick={() => setQuantity(String(Math.max(1, (Number(quantity) || 1) - 1)))} className="h-11 w-11 rounded-l-lg bg-slate-50 text-xl">−</button>
+          <input id="concrete-quantity" type="number" inputMode="numeric" min="1" step="1" value={quantity} onChange={event => setQuantity(event.target.value)} className="h-11 w-16 border-x border-slate-300 text-center text-base" />
+          <button type="button" aria-label="Increase quantity" onClick={() => setQuantity(String((Number(quantity) || 0) + 1))} className="h-11 w-11 rounded-r-lg bg-slate-50 text-xl">+</button>
+        </div>
+
       </div>
 
+      <details className="mt-4 rounded-xl border border-slate-200 p-3">
+        <summary className="cursor-pointer text-sm font-semibold">Mix assumptions (optional)</summary>
+        <p className="mt-2 text-xs leading-5 text-slate-500">Ratios estimate component quantities, not concrete strength in PSI. Use your supplier’s specified mix for construction.</p>
       <div className="mt-4">
         <label htmlFor="concrete-mix" className="mb-1 block text-xs font-semibold text-slate-700">
           Concrete Mix Ratio
@@ -374,10 +392,10 @@ export default function CalculatorForm(props: CalculatorFormProps) {
           onChange={(event) => setMix(event.target.value)}
           className={INPUT}
         >
-          <option value="M10">M10 (1:3:6)</option>
-          <option value="M15">M15 (1:2:4)</option>
-          <option value="M20">M20 (1:1.5:3)</option>
-          <option value="M25">M25 (1:1:2)</option>
+          <option value="M10">1:3:6 — cement : sand : aggregate</option>
+          <option value="M15">1:2:4 — cement : sand : aggregate</option>
+          <option value="M20">1:1.5:3 — cement : sand : aggregate</option>
+          <option value="M25">1:1:2 — cement : sand : aggregate</option>
           <option value="Custom">Custom mix</option>
         </select>
       </div>
@@ -408,6 +426,7 @@ export default function CalculatorForm(props: CalculatorFormProps) {
         </div>
       )}
 
+      </details>
       <div className="mt-4">
         <button
           type="button"
@@ -564,6 +583,10 @@ export default function CalculatorForm(props: CalculatorFormProps) {
         )}
       </div>
 
+      <div className="mt-4 flex justify-between gap-3">
+        <button type="button" onClick={example} className="min-h-11 rounded-lg bg-blue-50 px-4 text-sm font-semibold text-blue-700">Try an example</button>
+        <button type="button" onClick={clear} className="min-h-11 rounded-lg px-4 text-sm font-semibold text-slate-500 hover:bg-slate-100">Clear dimensions</button>
+      </div>
       {error && (
         <p
           role="alert"
@@ -578,7 +601,7 @@ export default function CalculatorForm(props: CalculatorFormProps) {
         onClick={() => onCalculate(selectedMix)}
         className="mt-5 h-12 w-full rounded-xl bg-blue-600 px-4 text-sm font-bold text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-offset-2"
       >
-        Calculate Concrete
+        Save calculation
       </button>
 
       <p className="mt-3 text-center text-xs text-slate-500">
@@ -588,3 +611,4 @@ export default function CalculatorForm(props: CalculatorFormProps) {
     </section>
   );
 }
+

@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useState } from "react";
-import CalculatorHero from "../../components/CalculatorHero";
 import CalculatorForm from "./components/CalculatorForm";
 import ResultCard from "./components/ResultCard";
 import Formula from "./components/Formula";
@@ -246,16 +245,19 @@ export default function ConcreteCalculator() {
     setShowToast(true);
   };
 
-  const handleCalculate = (mixRatio: MixRatio) => {
+  const handleCalculate = (mixRatio: MixRatio, preview = false) => {
+    const notify = (message: string, type: "success" | "error" = "success") => {
+      if (!preview) showNotification(message, type);
+    };
     const l = Number(length);
     const w = Number(width);
     const d = Number(depth);
     const q = Number(quantity);
 
     if (!length.trim() || !width.trim() || !depth.trim()) {
-      setError("Please fill in all dimension fields.");
+      setError(preview ? "" : "Please fill in all dimension fields.");
       setResult(ZERO_RESULT);
-      showNotification(
+      notify(
         "Please fill in all dimension fields.",
         "error"
       );
@@ -274,18 +276,18 @@ export default function ConcreteCalculator() {
         "Length, width and depth must be greater than zero."
       );
       setResult(ZERO_RESULT);
-      showNotification(
+      notify(
         "Dimension values must be greater than zero.",
         "error"
       );
       return;
     }
 
-    if (!Number.isFinite(q) || q <= 0) {
-      setError("Quantity must be greater than zero.");
+    if (!Number.isInteger(q) || q <= 0) {
+      setError("Quantity must be a whole number of 1 or more.");
       setResult(ZERO_RESULT);
-      showNotification(
-        "Quantity must be greater than zero.",
+      notify(
+        "Quantity must be a whole number of 1 or more.",
         "error"
       );
       return;
@@ -302,7 +304,7 @@ export default function ConcreteCalculator() {
     ) {
       setError("Please enter a valid concrete mix ratio.");
       setResult(ZERO_RESULT);
-      showNotification("Invalid concrete mix ratio.", "error");
+      notify("Invalid concrete mix ratio.", "error");
       return;
     }
 
@@ -324,7 +326,7 @@ export default function ConcreteCalculator() {
         "Material prices must be valid numbers and cannot be negative."
       );
       setResult(ZERO_RESULT);
-      showNotification(
+      notify(
         "Enter valid non-negative material prices.",
         "error"
       );
@@ -340,7 +342,7 @@ export default function ConcreteCalculator() {
     ) {
       setError("Please select a valid sand density.");
       setResult(ZERO_RESULT);
-      showNotification("Invalid sand density.", "error");
+      notify("Invalid sand density.", "error");
       return;
     }
 
@@ -350,7 +352,7 @@ export default function ConcreteCalculator() {
     ) {
       setError("Please select a valid aggregate density.");
       setResult(ZERO_RESULT);
-      showNotification("Invalid aggregate density.", "error");
+      notify("Invalid aggregate density.", "error");
       return;
     }
 
@@ -423,7 +425,7 @@ export default function ConcreteCalculator() {
       totalCost = Number(totalCost.toFixed(2));
 
       const nextResult: CalculationResult = {
-        volume: Number(volume.toFixed(3)),
+        volume,
         dryVolume: Number(dryVolume.toFixed(3)),
         totalVolume: Number(totalVolume.toFixed(3)),
         wasteVolume: Number(wasteVolume.toFixed(3)),
@@ -436,14 +438,19 @@ export default function ConcreteCalculator() {
         totalCost,
       };
 
+      if (Object.values(nextResult).some(value => !Number.isFinite(value))) {
+        throw new Error("Calculation exceeds the supported range.");
+      }
       setResult(nextResult);
+
+      if (preview) return;
 
       const newHistory: HistoryItem[] = [
         {
           length: l,
           width: w,
           depth: d,
-          volume: Number(volume.toFixed(3)),
+          volume,
         },
         ...history,
       ].slice(0, 5);
@@ -461,8 +468,8 @@ export default function ConcreteCalculator() {
 
       addGlobalHistory(
         "Concrete Calculator",
-        `${l} × ${w} × ${d}`,
-        `${volume.toFixed(2)} m³`
+        `${l} ${lengthUnit} × ${w} ${widthUnit} × ${d} ${depthUnit} × ${q}`,
+        `${(volume / M3_PER_YD3).toFixed(2)} yd³`
       );
 
       const hasAnyPrice = priceInputs.some(
@@ -470,16 +477,16 @@ export default function ConcreteCalculator() {
       );
 
       if (!hasAnyPrice) {
-        showNotification(
+        notify(
           "Calculation completed. Enter material prices to estimate cost."
         );
       } else {
-        showNotification("Calculation completed successfully!");
+        notify("Calculation completed successfully!");
       }
     } catch {
       setError("Unable to calculate. Please check your inputs.");
       setResult(ZERO_RESULT);
-      showNotification(
+      notify(
         "Unable to calculate. Please check your inputs.",
         "error"
       );
@@ -611,17 +618,15 @@ Currency: ${currency}`;
 
   return (
     <>
-      <div className="min-h-screen bg-gradient-to-b from-blue-50 via-white to-slate-100">
-        <div className="mx-auto w-full max-w-[1600px] px-2 py-4 sm:px-4 sm:py-6 lg:px-8 lg:py-10">
-          <CalculatorHero
-            headingLevel="h2"
-            title="Concrete"
-            highlight="Calculator"
-            description="Calculate concrete volume in cubic yards and cubic feet, estimate 94 lb cement bags, sand, aggregate, water, and material cost."
-          />
-
+      <div className="bg-slate-50">
+        <div className="mx-auto w-full min-w-0">
           {/* Calculator form and results */}
-          <div className="mt-4 grid w-full min-w-0 grid-cols-1 gap-5 lg:mt-6 lg:grid-cols-2 lg:gap-6">
+          <section aria-label="Interactive concrete calculator" className="rounded-2xl border border-slate-200 bg-white shadow-sm">
+            <div className="sticky top-[76px] z-20 flex items-center justify-between gap-3 rounded-t-2xl bg-slate-950 px-4 py-3 text-white lg:hidden">
+              <span className="text-xs uppercase tracking-wider text-blue-200">Concrete volume</span>
+              <output aria-live="polite" aria-atomic="true" className="min-w-0 break-all text-right text-2xl font-bold tabular-nums">{result.volume > 0 ? new Intl.NumberFormat("en-US", { maximumSignificantDigits: 5 }).format(result.volume / M3_PER_YD3) : "—"} <span className="text-sm font-normal text-blue-200">yd³</span></output>
+            </div>
+          <div className="grid w-full min-w-0 grid-cols-1 items-start lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]">
             <CalculatorForm
               length={length}
               width={width}
@@ -677,6 +682,8 @@ Currency: ${currency}`;
             />
           </div>
 
+          </section>
+
           {/* Image, TOC and guide content directly below results */}
           <div className="mt-6">
             <AboutCalculator />
@@ -709,3 +716,4 @@ Currency: ${currency}`;
     </>
   );
 }
+
