@@ -1,16 +1,54 @@
+import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 
-export const metadata = {
-  alternates: { canonical: "/guides/brick-calculation" },
-  title:
-    "How to Calculate Bricks for a Wall: Formula & Examples",
-  description:
-    "Learn how to calculate bricks for a wall using square feet, brick dimensions, mortar joints, openings, and a worked US modular brick example.",
+const title = "How to Calculate Bricks for a Wall: Formula & Examples";
+const description = "Learn how to calculate bricks for a wall using square feet, brick dimensions, mortar joints, openings, and a worked US modular brick example.";
+const pageUrl = "https://www.cornerspan.com/guides/brick-calculation";
+const imageUrl = "https://www.cornerspan.com/brick-calculation-guide.png";
+const imageAlt = "A 10 by 8 foot wall with a 3 by 4 foot window, and a brick face with a 3/8-inch mortar joint.";
+
+export const metadata: Metadata = {
+  title,
+  description,
+  alternates: { canonical: pageUrl },
+  openGraph: {
+    title: `${title} | CornerSpan`, description, url: pageUrl,
+    type: "article", siteName: "CornerSpan", locale: "en_US",
+    images: [{ url: imageUrl, width: 1200, height: 630, alt: imageAlt }],
+  },
+  twitter: {
+    card: "summary_large_image", title: `${title} | CornerSpan`, description,
+    images: [{ url: imageUrl, alt: imageAlt }],
+  },
+};
+
+const structuredData = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article", "@id": `${pageUrl}#article`,
+      headline: title, description, url: pageUrl, mainEntityOfPage: pageUrl,
+      image: { "@type": "ImageObject", url: imageUrl, width: 1200, height: 630 },
+      author: { "@type": "Organization", name: "CornerSpan", url: "https://www.cornerspan.com" },
+      publisher: { "@type": "Organization", name: "CornerSpan", url: "https://www.cornerspan.com" },
+      inLanguage: "en-US",
+    },
+    {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Home", item: "https://www.cornerspan.com" },
+        { "@type": "ListItem", position: 2, name: "Construction Guides", item: "https://www.cornerspan.com/guides" },
+        { "@type": "ListItem", position: 3, name: "Brick Calculation Guide", item: pageUrl },
+      ],
+    },
+  ],
 };
 
 export default function BrickCalculationGuide() {
   return (
     <div className="min-h-screen bg-white pt-[80px] text-slate-900">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, "\\u003c") }} />
       {/* HERO */}
       <section className="border-b border-slate-200 bg-slate-50">
         <div className="mx-auto max-w-4xl px-6 py-12 md:py-16">
@@ -43,11 +81,40 @@ export default function BrickCalculationGuide() {
         </div>
       </section>
 
+      <figure className="mx-auto max-w-4xl px-6 pt-8">
+        <Image src="/brick-calculation-guide.png" alt={imageAlt} width={1200} height={630}
+          sizes="(max-width: 896px) calc(100vw - 48px), 848px" priority
+          className="h-auto w-full rounded-xl border border-slate-200" />
+        <figcaption className="mt-3 text-sm leading-6 text-slate-600">
+          One-layer planning example: subtract the window area and include the mortar joint in each brick module.
+        </figcaption>
+      </figure>
       {/* CONTENT */}
       <article className="mx-auto max-w-4xl px-6 py-10 md:py-14">
+        <p className="mb-6 text-sm text-slate-600">By CornerSpan</p>
+        <nav aria-label="Table of contents" className="mb-10 rounded-xl border border-slate-200 bg-slate-50 p-6">
+          <p className="text-lg font-bold">On this page</p>
+          <ul className="mt-4 grid gap-3 text-sm sm:grid-cols-2">
+            <li><a href="#how-many-bricks-do-you-need-for-a-wall" className="text-blue-700 underline underline-offset-2">How Many Bricks Do You Need for a Wall?</a></li>
+            <li><a href="#brick-calculation-formula" className="text-blue-700 underline underline-offset-2">Brick Calculation Formula</a></li>
+            <li><a href="#how-many-bricks-per-square-foot" className="text-blue-700 underline underline-offset-2">How Many Bricks Per Square Foot?</a></li>
+            <li><a href="#how-to-calculate-bricks-for-a-wall-step-by-step" className="text-blue-700 underline underline-offset-2">How to Calculate Bricks for a Wall Step by Step</a></li>
+            <li><a href="#brick-calculation-example-in-square-feet" className="text-blue-700 underline underline-offset-2">Brick Calculation Example in Square Feet</a></li>
+            <li><a href="#how-wall-thickness-affects-brick-quantity" className="text-blue-700 underline underline-offset-2">How Wall Thickness Affects Brick Quantity</a></li>
+            <li><a href="#how-mortar-joints-affect-brick-calculation" className="text-blue-700 underline underline-offset-2">How Mortar Joints Affect Brick Calculation</a></li>
+            <li><a href="#deduct-doors-and-windows" className="text-blue-700 underline underline-offset-2">Deduct Doors and Windows</a></li>
+            <li><a href="#allow-for-brick-wastage" className="text-blue-700 underline underline-offset-2">Allow for Brick Wastage</a></li>
+            <li><a href="#order-quantity-with-a-waste-allowance" className="text-blue-700 underline underline-offset-2">Order Quantity with a Waste Allowance</a></li>
+            <li><a href="#common-brick-estimating-mistakes" className="text-blue-700 underline underline-offset-2">Common Brick Estimating Mistakes</a></li>
+            <li><a href="#calculate-bricks-for-your-wall" className="text-blue-700 underline underline-offset-2">Calculate Bricks for Your Wall</a></li>
+            <li><a href="#brick-calculation-faqs" className="text-blue-700 underline underline-offset-2">Brick Calculation FAQs</a></li>
+            <li><a href="#sources-and-dimension-checks" className="text-blue-700 underline underline-offset-2">Sources and Dimension Checks</a></li>
+            <li><a href="#related-construction-guides" className="text-blue-700 underline underline-offset-2">Related Construction Guides</a></li>
+          </ul>
+        </nav>
         {/* INTRO */}
         <section>
-          <h2 className="text-2xl font-bold tracking-tight md:text-3xl">
+          <h2 id="how-many-bricks-do-you-need-for-a-wall" className="scroll-mt-28 text-2xl font-bold tracking-tight md:text-3xl">
             How Many Bricks Do You Need for a Wall?
           </h2>
 
@@ -81,7 +148,7 @@ export default function BrickCalculationGuide() {
 
         {/* BASIC FORMULA */}
         <section className="mt-12 border-t border-slate-200 pt-10">
-          <h2 className="text-2xl font-bold tracking-tight md:text-3xl">
+          <h2 id="brick-calculation-formula" className="scroll-mt-28 text-2xl font-bold tracking-tight md:text-3xl">
             Brick Calculation Formula
           </h2>
 
@@ -119,7 +186,7 @@ export default function BrickCalculationGuide() {
 
         {/* SQUARE FOOTAGE */}
         <section className="mt-12 border-t border-slate-200 pt-10">
-          <h2 className="text-2xl font-bold tracking-tight md:text-3xl">
+          <h2 id="how-many-bricks-per-square-foot" className="scroll-mt-28 text-2xl font-bold tracking-tight md:text-3xl">
             How Many Bricks Per Square Foot?
           </h2>
 
@@ -158,7 +225,7 @@ export default function BrickCalculationGuide() {
 
         {/* STEP BY STEP */}
         <section className="mt-12 border-t border-slate-200 pt-10">
-          <h2 className="text-2xl font-bold tracking-tight md:text-3xl">
+          <h2 id="how-to-calculate-bricks-for-a-wall-step-by-step" className="scroll-mt-28 text-2xl font-bold tracking-tight md:text-3xl">
             How to Calculate Bricks for a Wall Step by Step
           </h2>
 
@@ -195,24 +262,24 @@ export default function BrickCalculationGuide() {
 
         {/* US EXAMPLE */}
         <section className="mt-12 border-t border-slate-200 pt-10">
-          <h2 className="text-2xl font-bold tracking-tight md:text-3xl">
+          <h2 id="brick-calculation-example-in-square-feet" className="scroll-mt-28 text-2xl font-bold tracking-tight md:text-3xl">
             Brick Calculation Example in Square Feet
           </h2>
 
           <p className="mt-4 text-base leading-8 text-slate-600">
             Suppose you need to estimate bricks for a wall that is 10 feet
             long and 8 feet high. The wall has one window measuring 3 feet by
-            4 feet. Use the illustrative modular brick estimate of 6.86 bricks
-            per square foot calculated above.
+            4 feet. Use the illustrative modular brick estimate of 144 ÷ 21 bricks
+            per square foot calculated above, keeping full precision until the final round-up.
           </p>
 
-          <div className="mt-6 overflow-hidden rounded-xl border border-slate-200">
-            <table className="w-full text-left text-sm">
+          <div className="mt-6 overflow-x-auto rounded-xl border border-slate-200" role="region" aria-label="Brick calculation example table" tabIndex={0}>
+            <table className="w-full min-w-[480px] text-left text-sm">
               <thead className="bg-slate-50">
                 <tr>
-                  <th className="px-5 py-4 font-semibold">Measurement</th>
-                  <th className="px-5 py-4 font-semibold">Calculation</th>
-                  <th className="px-5 py-4 font-semibold">Result</th>
+                  <th scope="col" className="px-5 py-4 font-semibold">Measurement</th>
+                  <th scope="col" className="px-5 py-4 font-semibold">Calculation</th>
+                  <th scope="col" className="px-5 py-4 font-semibold">Result</th>
                 </tr>
               </thead>
               <tbody>
@@ -235,7 +302,7 @@ export default function BrickCalculationGuide() {
                   <td className="px-5 py-4 text-slate-600">
                     Estimated bricks
                   </td>
-                  <td className="px-5 py-4">68 × 6.86</td>
+                  <td className="px-5 py-4">68 × (144 ÷ 21)</td>
                   <td className="px-5 py-4 font-semibold">467 bricks*</td>
                 </tr>
               </tbody>
@@ -247,7 +314,7 @@ export default function BrickCalculationGuide() {
               Worked Result
             </p>
             <p className="mt-3 text-base leading-7 text-slate-700">
-              The estimated quantity is 466.48 bricks, rounded up to 467
+              The estimated quantity is approximately 466.29 bricks, rounded up to 467
               bricks before adding any waste allowance.
             </p>
             <p className="mt-3 text-sm leading-6 text-slate-600">
@@ -260,7 +327,7 @@ export default function BrickCalculationGuide() {
 
         {/* WALL THICKNESS */}
         <section className="mt-12 border-t border-slate-200 pt-10">
-          <h2 className="text-2xl font-bold tracking-tight md:text-3xl">
+          <h2 id="how-wall-thickness-affects-brick-quantity" className="scroll-mt-28 text-2xl font-bold tracking-tight md:text-3xl">
             How Wall Thickness Affects Brick Quantity
           </h2>
 
@@ -282,7 +349,7 @@ export default function BrickCalculationGuide() {
 
         {/* MORTAR */}
         <section className="mt-12 border-t border-slate-200 pt-10">
-          <h2 className="text-2xl font-bold tracking-tight md:text-3xl">
+          <h2 id="how-mortar-joints-affect-brick-calculation" className="scroll-mt-28 text-2xl font-bold tracking-tight md:text-3xl">
             How Mortar Joints Affect Brick Calculation
           </h2>
 
@@ -302,7 +369,7 @@ export default function BrickCalculationGuide() {
 
         {/* OPENINGS */}
         <section className="mt-12 border-t border-slate-200 pt-10">
-          <h2 className="text-2xl font-bold tracking-tight md:text-3xl">
+          <h2 id="deduct-doors-and-windows" className="scroll-mt-28 text-2xl font-bold tracking-tight md:text-3xl">
             Deduct Doors and Windows
           </h2>
 
@@ -327,7 +394,7 @@ export default function BrickCalculationGuide() {
 
         {/* WASTAGE */}
         <section className="mt-12 border-t border-slate-200 pt-10">
-          <h2 className="text-2xl font-bold tracking-tight md:text-3xl">
+          <h2 id="allow-for-brick-wastage" className="scroll-mt-28 text-2xl font-bold tracking-tight md:text-3xl">
             Allow for Brick Wastage
           </h2>
 
@@ -350,9 +417,36 @@ export default function BrickCalculationGuide() {
           </div>
         </section>
 
+        <section className="mt-12 border-t border-slate-200 pt-10">
+          <h2 id="order-quantity-with-a-waste-allowance" className="scroll-mt-28 text-2xl font-bold tracking-tight md:text-3xl">Order Quantity with a Waste Allowance</h2>
+          <p className="mt-4 text-base leading-8 text-slate-600">
+            Continue the 68-square-foot example with an illustrative 5% waste allowance.
+            Keep the unrounded estimate until the final step: 68 × (144 ÷ 21) × 1.05 = 489.6.
+            Round up to <strong>490 bricks</strong>. Ask your supplier about pack quantities;
+            the actual purchase may need to be rounded up again to a complete pack.
+          </p>
+          <p className="mt-4 text-base leading-8 text-slate-600">
+            This allowance covers an estimate of cutting and breakage, not extra wall layers.
+            Confirm the waste rate and any special bricks with the installer before ordering.
+          </p>
+        </section>
+        <section className="mt-12 border-t border-slate-200 pt-10">
+          <h2 id="common-brick-estimating-mistakes" className="scroll-mt-28 text-2xl font-bold tracking-tight md:text-3xl">Common Brick Estimating Mistakes</h2>
+          <ul className="mt-5 list-disc space-y-3 pl-6 text-base leading-8 text-slate-600">
+            <li>Mixing square feet with square inches without converting units.</li>
+            <li>Using brick dimensions without joints, or adding joints to dimensions that already include them.</li>
+            <li>Forgetting openings, additional wythes, returns, or special brick shapes.</li>
+            <li>Rounding the bricks-per-square-foot rate before completing the calculation.</li>
+            <li>Treating a planning estimate as an exact installation or purchase quantity.</li>
+          </ul>
+          <p className="mt-4 text-base leading-8 text-slate-600">
+            For help measuring rectangular surfaces, use our <Link href="/calculators/square-footage" className="font-semibold text-blue-600 underline">Square Footage Calculator</Link>.
+            For triangular gables or other shapes, calculate each area separately before adding the totals.
+          </p>
+        </section>
         {/* CTA */}
         <section className="mt-12 rounded-xl bg-slate-900 px-6 py-8 md:px-8">
-          <h2 className="text-2xl font-bold text-white md:text-3xl">
+          <h2 id="calculate-bricks-for-your-wall" className="scroll-mt-28 text-2xl font-bold text-white md:text-3xl">
             Calculate Bricks for Your Wall
           </h2>
 
@@ -374,7 +468,7 @@ export default function BrickCalculationGuide() {
 
         {/* FAQ */}
         <section className="mt-12 border-t border-slate-200 pt-10">
-          <h2 className="text-2xl font-bold tracking-tight md:text-3xl">
+          <h2 id="brick-calculation-faqs" className="scroll-mt-28 text-2xl font-bold tracking-tight md:text-3xl">
             Brick Calculation FAQs
           </h2>
 
@@ -404,14 +498,11 @@ export default function BrickCalculationGuide() {
             </div>
 
             <div className="py-6">
-              <h3 className="text-lg font-bold">
-                How many bricks do I need per square foot of wall?
-              </h3>
+              <h3 className="text-lg font-bold">Can I use this method with metric measurements?</h3>
               <p className="mt-3 text-base leading-7 text-slate-600">
-                Divide 144 square inches by the nominal brick face area in
-                square inches. This gives an approximate bricks-per-square-foot
-                figure for one layer, provided the nominal dimensions include
-                the mortar joints.
+                Yes. Divide the net wall area in square meters by the brick module face area in square meters.
+                If module length and height are in millimeters, bricks per square meter = 1,000,000 ÷ (length × height).
+                Use the selected product dimensions and planned joints; do not assume a US brick size applies.
               </p>
             </div>
 
@@ -461,9 +552,19 @@ export default function BrickCalculationGuide() {
           </div>
         </section>
 
+        <section className="mt-12 border-t border-slate-200 pt-10">
+          <h2 id="sources-and-dimension-checks" className="scroll-mt-28 text-2xl font-bold tracking-tight md:text-3xl">Sources and Dimension Checks</h2>
+          <p className="mt-4 text-base leading-8 text-slate-600">
+            Brick names and dimensions can vary by manufacturer. Check the product data sheet and specified joint before applying the example rate.
+          </p>
+          <ul className="mt-4 list-disc space-y-3 pl-6 text-base leading-7">
+            <li><a href="https://www.gobrick.com/media/file/10-dimensioning-and-estimating-brick-masonry.pdf" className="text-blue-600 underline">Brick Industry Association: Dimensioning and Estimating Brick Masonry (PDF)</a> — dimensioning and estimating guidance.</li>
+            <li><a href="https://www.glengery.com/brick-sizes" className="text-blue-600 underline">Glen-Gery: Brick Sizes and Dimensions</a> — manufacturer dimensions and coverage information.</li>
+          </ul>
+        </section>
         {/* RELATED GUIDES */}
         <section className="mt-12 border-t border-slate-200 pt-10">
-          <h2 className="text-2xl font-bold tracking-tight md:text-3xl">
+          <h2 id="related-construction-guides" className="scroll-mt-28 text-2xl font-bold tracking-tight md:text-3xl">
             Related Construction Guides
           </h2>
 
@@ -530,3 +631,4 @@ export default function BrickCalculationGuide() {
     </div>
   );
 }
+
