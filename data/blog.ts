@@ -1,3 +1,4 @@
+import { calculatorArticles } from "./calculator-articles";
 
 export type BlogPost = {
   slug: string;
@@ -6,10 +7,11 @@ export type BlogPost = {
   category: string;
   tags: string[];
   publishedAt: string;
+  modifiedAt?: string;
   calculatorHref: string;
 };
 
-export const blogPosts: BlogPost[] = [
+const existingPosts: BlogPost[] = [
   {
     slug: "concrete-calculation-guide",
     title: "Concrete Calculation Guide",
@@ -66,4 +68,14 @@ export const blogPosts: BlogPost[] = [
     publishedAt: "2026-10-23",
     calculatorHref: "/calculators/area",
   },
+];
+
+
+// Preserve established URLs and publication dates while replacing incomplete content.
+export const blogPosts: BlogPost[] = [
+  ...existingPosts.map(post => {
+    const article = calculatorArticles.find(item => item.slug === post.slug);
+    return article ? {...post, title:article.title, description:article.description, modifiedAt:article.modifiedAt} : post;
+  }),
+  ...calculatorArticles.filter(article => !existingPosts.some(post => post.slug === article.slug)).map(({slug,title,description,category,tags,publishedAt,modifiedAt,calculatorHref}) => ({slug,title,description,category,tags,publishedAt,modifiedAt,calculatorHref})),
 ];

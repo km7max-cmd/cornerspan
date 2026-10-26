@@ -1,3 +1,5 @@
+import { calculatorArticles } from "../../../data/calculator-articles";
+import CalculatorArticle from "../../../components/blog/CalculatorArticle";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -29,6 +31,18 @@ export async function generateMetadata({
 
   if (!post) {
     return {};
+  }
+
+  const article = calculatorArticles.find(item => item.slug === slug);
+  if (article) {
+    const image = article.image && !article.image.endsWith(".svg") ? article.image : "/og-image.png";
+    return {
+      title:article.title, description:article.description,
+      alternates:{canonical:`/blog/${slug}`},
+      openGraph:{title:article.title, description:article.description, type:"article", url:`https://www.cornerspan.com/blog/${slug}`, locale:"en_US", publishedTime:article.publishedAt, modifiedTime:article.modifiedAt, images:[{url:image,alt:article.title}]},
+      twitter:{card:"summary_large_image",title:article.title,description:article.description,images:[image]},
+      robots:{index:true,follow:true},
+    };
   }
 
   /*
@@ -228,6 +242,8 @@ export default async function BlogPostPage({ params }: Props) {
   if (!post) {
     notFound();
   }
+  const article = calculatorArticles.find(item => item.slug === slug);
+  if (article) return <CalculatorArticle article={article} />;
   if (slug === trapezoidSlug) {
   return <TrapezoidAreaArticle />;
 }
@@ -1287,3 +1303,4 @@ export default async function BlogPostPage({ params }: Props) {
     </div>
   );
 }
+

@@ -6,7 +6,7 @@ import { blogPosts } from "../../data/blog";
 export const metadata: Metadata = {
   title: "Construction Articles & Guides",
   description:
-    "Practical construction articles and guides covering concrete, brick, square footage, measurements and construction material estimates.",
+    "Practical construction articles and guides covering all 14 calculators, with US-unit worked examples, material quantities, ordering tips and cost calculations.",
   alternates: {
     canonical: "/blog",
   },
@@ -22,7 +22,7 @@ type Article = {
   category: string;
   href: string;
   imageTitle: string;
-  type: "concrete" | "brick" | "square";
+  type: "concrete" | "brick" | "square" | "materials";
 };
 
 const articles: Article[] = [...blogPosts]
@@ -39,7 +39,7 @@ const articles: Article[] = [...blogPosts]
       : category.includes("measurement") ||
           category.includes("area")
         ? "square"
-        : "brick";
+        : category.includes("brick") ? "brick" : "materials";
 
     return {
       title: post.title,
@@ -159,6 +159,7 @@ function GuideIllustration({
             </>
           )}
 
+          {type === "materials" && (<g><rect x="45" y="25" width="90" height="88" rx="8" fill="#1e3a8a"/><rect x="57" y="36" width="66" height="22" rx="3" fill="#bfdbfe"/><path d="M58 73h12m12 0h12m12 0h12M58 92h12m12 0h12m12 0h12" stroke="#fff" strokeWidth="6"/></g>)}
           {type === "square" && (
             <>
               <rect
@@ -448,3 +449,4 @@ export default function BlogPage() {
     </div>
   );
 }
+
