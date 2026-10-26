@@ -168,6 +168,21 @@ export default function AboutPage() {
         </div>
       </section>
 
+      <section id="content-method" className="scroll-mt-28 bg-white px-5 py-10 sm:px-6">
+        <div className="mx-auto max-w-4xl space-y-5 text-slate-700 [&_p]:leading-8">
+          <h2 className="text-2xl font-bold text-slate-950">How our estimates and articles are prepared</h2>
+          <p>CornerSpan explains material quantities for US projects using feet, inches, square feet, cubic yards, pounds and US short tons where appropriate. Our articles show the inputs behind an estimate so you can replace them with your own measurements and supplier information.</p>
+          <h3 className="text-xl font-semibold text-slate-950">Worked examples, with assumptions you can check</h3>
+          <p>The project examples are illustrative calculations, not reports from completed jobs. Prices labeled as examples are not current supplier quotes. Product coverage, density, cutting allowances and packaging can change an order, so those assumptions are stated alongside the arithmetic. Linked manufacturer and technical resources provide background for the relevant material.</p>
+          <h3 className="text-xl font-semibold text-slate-950">How to use a result</h3>
+          <p>Keep three quantities separate: the measured area or volume, the estimate after any allowance, and the amount sold in whole bags, boxes, pieces or pallets. Compare quotes on the same basis. These tools estimate quantities; they do not specify structural designs, select code-compliant assemblies or provide a professional site inspection.</p>
+          <h3 className="text-xl font-semibold text-slate-950">Content preparation and corrections</h3>
+          <p>AI tools assist with drafting and editing some content and code. Formulas, worked examples and source links are shown so readers can inspect the reasoning. An organization byline identifies CornerSpan as the publisher; it does not imply an individual licensed professional reviewed the article.</p>
+          <p>If something looks wrong, use the <Link href="/contact" className="text-blue-700 underline">contact page</Link> to send the page URL, units, measurements and the result you expected. For a product-specific discrepancy, include the manufacturer’s coverage or specification. Those details make the issue easier to reproduce.</p>
+          <p>Read the <Link href="/blog" className="text-blue-700 underline">worked project examples</Link> or start with the <Link href="/calculators" className="text-blue-700 underline">calculator directory</Link>.</p>
+        </div>
+      </section>
+
       {/* Our Goal */}
       <section className="px-5 py-10 sm:px-6 sm:py-14">
         <div className="mx-auto max-w-4xl rounded-2xl border border-blue-100 bg-blue-50 p-6 text-center sm:p-9">
@@ -199,3 +214,4 @@ export default function AboutPage() {
     </div>
   );
 }
+
