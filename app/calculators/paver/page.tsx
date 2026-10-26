@@ -1,3 +1,4 @@
+import CalculatorReading from "../../../components/CalculatorReading";
 import type { Metadata } from "next";
 import Image from "next/image";
 import dynamic from "next/dynamic";
@@ -559,7 +560,8 @@ export default function PaverCalculatorPage() {
       <div className="mx-auto max-w-7xl px-4 pb-10 sm:px-6 sm:pb-12">
         <RelatedCalculators />
       </div>
-    </div>
+    <CalculatorReading href="/calculators/paver" />
+      </div>
   );
 }
 
@@ -587,3 +589,4 @@ function ExampleRow({
     </div>
   );
 }
+

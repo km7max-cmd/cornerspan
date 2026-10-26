@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "About CornerSpan | Construction Calculators",
+  title: "About Our Construction Calculators",
+  alternates: { canonical: "/about" },
   description:
     "Learn about CornerSpan and our practical construction calculators for concrete, brick, steel, paint, tile and other construction estimates.",
 };

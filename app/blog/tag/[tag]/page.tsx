@@ -7,6 +7,14 @@ type Props = {
   params: Promise<{ tag: string }>;
 };
 
+function normalizeTag(value: string) {
+  try {
+    return decodeURIComponent(value).toLowerCase();
+  } catch {
+    return value.toLowerCase();
+  }
+}
+
 export function generateStaticParams() {
   const tags = [...new Set(blogPosts.flatMap((post) => post.tags))];
 
@@ -18,7 +26,8 @@ export function generateStaticParams() {
 export async function generateMetadata({
   params,
 }: Props): Promise<Metadata> {
-  const { tag } = await params;
+  const { tag: rawTag } = await params;
+  const tag = normalizeTag(rawTag);
 
   const posts = blogPosts.filter((post) =>
     post.tags.some(
@@ -41,7 +50,7 @@ export async function generateMetadata({
     title: `${displayTag} Construction Guides`,
     description: `Explore CornerSpan construction guides, calculation methods, and practical information about ${displayTag.toLowerCase()}.`,
     alternates: {
-      canonical: `/blog/tag/${tag.toLowerCase()}`,
+      canonical: `/blog/tag/${encodeURIComponent(tag)}`,
     },
     robots: {
       index: false,
@@ -51,7 +60,8 @@ export async function generateMetadata({
 }
 
 export default async function TagPage({ params }: Props) {
-  const { tag } = await params;
+  const { tag: rawTag } = await params;
+  const tag = normalizeTag(rawTag);
 
   const posts = blogPosts.filter((post) =>
     post.tags.some(
@@ -151,3 +161,4 @@ export default async function TagPage({ params }: Props) {
     </div>
   );
 }
+

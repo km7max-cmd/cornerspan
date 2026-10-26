@@ -1,3 +1,4 @@
+import CalculatorReading from "../../../components/CalculatorReading";
 import type { Metadata } from "next";
 
 import Breadcrumb from "../../../components/Breadcrumb";
@@ -312,7 +313,8 @@ export default function TopsoilPage() {
         </section>
 
       </div>
-    </>
+    <CalculatorReading href="/calculators/topsoil" />
+      </>
   );
 }
 

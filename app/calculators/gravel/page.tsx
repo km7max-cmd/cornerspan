@@ -1,3 +1,4 @@
+import CalculatorReading from "../../../components/CalculatorReading";
 import type { Metadata } from "next";
 import Link from "next/link";
 import Breadcrumb from "../../../components/Breadcrumb";
@@ -144,7 +145,7 @@ export default function GravelPage() {
             </a>
 
             <a
-              href="#gravel-depth"
+              href="#gravel-depth-guide"
               className="font-semibold text-blue-700 hover:underline"
             >
               Gravel Depth Guide
@@ -299,7 +300,7 @@ export default function GravelPage() {
         {/* Depth Guide */}
 
         <section
-          id="gravel-depth"
+          id="gravel-depth-guide"
           className="mt-6 scroll-mt-24 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7"
         >
           <h2 className="text-xl font-extrabold text-slate-900">
@@ -550,7 +551,8 @@ export default function GravelPage() {
         </section>
 
       </div>
-    </>
+    <CalculatorReading href="/calculators/gravel" />
+      </>
   );
 }
 
@@ -611,3 +613,4 @@ function ExampleRow({
     </div>
   );
 }
+

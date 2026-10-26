@@ -1,3 +1,4 @@
+import CalculatorReading from "../../../components/CalculatorReading";
 import type { Metadata } from "next";
 import TileCalculator from "./TileCalculator";
 import RelatedCalculators from "../../../components/RelatedCalculators";
@@ -322,6 +323,8 @@ export default function TileCalculatorPage() {
         </section>
 
       </div>
-    </>
+    <CalculatorReading href="/calculators/tile" />
+      </>
   );
 }
+

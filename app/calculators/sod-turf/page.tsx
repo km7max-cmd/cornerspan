@@ -1,3 +1,4 @@
+import CalculatorReading from "../../../components/CalculatorReading";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -695,7 +696,8 @@ export default function SodTurfPage() {
           </aside>
         </article>
       </div>
-    </div>
+    <CalculatorReading href="/calculators/sod-turf" />
+      </div>
   );
 }
 

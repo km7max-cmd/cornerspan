@@ -5,7 +5,7 @@ export function createMetadata(
   description: string
 ): Metadata {
   return {
-    title: `${title} | CornerSpan`,
+    title,
     description,
     openGraph: {
       title,
@@ -19,3 +19,4 @@ export function createMetadata(
     },
   };
 }
+

@@ -1,3 +1,4 @@
+import CalculatorReading from "../../../components/CalculatorReading";
 import type { Metadata } from "next";
 import Image from "next/image";
 import dynamic from "next/dynamic";
@@ -171,7 +172,8 @@ export default function PaintCalculatorPage() {
       <RelatedCalculators />
 
       <PaintGuide />
-    </div>
+    <CalculatorReading href="/calculators/paint" />
+      </div>
   );
 }
 

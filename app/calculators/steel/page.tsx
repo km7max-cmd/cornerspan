@@ -1,3 +1,4 @@
+import CalculatorReading from "../../../components/CalculatorReading";
 import type { Metadata } from "next";
 import SteelCalculator from "./SteelCalculator";
 
@@ -308,6 +309,8 @@ export default function SteelPage() {
           </div>
         </section>
       </div>
-    </>
+    <CalculatorReading href="/calculators/steel" />
+      </>
   );
 }
+

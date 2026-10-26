@@ -26,9 +26,9 @@ const sections = [
 
 const estimates = [
   { height: "1 ft", area: 10, bricks: 69, extra: 76 },
-  { height: "2 ft", area: 20, bricks: 138, extra: 152 },
+  { height: "2 ft", area: 20, bricks: 138, extra: 151 },
   { height: "3 ft", area: 30, bricks: 206, extra: 227 },
-  { height: "4 ft", area: 40, bricks: 275, extra: 303 },
+  { height: "4 ft", area: 40, bricks: 275, extra: 302 },
 ];
 
 const articleSchema = {
@@ -52,7 +52,7 @@ const articleSchema = {
     url: "https://www.cornerspan.com/",
   },
   datePublished: "2026-10-18T00:00:00+05:30",
-  dateModified: "2026-10-18T00:00:00+05:30",
+  dateModified: "2026-10-26T00:00:00+05:30",
 };
 
 const breadcrumbSchema = {
@@ -134,7 +134,7 @@ export default function RetainingWallArticle() {
             </div>
 
             <p className="mt-5 text-xs leading-5 text-slate-300">
-              Estimation guide · US customary units · Updated October 18, 2026
+              Estimation guide · US customary units · Updated October 26, 2026
             </p>
           </div>
 
@@ -232,9 +232,9 @@ export default function RetainingWallArticle() {
               <p className="mt-4 leading-8 text-slate-700">
                 A 10-foot-long wall that is 2 feet high has a face area of
                 20 square feet. At the assumed rate of 6.86 bricks per square
-                foot, the calculation gives 137.2 bricks. Round up to 138
-                bricks before waste. With an illustrative 10% allowance,
-                plan for approximately 152 bricks.
+                foot, the calculation gives 137.2 bricks. Apply the example
+                10% allowance to that unrounded number: 137.2 × 1.10 =
+                150.92. Round up once at the end to order 151 bricks.
               </p>
 
               <p className="mt-3 leading-8 text-slate-700">
@@ -267,7 +267,7 @@ export default function RetainingWallArticle() {
               <p className="mt-3 leading-8 text-slate-700">
                 This table assumes one wall face and approximately 6.86 bricks
                 per square foot. The extra column adds an example 10% allowance.
-                Quantities are rounded up for ordering estimates.
+                Each column is rounded up independently; the allowance is applied to the unrounded base quantity.
               </p>
 
               <div className="mt-5 overflow-x-auto rounded-2xl border border-slate-200">
@@ -388,7 +388,7 @@ export default function RetainingWallArticle() {
                     Step 2 · Base quantity
                   </p>
                   <p className="mt-1 text-lg font-bold text-slate-950">
-                    20 × 6.86 = 137.2, rounded up to 138 bricks
+                    20 × 6.86 = 137.2 bricks before allowance
                   </p>
                 </div>
 
@@ -397,7 +397,7 @@ export default function RetainingWallArticle() {
                     Step 3 · Example 10% allowance
                   </p>
                   <p className="mt-1 text-lg font-black text-emerald-950">
-                    138 × 1.10 = 151.8, rounded up to 152 bricks
+                    137.2 × 1.10 = 150.92, rounded up to 151 bricks
                   </p>
                 </div>
               </div>
@@ -420,7 +420,7 @@ export default function RetainingWallArticle() {
               </p>
 
               <p className="mt-3 leading-8 text-slate-700">
-                Check the manufacturer's dimensions and coverage guidance.
+                For the example, a 7⅝ × 2¼-inch brick face with a ⅜-inch joint has an 8 × 2⅝-inch installed module: 21 square inches. Dividing 144 by 21 gives approximately 6.86 bricks per square foot. Check the manufacturer's dimensions and coverage guidance.
                 Account for corners, returns, openings, piers, wall thickness
                 and special units.
               </p>
@@ -597,7 +597,7 @@ export default function RetainingWallArticle() {
                     How many bricks do I need for a 10-foot-long wall that is 2 feet high?
                   </h3>
                   <p className="mt-2 leading-7 text-slate-700">
-                    Approximately 138 bricks before waste, or about 152 with
+                    Approximately 138 bricks before waste, or about 151 with
                     the example allowance, for one wall face.
                   </p>
                 </div>
@@ -668,3 +668,4 @@ export default function RetainingWallArticle() {
     </div>
   );
 }
+

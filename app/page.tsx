@@ -14,7 +14,7 @@ const homepageDescription =
   "Estimate concrete, brick, paint, tile, roofing, paver, asphalt and gravel materials with free construction calculators from CornerSpan.";
 
 export const metadata: Metadata = {
-  title: "Free Construction Calculators Online | CornerSpan",
+  title: { absolute: "Free Construction Calculators Online | CornerSpan" },
 
   description: homepageDescription,
 
@@ -116,3 +116,4 @@ export default function Home() {
     </div>
   );
 }
+

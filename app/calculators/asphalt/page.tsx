@@ -1,3 +1,4 @@
+import CalculatorReading from "../../../components/CalculatorReading";
 import type { Metadata } from "next";
 
 import Breadcrumb from "../../../components/Breadcrumb";
@@ -475,7 +476,8 @@ export default function AsphaltPage() {
         </section>
 
       </div>
-    </>
+    <CalculatorReading href="/calculators/asphalt" />
+      </>
   );
 }
 
@@ -504,3 +506,4 @@ function FormulaCard({
     </div>
   );
 }
+

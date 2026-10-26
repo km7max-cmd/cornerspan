@@ -1,3 +1,4 @@
+import CalculatorReading from "../../../components/CalculatorReading";
 import type { Metadata } from "next";
 import ConcreteCalculator from "./ConcreteCalculator";
 
@@ -164,7 +165,9 @@ export default function ConcreteCalculatorPage() {
         </section>
 
       </div>
-    </>
+    <CalculatorReading href="/calculators/concrete" />
+      </>
   );
 }
+
 

@@ -1,3 +1,4 @@
+import CalculatorReading from "../../../components/CalculatorReading";
 import type { Metadata } from "next";
 import AreaCalculator from "./AreaCalculator";
 
@@ -334,6 +335,8 @@ export default function AreaPage() {
           </div>
         </section>
       </div>
-    </>
+    <CalculatorReading href="/calculators/area" />
+      </>
   );
 }
+

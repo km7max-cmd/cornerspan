@@ -1,3 +1,4 @@
+import CalculatorReading from "../../../components/CalculatorReading";
 import type { Metadata } from "next";
 import BrickCalculatorClient from "./BrickCalculatorClient";
 import CalculatorStructuredData from "../../../components/CalculatorStructuredData";
@@ -1021,6 +1022,8 @@ export default function BrickCalculatorPage() {
         </p>
 
       </section>
-    </>
+    <CalculatorReading href="/calculators/brick" />
+      </>
   );
 }
+

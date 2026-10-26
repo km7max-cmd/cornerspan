@@ -1,3 +1,4 @@
+import CalculatorReading from "../../../components/CalculatorReading";
 
 import type { Metadata } from "next";
 import dynamic from "next/dynamic";
@@ -763,6 +764,8 @@ export default function SquareFootagePage() {
           </section>
         </div>
       </div>
-    </>
+    <CalculatorReading href="/calculators/square-footage" />
+      </>
   );
 }
+

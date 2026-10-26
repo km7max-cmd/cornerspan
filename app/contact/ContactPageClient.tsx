@@ -186,7 +186,7 @@ export default function ContactPage() {
                   name="message"
                   rows={5}
                   required
-                  placeholder="How can we help?"
+                  placeholder="For a calculation issue, include the page URL, measurements, units and expected result."
                   className="w-full resize-none rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:bg-white"
                 />
               </div>
@@ -213,7 +213,7 @@ export default function ContactPage() {
                   role="alert"
                   className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-center text-sm font-medium text-red-700"
                 >
-                  Please fill in all fields and try again.
+                  Your message could not be sent. Check the fields and try again shortly; keep a copy of your message.
                 </div>
               )}
             </form>
@@ -248,3 +248,4 @@ export default function ContactPage() {
     </div>
   );
 }
+

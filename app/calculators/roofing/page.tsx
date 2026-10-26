@@ -1,3 +1,4 @@
+import CalculatorReading from "../../../components/CalculatorReading";
 
 import type { Metadata } from "next";
 import Image from "next/image";
@@ -510,7 +511,8 @@ export default function RoofingPage() {
           </p>
         </section>
       </div>
-    </>
+    <CalculatorReading href="/calculators/roofing" />
+      </>
   );
 }
 

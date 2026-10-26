@@ -1,3 +1,4 @@
+import CalculatorReading from "../../../components/CalculatorReading";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -911,6 +912,8 @@ export default function FencePage() {
           <RelatedCalculators />
         </section>
       </div>
-    </div>
+    <CalculatorReading href="/calculators/fence" />
+      </div>
   );
 }
+

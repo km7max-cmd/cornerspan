@@ -1,15 +1,17 @@
+import { calculators } from "../data/calculators";
+
 export default function Stats() {
   const stats = [
     {
-      value: "100+",
+      value: String(calculators.length),
       label: "Calculators",
     },
     {
-      value: "99.9%",
-      label: "Accuracy",
+      value: "US + metric",
+      label: "Measurement units",
     },
     {
-      value: "24/7",
+      value: "No account",
       label: "Free Access",
     },
   ];
@@ -68,3 +70,4 @@ export default function Stats() {
     </section>
   );
 }
+
