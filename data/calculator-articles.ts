@@ -5,8 +5,8 @@ export type CalculatorArticle = {
 export const calculatorArticles: CalculatorArticle[] = [
   {
     "slug": "paver-calculation-guide",
-    "title": "How Many Pavers Do I Need? Patio Quantity & Cost",
-    "description": "Calculate pavers for a patio or walkway using square feet, paver size and waste. Follow a 10-by-10-foot example, then estimate pieces and material cost in USD.",
+    "title": "How Many Pavers for a 10x10 Patio? Sizes & Waste",
+    "description": "Estimate pavers for a 10x10 patio with 12x12 or 4x8 units. Compare counts, cutting allowances, pallet coverage and a worked material-cost example.",
     "category": "Landscaping",
     "tags": [
       "paver",
@@ -17,6 +17,7 @@ export const calculatorArticles: CalculatorArticle[] = [
     "publishedAt": "2026-10-26",
     "modifiedAt": "2026-10-26",
     "intro": [
+      "A 10x10 patio needs 110 pavers if each covers 1 square foot and you allow 10% for cuts. With 4x8-inch installed coverage, the same patio needs 495 pavers including that allowance.",
       "A patio estimate starts with two areas: the space you want to cover and the coverage of one paver. Divide the first by the second, allow for the cuts in your layout, and round up to whole pieces. Do not confuse the patio surface with its aggregate base or bedding layer; those need separate quantities.",
       "The example below uses a simple square patio and single-size pavers. Its 10% allowance and $2 unit price are illustrative inputs, not requirements or current market prices. Use the dimensions and coverage supplied for your selected product."
     ],
@@ -44,6 +45,13 @@ export const calculatorArticles: CalculatorArticle[] = [
       ]
     ],
     "sections": [
+      {
+        "id": "size-comparison",
+        "title": "Compare 10x10 and 10x12 patios",
+        "paragraphs": [
+          "A 10x12-foot patio has 120 square feet. At one square foot per paver and 10% extra, order 132 pieces. At 4x8-inch coverage, the adjusted count is 594 pieces. Confirm installed coverage with the supplier before using either count."
+        ]
+      },
       {
         "id": "section-1",
         "title": "Measure the patio and the paver coverage",
@@ -85,6 +93,10 @@ export const calculatorArticles: CalculatorArticle[] = [
     ],
     "faqs": [
       {
+        "question": "How Many Pavers for a 10x10 Patio?",
+        "answer": "A 10x10 patio needs 110 pavers if each covers 1 square foot and you allow 10% for cuts. With 4x8-inch installed coverage, the same patio needs 495 pavers including that allowance."
+      },
+      {
         "question": "How many 12-inch pavers cover 100 square feet?",
         "answer": "If each paver covers exactly one square foot, 100 pieces cover the area before cuts. A 10% allowance gives 110 pieces."
       },
@@ -117,14 +129,14 @@ export const calculatorArticles: CalculatorArticle[] = [
     ],
     "image": "/cornerspan-paver-calculator-hero.webp",
     "related": [
-      "/blog/square-footage-calculation-guide",
-      "/blog/concrete-calculation-guide"
+      "/blog/tile-calculation-guide",
+      "/blog/gravel-calculation-guide"
     ]
   },
   {
     "slug": "tile-calculation-guide",
-    "title": "How Many Tiles and Boxes Do I Need?",
-    "description": "Estimate tiles and whole boxes from room size, tile dimensions and a chosen waste allowance. See a 100-square-foot example and compare material costs in USD.",
+    "title": "How Many 12x12 Tiles for 100 Square Feet?",
+    "description": "Find how many 12x12 tiles and boxes cover 100 square feet with a 10% allowance. Compare 12x24 tiles, carton rounding and a tile-only cost example.",
     "category": "Flooring",
     "tags": [
       "tile",
@@ -135,6 +147,7 @@ export const calculatorArticles: CalculatorArticle[] = [
     "publishedAt": "2026-10-26",
     "modifiedAt": "2026-10-26",
     "intro": [
+      "For 100 square feet, you need 110 tiles when each 12x12 tile covers one square foot and you add 10% for cuts. With ten tiles per box, that is 11 boxes.",
       "Buying tile requires two rounding steps: whole tiles and whole boxes. Measure the surface, divide by one tile’s coverage, apply the allowance for your layout, and then convert the resulting tile count into cartons. The quantity you purchase can exceed the quantity needed on the floor.",
       "This example assumes a rectangular floor, 12-by-12-inch tiles, 10 tiles per box and a 10% planning allowance. Check the actual box label, because a product sold as a nominal 12-inch tile can have different dimensions or stated coverage."
     ],
@@ -167,6 +180,13 @@ export const calculatorArticles: CalculatorArticle[] = [
       ]
     ],
     "sections": [
+      {
+        "id": "size-comparison",
+        "title": "12x12 versus 12x24 tiles for 100 square feet",
+        "paragraphs": [
+          "If each 12x24 tile covers 2 square feet, 100 square feet needs 50 tiles before waste or 55 with a 10% allowance. Boxes of eight require seven boxes, giving 56 purchased tiles. Use the carton’s stated coverage if it differs from nominal dimensions."
+        ]
+      },
       {
         "id": "section-1",
         "title": "Measure floors, walls and recesses separately",
@@ -208,6 +228,10 @@ export const calculatorArticles: CalculatorArticle[] = [
     ],
     "faqs": [
       {
+        "question": "How Many 12x12 Tiles for 100 Square Feet?",
+        "answer": "For 100 square feet, you need 110 tiles when each 12x12 tile covers one square foot and you add 10% for cuts. With ten tiles per box, that is 11 boxes."
+      },
+      {
         "question": "How many boxes cover 100 square feet?",
         "answer": "It depends on box coverage. With ten one-square-foot tiles per box and a 10% allowance, buy eleven boxes."
       },
@@ -240,14 +264,14 @@ export const calculatorArticles: CalculatorArticle[] = [
     ],
     "image": "/cornerspan-tile-calculator-hero.webp",
     "related": [
-      "/blog/square-footage-calculation-guide",
-      "/blog/concrete-calculation-guide"
+      "/blog/paver-calculation-guide",
+      "/blog/area-calculation-guide"
     ]
   },
   {
     "slug": "paint-calculation-guide",
-    "title": "How Much Paint Do I Need? Walls, Ceilings & Gallons",
-    "description": "Calculate paint gallons from wall or ceiling area, coats and product coverage. Follow room examples, understand quart rounding, and estimate a USD paint budget.",
+    "title": "How Much Paint for a 10x10 Room? Walls & Ceiling",
+    "description": "Estimate paint for a 10x10 room with 8-foot walls and two coats. See gallon rounding, a separate ceiling estimate and a comparison with a 10x12 room.",
     "category": "Painting",
     "tags": [
       "paint",
@@ -258,6 +282,7 @@ export const calculatorArticles: CalculatorArticle[] = [
     "publishedAt": "2026-10-26",
     "modifiedAt": "2026-10-26",
     "intro": [
+      "A 10x10 room with 8-foot walls needs about 1.83 gallons for two coats at 350 square feet per gallon, before subtracting openings. Rounded to quarter-gallon purchases, buy 2 gallons for the walls.",
       "Paint quantity depends on the surface you will coat, the number of coats and the product’s coverage rate. Floor area alone is not enough for wall painting. A room with tall walls needs more paint than a shorter room with the same floor plan.",
       "Use the coverage on the chosen paint’s label or technical data sheet. The examples below assume 350 square feet per gallon per coat; texture, porosity, preparation and application can change actual usage."
     ],
@@ -290,6 +315,13 @@ export const calculatorArticles: CalculatorArticle[] = [
       ]
     ],
     "sections": [
+      {
+        "id": "size-comparison",
+        "title": "Paint for a 10x12 room and a separate ceiling",
+        "paragraphs": [
+          "A 10x12 room with 8-foot walls has 352 square feet of wall area before openings. Two coats at 350 square feet per gallon need about 2.01 gallons, rounded up to 2.25 gallons if purchasing in quarts. A 10x10 ceiling alone needs about 0.57 gallon for two coats at the same coverage, rounded to 0.75 gallon. Check product coverage and available can sizes."
+        ]
+      },
       {
         "id": "section-1",
         "title": "Calculate the wall area first",
@@ -331,6 +363,10 @@ export const calculatorArticles: CalculatorArticle[] = [
     ],
     "faqs": [
       {
+        "question": "How Much Paint for a 10x10 Room?",
+        "answer": "A 10x10 room with 8-foot walls needs about 1.83 gallons for two coats at 350 square feet per gallon, before subtracting openings. Rounded to quarter-gallon purchases, buy 2 gallons for the walls."
+      },
+      {
         "question": "Does a 10-by-10 room need one gallon?",
         "answer": "Not automatically. The walls in this example need about 1.83 gallons for two coats before container rounding."
       },
@@ -363,14 +399,14 @@ export const calculatorArticles: CalculatorArticle[] = [
     ],
     "image": "/paint-calculator.webp",
     "related": [
-      "/blog/square-footage-calculation-guide",
-      "/blog/concrete-calculation-guide"
+      "/blog/tile-calculation-guide",
+      "/blog/area-calculation-guide"
     ]
   },
   {
     "slug": "asphalt-calculation-guide",
-    "title": "How to Calculate Asphalt Tonnage for a Driveway",
-    "description": "Estimate asphalt in US tons from driveway area, compacted thickness and mix density. Follow a worked example, add an allowance, and check a sample material cost.",
+    "title": "How Many Tons of Asphalt for a 20x50 Driveway?",
+    "description": "Calculate asphalt tons for a 20x50 driveway at 2, 3 or 4 inches. See density assumptions, compacted volume, a 5% allowance and a material-cost example.",
     "category": "Paving",
     "tags": [
       "asphalt",
@@ -381,6 +417,7 @@ export const calculatorArticles: CalculatorArticle[] = [
     "publishedAt": "2026-10-26",
     "modifiedAt": "2026-10-26",
     "intro": [
+      "A 20x50 driveway at 3 inches thick requires 18.125 US tons at an assumed compacted density of 145 pounds per cubic foot. A 5% allowance raises that estimate to about 19.03 tons.",
       "An asphalt estimate turns a planned pavement volume into weight. Measure the paved area, use the specified compacted thickness, and multiply by the mix density supplied for the job. The result is commonly quoted in US short tons, each equal to 2,000 pounds.",
       "This is a quantity calculation, not a pavement design. The example’s thickness, density and allowance are assumptions for the arithmetic. Traffic, subgrade, drainage and the selected mix determine the project specification."
     ],
@@ -413,6 +450,13 @@ export const calculatorArticles: CalculatorArticle[] = [
       ]
     ],
     "sections": [
+      {
+        "id": "size-comparison",
+        "title": "Compare 2-, 3- and 4-inch asphalt quantities",
+        "paragraphs": [
+          "For the same 1,000-square-foot area and density, 2 inches requires about 12.08 US tons, 3 inches 18.13 tons and 4 inches 24.17 tons before an allowance. With 5% extra, these become about 12.69, 19.03 and 25.38 tons. These are quantity comparisons, not pavement thickness recommendations; use the project specification and supplier density."
+        ]
+      },
       {
         "id": "section-1",
         "title": "Measure the actual paving footprint",
@@ -454,6 +498,10 @@ export const calculatorArticles: CalculatorArticle[] = [
     ],
     "faqs": [
       {
+        "question": "How Many Tons of Asphalt for a 20x50 Driveway?",
+        "answer": "A 20x50 driveway at 3 inches thick requires 18.125 US tons at an assumed compacted density of 145 pounds per cubic foot. A 5% allowance raises that estimate to about 19.03 tons."
+      },
+      {
         "question": "How many tons cover 1,000 square feet?",
         "answer": "At 3 inches and an assumed 145 lb/cu ft, the base estimate is 18.125 US tons. Other depths or densities change it."
       },
@@ -490,14 +538,14 @@ export const calculatorArticles: CalculatorArticle[] = [
     ],
     "image": "/cornerspan-asphalt-calculator-hero.webp",
     "related": [
-      "/blog/square-footage-calculation-guide",
-      "/blog/concrete-calculation-guide"
+      "/blog/gravel-calculation-guide",
+      "/blog/area-calculation-guide"
     ]
   },
   {
     "slug": "gravel-calculation-guide",
-    "title": "How Much Gravel Do I Need? Cubic Yards & US Tons",
-    "description": "Calculate gravel volume and weight for a driveway or path using feet, inches and supplier density. See cubic-yard, US-ton and USD cost examples before ordering.",
+    "title": "How Much Gravel for a 10x20 Area? Yards & Tons",
+    "description": "Estimate gravel for a 10x20 area at 3 or 4 inches deep. Convert cubic yards to US tons with a stated density, add an allowance and check delivery units.",
     "category": "Landscaping",
     "tags": [
       "gravel",
@@ -508,6 +556,7 @@ export const calculatorArticles: CalculatorArticle[] = [
     "publishedAt": "2026-10-26",
     "modifiedAt": "2026-10-26",
     "intro": [
+      "A 10x20 area at 3 inches deep needs about 1.85 cubic yards of gravel before an allowance. With 10% extra, that is about 2.04 cubic yards or 2.85 US tons at an assumed 1.4 tons per cubic yard.",
       "Gravel can be sold by volume or weight, so a useful estimate keeps cubic yards and US tons separate. First calculate the space to fill. Convert that volume to weight only after selecting a density suitable for the exact material.",
       "The same cubic yard can weigh different amounts depending on aggregate type, grading and moisture. The 1.4 US tons per cubic yard used below is an assumption for a worked example, not a universal gravel density."
     ],
@@ -540,6 +589,13 @@ export const calculatorArticles: CalculatorArticle[] = [
       ]
     ],
     "sections": [
+      {
+        "id": "size-comparison",
+        "title": "Gravel at 3 inches versus 4 inches deep",
+        "paragraphs": [
+          "At 4 inches, the same 200 square feet needs about 2.47 cubic yards before extra material. A 10% allowance gives about 2.72 cubic yards; at 1.4 US tons per cubic yard, that is about 3.80 tons. Use the supplier’s density for the selected aggregate. An allowance is not a measured compaction conversion."
+        ]
+      },
       {
         "id": "section-1",
         "title": "Measure depth as carefully as length and width",
@@ -581,6 +637,10 @@ export const calculatorArticles: CalculatorArticle[] = [
     ],
     "faqs": [
       {
+        "question": "How Much Gravel for a 10x20 Area?",
+        "answer": "A 10x20 area at 3 inches deep needs about 1.85 cubic yards of gravel before an allowance. With 10% extra, that is about 2.04 cubic yards or 2.85 US tons at an assumed 1.4 tons per cubic yard."
+      },
+      {
         "question": "How much gravel covers 200 square feet at 3 inches?",
         "answer": "The geometric volume is about 1.85 cubic yards before any allowance."
       },
@@ -613,14 +673,14 @@ export const calculatorArticles: CalculatorArticle[] = [
     ],
     "image": "/cornerspan-gravel-calculator-hero.webp",
     "related": [
-      "/blog/square-footage-calculation-guide",
-      "/blog/concrete-calculation-guide"
+      "/blog/paver-calculation-guide",
+      "/blog/asphalt-calculation-guide"
     ]
   },
   {
     "slug": "topsoil-calculation-guide",
-    "title": "How Much Topsoil Do I Need? Yards, Bags & Depth",
-    "description": "Estimate topsoil in cubic yards and bags from garden area and depth. Follow a 10-by-20-foot example, compare purchase units, and check an illustrative USD budget.",
+    "title": "How Much Topsoil for 200 Square Feet? Yards & Bags",
+    "description": "Calculate topsoil for 200 square feet at 3 or 6 inches deep. Compare bulk cubic yards and 0.75-cubic-foot bags, with a clear allowance and rounding example.",
     "category": "Landscaping",
     "tags": [
       "topsoil",
@@ -631,6 +691,7 @@ export const calculatorArticles: CalculatorArticle[] = [
     "publishedAt": "2026-10-26",
     "modifiedAt": "2026-10-26",
     "intro": [
+      "Covering 200 square feet with 3 inches of topsoil takes 50 cubic feet. With a 10% allowance, order about 2.04 cubic yards or 74 bags holding 0.75 cubic foot each.",
       "Topsoil quantity is a volume calculation: area multiplied by the depth you intend to add. Buying by cubic yard is common for bulk delivery, while bags usually state a smaller volume. Calculate both on the same basis before comparing prices.",
       "Volume does not tell you whether a soil is suitable for a lawn, garden bed or planting mix. Check the existing soil and intended use separately. The depth and allowance in this article are example inputs, not a prescription for every yard."
     ],
@@ -668,6 +729,13 @@ export const calculatorArticles: CalculatorArticle[] = [
       ]
     ],
     "sections": [
+      {
+        "id": "size-comparison",
+        "title": "Compare 3-inch and 6-inch topsoil layers",
+        "paragraphs": [
+          "A 6-inch layer over 200 square feet needs 100 cubic feet, or about 3.70 cubic yards, before an allowance. With 10% extra, the requirement becomes 110 cubic feet or about 4.07 cubic yards. Divide 110 by 0.75 and round up to 147 bags. Depth selection depends on the planting and site plan; these examples only estimate volume."
+        ]
+      },
       {
         "id": "section-1",
         "title": "Measure the depth you are adding",
@@ -709,6 +777,10 @@ export const calculatorArticles: CalculatorArticle[] = [
     ],
     "faqs": [
       {
+        "question": "How Much Topsoil for 200 Square Feet?",
+        "answer": "Covering 200 square feet with 3 inches of topsoil takes 50 cubic feet. With a 10% allowance, order about 2.04 cubic yards or 74 bags holding 0.75 cubic foot each."
+      },
+      {
         "question": "How much soil covers 200 square feet at 3 inches?",
         "answer": "It takes 50 cubic feet, or about 1.85 cubic yards, before any allowance."
       },
@@ -741,14 +813,14 @@ export const calculatorArticles: CalculatorArticle[] = [
     ],
     "image": "/cornerspan-topsoil-calculator-hero.webp",
     "related": [
-      "/blog/square-footage-calculation-guide",
-      "/blog/concrete-calculation-guide"
+      "/blog/sod-turf-calculation-guide",
+      "/blog/gravel-calculation-guide"
     ]
   },
   {
     "slug": "fence-calculation-guide",
-    "title": "How to Estimate Fence Posts, Sections and Pickets",
-    "description": "Estimate fence posts, sections and pickets from run length, spacing and board width. Follow a 100-foot example and prepare a material checklist before ordering.",
+    "title": "How Many Fence Posts for 100 Feet? Spacing & Gates",
+    "description": "Count fence posts for a straight 100-foot run at 6- or 8-foot spacing. See section rounding, gate and corner adjustments, and a worked picket estimate.",
     "category": "Fencing",
     "tags": [
       "fence",
@@ -759,6 +831,7 @@ export const calculatorArticles: CalculatorArticle[] = [
     "publishedAt": "2026-10-26",
     "modifiedAt": "2026-10-26",
     "intro": [
+      "A single straight 100-foot fence run with no gates needs 14 posts when the maximum spacing is 8 feet: round 100 ÷ 8 up to 13 sections, then add one end post.",
       "A fence estimate should separate the layout into runs, gates, corners and endpoints. Dividing total length by spacing gives a useful starting point, but a single total cannot describe every arrangement of posts. Count shared corners and gate posts from the actual plan.",
       "The worked example below is one straight, open-ended, 100-foot run with no gates. An 8-foot maximum spacing is an arithmetic assumption, not a specification for every fence system. Confirm the selected system’s requirements and local project constraints before construction."
     ],
@@ -796,6 +869,13 @@ export const calculatorArticles: CalculatorArticle[] = [
       ]
     ],
     "sections": [
+      {
+        "id": "size-comparison",
+        "title": "Compare 6-foot and 8-foot post spacing",
+        "paragraphs": [
+          "At a maximum spacing of 6 feet, a straight 100-foot run needs 17 sections and 18 posts. At 8 feet, a 200-foot run needs 25 sections and 26 posts. These counts assume an open-ended straight run. Draw corners, gates and separate runs before counting unique posts; closed loops and fixed-length panels need different treatment."
+        ]
+      },
       {
         "id": "section-1",
         "title": "Draw the layout before counting posts",
@@ -837,6 +917,10 @@ export const calculatorArticles: CalculatorArticle[] = [
     ],
     "faqs": [
       {
+        "question": "How Many Fence Posts for 100 Feet?",
+        "answer": "A single straight 100-foot fence run with no gates needs 14 posts when the maximum spacing is 8 feet: round 100 ÷ 8 up to 13 sections, then add one end post."
+      },
+      {
         "question": "How many posts are needed for 100 feet?",
         "answer": "For one straight open run with maximum 8-foot spacing and no gates, the example needs thirteen sections and fourteen posts."
       },
@@ -869,14 +953,14 @@ export const calculatorArticles: CalculatorArticle[] = [
     ],
     "image": "/cornerspan-fence-calculator-hero.webp",
     "related": [
-      "/blog/square-footage-calculation-guide",
-      "/blog/concrete-calculation-guide"
+      "/blog/brick-calculation-guide",
+      "/blog/area-calculation-guide"
     ]
   },
   {
     "slug": "roofing-calculation-guide",
-    "title": "How to Calculate Roofing Squares and Shingle Bundles",
-    "description": "Convert roof footprint and pitch into roofing squares, then estimate shingle bundles with waste. Follow a US-unit example and compare square-based material costs.",
+    "title": "How Many Shingle Bundles for a 20x30 Roof?",
+    "description": "Estimate shingle bundles from a 20x30 roof footprint, pitch and waste. Compare 3:12 and 6:12 slopes, roofing squares and product-specific bundle coverage.",
     "category": "Roofing",
     "tags": [
       "roofing",
@@ -887,6 +971,7 @@ export const calculatorArticles: CalculatorArticle[] = [
     "publishedAt": "2026-10-26",
     "modifiedAt": "2026-10-26",
     "intro": [
+      "A 20x30 horizontal roof footprint at a uniform 6:12 pitch needs 23 shingle bundles when you allow 10% waste and each bundle covers 33.3 square feet. This excludes separate starter and ridge-cap products.",
       "Roofing material is based on sloped roof surface, not simply the building’s floor area. Start with the horizontal roof footprint, account for pitch, then apply the chosen allowance and convert the result into the coverage units sold by the supplier.",
       "This article uses a simple uniform-pitch roof with a 20-by-30-foot footprint. It does not model valleys, dormers or multiple pitches. Use drawings or professional measurements where direct access would be unsafe."
     ],
@@ -924,6 +1009,13 @@ export const calculatorArticles: CalculatorArticle[] = [
       ]
     ],
     "sections": [
+      {
+        "id": "size-comparison",
+        "title": "Compare 3:12 and 6:12 roof pitches",
+        "paragraphs": [
+          "At 3:12 pitch, a 600-square-foot horizontal footprint gives about 618.47 square feet of sloped surface. With 10% extra, that becomes 680.31 square feet, requiring 21 bundles at 33.3 square feet each. At 6:12 pitch, the adjusted area is about 737.90 square feet and requires 23 bundles. Include overhangs in the horizontal roof measurements and estimate complex roof planes separately."
+        ]
+      },
       {
         "id": "section-1",
         "title": "Understand the footprint and pitch",
@@ -965,6 +1057,10 @@ export const calculatorArticles: CalculatorArticle[] = [
     ],
     "faqs": [
       {
+        "question": "How Many Shingle Bundles for a 20x30 Roof?",
+        "answer": "A 20x30 horizontal roof footprint at a uniform 6:12 pitch needs 23 shingle bundles when you allow 10% waste and each bundle covers 33.3 square feet. This excludes separate starter and ridge-cap products."
+      },
+      {
         "question": "What is a roofing square?",
         "answer": "It is 100 square feet of roof surface."
       },
@@ -997,14 +1093,14 @@ export const calculatorArticles: CalculatorArticle[] = [
     ],
     "image": "/roofing-calculator-hero.webp",
     "related": [
-      "/blog/square-footage-calculation-guide",
-      "/blog/concrete-calculation-guide"
+      "/blog/area-calculation-guide",
+      "/blog/asphalt-calculation-guide"
     ]
   },
   {
     "slug": "sod-turf-calculation-guide",
-    "title": "How Much Sod Do I Need? Rolls, Pieces and Pallets",
-    "description": "Calculate sod from lawn square footage, cutting allowance and supplier coverage. Compare pieces, rolls and pallets with a worked example and sample USD costs.",
+    "title": "How Much Sod for 200 Square Feet? Rolls & Pallets",
+    "description": "Estimate sod for 200 square feet using roll coverage and a cutting allowance. Compare a 500-square-foot lawn, whole pallets and the actual purchase cost.",
     "category": "Landscaping",
     "tags": [
       "sod-turf",
@@ -1015,6 +1111,7 @@ export const calculatorArticles: CalculatorArticle[] = [
     "publishedAt": "2026-10-26",
     "modifiedAt": "2026-10-26",
     "intro": [
+      "For a 200-square-foot lawn, a 10% cutting allowance gives 220 square feet of sod. If each piece or roll covers 10 square feet, buy 22 pieces; actual roll and pallet coverage varies by supplier.",
       "Sod is purchased as a physical product: pieces, rolls or pallets with stated coverage. Start with the lawn area, subtract beds and paths, add an allowance for the actual cutting layout, and divide by the coverage of the unit you intend to buy.",
       "The dimensions of a sod piece and the coverage of a pallet vary by supplier. This example assumes 10 sq ft per piece and 500 sq ft per pallet so that every conversion is explicit. Confirm your supplier’s figures before ordering."
     ],
@@ -1047,6 +1144,13 @@ export const calculatorArticles: CalculatorArticle[] = [
       ]
     ],
     "sections": [
+      {
+        "id": "size-comparison",
+        "title": "Compare 200- and 500-square-foot lawns",
+        "paragraphs": [
+          "A 500-square-foot lawn with 10% extra needs 550 square feet, or 55 pieces covering 10 square feet each. If the seller offers only complete 500-square-foot pallets, that means two pallets rather than one. Ask whether partial pallets are available, and price the quantity you actually buy."
+        ]
+      },
       {
         "id": "section-1",
         "title": "Measure only the area to receive sod",
@@ -1088,6 +1192,10 @@ export const calculatorArticles: CalculatorArticle[] = [
     ],
     "faqs": [
       {
+        "question": "How Much Sod for 200 Square Feet?",
+        "answer": "For a 200-square-foot lawn, a 10% cutting allowance gives 220 square feet of sod. If each piece or roll covers 10 square feet, buy 22 pieces; actual roll and pallet coverage varies by supplier."
+      },
+      {
         "question": "How many pieces cover 200 square feet?",
         "answer": "At 10 sq ft per piece, the base count is 20. With the example 10% allowance, it is 22 pieces."
       },
@@ -1120,14 +1228,14 @@ export const calculatorArticles: CalculatorArticle[] = [
     ],
     "image": "/cornerspan-sod-turf-calculator-hero.webp",
     "related": [
-      "/blog/square-footage-calculation-guide",
-      "/blog/concrete-calculation-guide"
+      "/blog/topsoil-calculation-guide",
+      "/blog/area-calculation-guide"
     ]
   },
   {
     "slug": "steel-calculation-guide",
-    "title": "Steel Bar Weight Calculator: Pounds and USD Cost",
-    "description": "Estimate solid round steel bar weight from metric diameter, feet and quantity. Convert to pounds, apply a chosen allowance, and calculate material cost in USD.",
+    "title": "How Much Do 10-Foot 12 mm Steel Bars Weigh?",
+    "description": "Calculate the weight of 10-foot 12 mm solid steel bars in pounds and kilograms. Compare 10 or 20 bars, US #4 rebar and a clearly stated price assumption.",
     "category": "Steel",
     "tags": [
       "steel",
@@ -1138,6 +1246,7 @@ export const calculatorArticles: CalculatorArticle[] = [
     "publishedAt": "2026-10-26",
     "modifiedAt": "2026-10-26",
     "intro": [
+      "Using the approximate diameter-squared formula, one 10-foot 12 mm solid steel bar weighs about 5.97 pounds. Ten weigh about 59.73 pounds; this estimate does not make 12 mm bar equivalent to US #4 rebar.",
       "A steel-weight calculator is useful when a material list gives diameter, length and the number of bars but the supplier prices material by weight. The key is to keep diameter and length units consistent before converting the result into pounds.",
       "CornerSpan’s calculator currently uses metric diameter buttons with feet or meters for length. It is a solid-round-bar approximation, not a US bar-number selector. For standard US rebar takeoffs, use published nominal weights per foot instead of substituting the nearest metric button."
     ],
@@ -1165,6 +1274,13 @@ export const calculatorArticles: CalculatorArticle[] = [
       ]
     ],
     "sections": [
+      {
+        "id": "size-comparison",
+        "title": "Compare one, ten and twenty 10-foot bars",
+        "paragraphs": [
+          "Using d² × length in meters ÷ 162, one 12 mm bar at 10 feet weighs about 2.709 kilograms or 5.973 pounds. Ten weigh about 59.73 pounds and twenty about 119.46 pounds. US #4 rebar at a nominal 0.668 pound per foot weighs 6.68 pounds per 10-foot piece. Use the specified US bar designation and supplier weight when ordering."
+        ]
+      },
       {
         "id": "section-1",
         "title": "Collect the diameter, cut length and quantity",
@@ -1206,6 +1322,10 @@ export const calculatorArticles: CalculatorArticle[] = [
     ],
     "faqs": [
       {
+        "question": "How Much Do 10-Foot 12 mm Steel Bars Weigh?",
+        "answer": "Using the approximate diameter-squared formula, one 10-foot 12 mm solid steel bar weighs about 5.97 pounds. Ten weigh about 59.73 pounds; this estimate does not make 12 mm bar equivalent to US #4 rebar."
+      },
+      {
         "question": "How much do ten 10-foot 12 mm bars weigh?",
         "answer": "The diameter-squared approximation gives about 27.09 kg or 59.73 lb before an allowance."
       },
@@ -1242,14 +1362,14 @@ export const calculatorArticles: CalculatorArticle[] = [
     ],
     "image": "/images/guides/rebar-weight.svg",
     "related": [
-      "/guides/steel-weight",
-      "/blog/concrete-calculation-guide"
+      "/blog/brick-calculation-guide",
+      "/blog/area-calculation-guide"
     ]
   },
   {
     "slug": "brick-calculation-guide",
-    "title": "How Many Bricks Do I Need? Wall Quantity and Cost",
-    "description": "Estimate bricks for a wall after deducting openings and adding waste. Follow a US modular-brick example, round the order correctly, and calculate a USD budget.",
+    "title": "How Many Bricks for a 12x8 Wall With a Window?",
+    "description": "Estimate bricks for a 12x8 wall with a 3x4 window using brick face size and mortar joints. See a 5% allowance, a solid-wall comparison and material cost.",
     "category": "Brick",
     "tags": [
       "brick",
@@ -1260,6 +1380,7 @@ export const calculatorArticles: CalculatorArticle[] = [
     "publishedAt": "2026-08-25",
     "modifiedAt": "2026-10-26",
     "intro": [
+      "A 12x8 wall with a 3x4 window needs 605 bricks with a 5% allowance when each brick-and-joint face module is 21 square inches. The net wall area is 84 square feet and the base count is 576 bricks.",
       "To estimate facing bricks, calculate the net wall area and divide it by the face area of one brick plus its mortar joints. This method estimates a single layer of brickwork. Wall thickness, bonding details, corners and special shapes can change the actual order.",
       "The worked example is a 12-by-8-foot wall with a 3-by-4-foot window. It uses a stated US modular brick face and a 3/8-inch joint. Confirm the selected manufacturer’s dimensions and coverage instead of assuming every product with the same name is identical."
     ],
@@ -1303,6 +1424,13 @@ export const calculatorArticles: CalculatorArticle[] = [
     ],
     "sections": [
       {
+        "id": "size-comparison",
+        "title": "Compare a solid wall with a window opening",
+        "paragraphs": [
+          "Without the 3x4-foot window, the same 12x8 wall has 96 square feet of face area. At 21 square inches per module, the raw count is about 658.29 bricks. Apply 5% before rounding up to 692 bricks. The calculation estimates one wall face; it does not include additional wythes, special corner units or a structural design."
+        ]
+      },
+      {
         "id": "section-1",
         "title": "Measure the wall and its openings",
         "paragraphs": [
@@ -1343,6 +1471,10 @@ export const calculatorArticles: CalculatorArticle[] = [
     ],
     "faqs": [
       {
+        "question": "How Many Bricks for a 12x8 Wall With a Window?",
+        "answer": "A 12x8 wall with a 3x4 window needs 605 bricks with a 5% allowance when each brick-and-joint face module is 21 square inches. The net wall area is 84 square feet and the base count is 576 bricks."
+      },
+      {
         "question": "How many bricks cover one square foot?",
         "answer": "For the stated modular face and 3/8-inch joint, the geometric count is about 6.86. Other products and layouts differ."
       },
@@ -1379,15 +1511,14 @@ export const calculatorArticles: CalculatorArticle[] = [
     ],
     "image": "/brick-calculation-guide.png",
     "related": [
-      "/guides/brick-calculation",
-      "/guides/us-brick-sizes",
-      "/blog/how-many-bricks-10-foot-retaining-wall"
+      "/blog/fence-calculation-guide",
+      "/blog/area-calculation-guide"
     ]
   },
   {
     "slug": "area-calculation-guide",
-    "title": "How to Calculate Area: Shapes, Square Feet and Acres",
-    "description": "Calculate area for rectangles, circles, triangles and irregular project layouts. Follow US-unit examples, convert square feet to acres, and avoid measurement errors.",
+    "title": "Area in Square Feet: 8 Shapes, Formulas & Examples",
+    "description": "Calculate area in square feet for eight shapes and combined layouts. Follow rectangle, circle and triangle examples, then convert square feet to acres.",
     "category": "Measurements",
     "tags": [
       "area",
@@ -1398,6 +1529,7 @@ export const calculatorArticles: CalculatorArticle[] = [
     "publishedAt": "2026-10-26",
     "modifiedAt": "2026-10-26",
     "intro": [
+      "For a rectangle, multiply length by width in feet to get square feet. A 12x15-foot floor is 180 square feet, 20 square yards or about 0.00413 acre. Other shapes need their own formulas and measured dimensions.",
       "Area is the starting point for estimating paint, flooring, sod, gravel coverage and many other materials. Choose a shape that matches the measured space, use consistent length units, and calculate the surface before applying product-specific waste or thickness.",
       "The Area Calculator supports eight shapes and a quantity multiplier. This article explains how to select the right dimensions and combine simple sections. It complements the detailed trapezoid article without requiring every project to fit a single rectangle."
     ],
@@ -1435,6 +1567,13 @@ export const calculatorArticles: CalculatorArticle[] = [
       ]
     ],
     "sections": [
+      {
+        "id": "size-comparison",
+        "title": "Calculate an L-shaped area without double counting",
+        "paragraphs": [
+          "Split an L-shaped floor into non-overlapping rectangles. A 12x10-foot section plus a 6x5-foot section totals 120 + 30 = 150 square feet. If your measured rectangles overlap, subtract the shared area once. For a circle, use the radius rather than the diameter in πr²."
+        ]
+      },
       {
         "id": "section-1",
         "title": "Choose the shape and measure the right dimensions",
@@ -1476,6 +1615,10 @@ export const calculatorArticles: CalculatorArticle[] = [
     ],
     "faqs": [
       {
+        "question": "How do I calculate area in square feet for different shapes?",
+        "answer": "For a rectangle, multiply length by width in feet to get square feet. A 12x15-foot floor is 180 square feet, 20 square yards or about 0.00413 acre. Other shapes need their own formulas and measured dimensions."
+      },
+      {
         "question": "How many acres are 180 square feet?",
         "answer": "Divide by 43,560: approximately 0.00413 acre."
       },
@@ -1508,9 +1651,8 @@ export const calculatorArticles: CalculatorArticle[] = [
     ],
     "image": "/cornerspan-area-calculator-hero.webp",
     "related": [
-      "/blog/trapezoid-area-calculation",
-      "/blog/square-footage-calculation-guide",
-      "/blog/tile-calculation-guide"
+      "/blog/tile-calculation-guide",
+      "/blog/topsoil-calculation-guide"
     ]
   }
 ];
