@@ -1,3 +1,4 @@
+import { FAQSchema } from "../GuideStructuredData";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -45,11 +46,42 @@ const structuredData = {
   ],
 };
 
+const guideFaqs = [
+  {
+    "question": "How do I calculate bricks for a wall?",
+    "answer": "Calculate the net wall area, then multiply it by the estimated number of bricks per square foot. Use brick face dimensions that account for the planned mortar joints, and consider waste separately."
+  },
+  {
+    "question": "How many bricks per square foot do I need?",
+    "answer": "The quantity depends on brick dimensions and mortar joints. Using nominal face dimensions of 8 inches by 2 5/8 inches, the illustrative estimate is about 6.86 bricks per square foot for one layer of brickwork."
+  },
+  {
+    "question": "Can I use this method with metric measurements?",
+    "answer": "Yes. Divide the net wall area in square meters by the brick module face area in square meters. If module length and height are in millimeters, bricks per square meter = 1,000,000 ÷ (length × height). Use the selected product dimensions and planned joints; do not assume a US brick size applies."
+  },
+  {
+    "question": "Does mortar affect brick quantity?",
+    "answer": "Yes. Mortar joints change the nominal space occupied by each brick. Include the planned joint thickness in the nominal dimensions and avoid counting it twice."
+  },
+  {
+    "question": "Should doors and windows be deducted?",
+    "answer": "Yes. Calculate each opening's area and subtract the total from the wall area before estimating bricks. Some additional cutting may still be needed around openings."
+  },
+  {
+    "question": "Should I allow for brick wastage?",
+    "answer": "Usually, an allowance is considered for breakage and cutting. The appropriate rate depends on the project, brick quality, layout, and site conditions."
+  },
+  {
+    "question": "Do different brick sizes change the calculation?",
+    "answer": "Yes. Larger or smaller bricks occupy different face areas. Always use the dimensions of the brick selected for your project and account for the mortar joint."
+  }
+];
 export default function BrickCalculationGuide() {
   return (
     <div className="min-h-screen bg-white pt-[80px] text-slate-900">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, "\\u003c") }} />
-      {/* HERO */}
+      <FAQSchema faqs={guideFaqs} />
+{/* HERO */}
       <section className="border-b border-slate-200 bg-slate-50">
         <div className="mx-auto max-w-4xl px-6 py-12 md:py-16">
           <Link
@@ -108,7 +140,8 @@ export default function BrickCalculationGuide() {
             <li><a href="#common-brick-estimating-mistakes" className="text-blue-700 underline underline-offset-2">Common Brick Estimating Mistakes</a></li>
             <li><a href="#calculate-bricks-for-your-wall" className="text-blue-700 underline underline-offset-2">Calculate Bricks for Your Wall</a></li>
             <li><a href="#brick-calculation-faqs" className="text-blue-700 underline underline-offset-2">Brick Calculation FAQs</a></li>
-            <li><a href="#sources-and-dimension-checks" className="text-blue-700 underline underline-offset-2">Sources and Dimension Checks</a></li>
+            <li><a href="#order-and-cost" className="text-blue-700 underline underline-offset-2">Order Quantity and USD Cost Example</a></li>
+<li><a href="#sources-and-dimension-checks" className="text-blue-700 underline underline-offset-2">Sources and Dimension Checks</a></li>
             <li><a href="#related-construction-guides" className="text-blue-700 underline underline-offset-2">Related Construction Guides</a></li>
           </ul>
         </nav>
@@ -319,12 +352,13 @@ export default function BrickCalculationGuide() {
             </p>
             <p className="mt-3 text-sm leading-6 text-slate-600">
               *This is an illustrative estimate for one brick layer using the
-              stated nominal face dimensions. Confirm the brick layout,
+              stated face dimensions including the mortar joint. Confirm the brick layout,
               openings, bond pattern, and construction details before ordering.
             </p>
           </div>
         </section>
 
+<section id="order-and-cost" className="mt-12 scroll-mt-28 border-t border-slate-200 pt-10"><h2 className="text-2xl font-bold">Turn the brick estimate into an order and budget</h2><p className="mt-4 leading-8 text-slate-600">Continue the 68 sq ft net-wall example with a 5% allowance chosen for this example. Apply it to the unrounded count: 68 × (144 ÷ 21) × 1.05 = 489.6. Round up once to <strong>490 bricks</strong>. Rounding to 467 first and then adding waste would produce an unnecessary extra brick in this example.</p><p className="mt-4 leading-8 text-slate-600">At an illustrative supplier quote of $0.80 per brick, 490 × $0.80 = <strong>$392 for bricks only</strong>. This is not a current market price. Add quoted mortar, delivery, sales tax, equipment and labor separately. If the supplier sells only full packs, round the order to its actual pack quantity and recalculate the cost.</p><p className="mt-4 leading-8 text-slate-600">In the <Link href="/calculators/brick" className="text-blue-700 underline">Brick Calculator</Link>, enter the wall and window dimensions, choose one brick layer, select the US modular brick preset, and confirm the 3/8-inch joint. Enter 5% waste and the per-brick price. Check special shapes, corners and bond details separately before ordering.</p></section>
         {/* WALL THICKNESS */}
         <section className="mt-12 border-t border-slate-200 pt-10">
           <h2 id="how-wall-thickness-affects-brick-quantity" className="scroll-mt-28 text-2xl font-bold tracking-tight md:text-3xl">
@@ -631,4 +665,5 @@ export default function BrickCalculationGuide() {
     </div>
   );
 }
+
 

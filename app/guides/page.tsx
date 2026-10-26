@@ -19,7 +19,7 @@ const guides = [
     category: "CONCRETE",
     title: "Concrete Volume Guide",
     description:
-      "Learn how to calculate concrete volume for slabs, beams and columns.",
+      "Calculate cubic yards for slabs and columns, then compare ordering allowances, bag yields and sample USD costs.",
     href: "/guides/concrete-volume",
   },
   {
@@ -40,7 +40,7 @@ const guides = [
     category: "STEEL",
     title: "Steel Weight Guide",
     description:
-      "Learn how to calculate steel bar weight using diameter and length.",
+      "Use US rebar weights per foot, worked takeoffs, metric conversions and sample USD material costs.",
     href: "/guides/steel-weight",
   },
 ];
@@ -218,3 +218,4 @@ export default function GuidesPage() {
     </div>
   );
 }
+

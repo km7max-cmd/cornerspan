@@ -1,19 +1,23 @@
+import { FAQSchema } from "../GuideStructuredData";
 import Image from "next/image";
 import Link from "next/link";
 export const metadata = {
   title:
-    "Concrete Volume Calculator Guide: Slabs, Cubic Yards & Examples",
+    "Concrete Volume Guide: Cubic Yards & Examples",
   description:
     "Learn how to calculate concrete volume for slabs, beams and columns with formulas, cubic yard conversions, worked examples and ordering tips.",
   alternates: {
     canonical: "/guides/concrete-volume",
   },
+  twitter: { card: "summary_large_image", title: "Concrete Volume Guide: Cubic Yards & Examples", description: "Concrete formulas, US slab examples and ordering calculations.", images: ["/images/concrete-volume/concrete-volume-formula-small.webp"] },
   openGraph: {
     title: "Concrete Volume Calculator Guide | CornerSpan",
     description:
       "Calculate concrete volume using practical formulas, unit conversions and construction examples.",
     url: "https://www.cornerspan.com/guides/concrete-volume",
     type: "article",
+    locale: "en_US",
+    images: [{url:"/images/concrete-volume/concrete-volume-formula-small.webp",alt:"Concrete volume formula for a rectangular slab"}],
   },
 };
 
@@ -170,6 +174,7 @@ export default function ConcreteVolumeGuide() {
         }}
       />
 
+      <FAQSchema faqs={faqs} />
       {/* Hero */}
       <section className="border-b border-slate-200 bg-slate-50">
         <div className="mx-auto max-w-4xl px-5 py-10 md:px-6 md:py-14">
@@ -217,6 +222,7 @@ export default function ConcreteVolumeGuide() {
               ["#slab-example", "Slab calculation example"],
               ["#shapes", "Beams and columns"],
               ["#ordering", "Ordering concrete"],
+              ["#budget-example", "Order quantity, cost and bags"],
               ["#mistakes", "Common calculation mistakes"],
               ["#references", "Technical references"],
               ["#faq", "Frequently asked questions"],
@@ -557,6 +563,7 @@ export default function ConcreteVolumeGuide() {
         </section>
 
         {/* References */}
+<section id="budget-example" className="mt-10 scroll-mt-28 border-t border-slate-200 pt-8"><SectionTitle>US order quantity, cost and bag calculations</SectionTitle><p className="mt-4 leading-8 text-slate-600">For a 12 × 15 ft slab, 4 inches thick, calculate 12 × 15 × (4 ÷ 12) ÷ 27 = 2.2222 cubic yards. If the project calls for a separate 5% ordering allowance, the planning total is 2.3333 yd³. The allowance is an example; confirm site conditions and your supplier's delivery increments before ordering.</p><p className="mt-4 leading-8 text-slate-600">At an illustrative quote of $160/yd³, that unrounded planning volume costs $373.33 for concrete alone. A supplier's rounded delivery quantity can change the invoice. Ask separately about delivery, short-load charges, pump service, waiting time and taxes. The example price is not a market quote.</p><h3 className="mt-6 text-xl font-bold">Using bagged concrete instead</h3><p className="mt-3 leading-8 text-slate-600">Use the yield printed on the selected bag, not the bag's weight as if it were volume. If a bag states a 0.60 cu ft yield, the 60 cu ft slab above needs 60 ÷ 0.60 = 100 bags before allowance. With the example 5% allowance, 63 ÷ 0.60 = 105 bags. Different products and bag sizes have different yields; check the label and compare the handling effort with ready-mix delivery.</p><h3 className="mt-6 text-xl font-bold">Keep the concrete specification separate from quantity</h3><p className="mt-3 leading-8 text-slate-600">Cubic yards tell the supplier how much material is needed, not which mix is required. Provide the project specifications and placement information. A cement:sand:aggregate ratio in a material estimator is not a guaranteed compressive strength or an approved ready-mix design.</p><p className="mt-4 leading-8"><a href="https://www.nrmca.org/wp-content/uploads/2021/01/31pr.pdf" className="text-blue-700 underline">NRMCA CIP 31: Ordering Ready Mixed Concrete (PDF)</a> explains what to discuss with the producer. For dimensions and geometric volume, use the <Link href="/calculators/concrete" className="text-blue-700 underline">Concrete Calculator</Link>.</p></section>
         <section id="references" className="mt-10 border-t border-slate-200 pt-8 md:mt-12 md:pt-10">
           <SectionTitle>Further Technical Information</SectionTitle>
           <p className="mt-4 leading-7 text-slate-600 md:leading-8">
@@ -663,3 +670,4 @@ export default function ConcreteVolumeGuide() {
     </div>
   );
 }
+

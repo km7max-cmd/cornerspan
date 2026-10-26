@@ -1,3 +1,4 @@
+import GuideStructuredData, { FAQSchema } from "../GuideStructuredData";
 import Link from "next/link";
 import type { Metadata } from "next";
 
@@ -8,6 +9,7 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/guides/us-brick-sizes",
   },
+  twitter: { card: "summary", title: "US Brick Dimensions & Sizes Chart", description: "Compare US brick face dimensions, mortar-joint modules and bricks per square foot.", images: ["/og-image.png"] },
   robots: {
     index: true,
     follow: true,
@@ -18,6 +20,8 @@ export const metadata: Metadata = {
       "A practical US brick dimensions reference covering common brick sizes, mortar joints and bricks per square foot.",
     url: "https://www.cornerspan.com/guides/us-brick-sizes",
     type: "article",
+    locale: "en_US",
+    images: [{url:"/og-image.png", alt:"CornerSpan construction calculation guides"}],
   },
 };
 
@@ -64,10 +68,39 @@ const brickSizes = [
   },
 ];
 
+const faqs = [
+  {
+    "question": "What is the standard US brick size?",
+    "answer": "There is not one universal brick size for every US project. Modular brick is a common reference size and is approximately 7 5/8 inches long × 2 1/4 inches high × 3 5/8 inches wide."
+  },
+  {
+    "question": "How many modular bricks are needed per square foot?",
+    "answer": "Using an 8 × 2 5/8 inch face module gives a geometric estimate of about 6.86 bricks per square foot. The actual quantity depends on the mortar joint and project conditions."
+  },
+  {
+    "question": "Does mortar affect bricks per square foot?",
+    "answer": "Yes. Mortar joints become part of the repeating brick module. Changing the joint thickness changes the estimated number of bricks required for a given wall area."
+  },
+  {
+    "question": "Are all modular bricks exactly the same size?",
+    "answer": "No. Actual dimensions can vary between manufacturers and products. Always check the product specification before ordering materials."
+  },
+  {
+    "question": "Should doors and windows be deducted from brick quantity?",
+    "answer": "Yes. Significant openings should normally be deducted from the gross wall area before calculating the brick requirement."
+  },
+  {
+    "question": "Should I add extra bricks for waste?",
+    "answer": "A waste allowance can be appropriate because bricks may be damaged, cut or lost during handling and construction. The appropriate allowance depends on the project."
+  }
+];
+
 export default function USBrickSizesGuide() {
   return (
-    <div className="min-h-screen bg-white pt-[80px] text-slate-900">
-      {/* HERO */}
+    <div className="min-h-screen bg-white pt-0 text-slate-900">
+      <GuideStructuredData title="US Brick Dimensions & Sizes Chart" description="US brick dimensions, face modules and quantity examples for material estimating." slug="us-brick-sizes" image="/images/guides/brick-face-module.svg" />
+<FAQSchema faqs={faqs} />
+{/* HERO */}
       <section className="border-b border-slate-200 bg-slate-50">
         <div className="mx-auto max-w-5xl px-5 py-12 sm:px-6 md:py-16">
           <Link
@@ -111,6 +144,7 @@ export default function USBrickSizesGuide() {
           </div>
         </div>
       </section>
+<div className="mx-auto max-w-5xl px-5 py-8"><nav aria-label="Table of contents" className="rounded-xl bg-slate-100 p-5"><h2 className="font-bold">In this guide</h2><ul className="mt-4 grid gap-3 sm:grid-cols-2"><li><a href="#how-many-bricks-are-in-one-square-foot" className="text-blue-700 underline">How many bricks are in one square foot?</a></li><li><a href="#common-us-brick-sizes" className="text-blue-700 underline">Common US Brick Sizes</a></li><li><a href="#us-modular-brick-dimensions" className="text-blue-700 underline">US Modular Brick Dimensions</a></li><li><a href="#bricks-per-square-foot" className="text-blue-700 underline">Bricks Per Square Foot</a></li><li><a href="#how-mortar-joints-affect-brick-quantity" className="text-blue-700 underline">How Mortar Joints Affect Brick Quantity</a></li><li><a href="#example-estimating-bricks-for-a-wall" className="text-blue-700 underline">Example: Estimating Bricks for a Wall</a></li><li><a href="#why-brick-dimensions-matter" className="text-blue-700 underline">Why Brick Dimensions Matter</a></li><li><a href="#calculate-bricks-for-your-project" className="text-blue-700 underline">Calculate Bricks for Your Project</a></li><li><a href="#us-brick-size-faqs" className="text-blue-700 underline">US Brick Size FAQs</a></li><li><a href="#related-construction-resources" className="text-blue-700 underline">Related Construction Resources</a></li><li><a href="#dimension-sources" className="text-blue-700 underline">Dimension terminology and sources</a></li></ul></nav><figure className="mt-6 overflow-hidden rounded-xl border border-slate-200"><img src="/images/guides/brick-face-module.svg" width="960" height="480" loading="lazy" alt="Modular brick face 7 5/8 by 2 1/4 inches with 3/8-inch joints forms an 8 by 2 5/8 inch estimating module." className="h-auto w-full"/><figcaption className="p-4 text-sm text-slate-600">Face-area calculation for the stated joint; not a substitute for the manufacturer's coursing layout.</figcaption></figure></div>
 
       {/* QUICK ANSWER */}
       <section className="px-5 py-10 sm:px-6 md:py-14">
@@ -120,7 +154,7 @@ export default function USBrickSizesGuide() {
               Quick Reference
             </p>
 
-            <h2 className="mt-2 text-2xl font-black tracking-tight text-slate-950 md:text-3xl">
+            <h2 id="how-many-bricks-are-in-one-square-foot" style={{scrollMarginTop: "7rem"}} className="mt-2 text-2xl font-black tracking-tight text-slate-950 md:text-3xl">
               How many bricks are in one square foot?
             </h2>
 
@@ -128,7 +162,7 @@ export default function USBrickSizesGuide() {
               There is no single bricks-per-square-foot number for every
               project. The result depends on the brick dimensions and the
               mortar joint. For a typical US modular brick using an 8 × 2 5/8
-              inch nominal module, the geometric estimate is about{" "}
+              inch face module, the geometric estimate is about{" "}
               <strong>6.86 bricks per square foot</strong>.
             </p>
 
@@ -143,7 +177,7 @@ export default function USBrickSizesGuide() {
       {/* BRICK SIZE TABLE */}
       <section className="px-5 pb-10 sm:px-6 md:pb-14">
         <div className="mx-auto max-w-5xl">
-          <h2 className="text-2xl font-black tracking-tight text-slate-950 md:text-3xl">
+          <h2 id="common-us-brick-sizes" style={{scrollMarginTop: "7rem"}} className="text-2xl font-black tracking-tight text-slate-950 md:text-3xl">
             Common US Brick Sizes
           </h2>
 
@@ -210,7 +244,7 @@ export default function USBrickSizesGuide() {
 
           <p className="mt-4 text-xs leading-6 text-slate-500">
             Approximate values are geometric reference calculations based on
-            the stated nominal module and do not represent a universal
+            the stated face module and do not represent a universal
             ordering quantity.
           </p>
         </div>
@@ -219,7 +253,7 @@ export default function USBrickSizesGuide() {
       {/* MODULAR BRICK */}
       <section className="border-y border-slate-200 bg-slate-50 px-5 py-10 sm:px-6 md:py-14">
         <div className="mx-auto max-w-5xl">
-          <h2 className="text-2xl font-black tracking-tight text-slate-950 md:text-3xl">
+          <h2 id="us-modular-brick-dimensions" style={{scrollMarginTop: "7rem"}} className="text-2xl font-black tracking-tight text-slate-950 md:text-3xl">
             US Modular Brick Dimensions
           </h2>
 
@@ -266,7 +300,7 @@ export default function USBrickSizesGuide() {
       {/* BRICKS PER SQUARE FOOT */}
       <section className="px-5 py-10 sm:px-6 md:py-14">
         <div className="mx-auto max-w-5xl">
-          <h2 className="text-2xl font-black tracking-tight text-slate-950 md:text-3xl">
+          <h2 id="bricks-per-square-foot" style={{scrollMarginTop: "7rem"}} className="text-2xl font-black tracking-tight text-slate-950 md:text-3xl">
             Bricks Per Square Foot
           </h2>
 
@@ -298,7 +332,7 @@ export default function USBrickSizesGuide() {
       {/* MORTAR JOINT */}
       <section className="border-y border-slate-200 bg-slate-50 px-5 py-10 sm:px-6 md:py-14">
         <div className="mx-auto max-w-5xl">
-          <h2 className="text-2xl font-black tracking-tight text-slate-950 md:text-3xl">
+          <h2 id="how-mortar-joints-affect-brick-quantity" style={{scrollMarginTop: "7rem"}} className="text-2xl font-black tracking-tight text-slate-950 md:text-3xl">
             How Mortar Joints Affect Brick Quantity
           </h2>
 
@@ -338,7 +372,7 @@ export default function USBrickSizesGuide() {
       {/* WORKED EXAMPLE */}
       <section className="px-5 py-10 sm:px-6 md:py-14">
         <div className="mx-auto max-w-5xl">
-          <h2 className="text-2xl font-black tracking-tight text-slate-950 md:text-3xl">
+          <h2 id="example-estimating-bricks-for-a-wall" style={{scrollMarginTop: "7rem"}} className="text-2xl font-black tracking-tight text-slate-950 md:text-3xl">
             Example: Estimating Bricks for a Wall
           </h2>
 
@@ -383,7 +417,7 @@ export default function USBrickSizesGuide() {
       {/* WHY DIMENSIONS MATTER */}
       <section className="border-y border-slate-200 bg-slate-50 px-5 py-10 sm:px-6 md:py-14">
         <div className="mx-auto max-w-5xl">
-          <h2 className="text-2xl font-black tracking-tight text-slate-950 md:text-3xl">
+          <h2 id="why-brick-dimensions-matter" style={{scrollMarginTop: "7rem"}} className="text-2xl font-black tracking-tight text-slate-950 md:text-3xl">
             Why Brick Dimensions Matter
           </h2>
 
@@ -443,7 +477,7 @@ export default function USBrickSizesGuide() {
       <section className="px-5 py-10 sm:px-6 md:py-14">
         <div className="mx-auto max-w-5xl">
           <div className="rounded-2xl bg-slate-900 px-6 py-8 md:px-8 md:py-10">
-            <h2 className="text-2xl font-black text-white md:text-3xl">
+            <h2 id="calculate-bricks-for-your-project" style={{scrollMarginTop: "7rem"}} className="text-2xl font-black text-white md:text-3xl">
               Calculate Bricks for Your Project
             </h2>
 
@@ -466,10 +500,11 @@ export default function USBrickSizesGuide() {
         </div>
       </section>
 
+<section id="dimension-sources" className="mx-auto max-w-5xl scroll-mt-28 px-5 py-10"><h2 className="text-2xl font-bold">Specified size, actual size and nominal coursing</h2><p className="mt-4 leading-8 text-slate-600">Specified dimensions describe the product size called for in the design; actual dimensions are measured on delivered units and can vary within manufacturing tolerances. Nominal dimensions describe the coordinated masonry module. The table above calculates a face module directly from the stated brick dimensions plus a 3/8-inch joint. Its 2 5/8-inch modular face height should not be mistaken for every manufacturer's nominal coursing designation.</p><p className="mt-4 leading-8 text-slate-600">Queen and King names do not guarantee identical dimensions across manufacturers. For example, Glen-Gery lists a 3-inch-thick Queen; other products can differ. Wall thickness does not enter this single-layer face-area formula, but it matters for detailing and mortar estimates. Confirm the selected product's data sheet and use its stated coverage when preparing an order.</p><h3 className="mt-6 text-xl font-bold">Example: a 100-square-foot wall</h3><p className="mt-3 leading-8">With the stated modular face and joint, 100 × 144 ÷ (8 × 2.625) = 685.714 bricks before waste. An illustrative 5% allowance gives 720 bricks. Keep full precision until the final whole-brick rounding, then check packaging quantities with the supplier.</p><ul className="mt-5 list-disc space-y-3 pl-6"><li><a href="https://www.gobrick.com/media/file/10-dimensioning-and-estimating-brick-masonry.pdf" className="text-blue-700 underline">Brick Industry Association Technical Note 10 (PDF)</a> — dimensioning and estimating.</li><li><a href="https://www.glengery.com/brick-sizes" className="text-blue-700 underline">Glen-Gery brick sizes</a> — manufacturer dimensions and coverage.</li></ul></section>
       {/* FAQ */}
       <section className="border-t border-slate-200 px-5 py-10 sm:px-6 md:py-14">
         <div className="mx-auto max-w-5xl">
-          <h2 className="text-2xl font-black tracking-tight text-slate-950 md:text-3xl">
+          <h2 id="us-brick-size-faqs" style={{scrollMarginTop: "7rem"}} className="text-2xl font-black tracking-tight text-slate-950 md:text-3xl">
             US Brick Size FAQs
           </h2>
 
@@ -492,7 +527,7 @@ export default function USBrickSizesGuide() {
               </h3>
 
               <p className="mt-3 text-base leading-7 text-slate-600">
-                Using an 8 × 2 5/8 inch nominal module gives a geometric
+                Using an 8 × 2 5/8 inch face module gives a geometric
                 estimate of about 6.86 bricks per square foot. The actual
                 quantity depends on the mortar joint and project conditions.
               </p>
@@ -551,7 +586,7 @@ export default function USBrickSizesGuide() {
       {/* RELATED GUIDES */}
       <section className="border-t border-slate-200 bg-slate-50 px-5 py-10 sm:px-6 md:py-14">
         <div className="mx-auto max-w-5xl">
-          <h2 className="text-2xl font-black tracking-tight text-slate-950 md:text-3xl">
+          <h2 id="related-construction-resources" style={{scrollMarginTop: "7rem"}} className="text-2xl font-black tracking-tight text-slate-950 md:text-3xl">
             Related Construction Resources
           </h2>
 
@@ -638,3 +673,4 @@ export default function USBrickSizesGuide() {
     </div>
   );
 }
+
