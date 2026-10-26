@@ -7,6 +7,8 @@ import {
   useState,
 } from "react";
 
+import { getPreferences, subscribeData } from "../../lib/browser-data";
+
 type Theme = "system" | "light" | "dark";
 
 type ThemeContextType = {
@@ -63,26 +65,14 @@ export default function ThemeProvider({
     useState<Theme>("system");
 
   useEffect(() => {
-    try {
-      const stored =
-        localStorage.getItem(SETTINGS_KEY);
-
-      if (stored) {
-        const settings = JSON.parse(stored);
-
-        if (
-          settings.theme === "light" ||
-          settings.theme === "dark" ||
-          settings.theme === "system"
-        ) {
-          setThemeState(settings.theme);
-          applyTheme(settings.theme);
-          return;
-        }
-      }
-    } catch {}
-
-    applyTheme("system");
+    const refresh = () => {
+      const preferences = getPreferences();
+      setThemeState(preferences.theme);
+      applyTheme(preferences.theme);
+      document.documentElement.classList.toggle("reduce-motion", preferences.reducedMotion);
+    };
+    refresh();
+    return subscribeData(refresh);
   }, []);
 
   useEffect(() => {
@@ -161,3 +151,4 @@ export function useTheme() {
 
   return context;
 }
+

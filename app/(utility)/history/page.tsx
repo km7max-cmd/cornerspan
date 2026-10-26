@@ -1,187 +1,24 @@
 "use client";
-
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import {
-  clearGlobalHistory,
-  deleteGlobalHistory,
-  getGlobalHistory,
-  type GlobalHistoryItem,
-} from "../../components/GlobalHistory";
-
+import { clearGlobalHistory, deleteGlobalHistory, getGlobalHistory, type GlobalHistoryItem } from "../../components/GlobalHistory";
+import { getRecent, findCalculator, subscribeData, downloadText, csvCell, removeData, RECENT_KEY, type RecentCalculator } from "../../../lib/browser-data";
 export default function HistoryPage() {
   const [history, setHistory] = useState<GlobalHistoryItem[]>([]);
-
-  useEffect(() => {
-    setHistory(getGlobalHistory());
-  }, []);
-
-  function refreshHistory() {
-    setHistory(getGlobalHistory());
+  const [recent, setRecent] = useState<RecentCalculator[]>([]);
+  const [query, setQuery] = useState("");
+  const [message, setMessage] = useState("");
+  const [loaded, setLoaded] = useState(false);
+  useEffect(() => { const refresh = () => { setHistory(getGlobalHistory()); setRecent(getRecent()); setLoaded(true); }; refresh(); return subscribeData(refresh); }, []);
+  const visible = history.filter(item => `${item.calculator} ${item.summary} ${item.result}`.toLowerCase().includes(query.trim().toLowerCase()));
+  function exportCsv() {
+    try { const rows = [["Calculator", "Summary", "Result", "Saved at (UTC)"], ...visible.map(item => [item.calculator, item.summary, item.result, new Date(item.timestamp).toISOString()])]; downloadText("cornerspan-calculation-history.csv", rows.map(row => row.map(csvCell).join(",")).join("\r\n"), "text/csv;charset=utf-8"); setMessage(`${visible.length} saved results exported.`); }
+    catch { setMessage("The file could not be downloaded. Try another browser."); }
   }
-
-  function handleDelete(id: string) {
-    deleteGlobalHistory(id);
-    refreshHistory();
-  }
-
-  function handleClearAll() {
-    if (history.length === 0) {
-      return;
-    }
-
-    const confirmed = window.confirm(
-      "Clear all calculation history?"
-    );
-
-    if (!confirmed) {
-      return;
-    }
-
-    clearGlobalHistory();
-    setHistory([]);
-  }
-
-  return (
-    <div className="min-h-screen bg-slate-50">
-      <div className="mx-auto max-w-4xl px-5 py-8">
-
-        {/* Header */}
-
-        <div className="mb-6 flex items-start justify-between gap-4">
-
-          <div>
-            <h1 className="text-3xl font-black tracking-tight text-slate-950">
-              Calculation History
-            </h1>
-
-            <p className="mt-1 text-sm text-slate-500">
-              Your recent CornerSpan calculations.
-            </p>
-          </div>
-
-          {history.length > 0 && (
-            <button
-              type="button"
-              onClick={handleClearAll}
-              className="shrink-0 rounded-xl bg-red-50 px-4 py-2.5 text-sm font-bold text-red-600 transition hover:bg-red-100"
-            >
-              Clear All
-            </button>
-          )}
-
-        </div>
-
-        {/* Empty State */}
-
-        {history.length === 0 && (
-          <div className="rounded-2xl border border-slate-200 bg-white px-6 py-12 text-center shadow-sm">
-
-            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 text-2xl">
-              🕘
-            </div>
-
-            <h2 className="mt-4 text-xl font-bold text-slate-900">
-              No calculation history
-            </h2>
-
-            <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-slate-500">
-              Your calculations will automatically appear here
-              after you use CornerSpan calculators.
-            </p>
-
-            <Link
-              href="/calculators"
-              className="mt-5 inline-flex rounded-xl bg-blue-600 px-5 py-3 text-sm font-bold text-white transition hover:bg-blue-700"
-            >
-              Browse Calculators
-            </Link>
-
-          </div>
-        )}
-
-        {/* History List */}
-
-        {history.length > 0 && (
-          <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-
-            <div className="border-b border-slate-100 px-5 py-4">
-
-              <h2 className="font-bold text-slate-900">
-                Recent Calculations
-              </h2>
-
-              <p className="mt-1 text-xs text-slate-500">
-                {history.length} saved calculation
-                {history.length === 1 ? "" : "s"}
-              </p>
-
-            </div>
-
-            <div className="divide-y divide-slate-100">
-
-              {history.map((item) => (
-                <div
-                  key={item.id}
-                  className="flex items-center gap-4 px-5 py-4 transition hover:bg-slate-50"
-                >
-
-                  {/* Icon */}
-
-                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-xl">
-                    🧮
-                  </div>
-
-                  {/* Details */}
-
-                  <div className="min-w-0 flex-1">
-
-                    <h3 className="font-bold text-slate-900">
-                      {item.calculator}
-                    </h3>
-
-                    <p className="mt-1 text-sm text-slate-500">
-                      {item.summary}
-                    </p>
-
-                    <p className="mt-1 text-xs text-slate-400">
-                      {new Date(
-                        item.timestamp
-                      ).toLocaleString()}
-                    </p>
-
-                  </div>
-
-                  {/* Result */}
-
-                  <div className="flex shrink-0 items-center gap-3">
-
-                    <span className="font-bold text-blue-600">
-                      {item.result}
-                    </span>
-
-                    <button
-                      type="button"
-                      onClick={() =>
-                        handleDelete(item.id)
-                      }
-                      aria-label={`Delete ${item.calculator} history`}
-                      className="flex h-9 w-9 items-center justify-center rounded-lg text-lg text-slate-400 transition hover:bg-red-50 hover:text-red-600"
-                    >
-                      ×
-                    </button>
-
-                  </div>
-
-                </div>
-              ))}
-
-            </div>
-
-          </div>
-        )}
-
-      </div>
-    </div>
-  );
+  return <div className="mx-auto max-w-4xl px-5 py-10"><h1 className="text-3xl font-black text-slate-950">Recent Calculators & History</h1><p className="mt-3 text-slate-600">Kept on this device only. Opening a calculator starts a new estimate; saved inputs are not restored.</p><p role="status" className="mt-3 min-h-6 text-sm text-blue-800">{message}</p>
+    {!loaded ? <p>Loading activity…</p> : <>
+    <section className="mt-5 rounded-2xl border bg-white p-5"><div className="flex flex-wrap items-center justify-between gap-3"><h2 className="text-xl font-bold">Recently opened calculators</h2>{recent.length > 0 && <button onClick={() => { if (window.confirm("Clear recently opened calculators?")) setMessage(removeData(RECENT_KEY) ? "Recent calculators cleared." : "Unable to clear recent calculators."); }} className="min-h-11 rounded-lg border px-3 text-sm text-red-700">Clear recent</button>}</div>{recent.length ? <ul className="mt-4 grid gap-3 sm:grid-cols-2">{recent.map(item => { const c = findCalculator(item.slug)!; return <li key={item.slug}><Link href={c.href} className="block rounded-xl bg-slate-50 p-4 font-semibold text-blue-800 underline">{c.title}</Link></li>; })}</ul> : <p className="mt-3 text-slate-600">Open a calculator to find it here next time. Activity saving can be turned off in Settings.</p>}</section>
+    <section className="mt-6 rounded-2xl border bg-white p-5"><h2 className="text-xl font-bold">Saved calculation results</h2><p className="mt-2 text-sm text-slate-600">Results currently come from the Concrete Calculator. Other calculators appear in the recent list above. Up to 100 results are kept.</p><label htmlFor="history-search" className="mt-5 block text-sm font-semibold">Search saved results</label><input id="history-search" type="search" value={query} onChange={e => setQuery(e.target.value)} placeholder="Calculator, dimensions or result" className="mt-2 min-h-11 w-full rounded-lg border bg-white p-3 text-slate-900" /><div className="my-4 flex flex-wrap gap-3"><button disabled={!visible.length} onClick={exportCsv} className="min-h-11 rounded-lg bg-blue-700 px-4 font-semibold text-white disabled:opacity-50">Download filtered CSV</button><button disabled={!history.length} onClick={() => { if (window.confirm("Delete all saved calculation results?")) setMessage(clearGlobalHistory() ? "Saved results cleared." : "Unable to clear saved results."); }} className="min-h-11 rounded-lg border px-4 text-red-700 disabled:opacity-50">Clear saved results</button></div><p className="text-sm text-slate-600">{visible.length} of {history.length} saved results</p>
+    {!visible.length ? <p className="mt-4 text-slate-600">{history.length ? "No results match your search." : "No saved results yet. Calculate a concrete estimate to add one."}</p> : <ul className="mt-4 divide-y">{visible.map(item => <li key={item.id} className="py-5"><div className="flex flex-wrap items-start justify-between gap-3"><div className="min-w-0 flex-1"><h3 className="font-bold">{item.calculator}</h3><p className="mt-1 break-words text-sm text-slate-600">{item.summary}</p><p className="mt-2 break-words font-semibold text-blue-800">{item.result}</p><time dateTime={new Date(item.timestamp).toISOString()} className="mt-2 block text-xs text-slate-500">{new Date(item.timestamp).toLocaleString("en-US")}</time></div><button onClick={() => setMessage(deleteGlobalHistory(item.id) ? "Saved result deleted." : "Unable to delete the result.")} aria-label={`Delete ${item.calculator} result from ${new Date(item.timestamp).toLocaleString("en-US")}`} className="min-h-11 rounded-lg border px-3 text-sm text-red-700">Delete</button></div></li>)}</ul>}</section></>}
+    <div className="mt-6 flex flex-wrap gap-5"><Link href="/calculators" className="text-blue-700 underline">Browse calculators</Link><Link href="/settings" className="text-blue-700 underline">Activity settings & backup</Link></div></div>;
 }

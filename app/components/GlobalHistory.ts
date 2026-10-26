@@ -1,92 +1,14 @@
-export type GlobalHistoryItem = {
-  id: string;
-  calculator: string;
-  summary: string;
-  result: string;
-  timestamp: number;
-};
-
-const HISTORY_KEY = "cornerspan-history";
-
+import { getPreferences, readData, writeData, removeData, HISTORY_KEY } from "../../lib/browser-data";
+export type GlobalHistoryItem = { id: string; calculator: string; summary: string; result: string; timestamp: number };
 export function getGlobalHistory(): GlobalHistoryItem[] {
-  if (typeof window === "undefined") {
-    return [];
-  }
-
-  try {
-    const stored = localStorage.getItem(HISTORY_KEY);
-
-    if (!stored) {
-      return [];
-    }
-
-    const parsed = JSON.parse(stored);
-
-    return Array.isArray(parsed) ? parsed : [];
-  } catch {
-    return [];
-  }
+  const raw = readData(HISTORY_KEY);
+  if (!Array.isArray(raw)) return [];
+  return raw.filter((v): v is GlobalHistoryItem => !!v && typeof v.id === "string" && typeof v.calculator === "string" && typeof v.summary === "string" && typeof v.result === "string" && typeof v.timestamp === "number" && Number.isFinite(v.timestamp) && Math.abs(v.timestamp) <= 8.64e15).slice(0, 100);
 }
-
-export function addGlobalHistory(
-  calculator: string,
-  summary: string,
-  result: string
-) {
-  if (typeof window === "undefined") {
-    return;
-  }
-
-  try {
-    const history = getGlobalHistory();
-
-    const newItem: GlobalHistoryItem = {
-      id: `${Date.now()}-${Math.random()
-        .toString(36)
-        .slice(2)}`,
-      calculator,
-      summary,
-      result,
-      timestamp: Date.now(),
-    };
-
-    const updated = [
-      newItem,
-      ...history,
-    ].slice(0, 100);
-
-    localStorage.setItem(
-      HISTORY_KEY,
-      JSON.stringify(updated)
-    );
-  } catch {
-    // Ignore localStorage errors
-  }
+export function addGlobalHistory(calculator: string, summary: string, result: string) {
+  if (typeof window === "undefined" || !getPreferences().rememberActivity) return;
+  const item: GlobalHistoryItem = { id: `${Date.now()}-${Math.random().toString(36).slice(2)}`, calculator, summary, result, timestamp: Date.now() };
+  return writeData(HISTORY_KEY, [item, ...getGlobalHistory()].slice(0, 100));
 }
-
-export function deleteGlobalHistory(
-  id: string
-) {
-  if (typeof window === "undefined") {
-    return;
-  }
-
-  const history = getGlobalHistory();
-
-  const updated = history.filter(
-    (item) => item.id !== id
-  );
-
-  localStorage.setItem(
-    HISTORY_KEY,
-    JSON.stringify(updated)
-  );
-}
-
-export function clearGlobalHistory() {
-  if (typeof window === "undefined") {
-    return;
-  }
-
-  localStorage.removeItem(HISTORY_KEY);
-}
+export function deleteGlobalHistory(id: string) { return writeData(HISTORY_KEY, getGlobalHistory().filter(item => item.id !== id)); }
+export function clearGlobalHistory() { return removeData(HISTORY_KEY); }

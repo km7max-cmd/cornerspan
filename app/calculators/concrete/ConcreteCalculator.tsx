@@ -1,4 +1,5 @@
 "use client";
+import { getPreferences } from "../../../lib/browser-data";
 import { useEffect, useState } from "react";
 import CalculatorForm from "./components/CalculatorForm";
 import ResultCard from "./components/ResultCard";
@@ -219,7 +220,7 @@ export default function ConcreteCalculator() {
       const parsed: unknown = JSON.parse(savedHistory);
 
       if (Array.isArray(parsed)) {
-        setHistory(parsed as HistoryItem[]);
+        setHistory(parsed.filter((item): item is HistoryItem => !!item && [item.length, item.width, item.depth, item.volume].every(value => typeof value === "number" && Number.isFinite(value) && value >= 0)).slice(0, 5));
       }
     } catch {
       setHistory([]);
@@ -455,6 +456,7 @@ export default function ConcreteCalculator() {
         ...history,
       ].slice(0, 5);
 
+      if (getPreferences().rememberActivity) {
       setHistory(newHistory);
 
       try {
@@ -464,6 +466,8 @@ export default function ConcreteCalculator() {
         );
       } catch {
         // Calculation remains usable if browser storage is unavailable.
+      }
+
       }
 
       addGlobalHistory(
@@ -716,4 +720,5 @@ Currency: ${currency}`;
     </>
   );
 }
+
 

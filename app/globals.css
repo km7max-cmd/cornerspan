@@ -486,3 +486,22 @@ html.dark .cornerspan-logo-dark {
 html.dark header img[alt*="CornerSpan"] {
   filter: none !important;
 }
+
+
+/* Respect device motion preferences as well as the explicit site setting. */
+html.reduce-motion { scroll-behavior: auto !important; }
+html.reduce-motion *, html.reduce-motion *::before, html.reduce-motion *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto !important; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
