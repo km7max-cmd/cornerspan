@@ -12,6 +12,7 @@ type Props = {
   onCopy: () => void;
   onShare: () => void;
   onDownload: () => void;
+  pdfLoading?: boolean;
 };
 
 const M3_TO_YD3 = 1.30795062;
@@ -51,6 +52,7 @@ export default function ResultCard({
   onCopy,
   onShare,
   onDownload,
+  pdfLoading = false,
 }: Props) {
   const hasResult = volume > 0;
 
@@ -220,7 +222,8 @@ export default function ResultCard({
               />
 
               <ActionButton
-                label="Download PDF"
+                label={pdfLoading ? "Preparing PDF…" : "Download PDF"}
+                disabled={pdfLoading}
                 onClick={onDownload}
                 icon={
                   <svg
@@ -289,18 +292,22 @@ function MaterialRow({
 }
 
 function ActionButton({
+  disabled = false,
   label,
   icon,
   onClick,
 }: {
   label: string;
   icon: React.ReactNode;
+  disabled?: boolean;
   onClick: () => void;
 }) {
   return (
     <button
       type="button"
       onClick={onClick}
+      disabled={disabled}
+      aria-busy={disabled}
       className="flex min-h-[68px] min-w-0 flex-col items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white px-1.5 py-3 text-center text-xs font-semibold text-slate-700 transition hover:border-blue-300 hover:bg-blue-50 hover:text-blue-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 active:bg-blue-100 sm:min-h-[76px] sm:text-sm"
     >
       <span className="text-blue-700">{icon}</span>
@@ -308,4 +315,5 @@ function ActionButton({
     </button>
   );
 }
+
 

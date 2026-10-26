@@ -1,0 +1,11 @@
+const fs=require('fs'),assert=require('assert'),vm=require('vm');
+const src=fs.readFileSync(require('path').join(__dirname,'../app/calculators/concrete/ConcreteCalculator.tsx'),'utf8');
+const handler=src.slice(src.indexOf('  const handleDownloadPDF ='),src.indexOf('  const handleClearHistory =')).replace('await import("jspdf")','await loadPDF()');
+let resolve,reject,loads=0,saves=0,notes=[],loading=[];
+const env={result:{volume:1,dryVolume:1.54,sand:.5,aggregate:.8,water:100,cementBags:8,totalCost:100},currency:'USD',CURRENCY_SYMBOLS:{USD:'$'},CURRENCY_NAMES:{USD:'US Dollar'},M3_PER_YD3:.764554858,FT3_PER_M3:35.3146667,pdfInFlight:{current:false},setPdfLoading:v=>loading.push(v),showNotification:(...a)=>notes.push(a),loadPDF:()=>{loads++;return new Promise((a,b)=>{resolve=a;reject=b})}};
+const context=vm.createContext(env);vm.runInContext(handler+';globalThis.run=handleDownloadPDF;',context);
+const Doc=class{setFontSize(){} text(){} save(n){assert.equal(n,'Concrete-Calculation.pdf');saves++}};
+(async()=>{const first=context.run();await context.run();assert.equal(loads,1);resolve({jsPDF:Doc});await first;assert.equal(saves,1);assert.deepEqual(loading,[true,false]);assert.equal(env.pdfInFlight.current,false);
+const second=context.run();reject(Error('network'));await second;assert.equal(notes.at(-1)[1],'error');assert.equal(env.pdfInFlight.current,false);
+const retry=context.run();resolve({jsPDF:Doc});await retry;assert.equal(saves,2);env.result.volume=0;await context.run();assert.equal(loads,3);
+assert(!src.includes('import { jsPDF } from "jspdf"'));console.log('PASS: PDF loads on demand, duplicate clicks blocked, download succeeds, errors reset state, retry works, invalid results do not load PDF.');})().catch(e=>{console.error(e);process.exitCode=1});

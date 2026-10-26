@@ -1,6 +1,6 @@
 "use client";
 import { getPreferences } from "../../../lib/browser-data";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import CalculatorForm from "./components/CalculatorForm";
 import ResultCard from "./components/ResultCard";
 import Formula from "./components/Formula";
@@ -9,7 +9,6 @@ import Example from "./components/Example";
 import History from "./components/History";
 import AboutCalculator from "./components/AboutCalculator";
 import { calculateConcrete, Unit } from "./utils/calculateConcrete";
-import { jsPDF } from "jspdf";
 import Toast from "../../components/Toast";
 import { addGlobalHistory } from "../../components/GlobalHistory";
 
@@ -205,6 +204,8 @@ export default function ConcreteCalculator() {
   const [result, setResult] =
     useState<CalculationResult>(ZERO_RESULT);
   const [history, setHistory] = useState<HistoryItem[]>([]);
+  const [pdfLoading, setPdfLoading] = useState(false);
+  const pdfInFlight = useRef(false);
 
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
@@ -557,9 +558,12 @@ Currency: ${currency}`;
     }
   };
 
-  const handleDownloadPDF = () => {
-    if (result.volume <= 0) return;
-
+  const handleDownloadPDF = async () => {
+    if (result.volume <= 0 || pdfInFlight.current) return;
+    pdfInFlight.current = true;
+    setPdfLoading(true);
+    try {
+    const { jsPDF } = await import("jspdf");
     const doc = new jsPDF();
     const symbol = CURRENCY_SYMBOLS[currency];
 
@@ -600,7 +604,13 @@ Currency: ${currency}`;
     });
 
     doc.save("Concrete-Calculation.pdf");
-    showNotification("PDF downloaded successfully!");
+    showNotification("PDF download started.");
+    } catch {
+      showNotification("PDF could not be created. Please try again.", "error");
+    } finally {
+      pdfInFlight.current = false;
+      setPdfLoading(false);
+    }
   };
 
   const handleClearHistory = () => {
@@ -683,6 +693,7 @@ Currency: ${currency}`;
               onCopy={handleCopy}
               onShare={handleShare}
               onDownload={handleDownloadPDF}
+              pdfLoading={pdfLoading}
             />
           </div>
 

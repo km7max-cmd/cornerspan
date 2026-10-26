@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
 import SearchBar from "./SearchBar";
 
@@ -33,9 +34,10 @@ export default function Header() {
           className="flex items-center"
         >
           {/* Light Mode Logo */}
-          <img
+          <Image
             src="/logo.webp"
             alt="CornerSpan - Construction Calculators"
+            sizes="220px"
             width={220}
             height={57}
             className="cornerspan-logo-light"
@@ -47,9 +49,10 @@ export default function Header() {
           />
 
           {/* Dark Mode Logo */}
-          <img
+          <Image
             src="/logo-dark.webp"
             alt="CornerSpan - Construction Calculators"
+            sizes="220px"
             width={220}
             height={61}
             className="cornerspan-logo-dark"

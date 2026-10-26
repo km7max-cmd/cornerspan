@@ -3,9 +3,9 @@ import type { Metadata } from "next";
 import AreaCalculator from "./AreaCalculator";
 
 export const metadata: Metadata = {
-  title: "Area Calculator | Calculate Area in Square Feet & Meters",
+  title: "Area Calculator: 8 Shapes, Square Feet & Acres",
   description:
-    "Free area calculator for rectangles, squares, circles, triangles, trapezoids, parallelograms, ellipses and sectors. Calculate area in square feet, square meters, square yards and acres.",
+    "Calculate area for 8 shapes using your measurements. Get square feet, square meters, square yards and acres, with formulas and examples. Free, no signup.",
   keywords: [
     "area calculator",
     "calculate area",
@@ -27,9 +27,9 @@ export const metadata: Metadata = {
     canonical: "/calculators/area",
   },
   openGraph: {
-    title: "Area Calculator | Calculate Area in Square Feet & Meters",
+    title: "Area Calculator: 8 Shapes, Square Feet & Acres",
     description:
-      "Calculate area for rectangles, squares, circles, triangles and other common shapes in square feet, square meters, square yards and acres.",
+      "Calculate area for 8 shapes in square feet, square meters, square yards and acres. Enter dimensions and check the formula. Free, no signup.",
     url: "https://www.cornerspan.com/calculators/area",
     type: "website",
     images: [
@@ -43,9 +43,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Area Calculator | Calculate Area in Square Feet & Meters",
+    title: "Area Calculator: 8 Shapes, Square Feet & Acres",
     description:
-      "Calculate area for common shapes in square feet, square meters, square yards and acres.",
+      "Calculate area for 8 shapes in square feet, square meters, square yards and acres. Free, no signup.",
     images: ["/cornerspan-area-calculator-hero.webp"],
   },
 };
