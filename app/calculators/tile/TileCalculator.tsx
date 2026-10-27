@@ -3,7 +3,8 @@ import { validInput, safeEstimate, INPUT_ERROR, ceilQuantity } from "../shared/n
 import CalculatorWorkspace from "../../components/CalculatorWorkspace";
 
 import Image from "next/image";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { readTransferredArea } from "../shared/areaTransfer";
 import Breadcrumb from "../../../components/Breadcrumb";
 
 type SurfaceType = "floor" | "wall";
@@ -79,6 +80,13 @@ function formatNumber(
 }
 
 export default function TileCalculator() {
+  const [inputMode, setInputMode] = useState<'dimensions' | 'area'>('dimensions');
+  const [knownArea, setKnownArea] = useState('');
+  const [importedArea, setImportedArea] = useState(false);
+  useEffect(() => {
+    const area = readTransferredArea(window.location.search);
+    if (area !== null) { setKnownArea(String(area)); setInputMode('area'); setImportedArea(true); }
+  }, []);
   const [surfaceType, setSurfaceType] =
     useState<SurfaceType>("floor");
 
@@ -120,7 +128,7 @@ export default function TileCalculator() {
       : WALL_TILE_SIZES;
 
   const result = useMemo(() => {
-if (![roomLength,roomWidth,tileLength,tileWidth,tilesPerBox].every(v => validInput(v, true)) || ![waste,boxPrice].every(v => validInput(v))) return null;
+if (![...(inputMode === 'area' ? [knownArea] : [roomLength,roomWidth]),tileLength,tileWidth,tilesPerBox].every(v => validInput(v, true)) || ![waste,boxPrice].every(v => validInput(v))) return null;
 
     const length = Number(roomLength);
     const width = Number(roomWidth);
@@ -132,10 +140,10 @@ if (![roomLength,roomWidth,tileLength,tileWidth,tilesPerBox].every(v => validInp
     const wastePercent = Number(waste);
 
     if (
-      !Number.isFinite(length) ||
+      (inputMode === 'dimensions' && (!Number.isFinite(length) ||
       !Number.isFinite(width) ||
       length <= 0 ||
-      width <= 0 ||
+      width <= 0)) ||
       !Number.isFinite(tileL) ||
       !Number.isFinite(tileW) ||
       tileL <= 0 ||
@@ -160,7 +168,7 @@ if (![roomLength,roomWidth,tileLength,tileWidth,tilesPerBox].every(v => validInp
     );
 
     const surfaceArea =
-      lengthFt * widthFt;
+      inputMode === 'area' ? Number(knownArea) : lengthFt * widthFt;
 
     /*
      * Tile area
@@ -276,6 +284,8 @@ if (![roomLength,roomWidth,tileLength,tileWidth,tilesPerBox].every(v => validInp
       safeWaste,
     });
   }, [
+    inputMode,
+    knownArea,
     roomLength,
     roomWidth,
     roomUnit,
@@ -627,7 +637,17 @@ if (![roomLength,roomWidth,tileLength,tileWidth,tilesPerBox].every(v => validInp
           </div>
 
           {/* Surface Dimensions */}
-          <div className="mb-4">
+          <div role="group" aria-label="Tile area input method" className="mb-4 grid grid-cols-2 gap-2 rounded-xl bg-slate-100 p-1">
+            <button type="button" aria-pressed={inputMode === 'dimensions'} aria-controls="tile-dimensions" onClick={() => { setInputMode('dimensions'); setCalculated(false); }} className={`min-h-11 rounded-lg px-3 py-2 text-sm font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-600 ${inputMode === 'dimensions' ? 'bg-white text-blue-700 shadow-sm' : 'text-slate-600'}`}>Length × width</button>
+            <button type="button" aria-pressed={inputMode === 'area'} aria-controls="tile-known-area-panel" onClick={() => { setInputMode('area'); setCalculated(false); }} className={`min-h-11 rounded-lg px-3 py-2 text-sm font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-600 ${inputMode === 'area' ? 'bg-white text-blue-700 shadow-sm' : 'text-slate-600'}`}>Known area</button>
+          </div>
+          <div id="tile-known-area-panel" hidden={inputMode !== 'area'} className="mb-4">
+            {importedArea && <p className="mb-3 rounded-lg bg-blue-50 p-3 text-sm text-blue-900">Area prefilled from the Area Calculator. Check tile size, tiles per box and waste before calculating.</p>}
+            <label htmlFor="tile-known-area" className="mb-2 block text-sm font-semibold text-slate-700">Surface area (sq ft)</label>
+            <input id="tile-known-area" type="number" inputMode="decimal" min="0" step="any" value={knownArea} onChange={event => { setKnownArea(event.target.value); setCalculated(false); }} aria-invalid={knownArea !== '' && !validInput(knownArea, true)} aria-describedby="tile-known-area-help" className="min-h-12 w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-xl font-semibold tabular-nums focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-600" />
+            <p id="tile-known-area-help" className="mt-2 text-xs leading-5 text-slate-600">Enter a positive measured area after subtracting openings. The waste allowance below is added once.</p>
+          </div>
+          <div id="tile-dimensions" hidden={inputMode !== 'dimensions'} className="mb-4">
 
             <label className="mb-1.5 block text-xs font-semibold text-slate-700">
               {surfaceType === "wall"

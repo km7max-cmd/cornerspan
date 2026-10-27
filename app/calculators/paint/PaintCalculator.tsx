@@ -2,7 +2,13 @@
 import CalculatorWorkspace from "../../components/CalculatorWorkspace";
 
 import { validInput, safeEstimate, INPUT_ERROR } from "../shared/numbers";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
+import { readTransferredArea } from "../shared/areaTransfer";
+
+const SurfacePaintCalculator = dynamic(() => import("./SurfacePaintCalculator"), {
+  loading: () => <p role="status" className="p-6 text-sm text-slate-600">Loading surface paint calculator…</p>,
+});
 
 import PaintInputs from "./components/PaintInputs";
 import PaintResults from "./components/PaintResults";
@@ -29,6 +35,13 @@ type UnitCode =
   | "m-cm";
 
 export default function PaintCalculator() {
+  const [inputMode, setInputMode] = useState<'dimensions' | 'area'>('dimensions');
+  const [surfaceOpened, setSurfaceOpened] = useState(false);
+  const [incomingArea, setIncomingArea] = useState<number | null>(null);
+  useEffect(() => {
+    const area = readTransferredArea(window.location.search);
+    if (area !== null) { setIncomingArea(area); setInputMode('area'); setSurfaceOpened(true); }
+  }, []);
   const [error, setError] = useState("");
   const [jobType, setJobType] = useState("room");
 
@@ -177,6 +190,12 @@ export default function PaintCalculator() {
   }
 
   return (
+    <div>
+      <div role="group" aria-label="Paint input method" className="mb-4 grid grid-cols-2 gap-2 rounded-xl bg-slate-200 p-1">
+        <button type="button" aria-pressed={inputMode === 'dimensions'} aria-controls="paint-room-inputs" onClick={() => setInputMode('dimensions')} className={`min-h-12 rounded-lg px-3 py-2 text-sm font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-600 ${inputMode === 'dimensions' ? 'bg-white text-blue-700 shadow-sm' : 'text-slate-600'}`}>Room dimensions</button>
+        <button type="button" aria-pressed={inputMode === 'area'} aria-controls="paint-surface-inputs" onClick={() => { setInputMode('area'); setSurfaceOpened(true); }} className={`min-h-12 rounded-lg px-3 py-2 text-sm font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-600 ${inputMode === 'area' ? 'bg-white text-blue-700 shadow-sm' : 'text-slate-600'}`}>Known surface area</button>
+      </div>
+      <div id="paint-room-inputs" hidden={inputMode !== 'dimensions'}>
     <CalculatorWorkspace error={error || undefined} label="Paint needed" value={result ? result.paintQuantity.toLocaleString("en-US", {maximumFractionDigits: 2}) : null} unit={result?.quantityUnit ?? "gallons"} result={<><PaintResults
         result={result}
         currency={currency}
@@ -248,6 +267,11 @@ export default function PaintCalculator() {
 
       
     </CalculatorWorkspace>
+      </div>
+      <div id="paint-surface-inputs" hidden={inputMode !== 'area'}>
+        {surfaceOpened && <SurfacePaintCalculator initialArea={incomingArea} />}
+      </div>
+    </div>
   );
 }
 

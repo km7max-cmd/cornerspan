@@ -9,7 +9,8 @@ export type PaintUnit =
   | "m-cm";
 
 export type PaintCalculationInput = {
-  jobType: "room" | "walls" | "ceiling";
+  jobType: "room" | "walls" | "ceiling" | "surface";
+  surfaceAreaSqFt?: number;
   length: number;
   width: number;
   height: number;
@@ -114,13 +115,15 @@ export function calculatePaint(
     baseAreaSqFt = 2 * (lengthFt + widthFt) * heightFt;
   } else if (jobType === "ceiling") {
     baseAreaSqFt = lengthFt * widthFt;
+  } else if (jobType === "surface") {
+    baseAreaSqFt = input.surfaceAreaSqFt ?? 0;
   }
 
   if (!safeEstimate({baseAreaSqFt}) || baseAreaSqFt <= 0) throw new RangeError("Invalid painted area");
   baseAreaSqFt = Math.max(0, baseAreaSqFt);
 
   const openingsAreaSqFt =
-    jobType === "ceiling"
+    jobType === "ceiling" || jobType === "surface"
       ? 0
       : nonNegative(doors) * DOOR_AREA_SQ_FT +
         nonNegative(windows) * WINDOW_AREA_SQ_FT;

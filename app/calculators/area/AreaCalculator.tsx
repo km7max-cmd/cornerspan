@@ -1,8 +1,14 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import dynamic from "next/dynamic";
+import { useEffect, useState } from "react";
 import { calculateArea, fields, formulas, formatNumber, shapes, type Shape, type Unit } from "./areaMath";
+import AreaTransferLinks from "./AreaTransferLinks";
+
+const MultiSectionArea = dynamic(() => import("./MultiSectionArea"), {
+  loading: () => <p role="status" className="p-6 text-sm text-slate-600">Loading section calculator…</p>,
+});
 
 const unitLabels: Record<Unit, string> = { feet: 'ft', inches: 'in', yards: 'yd', meters: 'm' };
 const paths: Record<Shape, string> = {
@@ -20,6 +26,21 @@ function ShapeIcon({ shape, large = false }: { shape: Shape; large?: boolean }) 
 }
 
 export default function AreaCalculator() {
+  const [mode, setMode] = useState<'single' | 'multiple'>('single');
+  const [multipleOpened, setMultipleOpened] = useState(false);
+  const [exampleVersion, setExampleVersion] = useState(0);
+  useEffect(() => {
+    const sample = new URLSearchParams(window.location.search).get('example') === 'l-shaped';
+    if (sample || window.location.hash === '#multiple-sections') {
+      setMode('multiple'); setMultipleOpened(true);
+      if (sample) setExampleVersion(1);
+    }
+  }, []);
+  const showMultiple = () => { setMultipleOpened(true); setMode('multiple'); };
+  const showLShapeExample = () => {
+    showMultiple(); setExampleVersion(version => version + 1);
+    document.getElementById('area-mode')?.scrollIntoView({ block: 'start' });
+  };
   const [shape, setShape] = useState<Shape>('Rectangle');
   const [values, setValues] = useState<Record<string, string>>({});
   const [unit, setUnit] = useState<Unit>('feet');
@@ -46,7 +67,12 @@ export default function AreaCalculator() {
           <p className="mt-2 text-sm leading-6 text-slate-600">Choose a shape. Enter your measurements. Your area updates instantly.</p>
         </header>
 
-        <section aria-label="Interactive area calculator" className="rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <div id="area-mode" role="group" aria-label="Area calculation mode" className="mb-4 grid scroll-mt-24 grid-cols-2 gap-2 rounded-xl bg-slate-200 p-1">
+          <button type="button" aria-pressed={mode === 'single'} aria-controls="single-area" onClick={() => setMode('single')} className={`min-h-12 rounded-lg px-3 py-2 text-sm font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-600 ${mode === 'single' ? 'bg-white text-blue-700 shadow-sm' : 'text-slate-600'}`}>Single shape</button>
+          <button type="button" aria-pressed={mode === 'multiple'} aria-controls="multiple-sections" onClick={showMultiple} className={`min-h-12 rounded-lg px-3 py-2 text-sm font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-600 ${mode === 'multiple' ? 'bg-white text-blue-700 shadow-sm' : 'text-slate-600'}`}>Multiple sections</button>
+        </div>
+
+        <section id="single-area" hidden={mode !== 'single'} aria-label="Interactive area calculator" className="rounded-2xl border border-slate-200 bg-white shadow-sm">
           <div className="sticky top-[76px] z-20 flex items-center justify-between gap-3 rounded-t-2xl border-b border-blue-800 bg-slate-950 px-4 py-3 text-white lg:hidden">
             <span className="text-xs font-semibold uppercase tracking-wider text-blue-200">Total area</span>
             <output aria-live="polite" aria-atomic="true" className="min-w-0 break-all text-right text-2xl font-bold tabular-nums">{result} <span className="text-sm font-normal text-blue-200">sq ft</span></output>
@@ -124,9 +150,21 @@ export default function AreaCalculator() {
                 <dl className="divide-y divide-slate-800 text-sm">
                   {([['Square meters', 'm²', area === null ? null : area * 0.09290304, 2], ['Square yards', 'yd²', area === null ? null : area / 9, 2], ['Square inches', 'in²', area === null ? null : area * 144, 2], ['Acres', 'acres', area === null ? null : area / 43560, 5]] as const).map(([label, symbol, value, precision]) => <div key={label} className="flex flex-wrap items-baseline justify-between gap-2 py-3"><dt className="text-slate-300">{label}</dt><dd className="break-all text-right font-semibold tabular-nums">{value === null ? '—' : formatNumber(value, precision)} <span className="text-xs font-normal text-slate-400">{symbol}</span></dd></div>)}
                 </dl>
+                <AreaTransferLinks area={area} />
               </div>
             </aside>
           </div>
+        </section>
+
+        <div id="multiple-sections" hidden={mode !== 'multiple'} className="scroll-mt-24">
+          {multipleOpened && <MultiSectionArea exampleVersion={exampleVersion} />}
+        </div>
+
+        <section aria-labelledby="combined-area-example" className="mt-8 rounded-xl border border-blue-100 bg-blue-50 p-5">
+          <h2 id="combined-area-example" className="text-xl font-bold text-slate-950">Calculate an L-shaped room or several rooms</h2>
+          <p className="mt-3 text-sm leading-6 text-slate-700">Divide an L-shaped floor into two rectangles that do not overlap. A 12 × 10 ft section is 120 sq ft; a 6 × 5 ft section adds 30 sq ft. The combined area is <strong>150 sq ft</strong>. Add a separate section for each room, or subtract an opening once.</p>
+          <p className="mt-3 text-sm leading-6 text-slate-700">Select Multiple sections to enter different measurements for each part. The result is measured area before tile waste or paint coats. See the <a href="/blog/area-calculation-guide#size-comparison" className="font-semibold text-blue-700 underline">area measurement guide</a> for more examples.</p>
+          <button type="button" onClick={showLShapeExample} className="mt-4 min-h-11 rounded-lg bg-blue-700 px-4 py-3 text-sm font-semibold text-white">Load the 150 sq ft example</button>
         </section>
 
         <details className="mt-8 rounded-xl border border-slate-200 bg-white p-4">
@@ -548,4 +586,5 @@ export default function AreaCalculator() {
     </div>
   );
 }
+
 

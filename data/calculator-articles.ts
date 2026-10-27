@@ -1,4 +1,5 @@
 export type CalculatorArticle = {
+ exampleLink?: { href: string; label: string };
  slug:string; title:string; description:string; category:string; tags:string[]; calculatorHref:string; publishedAt:string; modifiedAt:string; intro:string[]; formula:string; example:string[][]; sections:{id:string;title:string;paragraphs:string[]}[]; mistakes:string[]; faqs:{question:string;answer:string}[]; sources:{label:string;href:string}[]; image:string|null; related:string[];
 };
 
@@ -1581,12 +1582,16 @@ export const calculatorArticles: CalculatorArticle[] = [
       "construction"
     ],
     "calculatorHref": "/calculators/area",
+    "exampleLink": {
+      "href": "/calculators/area?example=l-shaped#area-mode",
+      "label": "Try the 150 sq ft L-shaped example in the calculator"
+    },
     "publishedAt": "2026-10-26",
-    "modifiedAt": "2026-10-26",
+    "modifiedAt": "2026-10-27",
     "intro": [
       "For a rectangle, multiply length by width in feet to get square feet. A 12x15-foot floor is 180 square feet, 20 square yards or about 0.00413 acre. Other shapes need their own formulas and measured dimensions.",
       "Draw the space as you measure it. For an awkward outline, a few labeled rectangles are often easier to check than one complicated calculation. Keep the sketch so you can see which surfaces you've counted and which you've left out.",
-      "The Area Calculator supports eight shapes and a quantity multiplier. This article explains how to select the right dimensions and combine simple sections. It complements the detailed trapezoid article without requiring every project to fit a single rectangle."
+      "The Area Calculator supports eight shapes and a quantity multiplier. Its optional Multiple sections mode adds differently sized sections and subtracts openings. This article explains how to select the right dimensions and combine simple sections. It complements the detailed trapezoid article without requiring every project to fit a single rectangle."
     ],
     "formula": "Rectangle: length × width; circle: π × radius²; triangle: base × perpendicular height ÷ 2",
     "example": [
@@ -1626,7 +1631,8 @@ export const calculatorArticles: CalculatorArticle[] = [
         "id": "size-comparison",
         "title": "Calculate an L-shaped area without double counting",
         "paragraphs": [
-          "Split an L-shaped floor into non-overlapping rectangles. A 12x10-foot section plus a 6x5-foot section totals 120 + 30 = 150 square feet. If your measured rectangles overlap, subtract the shared area once. For a circle, use the radius rather than the diameter in πr²."
+          "Split an L-shaped floor into non-overlapping rectangles. A 12x10-foot section plus a 6x5-foot section totals 120 + 30 = 150 square feet. If your measured rectangles overlap, subtract the shared area once. For a circle, use the radius rather than the diameter in πr².",
+          "In Multiple sections mode, enter the two rectangles as separate Add area sections. To exclude a 2x3-foot opening, add a third rectangle and select Subtract area: 150 − 6 = 144 square feet. The calculator shows both added and removed areas so you can check the deduction."
         ]
       },
       {
@@ -1650,7 +1656,7 @@ export const calculatorArticles: CalculatorArticle[] = [
         "title": "Break irregular spaces into sections",
         "paragraphs": [
           "An L-shaped floor can be measured as two non-overlapping rectangles. Calculate each area, add them, and subtract any opening that should not receive material. Keep a labeled sketch to show which dimensions belong to each section.",
-          "Do not force a curved or highly irregular boundary into a rectangle without stating the approximation. For property or legal boundary measurements, use the appropriate survey information; a shape calculator is not a boundary survey. Repeated identical sections can use the quantity multiplier, but differently sized sections need separate calculations."
+          "Do not force a curved or highly irregular boundary into a rectangle without stating the approximation. For property or legal boundary measurements, use the appropriate survey information; a shape calculator is not a boundary survey. Repeated identical sections can use the quantity multiplier. For differently sized sections, choose Multiple sections and enter each part separately; the calculator combines their areas."
         ]
       },
       {
@@ -1692,7 +1698,7 @@ export const calculatorArticles: CalculatorArticle[] = [
       },
       {
         "question": "Can I multiply area by the number of rooms?",
-        "answer": "Only if the rooms have identical dimensions. Otherwise calculate them separately."
+        "answer": "Only if the rooms have identical dimensions. Otherwise use Multiple sections, enter each room's dimensions and add their areas."
       },
       {
         "question": "Does area include waste?",
