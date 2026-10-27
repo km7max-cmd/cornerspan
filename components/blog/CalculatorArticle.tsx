@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import type { CalculatorArticle as ArticleData } from "../../data/calculator-articles";
+import type { CalculatorArticle as ArticleData, ArticleTable } from "../../data/calculator-articles";
 import { blogPosts } from "../../data/blog";
 
 const imageDescriptions: Record<string,string> = {
@@ -9,10 +9,23 @@ const imageDescriptions: Record<string,string> = {
   paint:"Room painting and wall measurement illustration", asphalt:"Asphalt paving and driveway measurement illustration",
   gravel:"Gravel project dimensions and material estimate illustration", topsoil:"Topsoil depth and landscaping measurement illustration",
   fence:"Fence layout and material measurement illustration", roofing:"Residential roof illustrating roof surface and pitch",
-  "sod-turf":"Lawn measurement and sod layout illustration", steel:"Twenty 20-foot number 4 rebar pieces weigh 267.2 pounds at 0.668 pounds per foot",
+  "sod-turf":"Lawn measurement and sod layout illustration", steel:"Solid round steel bar dimensions and estimated weight",
   brick:"A wall with a window opening and a brick face with mortar joints",
 };
-const relatedLabels: Record<string,string> = {"/guides/steel-weight":"US Rebar Weight Guide","/guides/brick-calculation":"Brick Calculation Guide","/guides/us-brick-sizes":"US Brick Sizes and Dimensions"};
+const relatedLabels: Record<string,string> = {"/guides/steel-weight":"US Rebar Weight Guide","/guides/brick-calculation":"Brick Calculation Guide","/guides/us-brick-sizes":"US Brick Sizes and Dimensions","/guides/concrete-volume":"Concrete Volume Guide"};
+
+function ComparisonTable({ table }: { table: ArticleTable }) {
+  return <div className="mt-5 overflow-x-auto rounded-xl border border-slate-200" tabIndex={0} role="region" aria-label={table.caption}>
+    <table className="w-full min-w-[480px] text-left text-sm">
+      <caption className="p-3 text-left text-slate-600">{table.caption}</caption>
+      <thead className="bg-slate-100"><tr>{table.headers.map(label => <th scope="col" key={label} className="p-3">{label}</th>)}</tr></thead>
+      <tbody>{table.rows.map((row, index) => <tr key={index} className="border-t border-slate-200">{row.map((cell, column) => column === 0
+        ? <th scope="row" key={column} className="p-3 font-semibold">{cell}</th>
+        : <td key={column} className="p-3">{cell}</td>)}</tr>)}</tbody>
+    </table>
+  </div>;
+}
+
 export default function CalculatorArticle({ article }: {article:ArticleData}) {
   const origin="https://www.cornerspan.com";
   const url=`${origin}/blog/${article.slug}`;
@@ -35,12 +48,12 @@ export default function CalculatorArticle({ article }: {article:ArticleData}) {
     <p className="mt-3 text-sm text-slate-500">By <Link href="/about#content-method" className="underline">CornerSpan</Link> · Updated <time dateTime={article.modifiedAt}>{new Date(`${article.modifiedAt}T12:00:00Z`).toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric',timeZone:'UTC'})}</time></p>
     {article.intro.map(p=><p key={p} className="mt-4">{p}</p>)}
     <Link className="my-5 inline-flex rounded-xl bg-blue-700 px-5 py-3 font-bold text-white" href={article.calculatorHref}>Open the {calculator.replace(/-/g, " ")} calculator →</Link>
-    {article.image && <figure className="my-5"><div className="relative aspect-[3/2] overflow-hidden rounded-xl border border-slate-200 bg-slate-50"><Image src={article.image} alt={imageDescriptions[calculator] ?? article.title} fill sizes="(max-width: 768px) 100vw, 848px" className="object-contain" unoptimized={article.image.endsWith('.svg')} /></div><figcaption className="mt-2 text-sm text-slate-500">Illustration for orientation; use the measurements and assumptions stated in the worked example.</figcaption></figure>}
+    {article.image && <figure className="my-5"><div className="relative aspect-[3/2] overflow-hidden rounded-xl border border-slate-200 bg-slate-50"><Image src={article.image} alt={article.imageAlt ?? imageDescriptions[calculator] ?? article.title} fill sizes="(max-width: 768px) 100vw, 848px" className="object-contain" unoptimized={article.image.endsWith('.svg')} /></div><figcaption className="mt-2 text-sm text-slate-500">{article.imageCaption ?? 'Illustration for orientation; use the measurements and assumptions stated in the worked example.'}</figcaption></figure>}
     <nav aria-label="Table of contents" className="rounded-xl bg-slate-100 p-5"><h2 className="text-lg font-bold text-slate-950">In this article</h2><ul className="mt-3 grid gap-3 sm:grid-cols-2">{contents.map(([id,label])=><li key={id}><a href={`#${id}`} className="text-blue-700 underline">{label}</a></li>)}</ul></nav>
     <section id="formula" className="mt-10 scroll-mt-28"><h2 className="text-2xl font-bold text-slate-950">Calculation formula</h2><p className="mt-4 rounded-xl bg-blue-50 p-5 font-semibold text-blue-950">{article.formula}</p></section>
     <section id="example" className="mt-10 scroll-mt-28"><h2 className="text-2xl font-bold text-slate-950">Worked example: from measurements to an estimate</h2><div className="mt-4 overflow-x-auto rounded-xl border border-slate-200"><table className="w-full min-w-[480px] text-left text-sm"><caption className="p-3 text-left text-slate-600">Illustrative inputs and results; substitute your own measurements and supplier information.</caption><thead className="bg-slate-100"><tr>{['Step','Calculation or assumption','Result'].map(h=><th scope="col" key={h} className="p-3">{h}</th>)}</tr></thead><tbody>{article.example.map((row,i)=><tr key={i} className="border-t border-slate-200">{row.map((v,j)=>j===0?<th scope="row" key={j} className="p-3 font-semibold">{v}</th>:<td key={j} className="p-3">{v}</td>)}</tr>)}</tbody></table></div></section>
     {article.exampleLink && <p className="mt-4"><Link href={article.exampleLink.href} className="inline-flex rounded-lg bg-blue-700 px-4 py-3 font-semibold text-white">{article.exampleLink.label} →</Link></p>}
-    {article.sections.map(s=><section key={s.id} id={s.id} className="mt-10 scroll-mt-28 border-t border-slate-200 pt-8"><h2 className="text-2xl font-bold text-slate-950">{s.title}</h2>{s.paragraphs.map(p=><p key={p} className="mt-4">{p}</p>)}</section>)}
+    {article.sections.map(s=><section key={s.id} id={s.id} className="mt-10 scroll-mt-28 border-t border-slate-200 pt-8"><h2 className="text-2xl font-bold text-slate-950">{s.title}</h2>{s.paragraphs.map(p=><p key={p} className="mt-4">{p}</p>)}{s.table && <ComparisonTable table={s.table} />}</section>)}
     <section id="mistakes" className="mt-10 scroll-mt-28"><h2 className="text-2xl font-bold text-slate-950">Common estimating mistakes</h2><ul className="mt-4 list-disc space-y-3 pl-6">{article.mistakes.map(m=><li key={m}>{m}</li>)}</ul></section>
     <section id="faq" className="mt-10 scroll-mt-28"><h2 className="text-2xl font-bold text-slate-950">Frequently asked questions</h2>{article.faqs.map(f=><div key={f.question} className="border-b border-slate-200 py-5"><h3 className="text-lg font-bold text-slate-900">{f.question}</h3><p className="mt-2">{f.answer}</p></div>)}</section>
     <aside className="my-8 rounded-xl bg-blue-50 p-5"><p className="font-semibold">Ready to use your measurements?</p><Link href={article.calculatorHref} className="mt-2 inline-flex font-bold text-blue-700 underline">Calculate with the {calculator.replace(/-/g, " ")} calculator →</Link></aside>

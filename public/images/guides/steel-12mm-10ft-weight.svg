@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="640" viewBox="0 0 960 640" role="img" aria-labelledby="title desc">
+  <title id="title">Ten 10-foot 12 mm solid steel bars: about 59.73 pounds</title>
+  <desc id="desc">A 12 mm solid round steel bar is 10 feet, or 3.048 meters, long. Ten bars weigh approximately 27.09 kilograms or 59.73 pounds using diameter squared times length times quantity divided by 162. A 12 mm bar is not US number 4 rebar.</desc>
+  <rect width="960" height="640" rx="28" fill="#0f172a"/>
+  <g font-family="Arial,sans-serif">
+    <text x="48" y="60" font-size="24" font-weight="bold" fill="#93c5fd">STEEL WEIGHT · WORKED EXAMPLE</text>
+    <text x="48" y="113" font-size="37" font-weight="bold" fill="#fff">10 bars · 10 ft each · 12 mm diameter</text>
+    <rect x="70" y="184" width="620" height="32" rx="16" fill="#94a3b8"/>
+    <path d="M70 244v30m0-15h620m0-15v30" fill="none" stroke="#60a5fa" stroke-width="3"/>
+    <text x="213" y="311" font-size="28" fill="#e2e8f0">10 ft = 3.048 m per bar</text>
+    <circle cx="815" cy="203" r="37" fill="#94a3b8"/>
+    <path d="M778 265v18m0-9h74m0-9v18" fill="none" stroke="#60a5fa" stroke-width="3"/>
+    <text x="765" y="311" font-size="28" fill="#e2e8f0">12 mm</text>
+    <rect x="48" y="354" width="864" height="178" rx="18" fill="#1e293b"/>
+    <text x="76" y="402" font-size="29" fill="#cbd5e1">12² × 3.048 × 10 ÷ 162 ≈ 27.09 kg</text>
+    <text x="76" y="476" font-size="51" font-weight="bold" fill="#93c5fd">≈ 59.73 lb for all 10 bars</text>
+    <text x="48" y="581" font-size="23" fill="#cbd5e1">Solid round-bar approximation · No ordering allowance included</text>
+    <text x="48" y="615" font-size="23" fill="#cbd5e1">12 mm is not US #4 rebar. Use the specified product's weight.</text>
+  </g>
+</svg>

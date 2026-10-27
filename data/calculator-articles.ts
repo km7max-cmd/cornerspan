@@ -1,6 +1,10 @@
+export type ArticleTable = { caption: string; headers: string[]; rows: string[][] };
+
 export type CalculatorArticle = {
+ imageAlt?: string;
+ imageCaption?: string;
  exampleLink?: { href: string; label: string };
- slug:string; title:string; description:string; category:string; tags:string[]; calculatorHref:string; publishedAt:string; modifiedAt:string; intro:string[]; formula:string; example:string[][]; sections:{id:string;title:string;paragraphs:string[]}[]; mistakes:string[]; faqs:{question:string;answer:string}[]; sources:{label:string;href:string}[]; image:string|null; related:string[];
+ slug:string; title:string; description:string; category:string; tags:string[]; calculatorHref:string; publishedAt:string; modifiedAt:string; intro:string[]; formula:string; example:string[][]; sections:{id:string;title:string;paragraphs:string[];table?:ArticleTable}[]; mistakes:string[]; faqs:{question:string;answer:string}[]; sources:{label:string;href:string}[]; image:string|null; related:string[];
 };
 
 export const calculatorArticles: CalculatorArticle[] = [
@@ -715,7 +719,7 @@ export const calculatorArticles: CalculatorArticle[] = [
     ],
     "calculatorHref": "/calculators/topsoil",
     "publishedAt": "2026-10-26",
-    "modifiedAt": "2026-10-26",
+    "modifiedAt": "2026-10-27",
     "intro": [
       "Covering 200 square feet with 3 inches of topsoil takes 50 cubic feet. With a 10% allowance, order about 2.04 cubic yards or 74 bags holding 0.75 cubic foot each.",
       "The useful shopping comparison is delivered volume. Bags make small quantities easy to handle; bulk soil can have a lower material price but an extra delivery charge. Calculate the same finished area and depth for both options before choosing.",
@@ -800,7 +804,7 @@ export const calculatorArticles: CalculatorArticle[] = [
         "title": "Use the Topsoil Calculator and compare costs",
         "paragraphs": [
           "Enter 10 ft length, 20 ft width and 3 inches depth. Choose the example 10% allowance and 0.75-cu-ft bag size. The calculator should report about 2.04 cubic yards and 74 bags; weight depends on the density you choose.",
-          "At an illustrative $40 per cubic yard, the target volume costs $81.48 before delivery and tax. The Topsoil Calculator focuses on quantities, so calculate this price separately. If bags cost $3 each, the 74-bag example costs $222. Compare the actual delivered totals and product quality, not just these hypothetical material prices."
+          "At an illustrative $40 per cubic yard, the target volume costs $81.48 before delivery and tax. The Topsoil Calculator focuses on quantities, so calculate this price separately. Using the same illustrative $4 per bag as the comparison above, 74 bags cost $296. Keep the bag price consistent when comparing that option with bulk delivery. Compare the actual delivered totals and product quality, not just these hypothetical material prices."
         ]
       }
     ],
@@ -1290,7 +1294,7 @@ export const calculatorArticles: CalculatorArticle[] = [
     ],
     "calculatorHref": "/calculators/steel",
     "publishedAt": "2026-10-26",
-    "modifiedAt": "2026-10-26",
+    "modifiedAt": "2026-10-27",
     "intro": [
       "Using the approximate diameter-squared formula, one 10-foot 12 mm solid steel bar weighs about 5.97 pounds. Ten weigh about 59.73 pounds; this estimate does not make 12 mm bar equivalent to US #4 rebar.",
       "Start with the bar designation on your material list. A metric diameter and a US rebar number aren't interchangeable just because they look close. Once the specified product is clear, you can compare its nominal weight with a supplier's quote.",
@@ -1411,11 +1415,13 @@ export const calculatorArticles: CalculatorArticle[] = [
         "href": "https://www.crsi.org/reinforcing-basics/reinforcing-steel/bar-identification/"
       }
     ],
-    "image": "/images/guides/rebar-weight.svg",
+    "image": "/images/guides/steel-12mm-10ft-weight.svg",
     "related": [
       "/blog/brick-calculation-guide",
       "/blog/area-calculation-guide"
-    ]
+    ],
+    "imageAlt": "Ten 10-foot 12 mm solid steel bars weigh approximately 27.09 kilograms or 59.73 pounds before an allowance.",
+    "imageCaption": "The diagram uses the same ten 10-foot, 12 mm bars as the worked example. It is a solid round-bar approximation, not a US #4 rebar takeoff."
   },
   {
     "slug": "brick-calculation-guide",
@@ -1719,6 +1725,501 @@ export const calculatorArticles: CalculatorArticle[] = [
     "related": [
       "/blog/tile-calculation-guide",
       "/blog/topsoil-calculation-guide"
+    ]
+  },
+  {
+    "slug": "concrete-calculation-guide",
+    "title": "Concrete Calculation Guide: Volume, Formula & Examples",
+    "description": "Calculate concrete for a 20x12 slab. Compare 4- and 6-inch thickness, cubic yards, 60- and 80-lb premix bags, and clearly stated ordering allowances.",
+    "category": "Concrete",
+    "tags": [
+      "concrete",
+      "construction",
+      "materials"
+    ],
+    "calculatorHref": "/calculators/concrete",
+    "publishedAt": "2026-08-25",
+    "modifiedAt": "2026-10-27",
+    "intro": [
+      "A 20x12-foot slab at 4 inches thick contains 80 cubic feet, or about 2.96 cubic yards, of concrete. An illustrative 5% ordering allowance raises the target to 84 cubic feet, or about 3.11 cubic yards. Those are different quantities: one describes the space, and the other includes extra material.",
+      "Start with the dimensions on your plan, then check the actual formwork and depth before ordering. A small depth difference across a large slab can use more concrete than a percentage allowance suggests. This guide keeps the geometric volume, allowance and supplier rounding on separate lines.",
+      "The slab thicknesses below are arithmetic examples, not recommendations for a driveway, footing or structural slab. Use the project specification for thickness, reinforcement and concrete requirements. Premixed concrete bags are also different from bags of Portland cement; both appear in estimating discussions but cannot be substituted for each other."
+    ],
+    "formula": "Rectangular volume (cu ft) = length (ft) × width (ft) × thickness (in) ÷ 12; cubic yards = cubic feet ÷ 27. Combined: cubic yards = length × width × thickness in inches ÷ 324.",
+    "example": [
+      [
+        "Slab footprint",
+        "20 ft × 12 ft",
+        "240 sq ft"
+      ],
+      [
+        "Thickness conversion",
+        "4 in ÷ 12",
+        "1/3 ft"
+      ],
+      [
+        "Geometric volume",
+        "240 × 4/12",
+        "80 cu ft"
+      ],
+      [
+        "Convert to cubic yards",
+        "80 ÷ 27",
+        "2.96296 cu yd"
+      ],
+      [
+        "Example 5% allowance",
+        "80 × 1.05",
+        "84 cu ft"
+      ],
+      [
+        "Adjusted yardage",
+        "84 ÷ 27",
+        "3.11111 cu yd"
+      ],
+      [
+        "80-lb premix at 0.60 cu ft/bag",
+        "Round up 84 ÷ 0.60",
+        "140 bags"
+      ]
+    ],
+    "sections": [
+      {
+        "id": "slab-comparison",
+        "title": "Compare slab sizes and 4-inch versus 6-inch thickness",
+        "paragraphs": [
+          "At the same 20x12-foot footprint, changing thickness from 4 to 6 inches increases volume by 50%: 80 cubic feet becomes 120. Before an allowance, that is about 2.96 versus 4.44 cubic yards. A supplier comparing those two quantities is quoting different amounts of concrete.",
+          "The table keeps 5% as a stated example so the rows are comparable. Calculate with full precision and round only the displayed yardage; confirm the actual order increment and allowance with the supplier."
+        ],
+        "table": {
+          "caption": "Rectangular slabs: geometric volume and an illustrative 5% allowance. These thicknesses are calculation inputs, not design guidance.",
+          "headers": [
+            "Footprint",
+            "Thickness",
+            "Base cu yd",
+            "With 5% (cu yd)"
+          ],
+          "rows": [
+            [
+              "10 × 10 ft",
+              "4 in",
+              "1.23",
+              "1.30"
+            ],
+            [
+              "12 × 12 ft",
+              "4 in",
+              "1.78",
+              "1.87"
+            ],
+            [
+              "20 × 12 ft",
+              "4 in",
+              "2.96",
+              "3.11"
+            ],
+            [
+              "20 × 12 ft",
+              "6 in",
+              "4.44",
+              "4.67"
+            ]
+          ]
+        }
+      },
+      {
+        "id": "depth-check",
+        "title": "Why another half inch can exceed your allowance",
+        "paragraphs": [
+          "If the actual average depth of the 20x12 slab is 4.5 inches, its volume is 240 × 4.5/12 = 90 cubic feet. That is 10 cubic feet more than the 4-inch estimate, an increase of 12.5%. The example 5% allowance on 80 cubic feet adds only 4 cubic feet, so it would not cover that measured difference.",
+          "Take depth measurements at several points. Separate thickened edges, pads and other deeper zones when the design includes them. Where two elements meet, make sure the same concrete is not counted in both volumes. An allowance should follow the measured estimate rather than hide an uncertain depth."
+        ]
+      },
+      {
+        "id": "premix-bags",
+        "title": "How many 60-lb or 80-lb concrete bags for the slab?",
+        "paragraphs": [
+          "QUIKRETE lists approximate yields of 0.60 cubic foot for an 80-lb bag and 0.45 cubic foot for a 60-lb bag of its Concrete Mix No. 1101. Check the data sheet for the exact product you buy; bag weight alone does not establish the yield of every mix.",
+          "Divide the adjusted 84-cubic-foot target by the stated yield, then round up to whole bags. The 60-lb option needs 187 bags and provides about 84.15 cubic feet at that yield; the 80-lb option needs 140 bags. Consider handling, mixing capacity and placement logistics when comparing a large bag order with delivered concrete."
+        ],
+        "table": {
+          "caption": "Bag counts for the same 84-cu-ft target, already including the example 5% allowance. Yields are for QUIKRETE Concrete Mix No. 1101.",
+          "headers": [
+            "Bag size",
+            "Yield per bag",
+            "Division",
+            "Whole bags"
+          ],
+          "rows": [
+            [
+              "80 lb",
+              "0.60 cu ft",
+              "84 ÷ 0.60 = 140",
+              "140"
+            ],
+            [
+              "60 lb",
+              "0.45 cu ft",
+              "84 ÷ 0.45 ≈ 186.67",
+              "187"
+            ]
+          ]
+        }
+      },
+      {
+        "id": "delivery-and-cost",
+        "title": "Compare the purchased quantity and delivered price",
+        "paragraphs": [
+          "Suppose a ready-mix supplier offers the specified concrete in quarter-yard increments. The 3.11111-cubic-yard target would round up to 3.25 cubic yards. At an invented $150 per cubic yard, the material subtotal is $487.50. The quarter-yard increment and price are examples; ask the supplier what applies to your order.",
+          "For comparison, 140 premix bags at an invented $6 each cost $840 before tax and handling. That arithmetic does not show which option has the lower complete project cost. Obtain delivery, small-load, equipment and placement charges, and compare products that meet the same project requirements.",
+          "When requesting the ready-mix quote, provide the required concrete specification, quantity, placement method, site access and delivery timing. NRMCA’s ordering guidance explains why the producer needs project details in addition to yardage. Record the agreed allowance so it is not added a second time."
+        ]
+      },
+      {
+        "id": "footings-beams-columns",
+        "title": "Calculate footings, beams and columns separately",
+        "paragraphs": [
+          "For rectangular elements, use length × width × depth with all three measurements in feet. The examples below show volume only; their dimensions do not establish whether an element is structurally suitable.",
+          "For a round column, use π × radius² × height. A 12-inch-diameter, 8-foot-tall cylinder has a radius of 0.5 foot and a volume of about 6.28 cubic feet. Using the 1-foot diameter as the radius would make that result four times too large.",
+          "If the 80-cu-ft slab, 30-cu-ft footing and 15-cu-ft beam are genuinely separate, non-overlapping volumes, their total is 125 cubic feet, or about 4.63 cubic yards before an allowance. Do not add a full beam volume where part of it is already included in the slab."
+        ],
+        "table": {
+          "caption": "Illustrative rectangular element dimensions, before any allowance.",
+          "headers": [
+            "Element",
+            "Dimensions in feet",
+            "Volume"
+          ],
+          "rows": [
+            [
+              "Footing",
+              "30 × 2 × 0.5",
+              "30 cu ft"
+            ],
+            [
+              "Beam",
+              "20 × 0.75 × 1",
+              "15 cu ft"
+            ],
+            [
+              "Column",
+              "1.5 × 1.5 × 10",
+              "22.5 cu ft"
+            ]
+          ]
+        }
+      },
+      {
+        "id": "use-calculator",
+        "title": "Reproduce the slab volume in the Concrete Calculator",
+        "paragraphs": [
+          "Enter a length of 20 Feet, width of 12 Feet and depth of 4 Inch. The geometric volume should correspond to 80 cubic feet, approximately 2.96 cubic yards or 2.265 cubic meters. Keep the depth unit in inches rather than entering the number 4 as feet.",
+          "The calculator also estimates separate cement, sand and aggregate quantities from its mix-ratio assumptions. Its cement-bag count uses 94-lb Portland cement bags; it is not the 80-lb premixed-concrete bag count in this article. Calculate premix bags from finished volume and the selected product’s yield as shown above.",
+          "Use the geometric volume result to check the measurements. Apply the agreed ordering allowance and supplier increment separately. Neither the calculator’s ingredient estimate nor this quantity guide replaces a specified concrete mix or structural design."
+        ]
+      }
+    ],
+    "mistakes": [
+      "Entering a thickness in inches while leaving the unit set to feet.",
+      "Rounding 4/12 to 0.3 before calculating the slab volume.",
+      "Treating 94-lb cement bags as 80-lb bags of premixed concrete.",
+      "Counting an overlap between a slab, beam or footing twice.",
+      "Comparing material-only prices with a delivered or installed quote."
+    ],
+    "faqs": [
+      {
+        "question": "How much concrete is needed for a 20x12 slab at 4 inches?",
+        "answer": "The geometric volume is 80 cubic feet, or about 2.96 cubic yards. The illustrative 5% allowance used here raises it to 84 cubic feet, or about 3.11 cubic yards before supplier rounding."
+      },
+      {
+        "question": "How many 80-lb concrete bags does the example need?",
+        "answer": "At a stated yield of 0.60 cubic foot per bag, the 84-cubic-foot adjusted target needs 140 bags. Check your selected product’s yield before using that count."
+      },
+      {
+        "question": "How many cubic feet are in one cubic yard?",
+        "answer": "One cubic yard contains 27 cubic feet. Divide cubic feet by 27 to convert a volume to cubic yards."
+      },
+      {
+        "question": "Does a 6-inch slab use twice as much as a 4-inch slab?",
+        "answer": "No. With the same footprint, 6 ÷ 4 = 1.5, so it uses 50% more concrete. The appropriate thickness must come from the project design."
+      },
+      {
+        "question": "Is 5% extra always enough?",
+        "answer": "No. It is the allowance chosen for these examples. Check actual depth, formwork, excavation and the supplier’s guidance before agreeing on an order."
+      },
+      {
+        "question": "Why does the calculator show a different cement-bag number?",
+        "answer": "Its cement-bag result estimates one ingredient using 94-lb Portland cement bags. The bags in this article contain premixed concrete, including aggregates, and are counted using finished-volume yield."
+      }
+    ],
+    "sources": [
+      {
+        "label": "QUIKRETE Concrete Mix No. 1101: bag sizes and yield (PDF)",
+        "href": "https://www.quikrete.com/pdfs/data_sheet-concrete%20mix%201101.pdf"
+      },
+      {
+        "label": "NRMCA CIP 31: ordering ready mixed concrete (PDF)",
+        "href": "https://www.nrmca.org/wp-content/uploads/2021/01/31pr.pdf"
+      }
+    ],
+    "image": null,
+    "related": [
+      "/guides/concrete-volume",
+      "/blog/square-footage-calculation-guide",
+      "/blog/gravel-calculation-guide"
+    ]
+  },
+  {
+    "slug": "square-footage-calculation-guide",
+    "title": "How to Calculate Square Footage: Complete Guide",
+    "description": "Calculate room square footage with feet and inches. Follow L-shaped room and wall examples, then compare flooring waste, carton coverage and purchase costs.",
+    "category": "Measurements",
+    "tags": [
+      "square-footage",
+      "area",
+      "measurements"
+    ],
+    "calculatorHref": "/calculators/square-footage",
+    "publishedAt": "2026-08-25",
+    "modifiedAt": "2026-10-27",
+    "intro": [
+      "For a rectangular surface, multiply length by width in feet. A 12x10-foot room is 120 square feet. If the measurements include inches, convert those inches before multiplying: 10 ft 6 in by 12 ft 3 in is 10.5 × 12.25 = 128.625 square feet.",
+      "Keep the measured area and the amount you buy separate. Flooring comes in cartons, paint has a coverage rate, and concrete needs a thickness as well as an area. This guide follows a room measurement through those decisions instead of stopping at length times width.",
+      "The examples use US feet and inches. Prices, carton coverage and the 10% cutting allowance are illustrative inputs. Use your product’s coverage and installation instructions when turning the measurement into an order."
+    ],
+    "formula": "Square feet = (length feet + length inches ÷ 12) × (width feet + width inches ÷ 12). For several sections, add their non-overlapping areas and subtract only surfaces excluded from the project.",
+    "example": [
+      [
+        "Room length",
+        "10 ft + 6/12 ft",
+        "10.5 ft"
+      ],
+      [
+        "Room width",
+        "12 ft + 3/12 ft",
+        "12.25 ft"
+      ],
+      [
+        "Measured area",
+        "10.5 × 12.25",
+        "128.625 sq ft"
+      ],
+      [
+        "Example 10% allowance",
+        "128.625 × 1.10",
+        "141.4875 sq ft"
+      ],
+      [
+        "Cartons covering 23.5 sq ft each",
+        "Round up 141.4875 ÷ 23.5",
+        "7 cartons"
+      ],
+      [
+        "Actual purchased coverage",
+        "7 × 23.5",
+        "164.5 sq ft"
+      ],
+      [
+        "At an illustrative $68 per carton",
+        "7 × $68",
+        "$476"
+      ]
+    ],
+    "sections": [
+      {
+        "id": "room-comparison",
+        "title": "Compare room dimensions without rounding the area early",
+        "paragraphs": [
+          "A room described as approximately 10x12 may measure 10 ft 6 in by 12 ft 3 in. That adds 8.625 square feet compared with a 120-square-foot rectangle, before any cutting allowance. Measure rather than ordering from a rounded room description.",
+          "Six inches is half a foot, so 10 ft 6 in becomes 10.5 ft, not 10.6 ft. The table shows several complete calculations. Keep the unrounded result until the final display or package-count step."
+        ],
+        "table": {
+          "caption": "Measured rectangular areas. The last column uses an example 10% allowance before package rounding.",
+          "headers": [
+            "Dimensions",
+            "Calculation in feet",
+            "Area (sq ft)",
+            "With 10% (sq ft)"
+          ],
+          "rows": [
+            [
+              "12 ft × 10 ft",
+              "12 × 10",
+              "120",
+              "132"
+            ],
+            [
+              "10 ft 6 in × 12 ft",
+              "10.5 × 12",
+              "126",
+              "138.6"
+            ],
+            [
+              "10 ft 6 in × 12 ft 3 in",
+              "10.5 × 12.25",
+              "128.625",
+              "141.4875"
+            ],
+            [
+              "15 ft × 20 ft",
+              "15 × 20",
+              "300",
+              "330"
+            ]
+          ]
+        }
+      },
+      {
+        "id": "l-shaped-room",
+        "title": "Measure an L-shaped room, closet or separate section",
+        "paragraphs": [
+          "Sketch the outline and divide it into rectangles that do not overlap. A 10x8-foot main section and a 6x5-foot side section total 80 + 30 = 110 square feet. If a closet is already inside the measured main rectangle, do not add it again.",
+          "Only subtract a permanent opening or excluded area when the finish will not cover it. In the example below, an excluded 2x3-foot opening removes 6 square feet, leaving 104. Confirm the installation plan before deducting cabinet or appliance footprints.",
+          "For several different measurements, the Area Calculator’s Multiple sections mode can add the sections and subtract openings. It also lets you transfer the resulting area to Tile or to Paint’s known-surface mode. For paint, measure the actual walls or ceiling you intend to coat."
+        ],
+        "table": {
+          "caption": "L-shaped room example with one excluded opening; sections must not overlap.",
+          "headers": [
+            "Section",
+            "Calculation",
+            "Area change"
+          ],
+          "rows": [
+            [
+              "Main section",
+              "10 ft × 8 ft",
+              "+80 sq ft"
+            ],
+            [
+              "Side section",
+              "6 ft × 5 ft",
+              "+30 sq ft"
+            ],
+            [
+              "Excluded opening",
+              "2 ft × 3 ft",
+              "−6 sq ft"
+            ],
+            [
+              "Net area",
+              "80 + 30 − 6",
+              "104 sq ft"
+            ]
+          ]
+        }
+      },
+      {
+        "id": "flooring-cartons",
+        "title": "Turn square footage into whole flooring cartons",
+        "paragraphs": [
+          "Use the coverage printed on the carton. Divide the area including your chosen allowance by that coverage, then round up to a whole carton. Lowe’s flooring planner uses this area-to-carton approach; the exact allowance and installation details still depend on the selected product.",
+          "For the 128.625-square-foot room with 10% extra, the target is 141.4875 square feet. Six cartons covering 23.5 square feet each provide only 141 square feet, so the example needs seven. Rounding the target down to 141 before counting cartons would hide that shortfall.",
+          "The following two products use invented prices to demonstrate a comparison. A lower carton price does not always mean a lower room total. Compare the same required coverage and the actual number of cartons you must buy. Underlayment, trim, transitions, delivery, tax and labor are separate."
+        ],
+        "table": {
+          "caption": "Two hypothetical carton offers for a 141.4875-sq-ft target. These are example prices, not supplier quotes.",
+          "headers": [
+            "Offer",
+            "Coverage/carton",
+            "Price/carton",
+            "Cartons",
+            "Purchased sq ft",
+            "Material total"
+          ],
+          "rows": [
+            [
+              "A",
+              "23.5 sq ft",
+              "$68",
+              "7",
+              "164.5",
+              "$476"
+            ],
+            [
+              "B",
+              "20 sq ft",
+              "$60",
+              "8",
+              "160",
+              "$480"
+            ]
+          ]
+        }
+      },
+      {
+        "id": "wall-area",
+        "title": "Keep wall area separate from floor area",
+        "paragraphs": [
+          "One wall 12 feet wide and 8 feet high has 96 square feet of surface. Deducting a 3x4-foot window leaves 84 square feet of wall finish. That wall calculation says nothing about the floor area of the room.",
+          "For four rectangular walls of equal height, use 2 × (room length + room width) × wall height, then account for unpainted openings. A 12x10 room with 8-foot walls has 352 square feet of gross wall area and a separate 120-square-foot flat ceiling. Sloped ceilings and varying wall heights need their actual dimensions.",
+          "Apply paint coats and product coverage after finding the painted surface area. A floor-covering waste percentage should not automatically become a paint allowance or an extra coat."
+        ]
+      },
+      {
+        "id": "units-and-scope",
+        "title": "Convert square units and distinguish area from volume",
+        "paragraphs": [
+          "There are 144 square inches in one square foot, because both sides of a 12-inch square are converted. Divide square inches by 144, not by 12. Divide square feet by 9 for square yards; multiply by 0.09290304 for square meters.",
+          "For example, 180 square feet equals 20 square yards or about 16.72 square meters. Concrete volume needs another measurement: a 4-inch layer over 180 square feet is 180 × 4/12 = 60 cubic feet, about 2.22 cubic yards before an allowance.",
+          "These are material-planning measurements. A flooring estimate is not a certified measurement of a home’s advertised living area. If a listing, appraisal or permit requires a particular measurement method, use the rules and professional measurements appropriate to that purpose."
+        ]
+      },
+      {
+        "id": "use-calculator",
+        "title": "Enter feet and inches in the Square Footage Calculator",
+        "paragraphs": [
+          "Choose Rectangle and the ft & in input option. Enter length 10 feet 6 inches, width 12 feet 3 inches and quantity 1. With waste at zero, the measured area is 128.625 square feet, which may display rounded. A 10% allowance produces 141.4875 square feet before packaging.",
+          "Keep full precision when dividing by carton coverage. The Square Footage Calculator’s area-price estimate is different from the cost of whole cartons; use the actual carton count and price for the purchase comparison above.",
+          "Quantity is suitable for identical sections. Measure differently sized rooms separately or combine them in the Area Calculator’s Multiple sections mode. Keep a labeled sketch so each room, closet and opening appears only once."
+        ]
+      }
+    ],
+    "mistakes": [
+      "Entering 10 ft 6 in as 10.6 feet instead of 10.5 feet.",
+      "Adding a closet that is already included in the room rectangle.",
+      "Rounding the target area down before calculating whole cartons.",
+      "Using floor area as the paintable wall area.",
+      "Adding the same cutting allowance in both the area and material calculator."
+    ],
+    "faqs": [
+      {
+        "question": "How do I calculate square footage with feet and inches?",
+        "answer": "Divide each inch measurement by 12, add it to the feet, then multiply the two dimensions. For 10 ft 6 in by 12 ft 3 in, calculate 10.5 × 12.25 = 128.625 square feet."
+      },
+      {
+        "question": "How many square feet are in a 12x10 room?",
+        "answer": "A rectangular room measuring exactly 12 feet by 10 feet has 120 square feet. Additional closets or alcoves should be counted only when they are outside that measured rectangle."
+      },
+      {
+        "question": "How do I measure an L-shaped room?",
+        "answer": "Split it into non-overlapping rectangles, calculate each area and add the results. Subtract any excluded opening once. The example here totals 110 square feet before a 6-square-foot opening, or 104 afterward."
+      },
+      {
+        "question": "Should I add 10% to every measurement?",
+        "answer": "No. Preserve the measured area, then choose an allowance for the actual material and layout. Ten percent is the example used here, not a requirement for every project."
+      },
+      {
+        "question": "Why are seven cartons needed when six almost cover the target?",
+        "answer": "Six cartons at 23.5 square feet provide 141 square feet, below the example’s 141.4875-square-foot target. Whole-carton rounding gives seven; check actual coverage and allowance before ordering."
+      },
+      {
+        "question": "Is a square foot the same as a cubic foot?",
+        "answer": "No. Square feet measure surface area. Multiply that area by a depth in feet to get cubic feet of volume."
+      }
+    ],
+    "sources": [
+      {
+        "label": "Lowe’s wood and laminate flooring project planner (PDF)",
+        "href": "https://www.lowes.com/pdf/project-planner.pdf"
+      }
+    ],
+    "image": "/square-footage-guide.webp",
+    "imageAlt": "How to calculate square footage: CornerSpan measurement guide",
+    "related": [
+      "/blog/area-calculation-guide",
+      "/blog/tile-calculation-guide",
+      "/blog/paint-calculation-guide",
+      "/blog/concrete-calculation-guide"
     ]
   }
 ];
