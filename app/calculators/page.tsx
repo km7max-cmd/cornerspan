@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 
 import CalculatorDirectory from "./CalculatorDirectory";
+import Link from "next/link";
+import { planningArticles } from "../../data/planning-articles";
 
 const pageUrl = "https://www.cornerspan.com/calculators";
 
@@ -106,6 +108,16 @@ export default function CalculatorsPage() {
       {/* CALCULATOR DIRECTORY */}
 
       <CalculatorDirectory />
+
+      <section className="mx-auto max-w-6xl px-5 py-8 sm:px-6" aria-labelledby="estimating-help">
+        <h2 id="estimating-help" className="text-2xl font-bold text-slate-950">Need help turning a result into an order?</h2>
+        <p className="mt-3 leading-7 text-slate-600">Check units first, keep each material on its own takeoff line, and price the quantity your supplier actually sells.</p>
+        <ul className="mt-5 grid gap-4 md:grid-cols-3">
+          {planningArticles.map(article => <li key={article.slug} className="rounded-xl border border-slate-200 bg-white p-5">
+            <Link href={`/blog/${article.slug}`} className="font-semibold text-blue-700 underline underline-offset-4">{article.title}</Link>
+          </li>)}
+        </ul>
+      </section>
 
 
       {/* SEO CONTENT */}

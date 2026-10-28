@@ -1,5 +1,6 @@
 
 import Link from "next/link";
+import { calculators } from "../data/calculators";
 
 export default function Hero() {
   return (
@@ -30,7 +31,7 @@ export default function Hero() {
           </span>
 
           <h1 className="mt-6 max-w-2xl text-4xl font-black leading-tight tracking-tight sm:text-5xl lg:text-6xl">
-            Build Smarter with{" "}
+            Free Online{" "}
             <span className="bg-gradient-to-r from-cyan-300 via-blue-300 to-violet-300 bg-clip-text text-transparent">
               Construction Calculators
             </span>
@@ -38,8 +39,8 @@ export default function Hero() {
 
           <p className="mt-6 max-w-2xl text-base leading-8 text-slate-300 sm:text-lg">
             Estimate concrete volume, brick quantities, paint coverage,
-            paving materials and landscaping supplies. Use your project
-            measurements to plan material quantities before you buy.
+            paving materials and landscaping supplies. Choose from {calculators.length} tools,
+            enter your measurements, and check material quantities before you buy.
           </p>
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">

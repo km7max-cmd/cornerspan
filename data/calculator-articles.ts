@@ -1,3 +1,5 @@
+import { planningArticles } from "./planning-articles";
+
 export type ArticleTable = { caption: string; headers: string[]; rows: string[][] };
 
 export type CalculatorArticle = {
@@ -8,6 +10,7 @@ export type CalculatorArticle = {
 };
 
 export const calculatorArticles: CalculatorArticle[] = [
+  ...planningArticles,
   {
     "slug": "paver-calculation-guide",
     "title": "How Many Pavers for a 10x10 Patio? Sizes & Waste",
@@ -139,6 +142,7 @@ export const calculatorArticles: CalculatorArticle[] = [
     ],
     "image": "/cornerspan-paver-calculator-hero.webp",
     "related": [
+      "/blog/construction-material-takeoff-checklist",
       "/blog/tile-calculation-guide",
       "/blog/gravel-calculation-guide"
     ]
@@ -703,6 +707,7 @@ export const calculatorArticles: CalculatorArticle[] = [
     ],
     "image": "/cornerspan-gravel-calculator-hero.webp",
     "related": [
+      "/blog/how-to-calculate-construction-project-cost",
       "/blog/paver-calculation-guide",
       "/blog/asphalt-calculation-guide"
     ]
@@ -2217,6 +2222,7 @@ export const calculatorArticles: CalculatorArticle[] = [
     "image": "/square-footage-guide.webp",
     "imageAlt": "How to calculate square footage: CornerSpan measurement guide",
     "related": [
+      "/blog/how-to-use-a-construction-calculator",
       "/blog/area-calculation-guide",
       "/blog/tile-calculation-guide",
       "/blog/paint-calculation-guide",

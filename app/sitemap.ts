@@ -34,6 +34,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   return uniqueRoutes.map((route) => ({
     url: `${BASE_URL}${route}`,
+    ...(route.startsWith("/blog/") ? {
+      lastModified: blogPosts.find(post => `/blog/${post.slug}` === route)?.modifiedAt
+        ?? blogPosts.find(post => `/blog/${post.slug}` === route)?.publishedAt,
+    } : {}),
     changeFrequency:
       route === "/" ? "weekly" : "monthly",
     priority:

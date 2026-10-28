@@ -2,6 +2,7 @@
 import type { Metadata } from "next";
 
 import Hero from "../components/Hero";
+import ProjectPlanning from "../components/ProjectPlanning";
 import HowItWorks from "../components/HowItWorks";
 import Features from "../components/Features";
 import FAQ from "../components/FAQ";
@@ -11,7 +12,7 @@ import PopularCalculators from "../components/PopularCalculators";
 import { homepageFaq } from "../data/homepage-faq";
 
 const homepageDescription =
-  "Estimate concrete, brick, paint, tile, roofing, paver, asphalt and gravel materials with free construction calculators from CornerSpan.";
+  "Free online construction calculators for concrete, brick, paint, tile, gravel and more. Estimate material quantities in US or supported metric units. No signup.";
 
 export const metadata: Metadata = {
   title: { absolute: "Free Construction Calculators Online | CornerSpan" },
@@ -103,6 +104,8 @@ export default function Home() {
       <Hero />
 
       <PopularCalculators />
+
+      <ProjectPlanning />
 
       <Features />
 
