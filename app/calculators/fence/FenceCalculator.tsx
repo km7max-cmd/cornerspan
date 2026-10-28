@@ -560,6 +560,14 @@ export default function FenceCalculator() {
             )}
 
             {/* Small note */}
+            <p className="mt-5 text-sm leading-6 text-slate-600">
+              Gate layout matters: wood and panel estimates add two gate posts
+              per opening to the base post count. Gate positions and shared
+              posts are not entered here. For example, 100 ft with one 4-ft gate
+              and 8-ft spacing estimates 15 posts; a centered gate with two
+              48-ft runs uses 14 posts including its gate posts. Count each run
+              separately before ordering. Chain-link uses its own terminal-post model.
+            </p>
             <p className="mt-5 text-xs leading-5 text-slate-600">
               Estimates are for planning purposes. Actual material
               requirements can vary with fence layout, terrain,

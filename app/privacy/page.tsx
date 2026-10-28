@@ -45,7 +45,7 @@ export default function PrivacyPage() {
       <section className="px-5 py-10 sm:px-6 sm:py-14">
         <div className="mx-auto max-w-4xl rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-9">
           <p className="text-xs text-slate-400">
-            Last updated: September 2026
+            Last updated: October 28, 2026
           </p>
 
           <div className="mt-7 space-y-8">
@@ -136,6 +136,28 @@ export default function PrivacyPage() {
                 Third-party services used on the website may use cookies or
                 similar technologies according to their own privacy policies
                 and terms.
+              </p>
+            </section>
+
+            <section>
+              <h2 className="text-xl font-black text-slate-900">Calculator history, favorites and device preferences</h2>
+              <p className="mt-3 text-sm leading-7 text-slate-600">
+                CornerSpan uses your browser&apos;s local storage for saved favorites,
+                recently opened calculators, supported calculation history, and
+                appearance and activity preferences. Concrete calculation history
+                can include entered project measurements and calculated results.
+                These records stay in this browser profile; this feature does not
+                synchronize them across devices or send them to a CornerSpan account.
+                Other people using the same browser profile may be able to view them.
+              </p>
+              <p className="mt-3 text-sm leading-7 text-slate-600">
+                Open <a href="/settings" className="text-blue-600 underline">Settings</a> to
+                turn off Remember calculator activity, Clear activity, or Clear favorites.
+                Turning recording off stops new activity records but does not delete
+                existing ones or prevent manually saved favorites. You can also clear
+                CornerSpan site data in your browser. Downloaded JSON backups and CSV
+                exports remain on your device until you delete those files separately.
+                These controls do not change Google Analytics or advertising settings.
               </p>
             </section>
 
@@ -320,7 +342,7 @@ export default function PrivacyPage() {
 
               <p className="mt-3 text-sm leading-7 text-slate-600">
                 Where applicable, you may contact CornerSpan through the
-                Contact page to ask about privacy-related requests.
+                <a href="/contact" className="text-blue-600 underline">Contact page</a> to ask about privacy-related requests.
               </p>
             </section>
 
@@ -361,7 +383,7 @@ export default function PrivacyPage() {
               <p className="mt-3 text-sm leading-7 text-slate-600">
                 If you have questions about this Privacy Policy or how
                 CornerSpan handles information, please contact us through
-                the Contact page.
+                the <a href="/contact" className="text-blue-600 underline">Contact page</a>.
               </p>
             </section>
           </div>

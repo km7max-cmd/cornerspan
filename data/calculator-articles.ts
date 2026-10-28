@@ -864,7 +864,7 @@ export const calculatorArticles: CalculatorArticle[] = [
     ],
     "calculatorHref": "/calculators/fence",
     "publishedAt": "2026-10-26",
-    "modifiedAt": "2026-10-26",
+    "modifiedAt": "2026-10-28",
     "intro": [
       "A single straight 100-foot fence run with no gates needs 14 posts when the maximum spacing is 8 feet: round 100 ÷ 8 up to 13 sections, then add one end post.",
       "Sketch the fence before counting posts. A straight run, a closed loop and a run interrupted by a gate can have the same total length and need different posts. Mark each endpoint and corner so a shared post isn't counted twice.",
@@ -941,6 +941,7 @@ export const calculatorArticles: CalculatorArticle[] = [
         "paragraphs": [
           "Suppose a 4-foot gate divides a 100-foot layout into two 48-foot fence runs. At a maximum spacing of 8 feet, each run has six sections and seven posts. The two runs therefore have 14 posts in total, including the two posts bordering the gate. The gate itself is separate from the 12 fence sections.",
           "The count happens to match the no-gate example, but the purchase list doesn't: gate posts may have different requirements, the gate needs hardware, and only 96 feet need fence infill. If the opening moves, recalculate each run because section rounding can change the count.",
+          "The Fence Calculator's wood and panel model returns 15 posts for these inputs: ceil(96 / 8) + 1 base posts + 2 additional gate posts. It does not ask where the gate sits or identify shared posts. The 14-post worked layout above counts the gate posts as the ends of the two fence runs. Use the calculator as an initial allowance, then count each actual run and shared post before ordering; its total is not an exact layout takeoff.",
           "For fixed-width panels, confirm how the manufacturer measures panel length and post spacing. Don't treat an 8-foot nominal panel as a promise that every post center can be exactly 8 feet apart. Use the layout and system dimensions to produce the final post schedule."
         ]
       },
