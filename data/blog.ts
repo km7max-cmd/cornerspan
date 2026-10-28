@@ -44,12 +44,13 @@ const existingPosts: BlogPost[] = [
   },
   {
     slug: "how-many-bricks-10-foot-retaining-wall",
-    title: "How Many Bricks for a 10-Foot-Long Retaining Wall?",
+    title: "10-Foot Retaining Wall: Brick vs. Block Quantities",
     description:
-      "Estimate bricks for a 10-foot-long retaining wall using a clear quantity table, calculation formula, waste allowance, and retaining-wall safety guidance.",
+      "Compare facing-brick and retaining-block quantities for a 10-foot wall. Count courses, buried blocks and caps separately using stated product dimensions.",
     category: "Brick",
     tags: ["brick", "retaining-wall", "masonry", "construction"],
     publishedAt: "2026-10-18",
+    modifiedAt: "2026-10-28",
     calculatorHref: "/calculators/brick",
   },
   {

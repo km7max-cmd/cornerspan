@@ -1729,7 +1729,7 @@ export const calculatorArticles: CalculatorArticle[] = [
   },
   {
     "slug": "concrete-calculation-guide",
-    "title": "Concrete Calculation Guide: Volume, Formula & Examples",
+    "title": "Concrete for a 20x12 Slab: Cubic Yards & Bag Counts",
     "description": "Calculate concrete for a 20x12 slab. Compare 4- and 6-inch thickness, cubic yards, 60- and 80-lb premix bags, and clearly stated ordering allowances.",
     "category": "Concrete",
     "tags": [
@@ -1739,7 +1739,7 @@ export const calculatorArticles: CalculatorArticle[] = [
     ],
     "calculatorHref": "/calculators/concrete",
     "publishedAt": "2026-08-25",
-    "modifiedAt": "2026-10-27",
+    "modifiedAt": "2026-10-28",
     "intro": [
       "A 20x12-foot slab at 4 inches thick contains 80 cubic feet, or about 2.96 cubic yards, of concrete. An illustrative 5% ordering allowance raises the target to 84 cubic feet, or about 3.11 cubic yards. Those are different quantities: one describes the space, and the other includes extra material.",
       "Start with the dimensions on your plan, then check the actual formwork and depth before ordering. A small depth difference across a large slab can use more concrete than a percentage allowance suggests. This guide keeps the geometric volume, allowance and supplier rounding on separate lines.",
@@ -1971,7 +1971,7 @@ export const calculatorArticles: CalculatorArticle[] = [
   },
   {
     "slug": "square-footage-calculation-guide",
-    "title": "How to Calculate Square Footage: Complete Guide",
+    "title": "Square Footage for Flooring: Feet, Inches & Cartons",
     "description": "Calculate room square footage with feet and inches. Follow L-shaped room and wall examples, then compare flooring waste, carton coverage and purchase costs.",
     "category": "Measurements",
     "tags": [
@@ -1981,7 +1981,7 @@ export const calculatorArticles: CalculatorArticle[] = [
     ],
     "calculatorHref": "/calculators/square-footage",
     "publishedAt": "2026-08-25",
-    "modifiedAt": "2026-10-27",
+    "modifiedAt": "2026-10-28",
     "intro": [
       "For a rectangular surface, multiply length by width in feet. A 12x10-foot room is 120 square feet. If the measurements include inches, convert those inches before multiplying: 10 ft 6 in by 12 ft 3 in is 10.5 × 12.25 = 128.625 square feet.",
       "Keep the measured area and the amount you buy separate. Flooring comes in cartons, paint has a coverage rate, and concrete needs a thickness as well as an area. This guide follows a room measurement through those decisions instead of stopping at length times width.",

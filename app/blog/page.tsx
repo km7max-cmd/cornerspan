@@ -59,15 +59,15 @@ const relatedGuides = [
     href: "/guides/us-brick-sizes",
   },
   {
-    title: "Concrete Volume Guide",
+    title: "Concrete Volume Takeoff",
     description:
-      "Understand concrete volume formulas for slabs, beams and columns and how to convert units.",
+      "Record pour sections, openings, deeper strips and varying depths on a quantity sheet.",
     href: "/guides/concrete-volume",
   },
   {
-    title: "Brick Calculation Guide",
+    title: "Brick Takeoff Worksheet",
     description:
-      "Learn how to estimate brick quantities from wall dimensions and brick size.",
+      "Track wall faces, opening deductions, product groups and packaging on one takeoff.",
     href: "/guides/brick-calculation",
   },
   {
@@ -214,10 +214,7 @@ export default function BlogPage() {
             </h1>
 
             <p className="mt-5 max-w-3xl text-base leading-7 text-slate-600 sm:text-lg sm:leading-8">
-              Practical construction resources explaining
-              measurements, formulas and material-estimation
-              methods. Learn the calculation method and use a
-              CornerSpan calculator for your project dimensions.
+              Worked project examples showing what changes a material order: depth, coverage, openings, product size and whole-pack rounding. Replace the stated assumptions with your own measurements and supplier information.
             </p>
           </div>
         </div>
@@ -231,8 +228,7 @@ export default function BlogPage() {
           </h2>
 
           <p className="mt-2 text-sm leading-6 text-slate-600 sm:text-base">
-            Explore practical guides and estimation examples
-            for common construction projects.
+            Compare the measured requirement with the quantity you actually purchase.
           </p>
         </div>
 

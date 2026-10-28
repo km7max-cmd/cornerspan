@@ -17,16 +17,16 @@ export const metadata: Metadata = {
 const guides = [
   {
     category: "CONCRETE",
-    title: "Concrete Volume Guide",
+    title: "Concrete Volume Takeoff",
     description:
-      "Calculate cubic yards for slabs and columns, then compare ordering allowances, bag yields and sample USD costs.",
+      "Measure multiple pour sections, deduct openings and separate deeper strips without counting an overlap twice.",
     href: "/guides/concrete-volume",
   },
   {
     category: "BRICK",
-    title: "Brick Calculation Guide",
+    title: "Brick Takeoff Worksheet",
     description:
-      "Learn how to estimate bricks required for a wall using its dimensions and brick size.",
+      "Track walls and openings on a quantity sheet, combine matching brickwork and check whole-pack ordering.",
     href: "/guides/brick-calculation",
   },
   {
@@ -62,8 +62,7 @@ export default function GuidesPage() {
           </h1>
 
           <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
-            Practical guides to help you understand common construction
-            calculations before using a calculator.
+            Measurement worksheets and reference tables for preparing a material takeoff. Record the scope before entering quantities in a calculator.
           </p>
 
         </div>
@@ -79,7 +78,7 @@ export default function GuidesPage() {
             </h2>
 
             <p className="mt-2 text-sm text-slate-500">
-              Learn the calculation method, then use the relevant calculator.
+              Choose the worksheet or dimension reference that matches your task.
             </p>
           </div>
 

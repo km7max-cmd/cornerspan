@@ -1,673 +1,98 @@
-import { FAQSchema } from "../GuideStructuredData";
-import Image from "next/image";
 import Link from "next/link";
-export const metadata = {
-  title:
-    "Concrete Volume Guide: Cubic Yards & Examples",
-  description:
-    "Learn how to calculate concrete volume for slabs, beams and columns with formulas, cubic yard conversions, worked examples and ordering tips.",
-  alternates: {
-    canonical: "/guides/concrete-volume",
-  },
-  twitter: { card: "summary_large_image", title: "Concrete Volume Guide: Cubic Yards & Examples", description: "Concrete formulas, US slab examples and ordering calculations.", images: ["/images/concrete-volume/concrete-volume-formula-small.webp"] },
-  openGraph: {
-    title: "Concrete Volume Calculator Guide | CornerSpan",
-    description:
-      "Calculate concrete volume using practical formulas, unit conversions and construction examples.",
-    url: "https://www.cornerspan.com/guides/concrete-volume",
-    type: "article",
-    locale: "en_US",
-    images: [{url:"/images/concrete-volume/concrete-volume-formula-small.webp",alt:"Concrete volume formula for a rectangular slab"}],
-  },
+import type { Metadata } from "next";
+import ReferenceArticle, { ReferenceSection as Section, ReferenceTable as Table } from "../../../components/ReferenceArticle";
+
+const title = "Concrete Volume Takeoff: Sections, Openings & Depth";
+const description = "Build a concrete quantity sheet for a pour with several sections. Deduct openings, separate thickened edges and check varying depths before converting the total to cubic yards.";
+export const metadata: Metadata = {
+  title, description, alternates: { canonical: "/guides/concrete-volume" },
+  openGraph: { title, description, type: "article", locale: "en_US", url: "https://www.cornerspan.com/guides/concrete-volume", modifiedTime: "2026-10-28" },
+  twitter: { card: "summary", title, description },
 };
-
-const pageUrl =
-  "https://www.cornerspan.com/guides/concrete-volume";
-
-const articleSchema = {
-  "@context": "https://schema.org",
-  "@type": "Article",
-  headline: "How to Calculate Concrete Volume for Slabs, Beams and Columns",
-  description:
-    "A practical guide to concrete volume formulas, cubic yard conversions and worked construction examples.",
-  mainEntityOfPage: {
-    "@type": "WebPage",
-    "@id": pageUrl,
-  },
-  image: [
-    "https://www.cornerspan.com/images/concrete-volume/concrete-volume-formula-small.webp",
-  ],
-  author: {
-    "@type": "Organization",
-    name: "CornerSpan",
-  },
-  publisher: {
-    "@type": "Organization",
-    name: "CornerSpan",
-    url: "https://www.cornerspan.com/",
-  },
-};
-
-const breadcrumbSchema = {
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  itemListElement: [
-    {
-      "@type": "ListItem",
-      position: 1,
-      name: "Home",
-      item: "https://www.cornerspan.com/",
-    },
-    {
-      "@type": "ListItem",
-      position: 2,
-      name: "Guides",
-      item: "https://www.cornerspan.com/guides",
-    },
-    {
-      "@type": "ListItem",
-      position: 3,
-      name: "Concrete Volume Guide",
-      item: pageUrl,
-    },
-  ],
-};
-
-const conversions = [
-  ["1 cubic yard", "27 cubic feet"],
-  ["1 cubic meter", "35.3147 cubic feet"],
-  ["1 cubic yard", "0.7646 cubic meters"],
-  ["1 foot", "12 inches"],
+const sections: [string, string][] = [
+  ["worksheet", "Set up the quantity sheet"], ["formula", "Choose a volume formula"],
+  ["slab-example", "L-shaped pour with an opening"], ["shapes", "Thickened edges without overlaps"],
+  ["depth-zones", "Handle different depths"], ["units", "Units and rounding"],
+  ["ordering", "From measured volume to an order"], ["mistakes", "Reconcile the numbers"],
+  ["references", "Sources and next steps"], ["faq", "Questions about the takeoff"],
 ];
-
 const faqs = [
-  {
-    question:
-      "How many cubic yards of concrete do I need for a 10 × 12 slab?",
-    answer:
-      "For a 10 × 12 foot slab that is 4 inches thick, the geometric volume is 40 cubic feet, or approximately 1.48 cubic yards before any additional ordering allowance.",
-  },
-  {
-    question: "How do I calculate concrete in cubic yards?",
-    answer:
-      "Multiply length, width and thickness in feet to calculate cubic feet. Divide the result by 27 to convert cubic feet to cubic yards.",
-  },
-  {
-    question: "How thick should a concrete slab be?",
-    answer:
-      "Required thickness depends on the intended use, loads, ground conditions and project specifications. Follow the project design rather than choosing thickness from a volume calculator alone.",
-  },
-  {
-    question: "Can I calculate concrete volume in cubic meters?",
-    answer:
-      "Yes. Convert length, width and depth to meters and multiply them. The result is cubic meters. One cubic meter is approximately 35.3147 cubic feet.",
-  },
-  {
-    question: "Should I order extra concrete?",
-    answer:
-      "The allowance depends on measurement accuracy, subgrade conditions, formwork and placement losses. Check actual site dimensions and confirm the order quantity with your supplier.",
-  },
-  {
-    question: "How do I calculate concrete for a circular column?",
-    answer:
-      "Use the cylinder formula: volume equals pi multiplied by the radius squared and the height. Keep the radius and height in the same unit.",
-  },
+  { question: "Can I add sections with different thicknesses?", answer: "Yes. Calculate each section's volume using its own depth, then add the cubic feet. Adding their areas and multiplying by one depth is only valid when that depth applies to all of them." },
+  { question: "Do I subtract every opening drawn on the plan?", answer: "Deduct a space only when it will not receive concrete and is included in the gross volume. Record its actual depth. A shallow recess needs a smaller deduction than a full-depth opening with the same footprint." },
+  { question: "Does a thickened edge need its full depth added again?", answer: "If the slab already includes the strip's footprint, add only the depth below the slab. Alternatively, calculate the strip at its full depth and remove that footprint from the main slab calculation. Use one approach consistently." },
+  { question: "Should each section be rounded up to a cubic yard?", answer: "No. Keep the underlying section volumes, add them, and convert the total. Apply the agreed allowance and supplier order increment after the geometric takeoff." },
+  { question: "Can this worksheet specify the slab thickness?", answer: "No. Thicknesses and other dimensions in the examples are arithmetic inputs. The project design establishes thickness, reinforcement, concrete specification and other construction requirements." },
 ];
-
-function GuideImage({
-  src,
-  alt,
-  caption,
-  aspectRatio = "3 / 2",
-}: {
-  src: string;
-  alt: string;
-  caption: string;
-  aspectRatio?: string;
-}) {
-  return (
-    <figure className="my-6 overflow-hidden rounded-xl border border-slate-200 bg-white">
-      <div
-        className="relative w-full overflow-hidden bg-slate-50"
-        style={{ aspectRatio }}
-      >
-        <Image
-          src={src}
-          alt={alt}
-          fill
-          sizes="(max-width: 768px) 100vw, 800px"
-          loading="lazy"
-          className="object-contain"
-        />
-      </div>
-      <figcaption className="border-t border-slate-100 px-4 py-3 text-sm leading-6 text-slate-600">
-        {caption}
-      </figcaption>
-    </figure>
-  );
-}
-
-function SectionTitle({ children }: { children: React.ReactNode }) {
-  return (
-    <h2 className="text-2xl font-bold tracking-tight md:text-3xl">
-      {children}
-    </h2>
-  );
-}
 
 export default function ConcreteVolumeGuide() {
-  return (
-    <div className="min-h-screen bg-white pt-0 text-slate-900">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(articleSchema).replace(/</g, "\\u003c"),
-        }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(breadcrumbSchema).replace(
-            /</g,
-            "\\u003c"
-          ),
-        }}
-      />
-
-      <FAQSchema faqs={faqs} />
-      {/* Hero */}
-      <section className="border-b border-slate-200 bg-slate-50">
-        <div className="mx-auto max-w-4xl px-5 py-10 md:px-6 md:py-14">
-          <Link
-            href="/guides"
-            className="text-sm font-semibold text-blue-600 hover:underline"
-          >
-            Construction Guides
-          </Link>
-
-          <p className="mt-5 text-sm font-bold uppercase tracking-wider text-blue-600">
-            Concrete Calculation Guide
-          </p>
-
-          <h1 className="mt-3 max-w-3xl text-3xl font-extrabold tracking-tight sm:text-4xl md:text-5xl">
-            How to Calculate Concrete Volume for Slabs, Beams and Columns
-          </h1>
-
-          <p className="mt-5 max-w-3xl text-base leading-7 text-slate-600 md:text-lg md:leading-8">
-            Estimate concrete requirements using simple volume formulas.
-            Learn about US customary units, metric conversions, worked
-            examples and practical ordering considerations.
-          </p>
-
-          <Link
-            href="/calculators/concrete"
-            className="mt-6 inline-flex min-h-12 items-center rounded-lg bg-blue-600 px-5 py-3 text-sm font-bold text-white transition hover:bg-blue-700"
-          >
-            Open Concrete Calculator <span className="ml-2">→</span>
-          </Link>
-        </div>
-      </section>
-
-      <article className="mx-auto max-w-4xl px-5 py-8 md:px-6 md:py-12">
-        {/* Table of contents */}
-        <nav
-          aria-label="Table of contents"
-          className="rounded-xl border border-slate-200 bg-slate-50 p-5 md:p-6"
-        >
-          <h2 className="text-lg font-bold">In This Guide</h2>
-          <ul className="mt-4 grid gap-3 text-sm sm:grid-cols-2">
-            {[
-              ["#formula", "Concrete volume formula"],
-              ["#units", "Units and conversions"],
-              ["#slab-example", "Slab calculation example"],
-              ["#shapes", "Beams and columns"],
-              ["#ordering", "Ordering concrete"],
-              ["#budget-example", "Order quantity, cost and bags"],
-              ["#mistakes", "Common calculation mistakes"],
-              ["#references", "Technical references"],
-              ["#faq", "Frequently asked questions"],
-            ].map(([href, label]) => (
-              <li key={href}>
-                <a
-                  href={href}
-                  className="text-blue-700 hover:underline"
-                >
-                  {label}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
-
-        {/* Introduction */}
-        <section className="mt-10 md:mt-12">
-          <SectionTitle>What Is Concrete Volume?</SectionTitle>
-          <p className="mt-4 leading-7 text-slate-600 md:leading-8">
-            Concrete volume is the three-dimensional space that concrete
-            needs to fill. It is commonly measured in cubic yards in the
-            United States and cubic meters in metric calculations. The
-            required quantity depends on the structure&apos;s dimensions
-            and shape.
-          </p>
-          <p className="mt-4 leading-7 text-slate-600 md:leading-8">
-            Accurate measurements help estimate material requirements
-            before ordering ready-mix concrete. Uneven subgrade, varying
-            thickness, openings and formwork dimensions can affect the
-            final quantity.
-          </p>
-        </section>
-
-        {/* Formula */}
-        <section id="formula" className="mt-10 border-t border-slate-200 pt-8 md:mt-12 md:pt-10">
-          <SectionTitle>Concrete Volume Formula</SectionTitle>
-          <p className="mt-4 leading-7 text-slate-600 md:leading-8">
-            For a rectangular slab or another rectangular structure,
-            multiply length by width by thickness or depth. Convert all
-            dimensions to the same unit before multiplying.
-          </p>
-
-          <GuideImage
-            src="/images/concrete-volume/concrete-volume-formula-small.webp"
-            alt="Concrete volume formula diagram showing length, width and depth of a rectangular concrete slab"
-            caption="Concrete volume equals length × width × depth. All three measurements must use the same unit."
-            aspectRatio="1000 / 563"
-          />
-
-          <div className="rounded-xl border border-blue-100 bg-blue-50 p-5 text-center md:p-6">
-            <p className="text-xs font-bold uppercase tracking-wider text-slate-500">
-              Basic Formula
-            </p>
-            <p className="mt-3 text-xl font-extrabold text-blue-700 sm:text-2xl md:text-3xl">
-              Volume = Length × Width × Depth
-            </p>
-            <p className="mt-3 text-sm text-slate-600">
-              Feet × feet × feet = cubic feet
-            </p>
-          </div>
-
-          <p className="mt-4 leading-7 text-slate-600 md:leading-8">
-            If dimensions are measured in feet, the result is cubic feet.
-            Divide cubic feet by 27 to obtain cubic yards. If dimensions
-            are measured in meters, the result is cubic meters.
-          </p>
-        </section>
-
-        {/* Units */}
-        <section id="units" className="mt-10 border-t border-slate-200 pt-8 md:mt-12 md:pt-10">
-          <SectionTitle>Concrete Volume Units and Conversions</SectionTitle>
-          <p className="mt-4 leading-7 text-slate-600 md:leading-8">
-            Concrete suppliers in the United States commonly sell
-            ready-mix concrete by the cubic yard. Some plans and
-            calculators use cubic feet or cubic meters. Correct
-            conversions are essential for reliable estimates.
-          </p>
-
-          <div className="mt-5 overflow-x-auto rounded-xl border border-slate-200">
-            <table className="w-full text-left text-sm">
-              <thead className="bg-slate-50">
-                <tr>
-                  <th className="px-4 py-3 font-semibold md:px-5">Conversion</th>
-                  <th className="px-4 py-3 font-semibold md:px-5">Equivalent</th>
-                </tr>
-              </thead>
-              <tbody>
-                {conversions.map(([unit, equivalent]) => (
-                  <tr key={unit} className="border-t border-slate-200">
-                    <td className="px-4 py-3 text-slate-700 md:px-5">{unit}</td>
-                    <td className="px-4 py-3 font-semibold md:px-5">{equivalent}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          <h3 className="mt-6 text-xl font-bold">
-            Convert Cubic Feet to Cubic Yards
-          </h3>
-          <p className="mt-3 leading-7 text-slate-600 md:leading-8">
-            Divide cubic feet by 27. For example, 54 cubic feet divided
-            by 27 equals 2 cubic yards. To convert cubic yards to cubic
-            feet, multiply by 27.
-          </p>
-
-          <div className="mt-4 rounded-xl bg-slate-50 p-5">
-            <p className="font-semibold">Cubic yards = cubic feet ÷ 27</p>
-            <p className="mt-2 text-slate-600">
-              Cubic feet = cubic meters × 35.3147
-            </p>
-          </div>
-        </section>
-
-        {/* Slab example */}
-        <section id="slab-example" className="mt-10 border-t border-slate-200 pt-8 md:mt-12 md:pt-10">
-          <SectionTitle>Example: Concrete for a 10 × 12 Foot Slab</SectionTitle>
-          <p className="mt-4 leading-7 text-slate-600 md:leading-8">
-            Suppose a rectangular slab is 10 feet long, 12 feet wide and
-            4 inches thick. First convert the thickness from inches to feet.
-          </p>
-
-          <GuideImage
-            src="/images/concrete-volume/concrete-slab-calculation-example.webp"
-            alt="Worked concrete slab volume calculation example using length, width and four-inch thickness"
-            caption="Convert slab thickness from inches to feet before multiplying the three dimensions."
-          />
-
-          <div className="overflow-x-auto rounded-xl border border-slate-200">
-            <table className="w-full text-left text-sm">
-              <thead className="bg-slate-50">
-                <tr>
-                  <th className="px-4 py-3 font-semibold md:px-5">Measurement</th>
-                  <th className="px-4 py-3 font-semibold md:px-5">Value</th>
-                </tr>
-              </thead>
-              <tbody>
-                {[
-                  ["Length", "10 ft"],
-                  ["Width", "12 ft"],
-                  ["Thickness", "4 ÷ 12 = 0.3333 ft"],
-                ].map(([name, value]) => (
-                  <tr key={name} className="border-t border-slate-200">
-                    <td className="px-4 py-3 md:px-5">{name}</td>
-                    <td className="px-4 py-3 font-semibold md:px-5">{value}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          <div className="mt-5 rounded-xl bg-slate-50 p-5 md:p-6">
-            <p className="font-semibold">Step 1: Calculate cubic feet</p>
-            <p className="mt-2 text-slate-700">
-              10 × 12 × (4 ÷ 12) = 40 cubic feet
-            </p>
-            <p className="mt-4 font-semibold">Step 2: Convert to cubic yards</p>
-            <p className="mt-2 text-slate-700">40 ÷ 27 ≈ 1.48 cubic yards</p>
-            <p className="mt-4 text-xl font-extrabold text-blue-700">
-              Estimated volume: 1.48 yd³
-            </p>
-          </div>
-
-          <p className="mt-4 leading-7 text-slate-600 md:leading-8">
-            This is the geometric volume before any additional ordering
-            allowance. Verify actual form dimensions and site conditions
-            before placing an order.
-          </p>
-
-          <Link
-            href="/calculators/concrete"
-            className="mt-4 inline-flex font-semibold text-blue-700 hover:underline"
-          >
-            Calculate your own slab dimensions →
-          </Link>
-        </section>
-
-        {/* Beams and columns */}
-        <section id="shapes" className="mt-10 border-t border-slate-200 pt-8 md:mt-12 md:pt-10">
-          <SectionTitle>Concrete Volume for Beams and Columns</SectionTitle>
-          <p className="mt-4 leading-7 text-slate-600 md:leading-8">
-            Rectangular beams and columns use the same basic volume
-            principle, but their dimensions represent different sides
-            of the structure.
-          </p>
-
-          <h3 className="mt-6 text-xl font-bold">Rectangular Beam Example</h3>
-          <p className="mt-3 leading-7 text-slate-600">
-            A beam is 12 feet long, 1 foot wide and 1.5 feet deep.
-          </p>
-
-          <GuideImage
-            src="/images/concrete-volume/concrete-beam-volume-example.webp"
-            alt="Rectangular concrete beam showing length, width and depth used in a volume calculation"
-            caption="For a rectangular beam, multiply length by width by depth."
-          />
-
-          <div className="rounded-xl border border-slate-200 p-5">
-            <p className="font-semibold">Volume = length × width × depth</p>
-            <p className="mt-2 text-slate-700">12 × 1 × 1.5 = 18 cubic feet</p>
-            <p className="mt-2 text-slate-700">18 ÷ 27 ≈ 0.67 cubic yards</p>
-          </div>
-
-          <h3 className="mt-7 text-xl font-bold">Rectangular Column Example</h3>
-          <p className="mt-3 leading-7 text-slate-600">
-            A column is 1.5 feet wide, 1.5 feet deep and 10 feet tall.
-          </p>
-
-          <GuideImage
-            src="/images/concrete-volume/concrete-column-volume-example.webp"
-            alt="Rectangular concrete column showing width, depth and height for a volume calculation"
-            caption="For a rectangular column, multiply width by depth by height."
-          />
-
-          <div className="rounded-xl border border-slate-200 p-5">
-            <p className="font-semibold">Volume = width × depth × height</p>
-            <p className="mt-2 text-slate-700">
-              1.5 × 1.5 × 10 = 22.5 cubic feet
-            </p>
-            <p className="mt-2 text-slate-700">22.5 ÷ 27 ≈ 0.83 cubic yards</p>
-          </div>
-
-          <h3 className="mt-7 text-xl font-bold">Circular Column Formula</h3>
-          <p className="mt-3 leading-7 text-slate-600 md:leading-8">
-            For a cylindrical column, multiply pi by the radius squared
-            and then by the height. The radius is half the diameter.
-          </p>
-
-          <GuideImage
-            src="/images/concrete-volume/concrete-circular-column-example.webp"
-            alt="Circular concrete column diagram illustrating radius, diameter and height"
-            caption="Use the radius, not the diameter, in the cylindrical volume formula."
-          />
-
-          <div className="rounded-xl bg-slate-50 p-5">
-            <p className="font-semibold">Volume = π × radius² × height</p>
-          </div>
-
-          <p className="mt-4 leading-7 text-slate-600 md:leading-8">
-            When adding volumes for connected structural sections, avoid
-            counting overlapping regions twice.
-          </p>
-        </section>
-
-        {/* Ordering */}
-        <section id="ordering" className="mt-10 border-t border-slate-200 pt-8 md:mt-12 md:pt-10">
-          <SectionTitle>How Much Extra Concrete Should You Order?</SectionTitle>
-          <p className="mt-4 leading-7 text-slate-600 md:leading-8">
-            The calculated volume describes the space to be filled. The
-            amount ordered may vary because of uneven subgrade, formwork
-            variation, spillage and placement conditions.
-          </p>
-
-          <GuideImage
-            src="/images/concrete-volume/concrete-ordering-wastage-guide.webp"
-            alt="Concrete ordering guide illustrating the calculated volume and an additional allowance"
-            caption="Check site measurements and placement conditions before deciding on an ordering allowance."
-          />
-
-          <p className="mt-4 leading-7 text-slate-600 md:leading-8">
-            For illustration, adding 10% to the 40-cubic-foot slab
-            example gives 44 cubic feet, or about 1.63 cubic yards.
-            This is a calculation example, not a universal recommendation
-            to add 10% to every order.
-          </p>
-
-          <div className="mt-5 rounded-xl border border-amber-200 bg-amber-50 p-5">
-            <p className="font-bold">Before ordering concrete</p>
-            <ul className="mt-3 list-disc space-y-2 pl-5 leading-7 text-slate-700">
-              <li>Measure the actual length, width and thickness.</li>
-              <li>Check the base and formwork for uneven areas.</li>
-              <li>Confirm supplier ordering increments and delivery requirements.</li>
-              <li>Follow project specifications and professional instructions.</li>
-            </ul>
-          </div>
-        </section>
-
-        {/* Mistakes */}
-        <section id="mistakes" className="mt-10 border-t border-slate-200 pt-8 md:mt-12 md:pt-10">
-          <SectionTitle>Common Concrete Volume Calculation Mistakes</SectionTitle>
-
-          <GuideImage
-            src="/images/concrete-volume/concrete-calculation-common-mistakes.webp"
-            alt="Concrete volume calculation mistakes including incorrect units and measurements"
-            caption="Check units and dimensions carefully before relying on a concrete volume estimate."
-          />
-
-          <div className="mt-5 space-y-5">
-            <div>
-              <h3 className="font-bold">Mixing feet and inches</h3>
-              <p className="mt-2 leading-7 text-slate-600">
-                Convert inches to feet before multiplying dimensions
-                measured in feet. For example, 4 inches equals 4 ÷ 12 feet.
-              </p>
-            </div>
-            <div>
-              <h3 className="font-bold">Confusing square and cubic units</h3>
-              <p className="mt-2 leading-7 text-slate-600">
-                Square feet measure area, while cubic feet and cubic
-                yards measure volume. Concrete volume calculations also
-                require thickness or depth.
-              </p>
-            </div>
-            <div>
-              <h3 className="font-bold">Using incorrect dimensions</h3>
-              <p className="mt-2 leading-7 text-slate-600">
-                Use the dimensions specified for the actual pour,
-                including planned thickness and formwork measurements.
-              </p>
-            </div>
-            <div>
-              <h3 className="font-bold">Treating the estimate as an exact order</h3>
-              <p className="mt-2 leading-7 text-slate-600">
-                The calculation is based on the dimensions supplied.
-                Confirm site conditions and delivery quantities with
-                your supplier.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        {/* Calculator CTA */}
-        <section className="mt-10 rounded-xl bg-slate-900 px-5 py-7 md:mt-12 md:px-8 md:py-8">
-          <h2 className="text-2xl font-bold text-white md:text-3xl">
-            Calculate Concrete for Your Project
-          </h2>
-          <p className="mt-3 leading-7 text-slate-300">
-            Use the CornerSpan concrete calculator with your own
-            dimensions to estimate the required volume.
-          </p>
-          <Link
-            href="/calculators/concrete"
-            className="mt-5 inline-flex min-h-12 items-center rounded-lg bg-blue-600 px-5 py-3 text-sm font-bold text-white hover:bg-blue-500"
-          >
-            Open Concrete Calculator →
-          </Link>
-        </section>
-
-        {/* References */}
-<section id="budget-example" className="mt-10 scroll-mt-28 border-t border-slate-200 pt-8"><SectionTitle>US order quantity, cost and bag calculations</SectionTitle><p className="mt-4 leading-8 text-slate-600">For a 12 × 15 ft slab, 4 inches thick, calculate 12 × 15 × (4 ÷ 12) ÷ 27 = 2.2222 cubic yards. If the project calls for a separate 5% ordering allowance, the planning total is 2.3333 yd³. The allowance is an example; confirm site conditions and your supplier's delivery increments before ordering.</p><p className="mt-4 leading-8 text-slate-600">At an illustrative quote of $160/yd³, that unrounded planning volume costs $373.33 for concrete alone. A supplier's rounded delivery quantity can change the invoice. Ask separately about delivery, short-load charges, pump service, waiting time and taxes. The example price is not a market quote.</p><h3 className="mt-6 text-xl font-bold">Using bagged concrete instead</h3><p className="mt-3 leading-8 text-slate-600">Use the yield printed on the selected bag, not the bag's weight as if it were volume. If a bag states a 0.60 cu ft yield, the 60 cu ft slab above needs 60 ÷ 0.60 = 100 bags before allowance. With the example 5% allowance, 63 ÷ 0.60 = 105 bags. Different products and bag sizes have different yields; check the label and compare the handling effort with ready-mix delivery.</p><h3 className="mt-6 text-xl font-bold">Keep the concrete specification separate from quantity</h3><p className="mt-3 leading-8 text-slate-600">Cubic yards tell the supplier how much material is needed, not which mix is required. Provide the project specifications and placement information. A cement:sand:aggregate ratio in a material estimator is not a guaranteed compressive strength or an approved ready-mix design.</p><p className="mt-4 leading-8"><a href="https://www.nrmca.org/wp-content/uploads/2021/01/31pr.pdf" className="text-blue-700 underline">NRMCA CIP 31: Ordering Ready Mixed Concrete (PDF)</a> explains what to discuss with the producer. For dimensions and geometric volume, use the <Link href="/calculators/concrete" className="text-blue-700 underline">Concrete Calculator</Link>.</p></section>
-        <section id="references" className="mt-10 border-t border-slate-200 pt-8 md:mt-12 md:pt-10">
-          <SectionTitle>Further Technical Information</SectionTitle>
-          <p className="mt-4 leading-7 text-slate-600 md:leading-8">
-            For additional concrete construction information, consult
-            established technical organizations and verify that the
-            guidance applies to your project.
-          </p>
-
-          <ul className="mt-4 list-disc space-y-3 pl-5 leading-7">
-            <li>
-              <a
-                href="https://www.concrete.org/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-semibold text-blue-700 hover:underline"
-              >
-                American Concrete Institute (ACI)
-              </a>
-              <span className="text-slate-600">
-                {" "}— technical information and concrete construction resources.
-              </span>
-            </li>
-            <li>
-              <a
-                href="https://www.nist.gov/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-semibold text-blue-700 hover:underline"
-              >
-                National Institute of Standards and Technology (NIST)
-              </a>
-              <span className="text-slate-600">
-                {" "}— measurement and standards information.
-              </span>
-            </li>
-          </ul>
-
-          <p className="mt-4 text-sm leading-6 text-slate-500">
-            These links provide general reference resources. Consult
-            relevant technical documents for project-specific requirements.
-          </p>
-        </section>
-
-        {/* FAQs */}
-        <section id="faq" className="mt-10 border-t border-slate-200 pt-8 md:mt-12 md:pt-10">
-          <SectionTitle>Concrete Volume FAQs</SectionTitle>
-
-          <div className="mt-5 divide-y divide-slate-200">
-            {faqs.map((faq) => (
-              <div key={faq.question} className="py-5">
-                <h3 className="text-lg font-bold">{faq.question}</h3>
-                <p className="mt-3 leading-7 text-slate-600">{faq.answer}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Related guides */}
-        <section className="mt-10 border-t border-slate-200 pt-8 md:mt-12 md:pt-10">
-          <SectionTitle>Related Construction Guides</SectionTitle>
-          <p className="mt-3 leading-7 text-slate-600">
-            Explore related construction measurement topics on CornerSpan.
-          </p>
-
-          <div className="mt-5 grid gap-4 sm:grid-cols-2">
-            <Link
-              href="/guides/brick-calculation"
-              className="rounded-xl border border-slate-200 p-5 transition hover:border-blue-300 hover:bg-blue-50"
-            >
-              <p className="text-xs font-bold uppercase tracking-wider text-blue-600">
-                Brick
-              </p>
-              <h3 className="mt-2 text-lg font-bold">
-                Brick Calculation Guide
-              </h3>
-              <p className="mt-2 text-sm leading-6 text-slate-600">
-                Estimate brick quantities for a wall using dimensions
-                and mortar joints.
-              </p>
-              <span className="mt-4 inline-block text-sm font-semibold text-blue-600">
-                Read guide →
-              </span>
-            </Link>
-
-            <Link
-              href="/guides/steel-weight"
-              className="rounded-xl border border-slate-200 p-5 transition hover:border-blue-300 hover:bg-blue-50"
-            >
-              <p className="text-xs font-bold uppercase tracking-wider text-blue-600">
-                Steel
-              </p>
-              <h3 className="mt-2 text-lg font-bold">Steel Weight Guide</h3>
-              <p className="mt-2 text-sm leading-6 text-slate-600">
-                Understand steel bar weight calculations using diameter
-                and length.
-              </p>
-              <span className="mt-4 inline-block text-sm font-semibold text-blue-600">
-                Read guide →
-              </span>
-            </Link>
-          </div>
-        </section>
-      </article>
-    </div>
-  );
+  return <ReferenceArticle title={title} description={description} path="/guides/concrete-volume" sections={sections} faqs={faqs}>
+    <Section id="worksheet" title="Give every part of the pour its own row">
+      <p>A single length, width and thickness works for one rectangular section. A porch joined to a walkway, a slab with a recess, or a floor with deeper edge strips needs a record of what has been included. Mark section letters on the plan before entering numbers.</p>
+      <Table caption="Fields to record beside your sketch. Keep different concrete specifications on separate order sheets." headers={["Field", "What to record", "Why it matters"]} rows={[
+        ["Section ID", "A, B, opening O1, edge E1", "Locates the measured region"],
+        ["Dimensions and units", "Length × width × depth; feet or inches", "Prevents treating a 4-inch depth as 4 feet"],
+        ["Add or deduct", "Concrete-filled region or excluded space", "Makes openings and overlaps visible"],
+        ["Volume", "Unrounded cubic feet", "Supports a consistent total"],
+        ["Basis", "Plan revision or measured form dimensions", "Shows what needs confirmation"],
+      ]} />
+      <p>The <Link href="/calculators/concrete">Concrete Calculator</Link> handles a rectangular section. Calculate unlike sections separately and record their volumes here. Use its quantity control only when the repeated sections have the same dimensions.</p>
+    </Section>
+    <Section id="formula" title="Use the formula that matches the section">
+      <Table caption="Geometric volume formulas. Each length must use the units shown." headers={["Section", "Cubic feet", "Measurement check"]} rows={[
+        ["Rectangular slab", "length (ft) × width (ft) × depth (in) ÷ 12", "Base to intended top"],
+        ["Rectangular beam or footing", "length (ft) × width (ft) × depth (ft)", "Exclude volume in another row"],
+        ["Round column", "π × radius² (ft²) × height (ft)", "Radius is half the diameter"],
+        ["Shallow recess", "length (ft) × width (ft) × recess depth (ft)", "Depth removed, not full slab depth"],
+      ]} />
+      <p>For a 12-inch-diameter column, the radius is 0.5 foot. At an illustrative 8-foot height, the volume is π × 0.5² × 8 ≈ 6.283 cubic feet. These dimensions establish quantity only.</p>
+    </Section>
+    <Section id="slab-example" title="Worked takeoff: an L-shaped pour with an opening">
+      <p>Suppose section A is 20 × 12 feet and section B is an adjoining 8 × 6 feet. The two rectangles share an edge but no area. Both are 4 inches deep. A 3 × 2-foot opening inside A remains empty through the full depth.</p>
+      <figure className="overflow-hidden rounded-xl border border-slate-200 bg-slate-50 p-4">
+        <svg viewBox="0 0 720 380" className="h-auto w-full" role="img" aria-labelledby="pour-plan-title pour-plan-desc">
+          <title id="pour-plan-title">Two non-overlapping pour sections and one opening</title>
+          <desc id="pour-plan-desc">A is 20 by 12 feet. B is 8 by 6 feet, attached at the lower right of A. A 3 by 2-foot opening is deducted from A. Both sections are 4 inches deep.</desc>
+          <rect x="28" y="32" width="440" height="264" fill="#dbeafe" stroke="#1d4ed8" strokeWidth="3" />
+          <rect x="468" y="164" width="176" height="132" fill="#cffafe" stroke="#0e7490" strokeWidth="3" />
+          <rect x="94" y="208" width="66" height="44" fill="#fff7ed" stroke="#c2410c" strokeWidth="3" />
+          <g fill="#0f172a" fontFamily="sans-serif" textAnchor="middle"><text x="248" y="100" fontSize="28" fontWeight="700">A: 20 × 12 ft</text><text x="248" y="137" fontSize="21">240 sq ft</text><text x="556" y="215" fontSize="24" fontWeight="700">B: 8 × 6 ft</text><text x="556" y="247" fontSize="20">48 sq ft</text><text x="127" y="282" fontSize="17">O1: 3 × 2 ft</text><text x="336" y="345" fontSize="21">Shared edge; no overlapping area</text></g>
+        </svg>
+        <figcaption className="mt-2 text-sm">Illustrative plan for quantity calculation; it does not specify a construction detail.</figcaption>
+      </figure>
+      <Table caption="Takeoff at 4 inches deep; O1 is already inside the gross area of A." headers={["Row", "Calculation", "Add / deduct (cu ft)"]} rows={[
+        ["A: main slab", "20 × 12 × 4/12", "+80"], ["B: adjoining section", "8 × 6 × 4/12", "+16"],
+        ["O1: full-depth opening", "3 × 2 × 4/12", "−2"], ["Geometric total", "80 + 16 − 2", "94"],
+      ]} />
+      <p>Check from the area: (240 + 48 − 6) × 4/12 = <strong>94 cubic feet</strong>, or about <strong>3.4815 cubic yards</strong>. This second calculation works because every row uses the same depth. Deducting O1 again after using the net area would undercount the pour.</p>
+    </Section>
+    <Section id="shapes" title="Add a thickened edge without counting the slab twice">
+      <p>Now suppose the design adds a 20-foot-long, 1-foot-wide strip along an edge of A, clear of O1. Its total depth is 12 inches. The first 4 inches are already included in A, so the extra depth is 12 − 4 = 8 inches.</p>
+      <p className="rounded-xl bg-blue-50 p-5 font-semibold">Extra strip volume = 20 × 1 × 8/12 = 13.3333 cu ft<br />Combined volume = 94 + 13.3333 = 107.3333 cu ft ≈ 3.9753 cu yd</p>
+      <p>Adding the full strip volume of 20 cubic feet would count its upper 6.6667 cubic feet twice. Where two deeper strips meet, also separate their common corner. A rectangle drawn twice on the sketch should not become two quantities in the order.</p>
+    </Section>
+    <Section id="depth-zones" title="Different depths need area-weighted quantities">
+      <p>Measurements at two points are not automatically representative of the whole base. Divide a varying-depth pour into measured zones that describe it adequately, and use the relevant average depth within each zone. Resolve uncertain measurements before setting an allowance.</p>
+      <Table caption="Separate example: the larger zone is deeper. A simple average of the two depths is inappropriate." headers={["Zone", "Area and average depth", "Volume (cu ft)"]} rows={[
+        ["C", "100 sq ft × 4/12 ft", "33.3333"], ["D", "200 sq ft × 5/12 ft", "83.3333"],
+        ["Combined", "300 sq ft; weighted depth 4.6667 in", "116.6667"],
+      ]} />
+      <p>Using 4.5 inches across all 300 square feet gives 112.5 cubic feet, about 4.1667 cubic feet less. A deeper patch affects the estimate according to its area, not just the number of measurements taken there.</p>
+    </Section>
+    <Section id="units" title="Keep precision until the volumes are combined">
+      <p>Convert inches to feet by dividing by 12. Divide combined cubic feet by 27 to obtain cubic yards. Keep 4/12 in the arithmetic instead of shortening it to 0.3. For metric input, calculate cubic meters consistently; one cubic yard is 0.764554857984 cubic meter.</p>
+      <p>Printed values are rounded for readability. Use the underlying dimensions when recalculating, rather than adding rounded display values from many sections.</p>
+    </Section>
+    <Section id="ordering" title="Separate measured volume, allowance and order" aliases={["budget-example"]}>
+      <p>The L-shaped example with its deeper strip has a geometric volume of 107⅓ cubic feet. An illustrative 5% allowance gives exactly 112.7 cubic feet, or about 4.1741 cubic yards. If the supplier sells in quarter-yard increments, the order rounds to 4.25 cubic yards. Agree on the allowance and increment with the project team and supplier; neither is universal.</p>
+      <p>Different required mixes or separate pour dates may need separate orders. Record the specification and planned placement with each group. NRMCA’s ordering reference explains the project information a producer needs alongside quantity.</p>
+      <p>For premix bag yields and price comparisons, use the separate <Link href="/blog/concrete-calculation-guide">20×12 slab example: cubic yards, 60-lb and 80-lb bags</Link>. Cement ingredient bags shown by the calculator are a different product from premixed concrete bags.</p>
+    </Section>
+    <Section id="mistakes" title="Reconcile the quantity sheet before requesting a quote">
+      <ul className="list-disc space-y-3 pl-6"><li>Every section on the marked plan has one matching row.</li><li>Openings are deducted only from a gross region that includes them.</li><li>Thickened zones add only volume missing from the main calculation.</li><li>Repeated-section quantity is not also included in the row dimensions.</li><li>Geometric volume, allowance and order rounding have separate lines.</li><li>Each order has a recorded specification and placement date.</li></ul>
+    </Section>
+    <Section id="references" title="Sources and next steps">
+      <p>The diagrams and arithmetic are original illustrative examples. <a href="https://www.nrmca.org/wp-content/uploads/2021/01/31pr.pdf">NRMCA CIP 31: Ordering Ready Mixed Concrete (PDF)</a> supplies background on ordering information, not approval of the example dimensions.</p>
+      <p>Use the <Link href="/calculators/concrete">Concrete Calculator</Link> for a rectangular row, the <Link href="/calculators/area?example=l-shaped#area-mode">Area Calculator’s section mode</Link> for a uniform-depth footprint, and the <Link href="/blog/concrete-calculation-guide">slab purchase example</Link> after the takeoff.</p>
+    </Section>
+  </ReferenceArticle>;
 }
-

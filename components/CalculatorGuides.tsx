@@ -3,9 +3,9 @@ import Link from "next/link";
 
 const guides = [
   {
-    title: "Concrete Volume Guide",
+    title: "Concrete Volume Takeoff",
     description:
-      "Learn how length, width and slab thickness determine concrete volume. Review the measurement process before estimating material for slabs and footings.",
+      "Record pour sections, openings and thickened edges. Check the total without counting concrete twice.",
     href: "/guides/concrete-volume",
     category: "VOLUME & MEASUREMENTS",
     icon: "▧",
@@ -19,9 +19,9 @@ const guides = [
     icon: "⌁",
   },
   {
-    title: "Brick Quantity Guide",
+    title: "Brick Takeoff Worksheet",
     description:
-      "Explore how wall dimensions, brick size and mortar joints affect a brick estimate. Account for openings such as doors and windows where applicable.",
+      "Prepare a wall-by-wall quantity sheet with opening IDs, matching products and separate pack rounding.",
     href: "/guides/brick-calculation",
     
     category: "WALL MATERIALS",
@@ -40,7 +40,7 @@ export default function CalculatorGuides() {
             </span>
 
             <h2 className="mt-3 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">
-              Construction Guides and Calculation Basics
+              Measurement Worksheets and Material References
             </h2>
 
             <p className="mt-4 text-base leading-7 text-slate-600">

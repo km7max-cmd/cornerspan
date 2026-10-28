@@ -114,6 +114,16 @@ export async function generateMetadata({
     alternates: {
       canonical: `/blog/${post.slug}`,
     },
+    openGraph: {
+      title: post.title,
+      description: post.description,
+      type: "article",
+      locale: "en_US",
+      url: `https://www.cornerspan.com/blog/${post.slug}`,
+      publishedTime: post.publishedAt,
+      modifiedTime: post.modifiedAt ?? post.publishedAt,
+    },
+    twitter: { card: "summary", title: post.title, description: post.description },
     robots: {
       index: true,
       follow: true,
