@@ -4,6 +4,7 @@ import Link from "next/link";
 import type { CalculatorArticle as ArticleData, ArticleTable } from "../../data/calculator-articles";
 import { blogPosts } from "../../data/blog";
 import { calculators } from "../../data/calculators";
+import RoofPitchHelper from "./RoofPitchHelper";
 
 const imageDescriptions: Record<string,string> = {
   area:"Geometric shapes and dimensions for area measurement",
@@ -33,6 +34,7 @@ export default function CalculatorArticle({ article }: {article:ArticleData}) {
   const origin="https://www.cornerspan.com";
   const url=`${origin}/blog/${article.slug}`;
   const calculator=article.calculatorHref.split('/').pop()!;
+  const hasPitchHelper = article.slug === "how-to-calculate-roof-pitch";
   const data={"@context":"https://schema.org","@graph":[
     {"@type":"Article","@id":`${url}#article`,headline:article.title,description:article.description,mainEntityOfPage:url,
       datePublished:article.publishedAt,dateModified:article.modifiedAt,inLanguage:"en-US",image:article.image?`${origin}${illustration?.social ?? article.image}`:undefined,
@@ -42,14 +44,16 @@ export default function CalculatorArticle({ article }: {article:ArticleData}) {
       {"@type":"ListItem",position:2,name:"Blog",item:`${origin}/blog`},
       {"@type":"ListItem",position:3,name:article.title,item:url}]},
     {"@type":"FAQPage",mainEntity:article.faqs.map(f=>({"@type":"Question",name:f.question,acceptedAnswer:{"@type":"Answer",text:f.answer}}))},
+    ...(hasPitchHelper ? [{"@type":"WebApplication", "@id":`${url}#pitch-calculator`, name:"Roof Pitch Calculator", url:`${url}#pitch-calculator`, applicationCategory:"UtilitiesApplication", operatingSystem:"Any", browserRequirements:"Requires JavaScript", isAccessibleForFree:true, offers:{"@type":"Offer",price:"0",priceCurrency:"USD"}, description:"Convert rise and horizontal run, pitch or an angle into roof pitch, degrees, slope percentage and an area multiplier."}] : []),
   ]};
-  const contents=[['formula','Formula'],['example','Worked example'],...article.sections.map(s=>[s.id,s.title]),['mistakes','Common mistakes'],['faq','FAQs'],['sources','Sources and related reading']];
+  const contents=[...(hasPitchHelper ? [['pitch-calculator','Roof pitch calculator']] : []),['formula','Formula'],['example','Worked example'],...article.sections.map(s=>[s.id,s.title]),['mistakes','Common mistakes'],['faq','FAQs'],['sources','Sources and related reading']];
   return <article className="mx-auto max-w-4xl px-5 py-8 text-slate-700 sm:px-6 [&_p]:leading-8">
     <script type="application/ld+json" dangerouslySetInnerHTML={{__html:JSON.stringify(data).replace(/</g,'\\u003c')}} />
     <nav aria-label="Breadcrumb" className="flex flex-wrap gap-2 text-sm"><Link className="text-blue-700 underline" href="/">Home</Link><span aria-hidden="true">/</span><Link className="text-blue-700 underline" href="/blog">Blog</Link><span aria-hidden="true">/</span><span>{article.category}</span></nav>
     <h1 className="mt-5 text-3xl font-extrabold tracking-tight text-slate-950 sm:text-4xl">{article.title}</h1>
     <p className="mt-3 text-sm text-slate-500">By <Link href="/about#publisher" className="underline">CornerSpan</Link> · Updated <time dateTime={article.modifiedAt}>{new Date(`${article.modifiedAt}T12:00:00Z`).toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric',timeZone:'UTC'})}</time></p>
     {article.intro.map(p=><p key={p} className="mt-4">{p}</p>)}
+    {hasPitchHelper && <RoofPitchHelper />}
     <Link className="my-5 inline-flex rounded-xl bg-blue-700 px-5 py-3 font-bold text-white" href={article.calculatorHref}>{article.calculatorHref === "/calculators" ? "Browse construction calculators" : `Open the ${calculator.replace(/-/g, " ")} calculator`} →</Link>
     {article.image && <figure className="my-5"><div className="relative aspect-[16/9] overflow-hidden rounded-xl border border-slate-200 bg-slate-50"><Image src={article.image} alt={article.imageAlt ?? imageDescriptions[calculator] ?? article.title} fill sizes="(max-width: 768px) 100vw, 848px" className="object-contain" unoptimized={article.image.endsWith('.svg')} /></div><figcaption className="mt-2 text-sm text-slate-500">{article.imageCaption ?? 'Illustration for orientation; use the measurements and assumptions stated in the worked example.'}</figcaption></figure>}
     <nav aria-label="Table of contents" className="rounded-xl bg-slate-100 p-5"><h2 className="text-lg font-bold text-slate-950">In this article</h2><ul className="mt-3 grid gap-3 sm:grid-cols-2">{contents.map(([id,label])=><li key={id}><a href={`#${id}`} className="text-blue-700 underline">{label}</a></li>)}</ul></nav>

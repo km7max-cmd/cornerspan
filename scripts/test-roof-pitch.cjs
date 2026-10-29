@@ -1,0 +1,33 @@
+const fs = require('fs'), path = require('path'), assert = require('assert/strict');
+const ts = require('typescript');
+require.extensions['.ts'] = (module, file) => module._compile(ts.transpileModule(fs.readFileSync(file, 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText, file);
+const { calculateRoofPitch } = require(path.resolve(__dirname, '../lib/roof-pitch.ts'));
+const { roofPitchArticle } = require(path.resolve(__dirname, '../data/roof-pitch-article.ts'));
+const { blogPosts } = require(path.resolve(__dirname, '../data/blog.ts'));
+const near = (actual, expected, tolerance = 1e-9) => assert(Math.abs(actual - expected) < tolerance, `${actual} != ${expected}`);
+const dimensions = (rise, run, riseUnit = 'in', runUnit = 'in') => calculateRoofPitch({ mode: 'dimensions', rise, run, riseUnit, runUnit });
+const six = dimensions('6', '12').result;
+near(six.pitch, 6); near(six.degrees, 26.565051177); near(six.percent, 50); near(six.multiplier, 1.11803398875);
+assert.deepEqual(dimensions('6', '1', 'in', 'ft').result, six);
+assert.deepEqual(dimensions('5', '10', 'ft', 'ft').result, six);
+const mixed = dimensions('33', '90').result;
+near(mixed.pitch, 4.4); near(mixed.degrees, 20.136303428248); near(mixed.multiplier, 1.065103020578);
+near(dimensions('2.75', '7.5', 'ft', 'ft').result.pitch, 4.4);
+near(calculateRoofPitch({mode:'angle',degrees:'30'}).result.pitch, 6.928203230276);
+near(calculateRoofPitch({mode:'angle',degrees:'45'}).result.pitch, 12);
+near(calculateRoofPitch({mode:'pitch',pitch:'4.4'}).result.degrees, mixed.degrees);
+assert.deepEqual(dimensions('0','12').result, { pitch:0, degrees:0, percent:0, multiplier:1 });
+for (const [rise, run] of [['','12'],['6',''],['6','0'],['-1','12'],['1','-12'],['NaN','12'],['Infinity','12'],['1e309','12'],['1e308','1e-300'],['1e-300','1e308']]) assert(dimensions(rise,run).error, `${rise}/${run} should fail`);
+for (const degrees of ['','-1','90','120','Infinity']) assert(calculateRoofPitch({mode:'angle',degrees}).error);
+for (const pitch of ['','-1','NaN','Infinity']) assert(calculateRoofPitch({mode:'pitch',pitch}).error);
+const chart = roofPitchArticle.sections.find(s => s.id === 'roof-pitch-chart').table;
+for (const row of chart.rows) {
+  const rise = Number(row[0].split(':')[0]);
+  const actual = calculateRoofPitch({mode:'pitch',pitch:String(rise)}).result;
+  assert.equal(actual.degrees.toFixed(2)+'°', row[1]); assert.equal(actual.percent.toFixed(2)+'%', row[2]); assert.equal(actual.multiplier.toFixed(4), row[3]);
+}
+near(600 * six.multiplier, 670.820393249937, 1e-8);
+near(200 * calculateRoofPitch({mode:'pitch',pitch:'4'}).result.multiplier + 300 * six.multiplier, 546.2287073028605);
+assert.equal(blogPosts.filter(p => p.slug === roofPitchArticle.slug).length,1);
+assert(!roofPitchArticle.related.includes('/calculators/roof-pitch'), 'Do not link to an unbuilt tool');
+console.log('PASS: roof pitch units, inverse conversion, chart, area examples, invalid inputs, article registration');
