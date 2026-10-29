@@ -85,6 +85,7 @@ const faqs = [
 const articleJsonLd = {
   "@context": "https://schema.org",
   "@type": "Article",
+    image: "https://www.cornerspan.com/trapezoid-area-guide.webp",
   "@id": `${ARTICLE_URL}#article`,
   headline: "How to Calculate the Area of a Trapezoid",
   description:

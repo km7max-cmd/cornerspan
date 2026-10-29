@@ -1,3 +1,5 @@
+import PageContents from "../../../components/PageContents";
+import CalculatorStructuredData from "../../../components/CalculatorStructuredData";
 import CalculatorReading from "../../../components/CalculatorReading";
 import type { Metadata } from "next";
 import AreaCalculator from "./AreaCalculator";
@@ -186,6 +188,7 @@ function ResponsiveTable({
 export default function AreaPage() {
   return (
     <>
+      <CalculatorStructuredData name="Area Calculator" path="/calculators/area" description={metadata.description ?? undefined} />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -195,6 +198,7 @@ export default function AreaPage() {
 
       {/* Existing calculator: functionality remains unchanged */}
       <AreaCalculator />
+      <div className="px-4 sm:px-6"><PageContents items={[["area-mode", "Use the Area Calculator"], ["area-conversion-heading", "Quick Unit Conversion Chart"], ["typical-room-sizes-heading", "Typical Room & Space Sizes"], ["related-construction-calculators", "Related Construction Calculators"]]} /></div>
 
       <div className="mx-auto max-w-4xl px-5 pb-10 sm:px-6">
         {/* Quick Unit Conversion Chart */}
@@ -204,7 +208,7 @@ export default function AreaPage() {
         >
           <h2
             id="area-conversion-heading"
-            className="text-2xl font-black text-slate-950"
+            className="scroll-mt-28 text-2xl font-black text-slate-950"
           >
             Quick Unit Conversion Chart
           </h2>
@@ -235,7 +239,7 @@ export default function AreaPage() {
         >
           <h2
             id="typical-room-sizes-heading"
-            className="text-2xl font-black text-slate-950"
+            className="scroll-mt-28 text-2xl font-black text-slate-950"
           >
             Typical Room &amp; Space Sizes
           </h2>
@@ -279,7 +283,7 @@ export default function AreaPage() {
         {/* Existing related calculator links */}
         <section className="mt-8">
           <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-            <h2 className="text-2xl font-black text-slate-950">
+            <h2 id="related-construction-calculators" className="scroll-mt-28 text-2xl font-black text-slate-950">
               Related Construction Calculators
             </h2>
 

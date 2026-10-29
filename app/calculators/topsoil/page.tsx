@@ -1,3 +1,5 @@
+import PageContents from "../../../components/PageContents";
+import CalculatorStructuredData from "../../../components/CalculatorStructuredData";
 import CalculatorReading from "../../../components/CalculatorReading";
 import type { Metadata } from "next";
 
@@ -57,9 +59,9 @@ export const metadata: Metadata = {
 
     images: [
       {
-        url: "/cornerspan-topsoil-calculator-hero.webp",
-        width: 1536,
-        height: 1024,
+        url: "/cornerspan-topsoil-calculator-hero-optimized.webp",
+        width: 1200,
+        height: 600,
         alt: "CornerSpan Topsoil Calculator",
       },
     ],
@@ -74,7 +76,7 @@ export const metadata: Metadata = {
       "Calculate how much topsoil you need in cubic yards, tons and bags.",
 
     images: [
-      "/cornerspan-topsoil-calculator-hero.webp",
+      "/cornerspan-topsoil-calculator-hero-optimized.webp",
     ],
   },
 };
@@ -126,6 +128,7 @@ const faqs = [
 export default function TopsoilPage() {
   return (
     <>
+      <CalculatorStructuredData name="Topsoil Calculator" path="/calculators/topsoil" description={metadata.description ?? undefined} />
       <Breadcrumb current="Topsoil Calculator" />
 
       <div className="mx-auto w-full max-w-7xl px-4 pb-16 sm:px-6 lg:px-8">
@@ -135,9 +138,10 @@ export default function TopsoilPage() {
           <TopsoilCalculator />
         </div>
 
+        <PageContents items={[["how-to-calculate-topsoil", "How to Calculate Topsoil"], ["topsoil-calculator-example", "Topsoil Calculator Example"], ["common-topsoil-uses", "Common Topsoil Uses"], ["topsoil-calculation-formulas", "Topsoil Calculation Formulas"], ["frequently-asked-questions", "Frequently Asked Questions"], ["important-note-about-soil-density", "Important Note About Soil Density"]]} />
         {/* How To Calculate */}
         <section className="mx-auto mt-12 max-w-4xl">
-          <h2 className="text-2xl font-bold tracking-tight text-slate-900">
+          <h2 id="how-to-calculate-topsoil" className="scroll-mt-28 text-2xl font-bold tracking-tight text-slate-900">
             How to Calculate Topsoil
           </h2>
 
@@ -186,7 +190,7 @@ export default function TopsoilPage() {
 
         {/* Example */}
         <section className="mx-auto mt-12 max-w-4xl">
-          <h2 className="text-2xl font-bold tracking-tight text-slate-900">
+          <h2 id="topsoil-calculator-example" className="scroll-mt-28 text-2xl font-bold tracking-tight text-slate-900">
             Topsoil Calculator Example
           </h2>
 
@@ -203,7 +207,7 @@ export default function TopsoilPage() {
 
         {/* Common Uses */}
         <section className="mx-auto mt-12 max-w-4xl">
-          <h2 className="text-2xl font-bold tracking-tight text-slate-900">
+          <h2 id="common-topsoil-uses" className="scroll-mt-28 text-2xl font-bold tracking-tight text-slate-900">
             Common Topsoil Uses
           </h2>
 
@@ -230,7 +234,7 @@ export default function TopsoilPage() {
 
         {/* Formulas */}
         <section className="mx-auto mt-12 max-w-4xl">
-          <h2 className="text-2xl font-bold tracking-tight text-slate-900">
+          <h2 id="topsoil-calculation-formulas" className="scroll-mt-28 text-2xl font-bold tracking-tight text-slate-900">
             Topsoil Calculation Formulas
           </h2>
 
@@ -271,7 +275,7 @@ export default function TopsoilPage() {
 
         {/* FAQ */}
         <section className="mx-auto mt-12 max-w-4xl">
-          <h2 className="text-2xl font-bold tracking-tight text-slate-900">
+          <h2 id="frequently-asked-questions" className="scroll-mt-28 text-2xl font-bold tracking-tight text-slate-900">
             Frequently Asked Questions
           </h2>
 
@@ -300,7 +304,7 @@ export default function TopsoilPage() {
 
         {/* Important Note */}
         <section className="mx-auto mt-10 max-w-4xl rounded-2xl border border-amber-200 bg-amber-50 p-5">
-          <h2 className="font-bold text-amber-900">
+          <h2 id="important-note-about-soil-density" className="scroll-mt-28 font-bold text-amber-900">
             Important Note About Soil Density
           </h2>
 

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import type { Metadata } from "next";
 import { blogPosts } from "../../../../data/blog";
 
@@ -9,9 +9,9 @@ type Props = {
 
 function normalizeTag(value: string) {
   try {
-    return decodeURIComponent(value).toLowerCase();
+    return decodeURIComponent(value).toLowerCase().trim().replace(/\s+/g, "-");
   } catch {
-    return value.toLowerCase();
+    return value.toLowerCase().trim().replace(/\s+/g, "-");
   }
 }
 
@@ -62,6 +62,7 @@ export async function generateMetadata({
 export default async function TagPage({ params }: Props) {
   const { tag: rawTag } = await params;
   const tag = normalizeTag(rawTag);
+  if (decodeURIComponent(rawTag) !== tag) permanentRedirect(`/blog/tag/${tag}`);
 
   const posts = blogPosts.filter((post) =>
     post.tags.some(

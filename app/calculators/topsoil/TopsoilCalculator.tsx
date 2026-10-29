@@ -623,7 +623,7 @@ if (![length,width,depth,density,bagSize].every(v => validInput(v, true)) || ![w
 <details className="my-5 rounded-xl border border-slate-200 bg-white p-4"><summary className="cursor-pointer text-sm font-semibold text-slate-600">Project illustration</summary><div className="mx-auto mt-4 max-w-xl"><div className="bg-white px-3 pt-3 sm:px-4 sm:pt-4">
         <div className="relative overflow-hidden rounded-xl">
           <Image
-            src="/cornerspan-topsoil-calculator-hero.webp"
+            src="/cornerspan-topsoil-calculator-hero-optimized.webp"
             alt="Topsoil Calculator for lawns, gardens and landscaping projects"
             width={1536}
             height={1024}

@@ -1,3 +1,5 @@
+import Image from "next/image";
+import { articleImages } from "../data/article-images";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
@@ -39,13 +41,15 @@ export function ReferenceTable({ caption, headers, rows }: {
 }
 
 export default function ReferenceArticle({ title, description, path, collection = "guides", publishedAt, sections, faqs, faqId = "faq", children }: Props) {
+  const illustration = articleImages[path];
+  const modifiedAt = illustration ? "2026-10-29" : "2026-10-28";
   const origin = "https://www.cornerspan.com";
   const url = `${origin}${path}`;
   const collectionTitle = collection === "guides" ? "Construction Guides" : "Construction Articles";
   const data = { "@context": "https://schema.org", "@graph": [
     { "@type": "Article", "@id": `${url}#article`, headline: title, description, mainEntityOfPage: url, inLanguage: "en-US",
-      dateModified: "2026-10-28", ...(publishedAt ? { datePublished: publishedAt } : {}),
-      author: { "@type": "Organization", name: "CornerSpan", url: `${origin}/about#content-method` },
+      dateModified: modifiedAt, ...(illustration ? { image: `${origin}${illustration.social}` } : {}), ...(publishedAt ? { datePublished: publishedAt } : {}),
+      author: { "@type": "Organization", name: "CornerSpan", url: `${origin}/about#publisher` },
       publisher: { "@type": "Organization", name: "CornerSpan", url: origin } },
     { "@type": "BreadcrumbList", itemListElement: [
       { "@type": "ListItem", position: 1, name: "Home", item: origin },
@@ -57,8 +61,12 @@ export default function ReferenceArticle({ title, description, path, collection 
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data).replace(/</g, "\\u003c") }} />
     <Link href={`/${collection}`} className="article-back font-semibold text-blue-700">← {collectionTitle}</Link>
     <h1 className="mt-5 text-3xl font-extrabold tracking-tight text-slate-950 sm:text-4xl">{title}</h1>
-    <p className="mt-4 text-sm text-slate-600">By <Link href="/about#content-method">CornerSpan</Link> · Updated <time dateTime="2026-10-28">October 28, 2026</time></p>
+    <p className="mt-4 text-sm text-slate-600">By <Link href="/about#publisher">CornerSpan</Link> · Updated <time dateTime={modifiedAt}>{illustration ? "October 29, 2026" : "October 28, 2026"}</time></p>
     <p className="mt-5 text-lg">{description}</p>
+    {illustration && <figure className="mt-7 overflow-hidden rounded-xl border border-slate-200 bg-slate-50">
+      <Image src={illustration.src} alt={illustration.alt} width={illustration.width} height={illustration.height} sizes="(max-width: 768px) 100vw, 848px" unoptimized className="h-auto w-full" />
+      <figcaption className="border-t border-slate-200 p-4 text-sm leading-6 text-slate-600">{illustration.caption}</figcaption>
+    </figure>}
     <nav aria-label="Table of contents" className="mt-7 rounded-xl border border-slate-200 bg-slate-50 p-5">
       <h2 className="text-lg font-bold text-slate-950">On this page</h2>
       <ul className="mt-3 grid gap-3 sm:grid-cols-2">{sections.map(([id, label]) => <li key={id}><a href={`#${id}`}>{label}</a></li>)}</ul>

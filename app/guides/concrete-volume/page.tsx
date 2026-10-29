@@ -1,13 +1,15 @@
+import { articleImages } from "../../../data/article-images";
 import Link from "next/link";
 import type { Metadata } from "next";
 import ReferenceArticle, { ReferenceSection as Section, ReferenceTable as Table } from "../../../components/ReferenceArticle";
 
 const title = "Concrete Volume Takeoff: Sections, Openings & Depth";
-const description = "Build a concrete quantity sheet for a pour with several sections. Deduct openings, separate thickened edges and check varying depths before converting the total to cubic yards.";
+const description = "Calculate concrete by section. Deduct openings, separate thickened edges and depth zones, then convert the combined volume to cubic yards for ordering.";
+const illustration = articleImages["/guides/concrete-volume"];
 export const metadata: Metadata = {
   title, description, alternates: { canonical: "/guides/concrete-volume" },
-  openGraph: { title, description, type: "article", locale: "en_US", url: "https://www.cornerspan.com/guides/concrete-volume", modifiedTime: "2026-10-28" },
-  twitter: { card: "summary", title, description },
+  openGraph: { title, description, type: "article", locale: "en_US", url: "https://www.cornerspan.com/guides/concrete-volume", modifiedTime: "2026-10-29", images: [{ url: illustration.social, width: 1200, height: 675, alt: illustration.alt }] },
+  twitter: { card: "summary_large_image", title, description, images: [illustration.social] },
 };
 const sections: [string, string][] = [
   ["worksheet", "Set up the quantity sheet"], ["formula", "Choose a volume formula"],
@@ -48,17 +50,7 @@ export default function ConcreteVolumeGuide() {
     </Section>
     <Section id="slab-example" title="Worked takeoff: an L-shaped pour with an opening">
       <p>Suppose section A is 20 × 12 feet and section B is an adjoining 8 × 6 feet. The two rectangles share an edge but no area. Both are 4 inches deep. A 3 × 2-foot opening inside A remains empty through the full depth.</p>
-      <figure className="overflow-hidden rounded-xl border border-slate-200 bg-slate-50 p-4">
-        <svg viewBox="0 0 720 380" className="h-auto w-full" role="img" aria-labelledby="pour-plan-title pour-plan-desc">
-          <title id="pour-plan-title">Two non-overlapping pour sections and one opening</title>
-          <desc id="pour-plan-desc">A is 20 by 12 feet. B is 8 by 6 feet, attached at the lower right of A. A 3 by 2-foot opening is deducted from A. Both sections are 4 inches deep.</desc>
-          <rect x="28" y="32" width="440" height="264" fill="#dbeafe" stroke="#1d4ed8" strokeWidth="3" />
-          <rect x="468" y="164" width="176" height="132" fill="#cffafe" stroke="#0e7490" strokeWidth="3" />
-          <rect x="94" y="208" width="66" height="44" fill="#fff7ed" stroke="#c2410c" strokeWidth="3" />
-          <g fill="#0f172a" fontFamily="sans-serif" textAnchor="middle"><text x="248" y="100" fontSize="28" fontWeight="700">A: 20 × 12 ft</text><text x="248" y="137" fontSize="21">240 sq ft</text><text x="556" y="215" fontSize="24" fontWeight="700">B: 8 × 6 ft</text><text x="556" y="247" fontSize="20">48 sq ft</text><text x="127" y="282" fontSize="17">O1: 3 × 2 ft</text><text x="336" y="345" fontSize="21">Shared edge; no overlapping area</text></g>
-        </svg>
-        <figcaption className="mt-2 text-sm">Illustrative plan for quantity calculation; it does not specify a construction detail.</figcaption>
-      </figure>
+      
       <Table caption="Takeoff at 4 inches deep; O1 is already inside the gross area of A." headers={["Row", "Calculation", "Add / deduct (cu ft)"]} rows={[
         ["A: main slab", "20 × 12 × 4/12", "+80"], ["B: adjoining section", "8 × 6 × 4/12", "+16"],
         ["O1: full-depth opening", "3 × 2 × 4/12", "−2"], ["Geometric total", "80 + 16 − 2", "94"],

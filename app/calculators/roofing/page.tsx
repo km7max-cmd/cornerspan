@@ -11,7 +11,7 @@ const SITE_URL = "https://www.cornerspan.com";
 const PAGE_URL = `${SITE_URL}/calculators/roofing`;
 
 export const metadata: Metadata = {
-  title: "Roofing Calculator | Roof Area, Squares, Shingles & Cost",
+  title: "Roofing Calculator: Area, Squares & Shingles",
   description:
     "Free roofing calculator to estimate roof area, roofing squares, shingle bundles, waste and material cost from building dimensions and roof pitch.",
   keywords: [
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: "Roofing Calculator | Roof Area, Squares, Shingles & Cost",
+    title: "Roofing Calculator: Area, Squares & Shingles",
     description:
       "Estimate roof surface area, roofing squares, shingle bundles, waste and material cost.",
     url: PAGE_URL,
@@ -63,7 +63,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Roofing Calculator | Roof Area, Squares, Shingles & Cost",
+    title: "Roofing Calculator: Area, Squares & Shingles",
     description:
       "Free roofing calculator for roof area, squares, shingle bundles and cost.",
     images: ["/og-image.png"],
@@ -493,12 +493,12 @@ export default function RoofingPage() {
 
             <li>
               <a
-                href="https://betterbuildingssolutioncenter.energy.gov/roofs"
+                href="https://www.energy.gov/sites/default/files/guide_to_cool_roofs.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="font-semibold text-blue-700 underline underline-offset-4"
               >
-                Better Buildings: Roofing Resources
+                U.S. Department of Energy: Guide to Cool Roofs (PDF)
               </a>
               {" — "}Read about roofing systems and building energy efficiency.
             </li>

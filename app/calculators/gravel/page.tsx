@@ -494,34 +494,23 @@ export default function GravelPage() {
 
             <li>
               <a
-                href="https://www.usgs.gov/"
+                href="https://www.usgs.gov/centers/national-minerals-information-center/construction-sand-and-gravel-statistics-and"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="font-semibold text-blue-700 hover:underline"
               >
-                U.S. Geological Survey (USGS)
+                USGS: Construction Sand and Gravel
               </a>
             </li>
 
             <li>
               <a
-                href="https://www.fhwa.dot.gov/"
+                href="https://www.fhwa.dot.gov/publications/research/infrastructure/pavements/97148/073.cfm"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="font-semibold text-blue-700 hover:underline"
               >
-                Federal Highway Administration (FHWA)
-              </a>
-            </li>
-
-            <li>
-              <a
-                href="https://www.nrmca.org/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-semibold text-blue-700 hover:underline"
-              >
-                National Ready Mixed Concrete Association
+                FHWA: Granular Base Materials and Properties
               </a>
             </li>
 

@@ -880,28 +880,14 @@ export default function FencePage() {
 
               <li>
                 <a
-                  href="https://www.nrcs.usda.gov/"
+                  href="https://www.nrcs.usda.gov/resources/guides-and-instructions/fence-ft-382-conservation-practice-standard"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="font-semibold text-blue-700 hover:underline"
                 >
-                  USDA Natural Resources Conservation Service
+                  USDA NRCS: Fence Conservation Practice Standard 382
                 </a>{" "}
-                — Soil and site information that can be useful when
-                planning construction projects.
-              </li>
-
-              <li>
-                <a
-                  href="https://awc.org/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="font-semibold text-blue-700 hover:underline"
-                >
-                  American Wood Council
-                </a>{" "}
-                — Technical information and resources related to wood
-                construction.
+                — Agricultural and conservation fencing guidance. Use the applicable state standard; this is not a residential fence code.
               </li>
             </ul>
           </section>

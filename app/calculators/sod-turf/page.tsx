@@ -14,7 +14,7 @@ const heroImage = "/cornerspan-sod-turf-calculator-hero.webp";
 export const metadata: Metadata = {
   title: "Sod Calculator: How Much Sod Do I Need?",
   description:
-    "Calculate how much sod you need with lawn dimensions, sod coverage, waste allowance, rolls, pallets, and material costs. Includes instructions, formulas, examples, and FAQs.",
+    "Estimate sod or turf area, rolls, pallets and material cost. Add measured lawn sections, allow for waste and check supplier coverage before ordering.",
   keywords: [
     "sod calculator",
     "how much sod do I need",
@@ -624,7 +624,7 @@ export default function SodTurfPage() {
             <ul className="mt-4 list-disc space-y-3 pl-6 leading-7 text-slate-700">
               <li>
                 <a
-                  href="https://extension.umn.edu/lawn-care/seeding-and-sodding-home-lawns"
+                  href="https://extension.umn.edu/garden-and-home/yard-and-garden/lawns-and-landscapes-in-minnesota/seeding-and-sodding-home-lawns"
                   target="_blank"
                   rel="noopener noreferrer"
                   className={internalLinkClass}

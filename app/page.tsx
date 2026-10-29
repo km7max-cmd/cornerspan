@@ -61,7 +61,7 @@ const organizationSchema = {
   "@type": "Organization",
   name: "CornerSpan",
   url: "https://www.cornerspan.com/",
-  logo: "https://www.cornerspan.com/og-image.png",
+  logo: "https://www.cornerspan.com/logo-optimized.webp",
 };
 
 const faqSchema = {

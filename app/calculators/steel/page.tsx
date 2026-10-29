@@ -1,3 +1,5 @@
+import PageContents from "../../../components/PageContents";
+import CalculatorStructuredData from "../../../components/CalculatorStructuredData";
 import CalculatorReading from "../../../components/CalculatorReading";
 import type { Metadata } from "next";
 import SteelCalculator from "./SteelCalculator";
@@ -88,11 +90,13 @@ const faqs = [
 export default function SteelPage() {
   return (
     <>
+      <CalculatorStructuredData name="Steel Calculator" path="/calculators/steel" description={metadata.description ?? undefined} />
       <SteelCalculator />
+      <div className="px-4 sm:px-6"><PageContents items={[["steel-weight-formula", "Steel Weight Formula"], ["rebar-weight-chart", "Rebar Weight Chart"], ["how-to-calculate-steel-weight", "How to Calculate Steel Weight"], ["common-uses-for-a-steel-calculator", "Common Uses for a Steel Calculator"], ["frequently-asked-questions", "Frequently Asked Questions"], ["important-note", "Important Note"], ["related-construction-calculators", "Related Construction Calculators"]]} /></div>
 
       <div className="mx-auto max-w-5xl px-4 pb-12 sm:px-6">
         <section className="mt-10 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-          <h2 className="text-2xl font-bold text-slate-900">
+          <h2 id="steel-weight-formula" className="scroll-mt-28 text-2xl font-bold text-slate-900">
             Steel Weight Formula
           </h2>
 
@@ -123,7 +127,7 @@ export default function SteelPage() {
         </section>
 
         <section className="mt-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-          <h2 className="text-2xl font-bold text-slate-900">
+          <h2 id="rebar-weight-chart" className="scroll-mt-28 text-2xl font-bold text-slate-900">
             Rebar Weight Chart
           </h2>
 
@@ -169,7 +173,7 @@ export default function SteelPage() {
         </section>
 
         <section className="mt-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-          <h2 className="text-2xl font-bold text-slate-900">
+          <h2 id="how-to-calculate-steel-weight" className="scroll-mt-28 text-2xl font-bold text-slate-900">
             How to Calculate Steel Weight
           </h2>
 
@@ -200,7 +204,7 @@ export default function SteelPage() {
         </section>
 
         <section className="mt-8">
-          <h2 className="text-2xl font-bold text-slate-900">
+          <h2 id="common-uses-for-a-steel-calculator" className="scroll-mt-28 text-2xl font-bold text-slate-900">
             Common Uses for a Steel Calculator
           </h2>
 
@@ -224,7 +228,7 @@ export default function SteelPage() {
         </section>
 
         <section className="mt-10">
-          <h2 className="text-2xl font-bold text-slate-900">
+          <h2 id="frequently-asked-questions" className="scroll-mt-28 text-2xl font-bold text-slate-900">
             Frequently Asked Questions
           </h2>
 
@@ -247,7 +251,7 @@ export default function SteelPage() {
         </section>
 
         <section className="mt-10 rounded-2xl border border-amber-200 bg-amber-50 p-6">
-          <h2 className="text-lg font-bold text-slate-900">
+          <h2 id="important-note" className="scroll-mt-28 text-lg font-bold text-slate-900">
             Important Note
           </h2>
 
@@ -260,7 +264,7 @@ export default function SteelPage() {
         </section>
 
         <section className="mt-10">
-          <h2 className="text-2xl font-bold text-slate-900">
+          <h2 id="related-construction-calculators" className="scroll-mt-28 text-2xl font-bold text-slate-900">
             Related Construction Calculators
           </h2>
 

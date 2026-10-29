@@ -1,3 +1,4 @@
+import CalculatorStructuredData from "../../../components/CalculatorStructuredData";
 import CalculatorReading from "../../../components/CalculatorReading";
 import type { Metadata } from "next";
 
@@ -9,7 +10,7 @@ export const metadata: Metadata = {
   title: "Asphalt Calculator | Tons, Tonnes, Cubic Yards & Cost",
 
   description:
-    "Free asphalt calculator with Imperial and Metric units. Estimate asphalt tons, tonnes, cubic yards, cubic meters, volume and material cost for driveways, parking lots, roads and paving projects.",
+    "Estimate asphalt volume, US tons and material cost from area, depth and density. Include waste, compare unit prices and check the worked example.",
 
   keywords: [
     "asphalt calculator",
@@ -172,6 +173,7 @@ const structuredData = {
 export default function AsphaltPage() {
   return (
     <>
+      <CalculatorStructuredData name="Asphalt Calculator" path="/calculators/asphalt" application={false} />
       <Breadcrumb current="Asphalt Calculator" />
 
       {/* STRUCTURED DATA */}

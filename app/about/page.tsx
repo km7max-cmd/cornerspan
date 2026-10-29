@@ -10,11 +10,21 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   return <article className="mx-auto max-w-4xl px-5 py-10 text-slate-700 sm:px-6 [&_p]:leading-8 [&_a]:text-blue-700 [&_a]:underline [&_a]:underline-offset-4">
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+      "@context": "https://schema.org", "@type": "AboutPage", url: "https://www.cornerspan.com/about", name: "About CornerSpan",
+      mainEntity: { "@type": "Organization", "@id": "https://www.cornerspan.com/about#publisher", name: "CornerSpan", url: "https://www.cornerspan.com", logo: "https://www.cornerspan.com/logo-optimized.webp", contactPoint: { "@type": "ContactPoint", contactType: "Editorial corrections and website support", url: "https://www.cornerspan.com/contact" } }
+    }).replace(/</g, "\\u003c") }} />
     <p className="text-sm font-bold uppercase tracking-wider text-blue-700">About CornerSpan</p>
     <h1 className="mt-3 text-3xl font-extrabold tracking-tight text-slate-950 sm:text-4xl">Construction estimates you can check</h1>
     <p className="mt-5 text-lg">CornerSpan publishes free construction calculators and practical quantity-estimating resources. The aim is to help you trace a result from your measurements through units, coverage assumptions and purchase rounding.</p>
     <p className="mt-4">The site is written for US estimating conventions: feet, inches, square feet, cubic yards, pounds and US short tons, with USD examples. Where a tool supports metric units, its units are shown with the input or result.</p>
 
+    <section id="publisher" className="mt-10 scroll-mt-28 space-y-4 border-t border-slate-200 pt-8">
+      <h2 className="text-2xl font-bold text-slate-950">Publisher and editorial responsibility</h2>
+      <p>CornerSpan is the organization publisher responsible for this website, its calculator explanations, worked examples and corrections. A CornerSpan byline identifies that publishing responsibility; it does not identify a licensed engineer or claim independent professional review.</p>
+      <p>To reach the publisher, use the <Link href="/contact">CornerSpan contact page</Link>. For a calculation or content correction, include the page URL, input values, units, expected result and a supporting reference where available. The <a href="#content-method">checking method below</a> explains how examples are reviewed.</p>
+      <p>Articles show their update date when their content changes. Supplier prices, product coverage and local project requirements must be checked against the actual job before purchasing.</p>
+    </section>
     <section className="mt-10 space-y-4 border-t border-slate-200 pt-8">
       <h2 className="text-2xl font-bold text-slate-950">Three ways to use the site</h2>
       <ul className="list-disc space-y-4 pl-6 leading-8">

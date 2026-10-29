@@ -1,15 +1,17 @@
+import { articleImages } from "./article-images";
 import { planningArticles } from "./planning-articles";
 
 export type ArticleTable = { caption: string; headers: string[]; rows: string[][] };
 
 export type CalculatorArticle = {
+ seoTitle?: string;
  imageAlt?: string;
  imageCaption?: string;
  exampleLink?: { href: string; label: string };
  slug:string; title:string; description:string; category:string; tags:string[]; calculatorHref:string; publishedAt:string; modifiedAt:string; intro:string[]; formula:string; example:string[][]; sections:{id:string;title:string;paragraphs:string[];table?:ArticleTable}[]; mistakes:string[]; faqs:{question:string;answer:string}[]; sources:{label:string;href:string}[]; image:string|null; related:string[];
 };
 
-export const calculatorArticles: CalculatorArticle[] = [
+const articles: CalculatorArticle[] = [
   ...planningArticles,
   {
     "slug": "paver-calculation-guide",
@@ -851,7 +853,7 @@ export const calculatorArticles: CalculatorArticle[] = [
         "href": "https://extension.oregonstate.edu/catalog/fs-270-raised-bed-gardening"
       }
     ],
-    "image": "/cornerspan-topsoil-calculator-hero.webp",
+    "image": "/cornerspan-topsoil-calculator-hero-optimized.webp",
     "related": [
       "/blog/sod-turf-calculation-guide",
       "/blog/gravel-calculation-guide"
@@ -2230,3 +2232,8 @@ export const calculatorArticles: CalculatorArticle[] = [
     ]
   }
 ];
+
+export const calculatorArticles: CalculatorArticle[] = articles.map(article => {
+  const illustration = articleImages[`/blog/${article.slug}`];
+  return illustration ? { ...article, image: illustration.src, imageAlt: illustration.alt, imageCaption: illustration.caption, modifiedAt: "2026-10-29" } : article;
+});

@@ -103,7 +103,7 @@ export default function RootLayout({
         <ThemeProvider>
           <Header />
 
-          <main className="pt-[76px]">
+          <main className="min-h-screen min-h-[100svh] pt-[76px]">
             {children}
           </main>
 

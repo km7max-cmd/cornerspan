@@ -50,7 +50,7 @@ const existingPosts: BlogPost[] = [
     category: "Brick",
     tags: ["brick", "retaining-wall", "masonry", "construction"],
     publishedAt: "2026-10-18",
-    modifiedAt: "2026-10-28",
+    modifiedAt: "2026-10-29",
     calculatorHref: "/calculators/brick",
   },
   {
@@ -60,10 +60,10 @@ const existingPosts: BlogPost[] = [
       "Learn the trapezoid area formula with worked examples in square feet and square meters, a calculation table, measurement tips, and common mistakes.",
     category: "Measurements",
     tags: [
-      "trapezoid area",
-      "area calculation",
+      "trapezoid-area",
+      "area-calculation",
       "geometry",
-      "square feet",
+      "square-feet",
       "measurements",
     ],
     publishedAt: "2026-10-23",

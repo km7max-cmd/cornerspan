@@ -1,7 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  images: { imageSizes: [16, 32, 48, 64, 96, 128, 220, 256, 384, 440] },
   async redirects() {
     return [
+      { source: "/blog/tag/area%20calculation", destination: "/blog/tag/area-calculation", permanent: true },
+      { source: "/blog/tag/trapezoid%20area", destination: "/blog/tag/trapezoid-area", permanent: true },
+      { source: "/blog/tag/square%20feet", destination: "/blog/tag/square-feet", permanent: true },
       // Malformed URLs found in Google Search Console
       {
         source: "/\\$",

@@ -3,6 +3,7 @@ import type { CalculatorArticle } from "./calculator-articles";
 export const planningArticles: CalculatorArticle[] = [
   {
     "slug": "how-to-use-a-construction-calculator",
+    "seoTitle": "How to Use a Construction Calculator",
     "title": "How to Use a Construction Calculator: Units to Order Quantities",
     "description": "Choose the right construction calculator, enter feet and inches correctly, and check area, volume and purchase quantities with a reproducible example.",
     "category": "Estimating",
@@ -151,6 +152,7 @@ export const planningArticles: CalculatorArticle[] = [
   },
   {
     "slug": "construction-material-takeoff-checklist",
+    "seoTitle": "Construction Material Takeoff Checklist",
     "title": "Construction Material Takeoff Checklist: A Patio Example",
     "description": "Build a traceable material takeoff for a 12x10 patio: separate pavers, base, bedding and edging, record units, and check packaging and missing scope.",
     "category": "Estimating",
@@ -306,6 +308,7 @@ export const planningArticles: CalculatorArticle[] = [
   },
   {
     "slug": "how-to-calculate-construction-project-cost",
+    "seoTitle": "How to Calculate Construction Project Cost",
     "title": "How to Calculate Construction Project Cost: A Worked Budget",
     "description": "Turn measured quantities into a project budget. Compare supplier quotes, calculate person-hours, separate delivery and equipment, and label missing costs.",
     "category": "Estimating",

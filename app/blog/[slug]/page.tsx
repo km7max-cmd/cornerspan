@@ -1,3 +1,4 @@
+import { articleImages } from "../../../data/article-images";
 import { calculatorArticles } from "../../../data/calculator-articles";
 import CalculatorArticle from "../../../components/blog/CalculatorArticle";
 import Link from "next/link";
@@ -32,12 +33,14 @@ export async function generateMetadata({
 
   const article = calculatorArticles.find(item => item.slug === slug);
   if (article) {
-    const image = article.image && !article.image.endsWith(".svg") ? article.image : "/og-image.png";
+    const illustration = articleImages[`/blog/${slug}`];
+    const image = illustration?.social ?? (article.image && !article.image.endsWith(".svg") ? article.image : "/og-image.webp");
+    const seoTitle = article.seoTitle ?? article.title;
     return {
-      title:article.title, description:article.description,
+      title:seoTitle, description:article.description,
       alternates:{canonical:`/blog/${slug}`},
-      openGraph:{title:article.title, description:article.description, type:"article", url:`https://www.cornerspan.com/blog/${slug}`, locale:"en_US", publishedTime:article.publishedAt, modifiedTime:article.modifiedAt, images:[{url:image,alt:article.title}]},
-      twitter:{card:"summary_large_image",title:article.title,description:article.description,images:[image]},
+      openGraph:{title:seoTitle, description:article.description, type:"article", url:`https://www.cornerspan.com/blog/${slug}`, locale:"en_US", publishedTime:article.publishedAt, modifiedTime:illustration ? "2026-10-29" : article.modifiedAt, images:[{url:image,alt:illustration?.alt ?? article.imageAlt ?? article.title}]},
+      twitter:{card:"summary_large_image",title:seoTitle,description:article.description,images:[image]},
       robots:{index:true,follow:true,googleBot:{index:true,follow:true,"max-image-preview":"large"}},
     };
   }
@@ -108,6 +111,7 @@ export async function generateMetadata({
   /*
    * Other blog posts
    */
+  const illustration = articleImages[`/blog/${slug}`];
   return {
     title: post.title,
     description: post.description,
@@ -118,12 +122,14 @@ export async function generateMetadata({
       title: post.title,
       description: post.description,
       type: "article",
+      images: illustration ? [{ url: illustration.social, width: 1200, height: 675, alt: illustration.alt }] : undefined,
       locale: "en_US",
       url: `https://www.cornerspan.com/blog/${post.slug}`,
       publishedTime: post.publishedAt,
-      modifiedTime: post.modifiedAt ?? post.publishedAt,
+      modifiedTime: illustration ? "2026-10-29" : post.modifiedAt ?? post.publishedAt,
     },
-    twitter: { card: "summary", title: post.title, description: post.description },
+    twitter: { card: "summary_large_image",
+      images: illustration ? [illustration.social] : undefined, title: post.title, description: post.description },
     robots: {
       index: true,
       follow: true,

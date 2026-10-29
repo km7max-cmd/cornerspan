@@ -1,3 +1,5 @@
+import PageContents from "../../../components/PageContents";
+import CalculatorStructuredData from "../../../components/CalculatorStructuredData";
 import CalculatorReading from "../../../components/CalculatorReading";
 import type { Metadata } from "next";
 import TileCalculator from "./TileCalculator";
@@ -129,13 +131,15 @@ const faqs = [
 export default function TileCalculatorPage() {
   return (
     <>
+      <CalculatorStructuredData name="Tile Calculator" path="/calculators/tile" description={metadata.description ?? undefined} />
       <TileCalculator />
+      <div className="px-4 sm:px-6"><PageContents items={[["how-to-calculate-tile-quantity", "How to Calculate Tile Quantity"], ["tile-area-formula", "Tile Area Formula"], ["tile-calculator-example", "Tile Calculator Example"], ["common-tile-calculator-uses", "Common Tile Calculator Uses"], ["tile-calculator-faq", "Tile Calculator FAQ"], ["important-note", "Important Note"]]} /></div>
 
       <div className="mx-auto max-w-5xl px-4 pb-12 sm:px-6">
 
         {/* How to Calculate */}
         <section className="mt-10">
-          <h2 className="text-2xl font-bold text-slate-900">
+          <h2 id="how-to-calculate-tile-quantity" className="scroll-mt-28 text-2xl font-bold text-slate-900">
             How to Calculate Tile Quantity
           </h2>
 
@@ -173,7 +177,7 @@ export default function TileCalculatorPage() {
 
         {/* Tile Area */}
         <section className="mt-10">
-          <h2 className="text-2xl font-bold text-slate-900">
+          <h2 id="tile-area-formula" className="scroll-mt-28 text-2xl font-bold text-slate-900">
             Tile Area Formula
           </h2>
 
@@ -191,7 +195,7 @@ export default function TileCalculatorPage() {
 
         {/* Example */}
         <section className="mt-10">
-          <h2 className="text-2xl font-bold text-slate-900">
+          <h2 id="tile-calculator-example" className="scroll-mt-28 text-2xl font-bold text-slate-900">
             Tile Calculator Example
           </h2>
 
@@ -250,7 +254,7 @@ export default function TileCalculatorPage() {
 
         {/* Common Uses */}
         <section className="mt-10">
-          <h2 className="text-2xl font-bold text-slate-900">
+          <h2 id="common-tile-calculator-uses" className="scroll-mt-28 text-2xl font-bold text-slate-900">
             Common Tile Calculator Uses
           </h2>
 
@@ -279,7 +283,7 @@ export default function TileCalculatorPage() {
 
         {/* FAQ */}
         <section className="mt-10">
-          <h2 className="text-2xl font-bold text-slate-900">
+          <h2 id="tile-calculator-faq" className="scroll-mt-28 text-2xl font-bold text-slate-900">
             Tile Calculator FAQ
           </h2>
 
@@ -309,7 +313,7 @@ export default function TileCalculatorPage() {
         {/* Important Note */}
         <section className="mt-10 rounded-2xl border border-slate-200 bg-slate-50 p-5">
 
-          <h2 className="font-bold text-slate-900">
+          <h2 id="important-note" className="scroll-mt-28 font-bold text-slate-900">
             Important Note
           </h2>
 

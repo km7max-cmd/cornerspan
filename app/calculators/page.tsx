@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   title: "Construction Calculators | Free Online Calculators",
 
   description:
-    "Free construction calculators for concrete, brick, steel, roofing, fence, gravel, topsoil, asphalt, tile, paint, pavers, area and square footage. Calculate materials, quantities and costs.",
+    "Free construction calculators for concrete, brick, area, roofing and landscaping. Estimate quantities, waste and material costs with formulas and examples.",
 
   keywords: [
     "construction calculators",

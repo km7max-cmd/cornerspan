@@ -1,3 +1,4 @@
+import CalculatorStructuredData from "../../../components/CalculatorStructuredData";
 import CalculatorReading from "../../../components/CalculatorReading";
 import type { Metadata } from "next";
 import Image from "next/image";
@@ -32,7 +33,7 @@ const imageUrl = "https://www.cornerspan.com/paint-calculator.webp";
 export const metadata: Metadata = {
   title: "Paint Calculator | How Much Paint Do I Need?",
   description:
-    "Use this free paint calculator to estimate gallons of paint for walls and ceilings. Calculate room dimensions, paint coverage, coats, doors, windows, and estimated painting costs.",
+    "Estimate wall and ceiling paint from dimensions, openings, coats and coverage. Calculate gallons or liters, round containers and compare material costs.",
   keywords: [
     "paint calculator",
     "how much paint do I need",
@@ -123,6 +124,7 @@ export default function PaintCalculatorPage() {
 
   return (
     <div className="mx-auto w-full max-w-7xl px-4 pb-12 pt-6 sm:px-6 lg:px-8">
+      <CalculatorStructuredData name="Paint Calculator" path="/calculators/paint" application={false} />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{

@@ -88,6 +88,8 @@ const calculatorSchema = {
   url: pageUrl,
   applicationCategory: "UtilitiesApplication",
   operatingSystem: "Any",
+  isAccessibleForFree: true,
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
   description:
     "Calculate square footage for rooms, floors, walls, floor plans and construction projects.",
   featureList: [

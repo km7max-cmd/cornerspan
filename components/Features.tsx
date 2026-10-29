@@ -52,7 +52,7 @@ export default function Features() {
                 <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 to-cyan-500 text-2xl font-bold text-white shadow-lg shadow-blue-600/15">
                   {feature.icon}
                 </span>
-                <span className="text-sm font-bold tracking-widest text-slate-300">
+                <span className="text-sm font-bold tracking-widest text-slate-600">
                   {feature.number}
                 </span>
               </div>

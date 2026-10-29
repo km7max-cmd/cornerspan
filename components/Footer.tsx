@@ -98,7 +98,7 @@ export default function Footer() {
             className="flex h-[61px] w-[220px] shrink-0 items-center justify-center overflow-hidden"
           >
             <Image
-              src="/logo-dark.webp"
+              src="/logo-dark-optimized.webp"
               alt="CornerSpan - Construction Calculators"
               width={220}
               height={61}

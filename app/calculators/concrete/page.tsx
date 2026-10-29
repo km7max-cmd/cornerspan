@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   title: "Concrete Calculator | Volume, Materials & Cost",
 
   description:
-    "Use this free concrete calculator to estimate concrete volume, cement, sand, aggregate, water, and material cost for slabs, footings, walls, columns, and other construction projects.",
+    "Calculate concrete volume in cubic yards or meters for slabs, footings and columns. Estimate bags, waste and material cost with a worked example.",
 
   alternates: {
     canonical: PAGE_URL,

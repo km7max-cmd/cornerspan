@@ -1,13 +1,15 @@
+import { articleImages } from "../../../data/article-images";
 import Link from "next/link";
 import type { Metadata } from "next";
 import ReferenceArticle, { ReferenceSection as Section, ReferenceTable as Table } from "../../../components/ReferenceArticle";
 
 const title = "Brick Takeoff Guide: Wall Areas, Openings & Orders";
-const description = "Make a wall-by-wall brick quantity sheet. Track each opening, separate brick products and special units, then combine matching quantities before allowance and pack rounding.";
+const description = "Create a wall-by-wall brick takeoff. Deduct doors and windows, combine matching areas, then calculate allowance, whole bricks and pack quantities.";
+const illustration = articleImages["/guides/brick-calculation"];
 export const metadata: Metadata = {
   title, description, alternates: { canonical: "/guides/brick-calculation" },
-  openGraph: { title, description, type: "article", locale: "en_US", url: "https://www.cornerspan.com/guides/brick-calculation", modifiedTime: "2026-10-28" },
-  twitter: { card: "summary", title, description },
+  openGraph: { title, description, type: "article", locale: "en_US", url: "https://www.cornerspan.com/guides/brick-calculation", modifiedTime: "2026-10-29", images: [{ url: illustration.social, width: 1200, height: 675, alt: illustration.alt }] },
+  twitter: { card: "summary_large_image", title, description, images: [illustration.social] },
 };
 const sections: [string, string][] = [
   ["how-many-bricks-do-you-need-for-a-wall", "Define the brickwork being counted"],

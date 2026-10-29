@@ -35,7 +35,7 @@ export default function Header() {
         >
           {/* Light Mode Logo */}
           <Image
-            src="/logo.webp"
+            src="/logo-optimized.webp"
             alt="CornerSpan - Construction Calculators"
             sizes="220px"
             width={220}
@@ -50,7 +50,7 @@ export default function Header() {
 
           {/* Dark Mode Logo */}
           <Image
-            src="/logo-dark.webp"
+            src="/logo-dark-optimized.webp"
             alt="CornerSpan - Construction Calculators"
             sizes="220px"
             width={220}
