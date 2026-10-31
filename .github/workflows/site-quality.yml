@@ -19,6 +19,8 @@ jobs:
           node-version: '22'
       - name: Install project dependencies
         run: npm install --no-audit --no-fund
+      - name: Generate calculator inventory before regression tests
+        run: node scripts/generate-calculators.mjs
       - name: Core calculation and content regression tests
         run: |
           node scripts/test-area-sections.cjs
