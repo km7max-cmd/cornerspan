@@ -55,7 +55,8 @@ fs.mkdirSync(screenshots, {recursive:true});
       await page.locator("#area-length").fill("12");
       await page.locator("#area-width").fill("15");
       const text = await page.locator('aside[aria-label="Area result and preview"] output').innerText();
-      if (!/\b180\b/.test(text)) throw Error("12 x 15 area should be 180 sq ft; got "+text);
+      const value = Number(text.match(/[\d,]+(?:\.\d+)?/)?.[0].replaceAll(",", ""));
+      if (value !== 180) throw Error("12 x 15 area should be 180 sq ft; got "+text);
       console.log("PASS interactive area calculator 12x15 = 180 sq ft");
     } catch(e){failures.push("Area interaction: "+e.message);}
     try {
