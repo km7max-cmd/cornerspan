@@ -1,0 +1,59 @@
+name: CornerSpan website QA
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  site-quality:
+    name: Build, content and mobile calculator QA
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install project dependencies
+        run: npm install --no-audit --no-fund
+      - name: Core calculation and content regression tests
+        run: |
+          node scripts/test-area-sections.cjs
+          node scripts/test-calculator-validation.cjs
+          node scripts/test-browser-data.cjs
+          node scripts/test-pdf-download.cjs
+          node scripts/test-planning-content.cjs
+          node scripts/test-roof-pitch.cjs
+      - name: Production Next.js build
+        run: npm run build
+      - name: Start local production server
+        run: |
+          npm run start -- -p 3100 >/tmp/cornerspan-qa-server.log 2>&1 &
+          echo $! > /tmp/cornerspan-qa-server.pid
+          for n in $(seq 1 45); do
+            if curl -fsS http://127.0.0.1:3100/ >/dev/null; then exit 0; fi
+            sleep 2
+          done
+          cat /tmp/cornerspan-qa-server.log
+          exit 1
+      - name: Sitemap, all routes and article quality smoke test
+        run: node scripts/qa-site-smoke.cjs
+      - name: Install temporary browser-test tools
+        run: |
+          npm install --no-save --no-audit --no-fund playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Test mobile pages and interactive calculator examples
+        run: node scripts/qa-mobile.cjs
+      - name: Upload mobile failure screenshots
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: qa-mobile-failure-screenshots
+          path: qa-artifacts/*.png
+          if-no-files-found: ignore
+      - name: Print production server errors
+        if: failure()
+        run: tail -100 /tmp/cornerspan-qa-server.log || true
