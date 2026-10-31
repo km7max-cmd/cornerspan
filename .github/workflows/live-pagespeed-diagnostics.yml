@@ -1,0 +1,63 @@
+name: CornerSpan live Pagespeed diagnostics
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/live-pagespeed-diagnostics.yml"
+  workflow_dispatch:
+
+jobs:
+  network-probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Test DNS, HTTPS, status, TLS and response time
+        shell: bash
+        run: |
+          for host in www.cornerspan.com cornerspan.com; do
+            echo "::group::DNS for $host"
+            getent ahosts "$host" || true
+            echo "::endgroup::"
+          done
+          for url in https://www.cornerspan.com/ https://www.cornerspan.com/calculators/roofing https://www.cornerspan.com/calculators/concrete https://www.cornerspan.com/robots.txt https://www.cornerspan.com/sitemap.xml https://cornerspan.com/; do
+            echo "::group::HTTP $url"
+            for attempt in 1 2; do
+              curl -4 -sS -L -o /dev/null --connect-timeout 10 --max-time 40 -w "attempt $attempt HTTP=%{http_code} DNS=%{time_namelookup}s connect=%{time_connect}s TLS=%{time_appconnect}s TTFB=%{time_starttransfer}s total=%{time_total}s redirects=%{num_redirects} final=%{url_effective}\n" "$url" || true
+            done
+            curl -4 -sS -I --max-time 20 "$url" | head -n 18 || true
+            echo "::endgroup::"
+          done
+      - name: Install Chromium browser
+        run: |
+          npm install --no-save --no-audit --no-fund playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Browser navigation with full load and request diagnostics
+        shell: bash
+        run: |
+          node <<'NODE'
+          const {chromium}=require('playwright');
+          (async()=>{
+            const browser=await chromium.launch({headless:true});
+            const page=await browser.newPage({viewport:{width:1366,height:768}});
+            const failed=[];
+            const errors=[];
+            page.on('requestfailed',req=>failed.push({url:req.url(),error:req.failure()?.errorText}));
+            page.on('pageerror',err=>errors.push(err.message));
+            for(const url of ['https://www.cornerspan.com/','https://www.cornerspan.com/calculators/roofing']) {
+              failed.length=0;errors.length=0;
+              const start=Date.now();
+              let status='none',message='';
+              try {
+                const response=await page.goto(url,{waitUntil:'load',timeout:45000});
+                status=response?.status();
+                await page.waitForTimeout(3000);
+              }catch(e){message=e.message;}
+              console.log(JSON.stringify({url,status,elapsedMs:Date.now()-start,finalUrl:page.url(),title:await page.title().catch(()=>''),networkFailures:failed.slice(0,15),pageErrors:errors.slice(0,10),error:message}));
+            }
+            await browser.close();
+          })().catch(e=>{console.error(e);process.exitCode=1});
+          NODE
