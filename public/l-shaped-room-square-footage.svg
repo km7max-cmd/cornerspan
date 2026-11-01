@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="650" viewBox="0 0 1000 650" role="img" aria-labelledby="title desc">
+  <title id="title">L-shaped room square footage: 272 square feet</title>
+  <desc id="desc">An L-shaped floor plan with a 20-by-10-foot bottom rectangle of 200 square feet and a 12-by-6-foot upper-left rectangle of 72 square feet. The missing upper-right corner is 8 by 6 feet. Total area is 272 square feet.</desc>
+  <rect width="1000" height="650" fill="#f8fafc"/>
+  <text x="60" y="61" fill="#0f172a" font-family="Arial, sans-serif" font-size="36" font-weight="700">L-Shaped Room Square Footage</text>
+  <text x="60" y="100" fill="#475569" font-family="Arial, sans-serif" font-size="22">Two rectangles. One measured floor area.</text>
+  <g font-family="Arial, sans-serif">
+    <rect x="180" y="170" width="500" height="400" fill="none" stroke="#94a3b8" stroke-width="3" stroke-dasharray="11 10"/>
+    <path d="M180 170 H480 V320 H680 V570 H180 Z" fill="#dbeafe" stroke="#1d4ed8" stroke-width="5" stroke-linejoin="round"/>
+    <rect x="180" y="320" width="500" height="250" fill="#bfdbfe"/>
+    <path d="M180 320 H480" fill="none" stroke="#1d4ed8" stroke-width="3" stroke-dasharray="10 7"/>
+    <path d="M180 170 H480 V320 H680 V570 H180 Z" fill="none" stroke="#1d4ed8" stroke-width="5" stroke-linejoin="round"/>
+    <text x="330" y="237" fill="#1e3a8a" font-size="23" font-weight="700" text-anchor="middle">Section A</text>
+    <text x="330" y="273" fill="#1e3a8a" font-size="23" text-anchor="middle">12 × 6 ft</text>
+    <text x="330" y="304" fill="#1e3a8a" font-size="23" font-weight="700" text-anchor="middle">72 sq ft</text>
+    <text x="430" y="427" fill="#1e3a8a" font-size="27" font-weight="700" text-anchor="middle">Section B</text>
+    <text x="430" y="466" fill="#1e3a8a" font-size="25" text-anchor="middle">20 × 10 ft</text>
+    <text x="430" y="503" fill="#1e3a8a" font-size="26" font-weight="700" text-anchor="middle">200 sq ft</text>
+    <text x="580" y="222" fill="#475569" font-size="20" font-weight="700" text-anchor="middle">Missing corner</text>
+    <text x="580" y="253" fill="#475569" font-size="20" text-anchor="middle">8 × 6 ft</text>
+    <text x="580" y="284" fill="#475569" font-size="20" text-anchor="middle">48 sq ft</text>
+    <path d="M180 145 H480 M180 135 V155 M480 135 V155" stroke="#64748b" stroke-width="2"/>
+    <text x="330" y="138" fill="#334155" font-size="19" text-anchor="middle">12 ft</text>
+    <path d="M160 170 V570 M150 170 H170 M150 570 H170" stroke="#64748b" stroke-width="2"/>
+    <text x="131" y="370" fill="#334155" font-size="20" text-anchor="middle" transform="rotate(-90 131 370)">16 ft overall</text>
+    <path d="M180 601 H680 M180 591 V611 M680 591 V611" stroke="#64748b" stroke-width="2"/>
+    <text x="430" y="628" fill="#334155" font-size="21" text-anchor="middle">20 ft overall</text>
+    <rect x="725" y="178" width="235" height="275" rx="16" fill="#fff" stroke="#cbd5e1" stroke-width="2"/>
+    <text x="750" y="224" fill="#0f172a" font-size="20" font-weight="700">ADD THE SECTIONS</text>
+    <text x="750" y="268" fill="#334155" font-size="24">200 + 72</text>
+    <text x="750" y="309" fill="#1d4ed8" font-size="38" font-weight="700">272 sq ft</text>
+    <path d="M750 332 H934" stroke="#cbd5e1" stroke-width="2"/>
+    <text x="750" y="366" fill="#334155" font-size="20">Or subtract:</text>
+    <text x="750" y="402" fill="#334155" font-size="23">320 − 48 = 272</text>
+    <text x="750" y="433" fill="#64748b" font-size="16">All dimensions are examples.</text>
+    <text x="726" y="510" fill="#475569" font-size="17">Measure each section on site.</text>
+    <text x="726" y="540" fill="#475569" font-size="17">Floor area excludes the notch.</text>
+  </g>
+</svg>
