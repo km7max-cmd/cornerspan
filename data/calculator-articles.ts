@@ -1,6 +1,7 @@
 import { articleImages } from "./article-images";
 import { planningArticles } from "./planning-articles";
 import { roofPitchArticle } from "./roof-pitch-article";
+import { lShapedRoomArticle } from "./l-shaped-room-article";
 
 export type ArticleTable = { caption: string; headers: string[]; rows: string[][] };
 
@@ -14,6 +15,7 @@ export type CalculatorArticle = {
 
 const articles: CalculatorArticle[] = [
   roofPitchArticle,
+  lShapedRoomArticle,
   ...planningArticles,
   {
     "slug": "paver-calculation-guide",
