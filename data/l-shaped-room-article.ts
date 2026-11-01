@@ -56,7 +56,7 @@ export const lShapedRoomArticle: CalculatorArticle = {
   ],
   "exampleLink": {
     "href": "/calculators/area?example=l-shaped#area-mode",
-    "label": "Try the L-shaped example in the Area Calculator"
+    "label": "Load the calculator's 150 sq ft L-shape demo"
   },
   "sections": [
     {
