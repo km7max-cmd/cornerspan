@@ -287,11 +287,13 @@ export const lShapedRoomArticle: CalculatorArticle = {
       "href": "https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors/nist-guide-si-appendix-b9"
     }
   ],
-  "image": null,
+  "image": "/l-shaped-room-square-footage.svg",
   "related": [
     "/blog/square-footage-calculation-guide",
     "/blog/area-calculation-guide",
     "/calculators/square-footage",
     "/calculators/area"
-  ]
+  ],
+  "imageAlt": "Scale drawing of an L-shaped floor with a 20 by 10 ft section of 200 sq ft, a 12 by 6 ft section of 72 sq ft, and an 8 by 6 ft missing corner; total 272 sq ft.",
+  "imageCaption": "Original plan-view example. The two blue regions total 272 sq ft; the dashed upper-right corner is excluded. Dimensions are illustrative, not a measured customer floor."
 };
