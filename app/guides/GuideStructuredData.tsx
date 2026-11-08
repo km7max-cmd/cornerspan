@@ -5,11 +5,12 @@ export function FAQSchema({ faqs }: { faqs: FAQ[] }) {
     mainEntity: faqs.map(({question, answer}) => ({"@type":"Question", name:question, acceptedAnswer:{"@type":"Answer", text:answer}})),
   }).replace(/</g, "\\u003c") }} />;
 }
-export default function GuideStructuredData({ title, description, slug, image }: {title:string; description:string; slug:string; image?:string}) {
+export default function GuideStructuredData({ title, description, slug, image, modifiedAt }: {title:string; description:string; slug:string; image?:string; modifiedAt?:string}) {
   const origin = "https://www.cornerspan.com";
   const url = `${origin}/guides/${slug}`;
   const data = {"@context":"https://schema.org", "@graph":[
     {"@type":"Article", "@id":`${url}#article`, headline:title, description, mainEntityOfPage:url, inLanguage:"en-US",
+      ...(modifiedAt ? {dateModified:modifiedAt} : {}),
       ...(image ? {image:`${origin}${image}`} : {}),
       author:{"@type":"Organization", name:"CornerSpan", url:origin}, publisher:{"@type":"Organization", name:"CornerSpan", url:origin}},
     {"@type":"BreadcrumbList", itemListElement:[

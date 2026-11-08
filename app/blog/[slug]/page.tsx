@@ -38,7 +38,7 @@ export async function generateMetadata({
     return {
       title:seoTitle, description:article.description,
       alternates:{canonical:`/blog/${slug}`},
-      openGraph:{title:seoTitle, description:article.description, type:"article", url:`https://www.cornerspan.com/blog/${slug}`, locale:"en_US", publishedTime:article.publishedAt, modifiedTime:illustration ? "2026-10-29" : article.modifiedAt, images:[{url:image,alt:illustration?.alt ?? article.imageAlt ?? article.title}]},
+      openGraph:{title:seoTitle, description:article.description, type:"article", url:`https://www.cornerspan.com/blog/${slug}`, locale:"en_US", publishedTime:article.publishedAt, modifiedTime:article.modifiedAt, images:[{url:image,alt:illustration?.alt ?? article.imageAlt ?? article.title}]},
       twitter:{card:"summary_large_image",title:seoTitle,description:article.description,images:[image]},
       robots:{index:true,follow:true,googleBot:{index:true,follow:true,"max-image-preview":"large"}},
     };

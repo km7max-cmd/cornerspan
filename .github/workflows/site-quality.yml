@@ -29,6 +29,7 @@ jobs:
           node scripts/test-pdf-download.cjs
           node scripts/test-planning-content.cjs
           node scripts/test-roof-pitch.cjs
+          node scripts/test-steel.cjs
       - name: Production Next.js build
         run: npm run build
       - name: Start local production server

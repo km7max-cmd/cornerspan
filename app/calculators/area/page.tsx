@@ -3,11 +3,14 @@ import CalculatorStructuredData from "../../../components/CalculatorStructuredDa
 import CalculatorReading from "../../../components/CalculatorReading";
 import type { Metadata } from "next";
 import AreaCalculator from "./AreaCalculator";
+import AreaGuide from "./AreaGuide";
+import { areaFaqs } from "./reference";
+
+const description = "Free area calculator for 8 shapes and irregular rooms. Add or subtract sections; get square feet, square meters, square yards and acres. No signup.";
 
 export const metadata: Metadata = {
   title: "Area Calculator: 8 Shapes, Square Feet & Acres",
-  description:
-    "Calculate area for 8 shapes using your measurements. Get square feet, square meters, square yards and acres, with formulas and examples. Free, no signup.",
+  description,
   keywords: [
     "area calculator",
     "calculate area",
@@ -30,8 +33,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "Area Calculator: 8 Shapes, Square Feet & Acres",
-    description:
-      "Calculate area for 8 shapes in square feet, square meters, square yards and acres. Enter dimensions and check the formula. Free, no signup.",
+    description,
     url: "https://www.cornerspan.com/calculators/area",
     type: "website",
     images: [
@@ -46,8 +48,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Area Calculator: 8 Shapes, Square Feet & Acres",
-    description:
-      "Calculate area for 8 shapes in square feet, square meters, square yards and acres. Free, no signup.",
+    description,
     images: ["/cornerspan-area-calculator-hero.webp"],
   },
 };
@@ -55,72 +56,10 @@ export const metadata: Metadata = {
 const faqSchema = {
   "@context": "https://schema.org",
   "@type": "FAQPage",
-  mainEntity: [
-    {
-      "@type": "Question",
-      name: "How do I calculate the area of a rectangle?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "Multiply the rectangle's length by its width. For example, a 20-foot by 10-foot rectangle has an area of 200 square feet.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "How do I calculate land area?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "For a rectangular plot, multiply the length by the width using the same measurement unit. A 40 ft × 60 ft lot, for example, contains 2,400 square feet. For irregular land, divide the property into smaller measurable shapes and add their areas together.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "Can I use an area calculator for real estate property?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "Yes. An area calculator can estimate the size of rectangular lots, residential properties, rooms, building sites and floor plans when you have the required measurements.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "How do I calculate land area in square feet?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "Measure the land length and width in feet and multiply them. For example, 50 ft × 80 ft = 4,000 square feet.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "Can I use this for a floor plan or room area?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "Yes. Measure each room's length and width, calculate the area of each room, and add the results for the total floor area. The Square Footage Calculator can also be used for direct square-foot calculations.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "What is the difference between area and perimeter?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "Area measures the surface inside a shape, while perimeter measures the distance around its boundary.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "Can I calculate area in meters?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "Yes. Select meters as the measurement unit. The calculator converts the result to square meters and other common area units.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "What is the formula for a circle?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "The area of a circle is π multiplied by the radius squared: A = πr².",
-      },
-    },
-  ],
+  mainEntity: areaFaqs.map(faq => ({
+    "@type": "Question", name: faq.question,
+    acceptedAnswer: { "@type": "Answer", text: faq.answer },
+  })),
 };
 
 const conversionRows = [
@@ -196,9 +135,9 @@ export default function AreaPage() {
         }}
       />
 
-      {/* Existing calculator: functionality remains unchanged */}
       <AreaCalculator />
-      <div className="px-4 sm:px-6"><PageContents items={[["area-mode", "Use the Area Calculator"], ["area-conversion-heading", "Quick Unit Conversion Chart"], ["typical-room-sizes-heading", "Typical Room & Space Sizes"], ["related-construction-calculators", "Related Construction Calculators"]]} /></div>
+      <div className="px-4 sm:px-6"><PageContents items={[["area-mode", "Use the calculator"], ["area-formulas", "8 shape formulas"], ["measure-irregular-area", "Irregular rooms"], ["area-to-materials", "Material estimates"], ["land-area-limits", "Land area and acres"], ["area-faq", "FAQs"], ["area-conversion-heading", "Unit conversion chart"], ["typical-room-sizes-heading", "Example dimensions"]]} /></div>
+      <AreaGuide />
 
       <div className="mx-auto max-w-4xl px-5 pb-10 sm:px-6">
         {/* Quick Unit Conversion Chart */}
@@ -241,7 +180,7 @@ export default function AreaPage() {
             id="typical-room-sizes-heading"
             className="scroll-mt-28 text-2xl font-black text-slate-950"
           >
-            Typical Room &amp; Space Sizes
+            Example Room &amp; Space Dimensions
           </h2>
 
           <p className="mt-3 leading-7 text-slate-600">

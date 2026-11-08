@@ -1,430 +1,96 @@
 "use client";
-import { validInput, safeEstimate, INPUT_ERROR } from "../shared/numbers";
-import CalculatorWorkspace from "../../components/CalculatorWorkspace";
 
 import { useMemo, useState } from "react";
 import Breadcrumb from "../../../components/Breadcrumb";
+import CalculatorWorkspace from "../../components/CalculatorWorkspace";
+import { calculateSteel, METRIC_DIAMETERS, US_REBAR, type SteelInput } from "./calculations";
 
-type Unit = "ft" | "m";
-
-const BAR_SIZES = [8, 10, 12, 16, 20, 25, 32];
-
-function formatNumber(value: number, decimals = 2) {
-  return new Intl.NumberFormat("en-US", {
-    minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals,
-  }).format(value);
-}
+const initial: SteelInput = { system: "us", size: "4", length: "", unit: "ft", bars: "", waste: "0", price: "" };
+const inputClass = "mt-2 min-h-11 w-full rounded-xl border border-slate-300 bg-white px-3 py-3 text-base text-slate-950 focus:border-blue-600 focus:outline focus:outline-2 focus:outline-blue-200";
+const format = (value: number, decimals = 2) => new Intl.NumberFormat("en-US", { maximumFractionDigits: decimals }).format(value);
 
 export default function SteelCalculator() {
-  const [diameter, setDiameter] = useState("12");
-  const [length, setLength] = useState("");
-  const [unit, setUnit] = useState<Unit>("ft");
-  const [bars, setBars] = useState("");
-  const [waste, setWaste] = useState("0");
-  const [price, setPrice] = useState("");
-  const [calculated, setCalculated] = useState(false);
+  const [input, setInput] = useState<SteelInput>(initial);
+  const [submitted, setSubmitted] = useState(false);
+  const result = useMemo(() => calculateSteel(input), [input]);
+  const update = (change: Partial<SteelInput>) => { setInput(previous => ({ ...previous, ...change })); setSubmitted(false); };
+  const label = input.system === "us" ? `#${input.size} US rebar` : `${input.size} mm metric bar`;
+  const error = submitted && !result ? "Enter a positive bar length and a whole number of bars. Allowance and price must be non-negative. Use smaller values if the estimate exceeds the supported range." : undefined;
+  function loadExample() {
+    setInput({ system: "us", size: "4", length: "20", unit: "ft", bars: "20", waste: "5", price: "0.85" });
+    setSubmitted(false);
+  }
 
-  const result = useMemo(() => {
-if (![diameter,length,bars].every(v => validInput(v, true)) || ![waste,price].every(v => validInput(v))) return null;
-
-    const dia = Number(diameter);
-    const inputLength = Number(length);
-    const numberOfBars = Number(bars);
-    const wastePercent = Number(waste) || 0;
-    const pricePerLb = Number(price) || 0;
-
-    if (
-      !Number.isFinite(dia) ||
-      dia <= 0 ||
-      !Number.isFinite(inputLength) ||
-      inputLength <= 0 ||
-      !Number.isFinite(numberOfBars) ||
-      numberOfBars <= 0 || !Number.isInteger(numberOfBars)
-    ) {
-      return null;
-    }
-
-    const lengthMeters =
-      unit === "ft" ? inputLength * 0.3048 : inputLength;
-
-    const weightPerMeter = (dia * dia) / 162;
-
-    const weightPerBar = weightPerMeter * lengthMeters;
-
-    const totalLengthMeters = lengthMeters * numberOfBars;
-
-    const exactWeight = weightPerBar * numberOfBars;
-
-    const wasteWeight = exactWeight * (wastePercent / 100);
-
-    const totalOrderWeight = exactWeight + wasteWeight;
-
-    const totalTonnes = totalOrderWeight / 1000;
-
-    const estimatedCost =
-      pricePerLb > 0 ? totalOrderWeight * 2.2046226218 * pricePerLb : null;
-
-    return safeEstimate({
-      lengthMeters,
-      weightPerMeter,
-      weightPerBar,
-      totalLengthMeters,
-      exactWeight,
-      wasteWeight,
-      totalOrderWeight,
-      totalTonnes,
-      estimatedCost,
-    });
-  }, [diameter, length, unit, bars, waste, price]);
-
-  const handleCalculate = () => {
-    setCalculated(true);
-
-    setTimeout(() => {
-      document.getElementById("steel-results")?.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    }, 50);
-  };
-
-  return (
-    <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6">
-      <Breadcrumb current="Steel Calculator" />
-
-      {/* Page Heading */}
-      <section className="mb-7">
-        <h1 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
-          Steel Calculator
-        </h1>
-
-        <p className="mt-3 max-w-6xl text-base leading-7 text-slate-600 sm:text-lg">
-          Calculate rebar weight, total steel quantity, waste and estimated
-          material cost for reinforcement bars.
-        </p>
-      </section>
-
-      {/* Calculator */}
-      <section className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-lg">
-        {/* Calculator Header */}
-        <div className="bg-slate-900 px-5 py-5 sm:px-7">
-          <p className="text-sm font-semibold uppercase tracking-wider text-slate-400">
-            Rebar Weight Calculator
-          </p>
-
-          <div className="mt-3 rounded-2xl bg-slate-800 px-5 py-4">
-            <p className="text-xs font-medium text-slate-400">
-              {calculated && result
-                ? "CALCULATED STEEL"
-                : "ENTER YOUR VALUES"}
-            </p>
-
-            <p className="mt-1 text-3xl font-bold text-white sm:text-4xl">
-              {calculated && result
-                ? `${formatNumber(result.totalOrderWeight)} kg`
-                : "Steel Weight"}
-            </p>
-
-            {calculated && result && (
-              <p className="mt-1 text-sm text-slate-400">
-                {formatNumber(result.totalTonnes, 3)} tonnes
-              </p>
-            )}
+  return <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6">
+    <Breadcrumb current="Steel Calculator" />
+    <header className="mb-7">
+      <h1 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">Steel Calculator</h1>
+      <p className="mt-3 max-w-3xl leading-7 text-slate-700">Estimate US #3–#8 rebar or metric bar weight. Compare measured weight, an optional allowance and whole bars to buy, with pounds, kilograms and USD material cost.</p>
+    </header>
+    <section aria-label="Rebar weight calculator" className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+      <div className="bg-slate-900 px-5 py-5 text-white sm:px-7">
+        <p className="text-sm font-semibold uppercase tracking-wider text-slate-300">Rebar Weight Calculator</p>
+        <p className="mt-2 text-xl font-semibold">From bar schedule to purchase quantity</p>
+      </div>
+      <CalculatorWorkspace error={error} label="Whole-bar purchase weight" value={result ? format(result.purchasedWeightLb) : null} unit="lb" result={
+        <section id="steel-results" className="scroll-mt-24 p-5 sm:p-6">
+          <h2 className="text-xl font-bold text-slate-950">Steel Calculation Result</h2>
+          {result ? <>
+            <p className="mt-2 text-sm leading-6 text-slate-700">{label} · {input.bars} bars × {input.length} {input.unit} each</p>
+            <div className="mt-4 rounded-xl bg-blue-50 p-4">
+              <p className="font-semibold text-blue-900">Whole bars to buy</p>
+              <p data-testid="steel-bars-to-buy" className="mt-1 text-3xl font-bold text-slate-950">{format(result.barsToBuy, 0)} bars</p>
+              <p className="mt-2 text-sm leading-6 text-slate-700">At the entered length of {input.length} {input.unit} each: <strong data-testid="steel-purchase-weight">{format(result.purchasedWeightLb)} lb</strong> ({format(result.purchasedWeightKg)} kg).</p>
+            </div>
+            <dl className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <Result label="Weight per foot" value={`${format(result.poundsPerFoot, 4)} lb/ft`} />
+              <Result label="Weight per bar" value={`${format(result.weightPerBarLb, 3)} lb`} />
+              <Result label="Measured total length" value={`${format(result.totalLengthFeet)} ft`} />
+              <Result label="Weight before allowance" value={`${format(result.measuredWeightLb)} lb`} />
+              <Result label={`Added allowance (${input.waste || "0"}%)`} value={`${format(result.allowanceWeightLb)} lb`} />
+              <Result label="Target before whole-bar rounding" value={`${format(result.targetWeightLb)} lb`} />
+              <Result label="Extra from whole-bar rounding" value={`${format(result.surplusWeightLb)} lb`} />
+              {result.estimatedCost !== null && <Result label="Whole-bar material cost" value={`$${result.estimatedCost.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`} />}
+            </dl>
+            <p className="mt-4 text-sm leading-6 text-slate-700">The purchase scenario rounds up to whole bars of the same length. It does not optimize cuts or count bundles. Compare actual stock lengths and supplier packaging; delivery, tax, cutting and labor are excluded.</p>
+          </> : <p className="mt-3 leading-7 text-slate-700">Select a bar size, enter its length and enter the number of bars. Results update as you edit.</p>}
+        </section>
+      }>
+        <fieldset>
+          <legend className="font-bold text-slate-900">Bar standard</legend>
+          <div className="mt-3 grid grid-cols-2 gap-2">
+            {([['us', 'US rebar'], ['metric', 'Metric diameter']] as const).map(([system, name]) => <label key={system} className={`flex min-h-12 cursor-pointer items-center gap-2 rounded-xl border p-3 text-sm font-semibold ${input.system === system ? "border-blue-600 bg-blue-50 text-blue-900" : "border-slate-300 text-slate-700"}`}>
+              <input type="radio" name="steel-system" value={system} checked={input.system === system} onChange={() => update({ system, size: system === "us" ? "4" : "12" })} className="accent-blue-700" />{name}
+            </label>)}
           </div>
+        </fieldset>
+        <fieldset className="mt-5">
+          <legend className="font-bold text-slate-900">{input.system === "us" ? "US bar size" : "Bar diameter"}</legend>
+          <div className="mt-3 grid grid-cols-3 gap-2">
+            {(input.system === "us" ? US_REBAR.map(bar => ({ value: bar.size, text: `#${bar.size}`, note: `${bar.diameter} in` })) : METRIC_DIAMETERS.map(size => ({ value: String(size), text: `${size} mm`, note: "" }))).map(size => <label key={size.value} className={`flex min-h-12 cursor-pointer items-center gap-2 rounded-xl border p-3 text-sm ${input.size === size.value ? "border-blue-600 bg-blue-50 text-blue-900" : "border-slate-300 text-slate-700"}`}>
+              <input type="radio" name="steel-size" value={size.value} checked={input.size === size.value} onChange={() => update({ size: size.value })} className="accent-blue-700" />
+              <span><strong className="block">{size.text}</strong>{size.note && <span className="text-xs">{size.note}</span>}</span>
+            </label>)}
+          </div>
+          <p className="mt-3 text-sm leading-6 text-slate-600">{input.system === "us" ? "Uses published nominal pounds per foot. #4 is a 1/2-inch bar; a 12 mm bar is different." : "Uses the approximate D²/162 kg-per-meter formula for a solid round bar. It does not substitute for a US rebar size."}</p>
+        </fieldset>
+        <div className="mt-5 grid grid-cols-2 gap-3">
+          <div><label htmlFor="steel-length" className="font-semibold text-slate-900">Length per bar</label><input id="steel-length" type="number" inputMode="decimal" min="0" step="any" value={input.length} onChange={e => update({ length: e.target.value })} placeholder="20" className={inputClass} /></div>
+          <div><label htmlFor="steel-unit" className="font-semibold text-slate-900">Length unit</label><select id="steel-unit" value={input.unit} onChange={e => update({ unit: e.target.value as SteelInput['unit'] })} className={inputClass}><option value="ft">Feet (ft)</option><option value="m">Meters (m)</option></select></div>
         </div>
-
-        {/* Calculator Body */}
-        <CalculatorWorkspace error={(calculated || length !== "" || bars !== "") && !result ? INPUT_ERROR : undefined} label="Steel to order" value={result ? (result.totalOrderWeight * 2.2046226218).toLocaleString("en-US", {maximumFractionDigits: 2}) : null} unit="lb" result={<><section
-        id="steel-results"
-        className="mt-8 scroll-mt-24 rounded-3xl border border-slate-200 bg-white p-5 shadow-lg sm:p-7"
-      >
-        <div className="mb-5">
-          <h2 className="text-2xl font-bold text-slate-900 sm:text-3xl">
-            Steel Calculation Result
-          </h2>
-
-          <p className="mt-1 text-sm text-slate-500">
-            {result
-              ? `${diameter} mm × ${bars} bars × ${
-                  unit === "ft" ? "feet" : "meters"
-                }`
-              : "Your calculated steel quantity will appear here."}
-          </p>
+        <div className="mt-5"><label htmlFor="steel-bars" className="font-semibold text-slate-900">Number of bars</label><input id="steel-bars" type="number" inputMode="numeric" min="1" step="1" value={input.bars} onChange={e => update({ bars: e.target.value })} placeholder="20" className={inputClass} /></div>
+        <div className="mt-5"><label htmlFor="steel-waste" className="font-semibold text-slate-900">Additional allowance (%)</label><input id="steel-waste" type="number" inputMode="decimal" min="0" step="any" value={input.waste} onChange={e => update({ waste: e.target.value })} aria-describedby="steel-allowance-note" className={inputClass} /><p id="steel-allowance-note" className="mt-2 text-sm leading-6 text-slate-600">Optional planning allowance. Do not count laps or offcuts again if your bar schedule already includes them.</p></div>
+        <div className="mt-5"><label htmlFor="steel-price" className="font-semibold text-slate-900">Price per lb (USD, optional)</label><input id="steel-price" type="number" inputMode="decimal" min="0" step="any" value={input.price} onChange={e => update({ price: e.target.value })} placeholder="0.85" className={inputClass} /></div>
+        <button type="button" onClick={() => { setSubmitted(true); if (result) document.getElementById('steel-results')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }} className="mt-6 min-h-12 w-full rounded-xl bg-blue-700 px-4 py-3 font-bold text-white hover:bg-blue-800">Calculate Steel Weight</button>
+        <div className="mt-3 grid grid-cols-2 gap-3">
+          <button type="button" onClick={loadExample} className="min-h-11 rounded-xl border border-blue-200 px-3 py-3 text-sm font-semibold text-blue-800">Load #4 example</button>
+          <button type="button" onClick={() => { setInput(initial); setSubmitted(false); }} className="min-h-11 rounded-xl border border-slate-300 px-3 py-3 text-sm font-semibold text-slate-800">Reset</button>
         </div>
-
-        {!result ? (
-          <div className="rounded-2xl bg-slate-50 px-5 py-10 text-center">
-            <p className="text-base font-medium text-slate-500">
-              Enter your bar length and number of bars to calculate.
-            </p>
-          </div>
-        ) : (
-          <>
-            {/* Main Result */}
-            <div className="rounded-2xl bg-slate-900 p-6 text-center">
-              <p className="text-sm font-semibold uppercase tracking-wider text-slate-400">
-                Steel to Order
-              </p>
-
-              <p className="mt-2 text-4xl font-bold text-white sm:text-5xl">
-                {formatNumber(result.totalOrderWeight)} kg
-              </p>
-
-              <p className="mt-2 text-base text-slate-400">
-                {formatNumber(result.totalTonnes, 3)} tonnes
-              </p>
-            </div>
-
-            {/* Result Breakdown */}
-            <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              <ResultCard
-                label="Weight per Meter"
-                value={`${formatNumber(
-                  result.weightPerMeter,
-                  3
-                )} kg`}
-              />
-
-              <ResultCard
-                label="Weight per Bar"
-                value={`${formatNumber(
-                  result.weightPerBar
-                )} kg`}
-              />
-
-              <ResultCard
-                label="Total Bar Length"
-                value={`${formatNumber(
-                  result.totalLengthMeters
-                )} m`}
-              />
-
-              <ResultCard
-                label="Exact Steel Weight"
-                value={`${formatNumber(
-                  result.exactWeight
-                )} kg`}
-              />
-
-              <ResultCard
-                label="Waste Quantity"
-                value={`${formatNumber(
-                  result.wasteWeight
-                )} kg`}
-              />
-
-              {result.estimatedCost !== null && (
-                <ResultCard
-                  label="Estimated Cost"
-                  value={`$${formatNumber(
-                    result.estimatedCost
-                  )}`}
-                />
-              )}
-            </div>
-          </>
-        )}
-      </section></>}>
-          {/* Bar Diameter */}
-          <div>
-            <label
-              className="mb-2 block text-sm font-bold text-slate-800"
-            >
-              Bar Diameter
-            </label>
-
-            <div className="grid grid-cols-4 gap-2 sm:grid-cols-7">
-              {BAR_SIZES.map((size) => {
-                const active = diameter === String(size);
-
-                return (
-                  <button
-                    key={size}
-                    type="button"
-                    onClick={() => {
-                      setDiameter(String(size));
-                      setCalculated(false);
-                    }}
-                    className={`rounded-xl border px-2 py-3 text-sm font-bold transition ${
-                      active
-                        ? "border-blue-600 bg-blue-600 text-white shadow-sm"
-                        : "border-slate-200 bg-slate-50 text-slate-700 hover:border-blue-300 hover:bg-blue-50"
-                    }`}
-                  >
-                    {size} mm
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Inputs */}
-          <div className="mt-6 grid gap-5 sm:grid-cols-2">
-            {/* Length */}
-            <div>
-              <label
-                htmlFor="steel-length"
-                className="mb-2 block text-sm font-bold text-slate-800"
-              >
-                Bar Length
-              </label>
-
-              <div className="grid grid-cols-[1fr_110px] gap-2">
-                <input
-                  id="steel-length"
-                  type="number"
-                  min="0"
-                  step="any"
-                  inputMode="decimal"
-                  placeholder="Enter length"
-                  value={length}
-                  onChange={(e) => {
-                    setLength(e.target.value);
-                    setCalculated(false);
-                  }}
-                  className="w-full min-w-0 rounded-xl border border-slate-300 bg-slate-50 px-4 py-3.5 text-lg font-semibold outline-none transition focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100"
-                />
-
-                <select aria-label="Bar length unit"
-                  value={unit}
-                  onChange={(e) => {
-                    setUnit(e.target.value as Unit);
-                    setCalculated(false);
-                  }}
-                  className="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-3.5 text-base font-semibold outline-none focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100"
-                >
-                  <option value="ft">Feet</option>
-                  <option value="m">Meters</option>
-                </select>
-              </div>
-            </div>
-
-            {/* Number of Bars */}
-            <div>
-              <label
-                htmlFor="steel-bars"
-                className="mb-2 block text-sm font-bold text-slate-800"
-              >
-                Number of Bars
-              </label>
-
-              <input
-                id="steel-bars"
-                type="number"
-                min="1"
-                step="1"
-                inputMode="numeric"
-                placeholder="Example: 20"
-                value={bars}
-                onChange={(e) => {
-                  setBars(e.target.value);
-                  setCalculated(false);
-                }}
-                className="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3.5 text-lg font-semibold outline-none transition focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100"
-              />
-            </div>
-
-            {/* Waste */}
-            <div>
-              <label
-                htmlFor="steel-waste"
-                className="mb-2 block text-sm font-bold text-slate-800"
-              >
-                Waste Allowance
-              </label>
-
-              <div className="relative">
-                <input
-                  id="steel-waste"
-                  type="number"
-                  min="0"
-                  step="0.1"
-                  inputMode="decimal"
-                  placeholder="0"
-                  value={waste}
-                  onChange={(e) => {
-                    setWaste(e.target.value);
-                    setCalculated(false);
-                  }}
-                  className="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3.5 pr-12 text-lg font-semibold outline-none transition focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100"
-                />
-
-                <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 font-bold text-slate-400">
-                  %
-                </span>
-              </div>
-            </div>
-
-            {/* Price */}
-            <div>
-              <label
-                htmlFor="steel-price"
-                className="mb-2 block text-sm font-bold text-slate-800"
-              >
-                Price per lb (USD)
-                <span className="ml-2 font-normal text-slate-400">
-                  Optional
-                </span>
-              </label>
-
-              <div className="relative">
-                <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 font-bold text-slate-500">
-                  $
-                </span>
-
-                <input
-                  id="steel-price"
-                  type="number"
-                  min="0"
-                  step="0.01"
-                  inputMode="decimal"
-                  placeholder="Example: 0.85"
-                  value={price}
-                  onChange={(e) => {
-                    setPrice(e.target.value);
-                    setCalculated(false);
-                  }}
-                  className="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3.5 pl-9 text-lg font-semibold outline-none transition focus:border-blue-500 focus:bg-white focus:ring-2 focus:ring-blue-100"
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Calculate Button */}
-          <button
-            type="button"
-            onClick={handleCalculate}
-            className="mt-7 w-full rounded-2xl bg-blue-600 px-5 py-4 text-lg font-bold text-white shadow-md transition hover:bg-blue-700 active:scale-[0.99]"
-          >
-            Calculate Steel Weight
-          </button>
-        </CalculatorWorkspace>
-      </section>
-
-      {/* Results */}
-      
-    </div>
-  );
+      </CalculatorWorkspace>
+    </section>
+  </div>;
 }
 
-function ResultCard({
-  label,
-  value,
-}: {
-  label: string;
-  value: string;
-}) {
-  return (
-    <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
-      <p className="text-sm font-medium text-slate-500">
-        {label}
-      </p>
-
-      <p className="mt-2 text-xl font-bold text-slate-900">
-        {value}
-      </p>
-    </div>
-  );
+function Result({ label, value }: { label: string; value: string }) {
+  return <div className="min-w-0 rounded-xl border border-slate-200 bg-white p-3"><dt className="text-sm leading-6 text-slate-600">{label}</dt><dd className="mt-1 break-words font-bold text-slate-950">{value}</dd></div>;
 }
-

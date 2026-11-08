@@ -1,0 +1,9 @@
+export const areaFaqs = [
+  { question: "How do I enter an ellipse measured across its full width and length?", answer: "The calculator asks for semi-axes: halve each full measurement. For a 16 ft by 10 ft ellipse, enter 8 ft and 5 ft. Its area is 40π, or approximately 125.66 square feet." },
+  { question: "How do I calculate a sector of a circle?", answer: "Enter the radius and the central angle in degrees, greater than 0 and no more than 360. A 90-degree sector with a 5 ft radius has an area of (90/360) × π × 5², approximately 19.63 square feet." },
+  { question: "Can I add rooms and subtract an opening?", answer: "Use Multiple sections. Add each non-overlapping room or shape as a separate section and mark an excluded opening as a subtraction. Deduct an opening only once, and only if it is inside an area already counted." },
+  { question: "What does Identical shapes mean?", answer: "It multiplies the single shape's area by a whole-number quantity. Use it for repeated pieces with exactly the same dimensions. Choose Multiple sections when the pieces have different measurements." },
+  { question: "Can I enter feet and inches separately?", answer: "In this tool, select one unit for each shape. Enter 12 ft 6 in as 12.5 feet or 150 inches. The Square Footage Calculator has separate feet-and-inches fields." },
+  { question: "Does the area include cutting waste or paint coats?", answer: "No. The result is measured area. Apply material-specific allowances, coverage and coats in the Tile or Paint Calculator after measuring the correct surface." },
+  { question: "Can this establish the legal area of a property?", answer: "No. It estimates geometric area from the dimensions supplied. An irregular boundary needs enough measurements to define its shape; four side lengths alone are not generally sufficient. Use a survey or recorded property information for boundary decisions." },
+];

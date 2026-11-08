@@ -9,7 +9,7 @@ const calculators = [
   "area","asphalt","brick","concrete","fence","gravel","paint",
   "paver","roofing","sod-turf","square-footage","steel","tile","topsoil"
 ];
-const additional = ["/", "/calculators", "/blog", "/guides", "/about"];
+const additional = ["/", "/calculators", "/blog", "/guides", "/about", "/guides/steel-weight", "/blog/steel-calculation-guide"];
 const failures = [];
 const screenshots = "qa-artifacts";
 fs.mkdirSync(screenshots, {recursive:true});
@@ -70,8 +70,27 @@ fs.mkdirSync(screenshots, {recursive:true});
       if (!/\b110\b/.test(content)) throw Error("10x10 patio, 12x12 pavers, 10% waste should be 110; got "+content);
       console.log("PASS interactive paver calculator = 110 pieces");
     } catch(e){failures.push("Paver interaction: "+e.message);}
+    try {
+      await page.goto(origin+"/calculators/steel",{waitUntil:"domcontentloaded"});
+      await page.getByRole("button",{name:"Load #4 example"}).click();
+      if ((await page.getByTestId("steel-bars-to-buy").innerText()) !== "21 bars") throw Error("US example needs 21 bars");
+      if ((await page.getByTestId("steel-purchase-weight").innerText()) !== "280.56 lb") throw Error("US example needs 280.56 lb");
+      await page.locator('#steel-bars').fill('10');
+      if ((await page.getByTestId("steel-purchase-weight").innerText()) !== "146.96 lb") throw Error("Whole-bar rounding must use 11 bars");
+      await page.getByRole('radio',{name:'Metric diameter',exact:true}).check();
+      await page.locator('#steel-length').fill('10');
+      await page.locator('#steel-waste').fill('0');
+      if ((await page.getByTestId("steel-purchase-weight").innerText()) !== "59.73 lb") throw Error("Metric example needs 59.73 lb");
+      await page.locator('#steel-bars').fill('1.5');
+      await page.getByRole('button',{name:'Calculate Steel Weight',exact:true}).click();
+      await page.getByRole('alert').waitFor({state:'visible'});
+      if (await page.getByTestId('steel-purchase-weight').count()) throw Error('Invalid quantity must not show purchase results');
+      await page.getByRole('button',{name:'Reset',exact:true}).click();
+      if (await page.locator('#steel-bars').inputValue()) throw Error('Reset must clear quantity');
+      console.log('PASS interactive steel: US/metric modes, purchase rounding, invalid quantity and reset');
+    } catch(e){failures.push('Steel interaction: '+e.message);}
     await context.close();
   } finally {await browser.close();}
   if (failures.length){for(const f of failures)console.error("FAIL",f);process.exitCode=1;}
-  else console.log("PASS: all 14 mobile calculator pages, 5 landing pages, two interactive calculation examples.");
+  else console.log("PASS: all 14 mobile calculator pages, 7 supporting pages, Area/Paver/Steel interactions.");
 })().catch(e=>{console.error(e);process.exitCode=1;});

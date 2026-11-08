@@ -1307,11 +1307,11 @@ const articles: CalculatorArticle[] = [
     ],
     "calculatorHref": "/calculators/steel",
     "publishedAt": "2026-10-26",
-    "modifiedAt": "2026-10-27",
+    "modifiedAt": "2026-11-08",
     "intro": [
       "Using the approximate diameter-squared formula, one 10-foot 12 mm solid steel bar weighs about 5.97 pounds. Ten weigh about 59.73 pounds; this estimate does not make 12 mm bar equivalent to US #4 rebar.",
       "Start with the bar designation on your material list. A metric diameter and a US rebar number aren't interchangeable just because they look close. Once the specified product is clear, you can compare its nominal weight with a supplier's quote.",
-      "CornerSpan’s calculator currently uses metric diameter buttons with feet or meters for length. It is a solid-round-bar approximation, not a US bar-number selector. For standard US rebar takeoffs, use published nominal weights per foot instead of substituting the nearest metric button."
+      "Select Metric diameter in CornerSpan’s Steel Calculator to reproduce this 12 mm example. A separate US rebar mode uses published nominal weights for #3–#8 bars. Both modes accept feet or meters and distinguish the measured weight from a whole-bar purchase scenario."
     ],
     "formula": "Approximate weight (kg) = diameter² (mm) × length (m) × quantity ÷ 162; pounds = kilograms × 2.20462",
     "example": [
@@ -1364,7 +1364,7 @@ const articles: CalculatorArticle[] = [
         "id": "section-3",
         "title": "Add only the allowance you actually need",
         "paragraphs": [
-          "For a separate 5% allowance, multiply the unrounded 59.7316 lb estimate by 1.05 to obtain about 62.72 lb. Five percent is an example, not a default requirement. Check the cutting plan, packaging and supplier’s minimum quantities.",
+          "For a separate 5% allowance, multiply the unrounded base weight by 1.05 to obtain about 62.72 lb. If you buy whole 10-foot bars, the calculator rounds 10 × 1.05 up to eleven bars, weighing about 65.70 lb. Five percent is an example, not a default requirement; check the cutting plan and supplier packaging.",
           "A scheduled cut length may already include hooks or laps. Adding a second percentage for those details would overstate the requirement. If the purchase must be whole stock bars, convert the target back to pieces and price the actual order."
         ]
       },
@@ -1381,8 +1381,8 @@ const articles: CalculatorArticle[] = [
         "id": "section-4",
         "title": "Use USD-per-pound pricing consistently",
         "paragraphs": [
-          "Choose 12 mm diameter, 10 feet length, quantity ten and no waste to reproduce the base example in the Steel Calculator. Enter $1 per pound to obtain the illustrative $59.73 material cost. Metric weight details may also appear, but the price field is USD per pound.",
-          "At a 5% allowance, the same unit price gives about $62.72 before supplier rounding. Delivery, cutting, bending, coating, tax and labor are not automatically included. If the quote is per kilogram, convert the rate before using a per-pound price field: dollars per pound equals dollars per kilogram divided by 2.20462."
+          "Choose Metric diameter, 12 mm, 10 feet length, quantity ten and no allowance to reproduce the base example in the Steel Calculator. Enter $1 per pound to obtain the illustrative $59.73 material cost. Metric weight details may also appear, but the price field is USD per pound.",
+          "At a 5% allowance, the fractional target costs about $62.72 at $1/lb, while the calculator’s whole-bar purchase estimate is eleven bars and about $65.70. Delivery, cutting, bending, coating, tax and labor are not automatically included. If the quote is per kilogram, convert the rate before using a per-pound price field: dollars per pound equals dollars per kilogram divided by 2.20462."
         ]
       }
     ],
@@ -2240,5 +2240,5 @@ const articles: CalculatorArticle[] = [
 
 export const calculatorArticles: CalculatorArticle[] = articles.map(article => {
   const illustration = articleImages[`/blog/${article.slug}`];
-  return illustration ? { ...article, image: illustration.src, imageAlt: illustration.alt, imageCaption: illustration.caption, modifiedAt: "2026-10-29" } : article;
+  return illustration ? { ...article, image: illustration.src, imageAlt: illustration.alt, imageCaption: illustration.caption, modifiedAt: article.modifiedAt > "2026-10-29" ? article.modifiedAt : "2026-10-29" } : article;
 });

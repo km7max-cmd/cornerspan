@@ -2,6 +2,11 @@
 // Run against a local Next.js production server (or set QA_ORIGIN).
 // This is a regression guard, not a Google AdSense approval check.
 const assert = require("node:assert/strict");
+const fs = require("node:fs"), pathModule = require("node:path"), ts = require("typescript");
+require.extensions['.ts'] = (module, filename) => module._compile(ts.transpileModule(fs.readFileSync(filename, 'utf8'), {
+  compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 },
+}).outputText, filename);
+const { blogPosts } = require(pathModule.resolve(__dirname, '../data/blog.ts'));
 const base = (process.env.QA_ORIGIN || "http://127.0.0.1:3100").replace(/\/$/, "");
 const calculators = [
   "area","asphalt","brick","concrete","fence","gravel","paint",
@@ -29,7 +34,9 @@ async function get(path) {
   const guides = unique.filter(p => p.startsWith("/guides/"));
   const posts = unique.filter(p => p.startsWith("/blog/"));
   if (guides.length !== 4) fail("Expected 4 guides, got "+guides.length);
-  if (posts.length !== 20) fail("Expected 20 blog articles, got "+posts.length);
+  const expectedPosts = blogPosts.map(post => '/blog/' + post.slug).sort();
+  if (JSON.stringify([...posts].sort()) !== JSON.stringify(expectedPosts))
+    fail("Sitemap blog URLs do not match published article inventory");
   const robots = await get("/robots.txt");
   if (robots.response.status !== 200 || !robots.body.includes("sitemap.xml")) fail("robots.txt is missing the sitemap");
   let seen = 0;
