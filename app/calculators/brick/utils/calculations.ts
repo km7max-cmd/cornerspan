@@ -6,6 +6,7 @@ import type {
 } from "../types";
 
 import { lengthToMeters } from "../units";
+import { ceilQuantity } from "../../shared/numbers";
 import { MORTAR_RATIO_OPTIONS } from "../data/brickOptions";
 
 const SQ_METERS_PER_SQ_FOOT = 0.09290304;
@@ -257,7 +258,7 @@ export function calculateBrick(
   );
 
   const totalBricks =
-    Math.ceil(baseBricks + wasteBricks);
+    ceilQuantity(baseBricks + wasteBricks);
 
   /*
    * 5. Brick cost

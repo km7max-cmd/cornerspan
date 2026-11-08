@@ -1,5 +1,7 @@
 "use client";
 
+import { ceilQuantity } from "../../shared/numbers";
+
 import type {
   BrickCalculationResult,
   Currency,
@@ -38,7 +40,7 @@ function getDisplayedBrickBreakdown(
 
   const baseBricks = Math.min(
     totalBricks,
-    Math.max(0, Math.ceil(result.baseBricks))
+    Math.max(0, ceilQuantity(result.baseBricks))
   );
 
   // Keep the displayed breakdown consistent with Total Bricks.

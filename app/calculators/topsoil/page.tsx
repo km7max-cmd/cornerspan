@@ -199,7 +199,7 @@ export default function TopsoilPage() {
               base volume is about 2.47 cubic yards. With a 10%
               allowance, the order quantity is about 2.72 cubic
               yards. Using an illustrative density of 1.05 US short tons per cubic yard
-              gives an estimated weight of about 2.86 US short tons.
+              gives an estimated weight of about 2.85 US short tons. Calculate weight from the unrounded volume before displaying the rounded result.
             </p>
             <p className="mt-3 leading-7 text-slate-600">
               For bags, keep the unrounded volume: 20 × 10 × (4/12) × 1.10 = 73⅓ cubic feet. At 0.75 cubic foot per bag, round 97.777… up to <strong>98 bags</strong>. They contain 73.5 cubic feet. The small packaging surplus is separate from the 10% example allowance.
