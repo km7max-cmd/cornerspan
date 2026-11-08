@@ -547,17 +547,11 @@ export default function BrickCalculatorPage() {
           </div>
 
           <p className="mt-4 text-sm leading-7 text-slate-600">
-            Next, enter the actual brick dimensions and mortar joint
-            thickness in the calculator. The calculator uses these
-            dimensions to estimate the brick quantity and then applies
-            the selected waste allowance.
+            For this single-layer example, use a 7⅝ × 2¼-inch brick face and ⅜-inch joints. The repeating face module is (7.625 + 0.375) × (2.25 + 0.375) = 21 square inches. The unrounded count is 140 × 144 ÷ 21 = 960 bricks. An illustrative 5% allowance gives <strong>1,008 bricks</strong> before supplier pack rounding.
           </p>
 
           <p className="mt-3 text-sm leading-7 text-slate-600">
-            This method is more flexible than using a fixed number of
-            bricks per square foot because brick size, mortar joint
-            thickness and wall openings can vary from one project to
-            another.
+            To reproduce it, select one single wall, enter 20 × 8 ft, add one 4 × 5 ft opening, and enter the stated brick face and joint dimensions. Use 3⅝ inches as the example brick width for the separate mortar estimate. The 5% allowance is an example, not a requirement; confirm the chosen product coverage, bond and packaging before ordering.
           </p>
         </div>
 

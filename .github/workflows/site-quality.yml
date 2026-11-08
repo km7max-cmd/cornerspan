@@ -30,6 +30,7 @@ jobs:
           node scripts/test-planning-content.cjs
           node scripts/test-roof-pitch.cjs
           node scripts/test-steel.cjs
+          node scripts/test-public-examples.cjs
       - name: Production Next.js build
         run: npm run build
       - name: Start local production server
@@ -42,7 +43,7 @@ jobs:
           done
           cat /tmp/cornerspan-qa-server.log
           exit 1
-      - name: Sitemap, all routes and article quality smoke test
+      - name: Sitemap, all routes and article structure smoke test
         run: node scripts/qa-site-smoke.cjs
       - name: Install temporary browser-test tools
         run: |

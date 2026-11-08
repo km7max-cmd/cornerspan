@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   title: "Concrete Calculator | Volume, Materials & Cost",
 
   description:
-    "Calculate concrete volume in cubic yards or meters for slabs, footings and columns. Estimate bags, waste and material cost with a worked example.",
+    "Calculate concrete volume for slabs, footings and rectangular columns. Estimate 94-lb cement ingredient bags and material cost with a worked example.",
 
   alternates: {
     canonical: PAGE_URL,

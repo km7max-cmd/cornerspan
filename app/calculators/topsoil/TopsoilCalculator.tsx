@@ -248,7 +248,7 @@ if (![length,width,depth,density,bagSize].every(v => validInput(v, true)) || ![w
         </h1>
 
         <p className="mt-2 text-sm leading-6 text-slate-300 sm:text-base">
-          Estimate cubic yards, tons and bags of topsoil for
+          Estimate cubic yards, US short tons and bags of topsoil for
           lawns, gardens and landscaping projects.
         </p>
       </div>
@@ -283,7 +283,7 @@ if (![length,width,depth,density,bagSize].every(v => validInput(v, true)) || ![w
                   </div>
 
                   <div className="mt-1 text-xs text-slate-300">
-                    Tons
+                    US short tons
                   </div>
                 </div>
 
@@ -349,7 +349,7 @@ if (![length,width,depth,density,bagSize].every(v => validInput(v, true)) || ![w
                     <span>Estimated Weight</span>
 
                     <strong>
-                      {formatNumber(result.orderTons)} tons
+                      {formatNumber(result.orderTons)} US short tons
                     </strong>
                   </div>
 
@@ -522,7 +522,7 @@ if (![length,width,depth,density,bagSize].every(v => validInput(v, true)) || ![w
           <div className="mt-4 grid gap-4 sm:grid-cols-2">
             <div>
               <label htmlFor="topsoil-density" className="mb-2 block text-sm font-medium text-slate-700">
-                Density (tons / yd³)
+                Density (US short tons / yd³)
               </label>
 
               <input id="topsoil-density"
@@ -530,12 +530,14 @@ if (![length,width,depth,density,bagSize].every(v => validInput(v, true)) || ![w
                 min="0"
                 step="0.01"
                 value={density}
+                aria-describedby="topsoil-density-help"
                 onChange={(e) => {
                   setDensity(Number(e.target.value));
                   setCalculated(false);
                 }}
                 className={inputClass}
               />
+              <p id="topsoil-density-help" className="mt-2 text-sm text-slate-600">Presets are illustrative estimates. Replace them with your supplier’s density. One US short ton is 2,000 lb; this weight unit stays the same when dimensions use meters.</p>
             </div>
 
             <div>

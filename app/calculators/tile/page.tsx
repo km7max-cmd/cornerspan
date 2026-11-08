@@ -108,7 +108,7 @@ const faqs = [
       "How do I calculate tile boxes?",
 
     answer:
-      "Divide the number of tiles required by the number of tiles in each box and round up to the next whole box.",
+      "Divide the allowance-adjusted tile count by tiles per box and round up. For example, 33 required tiles with 4 per box need 9 boxes, containing 36 purchased tiles. Price all 9 boxes; the 3 extra tiles come from packaging.",
   },
 
   {
@@ -133,7 +133,7 @@ export default function TileCalculatorPage() {
     <>
       <CalculatorStructuredData name="Tile Calculator" path="/calculators/tile" description={metadata.description ?? undefined} />
       <TileCalculator />
-      <div className="px-4 sm:px-6"><PageContents items={[["how-to-calculate-tile-quantity", "How to Calculate Tile Quantity"], ["tile-area-formula", "Tile Area Formula"], ["tile-calculator-example", "Tile Calculator Example"], ["common-tile-calculator-uses", "Common Tile Calculator Uses"], ["tile-calculator-faq", "Tile Calculator FAQ"], ["important-note", "Important Note"]]} /></div>
+      <div className="px-4 sm:px-6"><PageContents items={[["how-to-calculate-tile-quantity", "How to Calculate Tile Quantity"], ["tile-area-formula", "Tile Area Formula"], ["tile-calculator-example", "Tile Calculator Example"], ["tile-box-order", "Boxes and purchase cost"], ["tile-coverage-check", "Check product coverage"], ["common-tile-calculator-uses", "Common Tile Calculator Uses"], ["tile-calculator-faq", "Tile Calculator FAQ"], ["important-note", "Important Note"]]} /></div>
 
       <div className="mx-auto max-w-5xl px-4 pb-12 sm:px-6">
 
@@ -250,6 +250,30 @@ export default function TileCalculatorPage() {
 
             </div>
           </div>
+        </section>
+
+        <section className="mt-10">
+          <h2 id="tile-box-order" className="scroll-mt-28 text-2xl font-bold text-slate-900">From 33 required tiles to a whole-box order</h2>
+          <p className="mt-3 leading-7 text-slate-600">Continue the 12 × 10 ft example with an illustrative 4 tiles per box and $25 per box. Set those fields in the calculator to reproduce the purchase quantities.</p>
+          <div className="mt-4 overflow-x-auto rounded-2xl border border-slate-200" tabIndex={0} role="region" aria-label="Tile purchase rounding example">
+            <table className="w-full min-w-[320px] text-left text-sm">
+              <caption className="p-4 text-left text-slate-600">Example packaging and price; replace them with your carton label and quote.</caption>
+              <thead className="bg-slate-100"><tr><th scope="col" className="p-4">Step</th><th scope="col" className="p-4">Calculation</th><th scope="col" className="p-4">Result</th></tr></thead>
+              <tbody>{[
+                ["Required tiles", "30 × 1.10", "33 tiles"],
+                ["Whole boxes", "Round up 33 ÷ 4", "9 boxes"],
+                ["Purchased tiles", "9 × 4", "36 tiles"],
+                ["Packaging surplus", "36 − 33", "3 tiles"],
+                ["Tile-only cost", "9 × $25", "$225"],
+              ].map(([step, calculation, result]) => <tr key={step} className="border-t border-slate-200"><th scope="row" className="p-4">{step}</th><td className="p-4">{calculation}</td><td className="p-4">{result}</td></tr>)}</tbody>
+            </table>
+          </div>
+          <p className="mt-3 leading-7 text-slate-600">The 3 additional tiles are a consequence of buying complete boxes. Do not add another 10% to the 36 purchased tiles. Adhesive, grout, trims, labor, delivery and tax are separate costs.</p>
+        </section>
+        <section className="mt-10">
+          <h2 id="tile-coverage-check" className="scroll-mt-28 text-2xl font-bold text-slate-900">Check the carton before using a nominal tile size</h2>
+          <p className="mt-3 leading-7 text-slate-600">This tool derives coverage from the tile dimensions you enter; it does not add grout-joint width automatically. A product name such as 24 × 24 may describe a nominal size. Compare the derived area per box with the manufacturer’s stated carton coverage. If they differ, use the published coverage for the purchasing check: whole boxes = round up (surface area × allowance multiplier ÷ coverage per box).</p>
+          <p className="mt-3 leading-7 text-slate-600">For openings or an irregular room, use Known area after measuring and subtracting excluded areas once. Keep the measured area separate from the allowance entered here. <a href="https://www.daltile.com/how-to/how-to-install-tile/how-to-install-floor-tile" className="text-blue-700 underline">Daltile’s floor tile planning guidance</a> provides layout background; the exact product label supplies coverage.</p>
         </section>
 
         {/* Common Uses */}

@@ -1,3 +1,7 @@
+import { calculateConcrete } from "../utils/calculateConcrete";
+
+// Keep the public walkthrough tied to the same full-precision bag calculation.
+const example = calculateConcrete(10, 10, 4, "Feet", "Feet", "Inch", { cement: 1, sand: 2, aggregate: 4 });
 
 export default function Example() {
   return (
@@ -46,19 +50,19 @@ export default function Example() {
             <ExampleStep
               number="1"
               title="Calculate wet concrete volume"
-              formula="10 × 10 × (4 ÷ 12) = 33.33 ft³"
+              formula={`10 × 10 × (4 ÷ 12) ≈ ${example.volumeFt3.toFixed(3)} ft³`}
             />
 
             <ExampleStep
               number="2"
               title="Convert to cubic yards"
-              formula="33.33 ÷ 27 ≈ 1.23 yd³"
+              formula={`Unrounded cubic feet ÷ 27 ≈ ${example.volumeYd3.toFixed(3)} yd³`}
             />
 
             <ExampleStep
               number="3"
               title="Estimate dry material volume"
-              formula="0.943 m³ × 1.54 ≈ 1.45 m³"
+              formula={`${example.volume.toFixed(10)} m³ × 1.54 ≈ ${example.dryVolume.toFixed(3)} m³`}
             />
 
             <ExampleStep
@@ -70,40 +74,44 @@ export default function Example() {
             <ExampleStep
               number="5"
               title="Estimate cement volume"
-              formula="1.45 × (1 ÷ 7) ≈ 0.207 m³"
+              formula={`Unrounded dry volume × (1 ÷ 7) ≈ ${example.cementVolume.toFixed(3)} m³`}
             />
 
             <ExampleStep
               number="6"
               title="Estimate cement weight"
-              formula="0.207 × 1440 ≈ 298 kg ≈ 657 lb"
+              formula={`Unrounded cement volume × 1440 ≈ ${example.cementWeight.toFixed(0)} kg ≈ ${example.cementWeightLb.toFixed(1)} lb`}
             />
 
             <ExampleStep
               number="7"
               title="Estimate 94 lb cement bags"
-              formula="657 ÷ 94 ≈ 6.99 → 7 bags"
+              formula={`${example.cementWeightLb.toFixed(1)} lb ÷ 94 ≈ ${(example.cementWeightLb / 94).toFixed(3)} → ${example.cementBags} whole bags`}
             />
 
             <ExampleStep
               number="8"
               title="Estimate sand volume"
-              formula="1.45 × (2 ÷ 7) ≈ 0.415 m³ ≈ 0.54 yd³"
+              formula={`Unrounded dry volume × (2 ÷ 7) ≈ ${example.sand.toFixed(3)} m³ ≈ ${example.sandYd3.toFixed(3)} yd³`}
             />
 
             <ExampleStep
               number="9"
               title="Estimate aggregate volume"
-              formula="1.45 × (4 ÷ 7) ≈ 0.829 m³ ≈ 1.08 yd³"
+              formula={`Unrounded dry volume × (4 ÷ 7) ≈ ${example.aggregate.toFixed(3)} m³ ≈ ${example.aggregateYd3.toFixed(3)} yd³`}
             />
 
             <ExampleStep
               number="10"
               title="Estimate mixing water"
-              formula="298 × 0.50 ≈ 149 L ≈ 39.4 US gal"
+              formula={`Unrounded cement mass × 0.50 ≈ ${example.water.toFixed(1)} L ≈ ${example.waterGallons.toFixed(1)} US gal`}
             />
           </div>
         </div>
+
+        <p className="mt-5 text-sm leading-7 text-slate-600">
+          Displayed intermediate values are approximations. Using the full dimensions and stated mix assumptions gives about 7.013 bags before whole-bag rounding, so the purchase count is 8 bags. Rounding the cement volume too early can incorrectly reduce the result to 7. These are Portland cement ingredient bags, not bags of premixed concrete.
+        </p>
 
         <div className="mt-7 rounded-2xl bg-blue-50 p-5">
           <h3 className="text-lg font-black text-slate-900 sm:text-xl">
@@ -113,37 +121,37 @@ export default function Example() {
           <div className="mt-4 grid gap-3 sm:grid-cols-2">
             <ResultItem
               label="Concrete Volume"
-              value="1.23 yd³"
+              value={`${example.volumeYd3.toFixed(3)} yd³`}
             />
 
             <ResultItem
               label="Concrete Volume"
-              value="33.33 ft³"
+              value={`${example.volumeFt3.toFixed(3)} ft³`}
             />
 
             <ResultItem
               label="Dry Material Volume"
-              value="1.45 m³"
+              value={`${example.dryVolume.toFixed(3)} m³`}
             />
 
             <ResultItem
               label="Cement"
-              value="7 bags (94 lb)"
+              value={`${example.cementBags} bags (94 lb)`}
             />
 
             <ResultItem
               label="Sand"
-              value="0.54 yd³"
+              value={`${example.sandYd3.toFixed(3)} yd³`}
             />
 
             <ResultItem
               label="Aggregate"
-              value="1.08 yd³"
+              value={`${example.aggregateYd3.toFixed(3)} yd³`}
             />
 
             <ResultItem
               label="Water"
-              value="39.4 US gal"
+              value={`${example.waterGallons.toFixed(1)} US gal`}
             />
           </div>
         </div>

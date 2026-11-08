@@ -911,25 +911,6 @@ if (![length,width,depth,density].every(v => validInput(v, true)) || ![waste,pri
         </div>
       </div>
 
-      {/* Example */}
-
-      <div className="mt-5 rounded-2xl border border-blue-100 bg-blue-50 p-5 sm:p-7">
-
-        <h2 className="text-lg font-extrabold text-slate-900">
-          Gravel Calculator Example
-        </h2>
-
-        <p className="mt-2 text-sm leading-6 text-slate-600">
-          For a 20 ft × 10 ft area with a
-          4-inch gravel layer and 10% allowance,
-          the exact volume is about 2.47 cubic
-          yards. With a density of 1.4 US tons
-          per cubic yard, the estimated order is
-          about 3.81 US tons.
-        </p>
-
-      </div>
-
       {/* Important Note */}
 
       <div className="mt-5 rounded-2xl border border-amber-200 bg-amber-50 p-5 text-sm leading-6 text-amber-900">

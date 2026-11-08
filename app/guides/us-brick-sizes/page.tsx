@@ -20,6 +20,7 @@ export const metadata: Metadata = {
       "A practical US brick dimensions reference covering common brick sizes, mortar joints and bricks per square foot.",
     url: "https://www.cornerspan.com/guides/us-brick-sizes",
     type: "article",
+    modifiedTime: "2026-11-08",
     locale: "en_US",
     images: [{url:"/og-image.png", alt:"CornerSpan construction calculation guides"}],
   },
@@ -98,7 +99,7 @@ const faqs = [
 export default function USBrickSizesGuide() {
   return (
     <div className="min-h-screen bg-white pt-0 text-slate-900">
-      <GuideStructuredData title="US Brick Dimensions & Sizes Chart" description="US brick dimensions, face modules and quantity examples for material estimating." slug="us-brick-sizes" image="/images/guides/brick-face-module.svg" />
+      <GuideStructuredData title="US Brick Dimensions & Sizes Chart" description="US brick dimensions, face modules and quantity examples for material estimating." slug="us-brick-sizes" image="/images/guides/brick-face-module.svg" modifiedAt="2026-11-08" />
 <FAQSchema faqs={faqs} />
 {/* HERO */}
       <section className="border-b border-slate-200 bg-slate-50">
@@ -117,6 +118,7 @@ export default function USBrickSizesGuide() {
           <h1 className="mt-2 max-w-4xl text-4xl font-black tracking-tight text-slate-950 md:text-5xl">
             US Brick Sizes & Dimensions Chart
           </h1>
+          <p className="mt-3 text-sm text-slate-600">Updated <time dateTime="2026-11-08">November 8, 2026</time> · CornerSpan</p>
 
           <p className="mt-5 max-w-3xl text-base leading-8 text-slate-600 md:text-lg">
             A practical reference for common brick sizes used in the United
@@ -316,15 +318,12 @@ export default function USBrickSizesGuide() {
             </p>
 
             <p className="mt-3 text-lg font-extrabold text-blue-600 md:text-xl">
-              Bricks per sq ft ≈ 1 ÷ [(Brick Length + Joint) × (Brick Height +
-              Joint)]
+              Bricks per sq ft = 144 ÷ [(Length + Joint) × (Height + Joint)]
             </p>
           </div>
 
           <p className="mt-5 max-w-3xl text-sm leading-7 text-slate-600">
-            The dimensions must be converted to the same unit before applying
-            the formula. Different joint thicknesses will produce different
-            brick-per-square-foot estimates.
+            Enter brick length, face height and joint thickness in inches for this formula. The 144 converts one square foot to square inches. With a 7⅝ × 2¼-inch face and ⅜-inch joints, the module is 8 × 2⅝ = 21 square inches: 144 ÷ 21 ≈ 6.85714 bricks per square foot. Keep that unrounded rate until the final order calculation.
           </p>
         </div>
       </section>

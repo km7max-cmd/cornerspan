@@ -746,9 +746,9 @@ export default function TrapezoidAreaArticle() {
               Calculate Area for Your Next Project
             </h2>
             <p className="mt-3 leading-7 text-slate-300">
-              Use CornerSpan&apos;s Area Calculator for supported area
-              calculations. If the calculator does not have dedicated
-              trapezoid inputs, use the formula in this guide.
+              In CornerSpan&apos;s Area Calculator, choose Trapezoid and
+              Feet. Enter parallel bases of 10 and 6, then a perpendicular
+              height of 4 to reproduce the 32 sq ft example above.
             </p>
             <Link
               href="/calculators/area"

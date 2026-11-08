@@ -379,8 +379,10 @@ export default function SquareFootagePage() {
               </div>
 
               <p className="mt-4 leading-7">
-                Enter feet and inches directly into the calculator
-                above if its input fields support both units.
+                Select ft &amp; in for each dimension in the calculator above. Enter the
+                whole feet and remaining inches in their separate fields
+                for each dimension; for example, enter 10 feet and 6 inches
+                for a 10½-foot length.
               </p>
             </section>
 

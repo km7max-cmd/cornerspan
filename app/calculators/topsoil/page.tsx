@@ -24,7 +24,6 @@ export const metadata: Metadata = {
     "lawn topsoil calculator",
     "raised bed soil calculator",
     "topsoil bags calculator",
-    "topsoil cost calculator",
     "cubic yard topsoil calculator",
     "landscaping soil calculator",
   ],
@@ -93,7 +92,7 @@ const faqs = [
     question: "How many cubic yards of topsoil are in a ton?",
 
     answer:
-      "It depends on soil density and moisture. A common estimating value for topsoil is around 1.05 tons per cubic yard, but the supplier's stated density should be used for purchasing calculations.",
+      "Divide the weight in US short tons by density in US short tons per cubic yard. At the illustrative density of 1.05, one US short ton is 1 ÷ 1.05 ≈ 0.9524 cubic yard. One US short ton is 2,000 lb, not a 1,000-kg metric tonne. Use the supplier's product-specific density.",
   },
 
   {
@@ -146,8 +145,8 @@ export default function TopsoilPage() {
           </h2>
 
           <p className="mt-3 leading-7 text-slate-600">
-            Topsoil quantity is based on the area you need to cover,
-            the soil depth and the density of the material. CornerSpan
+            Topsoil quantity is based on the area you need to cover and
+            the added soil depth. Density is needed only to estimate weight. CornerSpan
             converts your measurements into practical ordering
             quantities.
           </p>
@@ -199,8 +198,14 @@ export default function TopsoilPage() {
               For a 20 × 10 ft area with a 4-inch soil depth, the
               base volume is about 2.47 cubic yards. With a 10%
               allowance, the order quantity is about 2.72 cubic
-              yards. Using a density of 1.05 tons per cubic yard
-              gives an estimated weight of about 2.86 tons.
+              yards. Using an illustrative density of 1.05 US short tons per cubic yard
+              gives an estimated weight of about 2.86 US short tons.
+            </p>
+            <p className="mt-3 leading-7 text-slate-600">
+              For bags, keep the unrounded volume: 20 × 10 × (4/12) × 1.10 = 73⅓ cubic feet. At 0.75 cubic foot per bag, round 97.777… up to <strong>98 bags</strong>. They contain 73.5 cubic feet. The small packaging surplus is separate from the 10% example allowance.
+            </p>
+            <p className="mt-3 leading-7 text-slate-600">
+              Set length 20 ft, width 10 ft, depth 4 in, allowance 10% and bag size 0.75 cubic feet to reproduce the result. For a raised bed, measure the inside dimensions and only the additional fill depth. Density does not change the bag count when bags are sold by volume.
             </p>
           </div>
         </section>
@@ -266,7 +271,7 @@ export default function TopsoilPage() {
               </h3>
 
               <p className="mt-2 text-sm text-slate-300">
-                Tons = Cubic Yards × Soil Density
+                US short tons = Cubic Yards × Density (US short tons/yd³)
               </p>
             </div>
 
@@ -310,7 +315,7 @@ export default function TopsoilPage() {
 
           <p className="mt-2 text-sm leading-6 text-amber-800">
             Topsoil weight varies with moisture, organic content,
-            compaction and material composition. The ton estimate
+            compaction and material composition. The US short-ton estimate
             is therefore an estimate. For an actual order, use the
             density provided by your local supplier.
           </p>
