@@ -83,7 +83,7 @@ fs.mkdirSync(screenshots, {recursive:true});
       if ((await page.getByTestId("steel-purchase-weight").innerText()) !== "59.73 lb") throw Error("Metric example needs 59.73 lb");
       await page.locator('#steel-bars').fill('1.5');
       await page.getByRole('button',{name:'Calculate Steel Weight',exact:true}).click();
-      await page.getByRole('alert').waitFor({state:'visible'});
+      await page.getByRole('alert').filter({hasText:'Enter a positive bar length and a whole number of bars.'}).waitFor({state:'visible'});
       if (await page.getByTestId('steel-purchase-weight').count()) throw Error('Invalid quantity must not show purchase results');
       await page.getByRole('button',{name:'Reset',exact:true}).click();
       if (await page.locator('#steel-bars').inputValue()) throw Error('Reset must clear quantity');
