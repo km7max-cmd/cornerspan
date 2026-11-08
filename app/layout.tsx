@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   },
 
   description:
-    "Free online construction calculators for concrete, brick, steel, paint, tile and roofing. Get fast, accurate material estimates for your next project.",
+    "Free online construction calculators for concrete, brick, steel, paint, tile and roofing. Review material quantities using your measurements, unit conversions, and stated assumptions.",
 
   keywords: [
     "construction calculator",
@@ -37,7 +37,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Free Construction Calculators | CornerSpan",
     description:
-      "Free online construction calculators for concrete, brick, steel, paint, tile and roofing. Get fast, accurate material estimates.",
+      "Free online construction calculators for concrete, brick, steel, paint, tile and roofing. Review material estimates with clear inputs and assumptions.",
     url: "https://www.cornerspan.com/",
     type: "website",
     locale: "en_US",
