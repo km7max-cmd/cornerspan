@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { notFound, permanentRedirect } from "next/navigation";
 import type { Metadata } from "next";
-import { blogPosts } from "../../../../data/blog";
+import { getPublicBlogPosts } from "../../../../lib/published-posts";
+export const dynamic = "force-dynamic";
 
 type Props = {
   params: Promise<{ tag: string }>;
@@ -15,20 +16,13 @@ function normalizeTag(value: string) {
   }
 }
 
-export function generateStaticParams() {
-  const tags = [...new Set(blogPosts.flatMap((post) => post.tags))];
-
-  return tags.map((tag) => ({
-    tag: tag.toLowerCase(),
-  }));
-}
-
 export async function generateMetadata({
   params,
 }: Props): Promise<Metadata> {
   const { tag: rawTag } = await params;
   const tag = normalizeTag(rawTag);
 
+  const blogPosts = await getPublicBlogPosts();
   const posts = blogPosts.filter((post) =>
     post.tags.some(
       (postTag) => postTag.toLowerCase() === tag.toLowerCase()
@@ -64,6 +58,7 @@ export default async function TagPage({ params }: Props) {
   const tag = normalizeTag(rawTag);
   if (decodeURIComponent(rawTag) !== tag) permanentRedirect(`/blog/tag/${tag}`);
 
+  const blogPosts = await getPublicBlogPosts();
   const posts = blogPosts.filter((post) =>
     post.tags.some(
       (postTag) => postTag.toLowerCase() === tag.toLowerCase()
