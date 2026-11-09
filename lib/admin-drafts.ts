@@ -57,22 +57,20 @@ export async function getDraft(db: D1Db, slug: string): Promise<DraftRecord | nu
     .bind(slug).first<Row>();
   return row ? fromRow(row) : null;
 }
-export async function upsertDraft(db: D1Db, draft: Omit<DraftRecord,"updatedAt" | "revision">, expectedRevision: number): Promise<boolean> {
-  // Optimistic concurrency prevents stale editors overwriting a newer draft.
-  // A revision of zero allows INSERT ONLY; an existing row requires matching revision.
-  const sql = `INSERT INTO admin_post_drafts
-    (slug, title, description, category, tags_json, published_at, body)
-    VALUES (?, ?, ?, ?, ?, ?, ?)
-    ON CONFLICT(slug) DO UPDATE SET
-      title=excluded.title, description=excluded.description,
-      category=excluded.category, tags_json=excluded.tags_json,
-      published_at=excluded.published_at, body=excluded.body,
-      updated_at=strftime('%Y-%m-%dT%H:%M:%fZ','now'),
-      revision=admin_post_drafts.revision + 1
-    WHERE admin_post_drafts.revision = ?`;
-  const result = await db.prepare(sql).bind(
-    draft.slug, draft.title, draft.description, draft.category,
-    JSON.stringify(draft.tags), draft.publishedAt, draft.body, expectedRevision,
-  ).run();
+export async function upsertDraft(db: D1Db, draft: Omit<DraftRecord, "updatedAt" | "revision">, expectedRevision: number): Promise<boolean> {
+  const fields: (string | number)[] = [
+    draft.title, draft.description, draft.category,
+    JSON.stringify(draft.tags), draft.publishedAt, draft.body,
+  ];
+  // Insert-only for a new draft; conditional update for an existing revision.
+  // Never overwrite another editor's newer revision.
+  const result = expectedRevision === 0
+    ? await db.prepare(`INSERT OR IGNORE INTO admin_post_drafts
+        (slug, title, description, category, tags_json, published_at, body)
+        VALUES (?, ?, ?, ?, ?, ?, ?)`).bind(draft.slug, ...fields).run()
+    : await db.prepare(`UPDATE admin_post_drafts
+        SET title=?, description=?, category=?, tags_json=?, published_at=?, body=?,
+          revision=revision+1, updated_at=strftime('%Y-%m-%dT%H:%M:%fZ','now')
+        WHERE slug=? AND revision=?`).bind(...fields, draft.slug, expectedRevision).run();
   return Boolean(result.success && (result.meta?.changes ?? 0) > 0);
 }
