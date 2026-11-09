@@ -109,6 +109,7 @@ export async function GET(request: NextRequest) {
     return response({
       articles: [...merged.values()].sort((a, b) => b.publishedAt.localeCompare(a.publishedAt)),
       codeManaged: custom.map(p => ({ slug: p.slug, title: p.title })),
+      newSlugs: postsFile.value.map(p => p.slug),
       revisions: { posts: postsFile.sha, overrides: overridesFile.sha },
     });
   } catch (error) {
