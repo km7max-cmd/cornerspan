@@ -33,9 +33,39 @@ Use your actual Cloudflare team values; do not commit user emails or sensitive c
 Only the Access policy decides which verified identity can sign in.
 Use a narrow rule protecting this admin path at every exposed hostname.
 
-## 3. Production launch checklist
+## 3. Configure D1 draft storage
 
-- Verify unsigned requests to `/admin` return 404.
+D1 is not yet provisioned; this is a required manual deployment prerequisite.
+
+1. In Cloudflare create a D1 database named `cornerspan-admin` (or another chosen name).
+2. Add an `ADMIN_DB` D1 binding to the **same deployed Worker** as CornerSpan.
+   For Wrangler/OpenNext, add the real database UUID to the `d1_databases`
+   section of `wrangler.jsonc` (not a fabricated UUID):
+
+   ```json
+   "d1_databases": [
+     { "binding": "ADMIN_DB", "database_name": "cornerspan-admin", "database_id": "REAL-D1-UUID" }
+   ]
+   ```
+
+3. Apply `migrations/0001_admin_post_drafts.sql` using Wrangler:
+
+   ```sh
+   npx wrangler d1 execute cornerspan-admin --remote --file=./migrations/0001_admin_post_drafts.sql
+   ```
+
+4. Confirm the binding and table are available in your preview environment.
+5. Verify unauthenticated `GET /api/admin/drafts` and
+   `POST /api/admin/drafts` always respond with 401.
+6. Verify authenticated save, reload, and revision conflict handling
+   before merging.
+
+The draft API does **not** publish posts or modify existing articles.
+The editor stores drafts on D1 and offers JSON export.
+
+## 4. Production launch checklist
+
+- Verify unsigned requests to `/admin` return 404, and unsigned draft API requests return 401.
 - Verify invalid, expired, and wrong-audience Access tokens are rejected.
 - Verify a real authorized session can open the dashboard.
 - Check that `/admin` returns `noindex` robots metadata.
@@ -45,8 +75,6 @@ Use a narrow rule protecting this admin path at every exposed hostname.
 
 ## Current limits
 
-This stage adds **server-side authenticated access** only. Draft saving is still browser-local;
-Export JSON can be used to move drafts. **No publish endpoint exists.** Cloudflare D1
-storage and full content editing must be integrated and tested before production use.
+This stage adds **server-side authenticated access** and a D1 draft API. D1 binding and schema still need deployment configuration. **No publish endpoint exists.** Existing published React article bodies are not editable yet; a full content migration and rendering strategy must be implemented and tested before production publishing.
 
 Never assume a route name alone or a client-side login widget provides security.
