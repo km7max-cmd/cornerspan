@@ -65,3 +65,21 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ draft: await getDraft(db, slug) }, { headers: noStore });
   } catch { return error("Could not save draft. Check D1 migrations.", 503); }
 }
+
+export async function DELETE(request: NextRequest) {
+  if (!(await hasAdminAccess())) return error("Unauthorized", 401);
+  if (!sameOrigin(request)) return error("Invalid request origin.", 403);
+  const slug = request.nextUrl.searchParams.get("slug");
+  const revision = Number(request.nextUrl.searchParams.get("revision"));
+  if (!slug || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug) ||
+    !Number.isSafeInteger(revision) || revision < 1) return error("Invalid draft identifier.", 400);
+  const db = draftDatabase();
+  if (!db) return error("Admin database is not configured.", 503);
+  try {
+    const result = await db.prepare("DELETE FROM admin_post_drafts WHERE slug=? AND revision=?")
+      .bind(slug, revision).run();
+    if (!result.success || (result.meta?.changes || 0) !== 1)
+      return error("Draft changed or was deleted. Reload before retrying.", 409);
+    return NextResponse.json({ deleted: true }, { headers: noStore });
+  } catch { return error("Could not delete draft.", 503); }
+}
