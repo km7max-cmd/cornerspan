@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { blogPosts } from "../../../data/blog";
-import { hasAdminAccess } from "../../../lib/admin-auth";
-import { draftDatabase, getDraft, listDrafts, upsertDraft } from "../../../lib/admin-drafts";
+import { blogPosts } from "../../../../data/blog";
+import { hasAdminAccess } from "../../../../lib/admin-auth";
+import { draftDatabase, getDraft, listDrafts, upsertDraft } from "../../../../lib/admin-drafts";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
