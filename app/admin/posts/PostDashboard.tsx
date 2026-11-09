@@ -66,6 +66,7 @@ export default function PostDashboard() {
   const [existingSlug, setExistingSlug] = useState<string | null>(null);
   const [tab, setTab] = useState<Tab>("article");
   const [query, setQuery] = useState("");
+  const [draftSlugs, setDraftSlugs] = useState<string[]>([]);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
   const [problem, setProblem] = useState("");
@@ -87,6 +88,7 @@ export default function PostDashboard() {
     const data = await r.json() as LoadData & { error?: string };
     if (!r.ok) throw new Error(data.error || "Could not open the dashboard.");
     setCatalog(data);
+    setDraftSlugs(Object.keys(getDrafts()));
     setAuthenticated(true);
     if (selectSlug) {
       const match = data.articles.find(a => a.slug === selectSlug);
@@ -123,6 +125,7 @@ export default function PostDashboard() {
       const drafts = getDrafts();
       drafts[article.slug] = article;
       localStorage.setItem(DRAFT_KEY, JSON.stringify(drafts));
+      setDraftSlugs(Object.keys(drafts));
       setMessage("Draft saved on this device only. It is not on GitHub or the public website.");
       setProblem("");
     } catch {
@@ -151,6 +154,7 @@ export default function PostDashboard() {
       const drafts = getDrafts();
       delete drafts[article.slug];
       localStorage.setItem(DRAFT_KEY, JSON.stringify(drafts));
+      setDraftSlugs(Object.keys(drafts));
       setLastCommit(result.commitUrl || "");
       setMessage(result.message || "Saved to GitHub.");
       await load(password, article.slug);
@@ -216,6 +220,18 @@ export default function PostDashboard() {
               <span className="mt-1 block text-xs text-slate-500">{p.category} · {p.publishedAt}</span>
             </button>)}
             {visible.length === 0 && <p className="p-4 text-sm text-slate-500">No matching posts.</p>}
+            {draftSlugs.length > 0 && <>
+              <div className="my-3 border-t border-slate-200 px-3 pt-3 text-xs font-bold uppercase tracking-wide text-slate-500">Local drafts · this device</div>
+              {draftSlugs.map(slug => <button type="button" key={slug} onClick={() => {
+                const draft = getDrafts()[slug];
+                if (!draft) return;
+                setArticle(clone(draft));
+                setExistingSlug(catalog?.articles.some(p => p.slug === slug) ? slug : null);
+                setTab("article"); setProblem(""); setMessage(""); setLastCommit("");
+              }} className="block w-full rounded-xl px-3 py-2 text-left text-sm font-medium text-blue-800 hover:bg-blue-50">
+                {getDrafts()[slug]?.title || slug}
+              </button>)}
+            </>}
             {!!catalog?.codeManaged.length && <>
               <div className="my-3 border-t border-slate-200 px-3 pt-3 text-xs font-bold uppercase tracking-wide text-slate-500">Custom-layout posts (view only)</div>
               {catalog.codeManaged.map(p => <a key={p.slug} href={"/blog/" + p.slug} target="_blank" rel="noreferrer"
