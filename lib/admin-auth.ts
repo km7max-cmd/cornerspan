@@ -49,7 +49,7 @@ export async function hasAdminAccess(): Promise<boolean> {
     const jwk = certs.keys?.find(key => key.kid === header.kid && key.kty === "RSA" && (!key.alg || key.alg === "RS256") && (!key.use || key.use === "sig"));
     if (!jwk) return false;
     const key = await crypto.subtle.importKey("jwk", jwk, { name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" }, false, ["verify"]);
-    const signature = decodeBase64Url(parts[2]);
+    const signature = new Uint8Array(decodeBase64Url(parts[2]));
     const message = new TextEncoder().encode(parts[0] + "." + parts[1]);
     return crypto.subtle.verify("RSASSA-PKCS1-v1_5", key, signature, message);
   } catch {
