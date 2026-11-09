@@ -157,7 +157,7 @@ export default async function BlogPostPage({ params }: Props) {
   if (published?.bodyOverride) return <CmsArticle post={published} />;
   const article = calculatorArticles.find(item => item.slug === slug);
   if (published && article) return <CalculatorArticle article={{
-    ...article, title: published.title, description: published.description,
+    ...article, title: published.title, seoTitle: published.title, description: published.description,
     category: published.category, tags: published.tags,
     modifiedAt: published.modifiedAt,
   }} />;
