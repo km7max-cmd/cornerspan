@@ -151,6 +151,30 @@ export default function AdminPostEditor({ posts }: { posts: Post[] }) {
       setMessage(error instanceof Error ? error.message : "Unpublish failed.");
     } finally { setBusy(false); }
   }
+  async function deleteDraft() {
+    if (!selected || !drafts[selected]) return;
+    if (!window.confirm("Delete the saved D1 draft? This does not delete any published article.")) return;
+    setBusy(true);
+    setMessage("");
+    try {
+      const previous = drafts[selected];
+      const response = await fetch("/api/admin/drafts?slug=" + encodeURIComponent(selected) +
+        "&revision=" + previous.revision, { method: "DELETE", credentials: "same-origin" });
+      const data = await response.json() as { deleted?: boolean; error?: string };
+      if (!response.ok || !data.deleted) throw new Error(data.error || "Could not delete draft.");
+      setDrafts(current => {
+        const next = { ...current };
+        delete next[selected];
+        return next;
+      });
+      const original = posts.find(post => post.slug === selected);
+      if (original) setForm(original);
+      else { setSelected(null); setForm({ ...emptyPost }); }
+      setMessage("Draft deleted. Published content remains unchanged.");
+    } catch(error) {
+      setMessage(error instanceof Error ? error.message : "Could not delete draft.");
+    } finally { setBusy(false); }
+  }
   function exportDraft() {
     const payload = JSON.stringify({ ...form, slug: slugify(form.slug || form.title) }, null, 2);
     const blob = new Blob([payload], { type: "application/json" });
@@ -166,7 +190,7 @@ export default function AdminPostEditor({ posts }: { posts: Post[] }) {
       <div className="mx-auto max-w-7xl">
         <div className="mb-5 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
           <strong>Development dashboard — not a publishing system.</strong> Drafts are saved to the configured Cloudflare D1 database.
-          Existing article bodies are currently React components and cannot be changed here.
+          Existing article bodies remain unchanged until you explicitly publish a full Markdown replacement.
           Publishing requires verified Cloudflare Access and the configured D1 database. Existing article pages are retained unless you explicitly replace the body.
         </div>
         <header className="mb-6 flex flex-wrap items-center justify-between gap-4">
@@ -216,8 +240,8 @@ export default function AdminPostEditor({ posts }: { posts: Post[] }) {
                   <input value={form.tags.join(", ")} onChange={e=>setForm({...form,tags:e.target.value.split(",").map(s=>s.trim()).filter(Boolean)})} className="mt-1 block w-full rounded-lg border p-3 font-normal" />
                 </label>
               </div>
-              <label className="block text-sm font-semibold">New draft body (Markdown notes only)
-                <textarea value={form.body || ""} onChange={e=>setForm({...form,body:e.target.value})} rows={9} placeholder="Draft your new article here. Not connected to published articles." className="mt-1 block w-full rounded-lg border p-3 font-mono text-sm font-normal" />
+              <label className="block text-sm font-semibold">Article body (Markdown)
+                <textarea value={form.body || ""} onChange={e=>setForm({...form,body:e.target.value})} rows={9} placeholder="Write the complete article in Markdown. Use ## section headings, lists, tables, links and images." className="mt-1 block w-full rounded-lg border p-3 font-mono text-sm font-normal" />
               </label>
               <label className="flex items-start gap-3 rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm">
                 <input type="checkbox" checked={replaceBody} disabled={!selected && !form.title.trim()} onChange={e=>setReplaceBody(e.target.checked)} className="mt-1"/>
@@ -228,6 +252,7 @@ export default function AdminPostEditor({ posts }: { posts: Post[] }) {
                 <button type="button" onClick={publishPost} disabled={!ready || busy || !selected} className="rounded-lg bg-green-700 px-5 py-3 font-semibold text-white disabled:opacity-50">Publish saved draft</button>
                 {selected && drafts[selected] && <a href={`/admin/preview/${selected}`} target="_blank" rel="noreferrer" className="rounded-lg border border-blue-300 px-5 py-3 font-semibold text-blue-700">Preview saved draft</a>}
                 {selected && publishedSlugs.includes(selected) && <button type="button" onClick={unpublishPost} disabled={busy} className="rounded-lg border border-red-300 px-5 py-3 font-semibold text-red-700">Unpublish CMS version</button>}
+                {selected && drafts[selected] && <button type="button" onClick={deleteDraft} disabled={busy} className="rounded-lg border border-amber-400 px-5 py-3 font-semibold text-amber-800">Delete draft</button>}
                 <button type="button" onClick={exportDraft} className="rounded-lg border border-slate-300 px-5 py-3 font-semibold hover:bg-slate-50">Export JSON</button>
               </div>
               {message && <p role="status" className="rounded-lg bg-slate-100 p-3 text-sm">{message}</p>}
