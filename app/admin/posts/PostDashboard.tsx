@@ -144,7 +144,7 @@ export default function PostDashboard() {
       const r = await fetch("/api/editor/posts", {
         method: "POST",
         headers: { Authorization: "Bearer " + password, "Content-Type": "application/json" },
-        body: JSON.stringify({ article, expectedSha }),
+        body: JSON.stringify({ article, expectedSha, mode: existingSlug ? "edit" : "create", originalSlug: existingSlug }),
       });
       const result = await r.json() as { error?: string; commitUrl?: string; message?: string };
       if (!r.ok) throw new Error(result.error || "Could not publish.");
@@ -230,7 +230,7 @@ export default function PostDashboard() {
           </div>
         </aside>
 
-        <main className="min-w-0">
+        <section className="min-w-0">
           {!article ? <div className="rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm">
             <h2 className="text-xl font-bold text-slate-900">Choose an article</h2>
             <p className="mt-2 text-sm text-slate-600">Select a post from the left, or start writing a new one.</p>
@@ -370,7 +370,7 @@ export default function PostDashboard() {
               </div>}
             </div>
           </div>}
-        </main>
+        </section>
       </div>}
     </div>
   </div>;
