@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { blogPosts } from "../../../../data/blog";
+import { calculatorArticles } from "../../../../data/calculator-articles";
 import { hasAdminAccess } from "../../../../lib/admin-auth";
 import { draftDatabase, getDraft } from "../../../../lib/admin-drafts";
-import { canPublishDraft, listPublishedPosts } from "../../../../lib/published-posts";
+import { canPublishDraft } from "../../../../lib/published-posts";
 
 export const dynamic = "force-dynamic";
 const headers = { "Cache-Control": "no-store" };
@@ -18,8 +19,11 @@ export async function GET() {
   if (!(await hasAdminAccess())) return fail("Unauthorized", 401);
   if (!draftDatabase()) return fail("Database not configured", 503);
   try {
-    const posts = await listPublishedPosts();
-    return NextResponse.json({ posts: posts.map(({ slug, revision }) => ({ slug, revision })) }, { headers });
+    const db = draftDatabase();
+    if (!db) return fail("Database not configured", 503);
+    const { results } = await db.prepare("SELECT slug, revision FROM admin_published_posts ORDER BY modified_at DESC LIMIT 500")
+      .all<{slug:string;revision:number}>();
+    return NextResponse.json({ posts: results }, { headers });
   } catch { return fail("Unable to load publication status", 503); }
 }
 export async function POST(request: NextRequest) {
@@ -45,6 +49,9 @@ export async function POST(request: NextRequest) {
     const legacy = blogPosts.find(post => post.slug === input.slug);
     const current = await db.prepare("SELECT slug, published_at FROM admin_published_posts WHERE slug=?")
       .bind(input.slug).first<{slug:string;published_at:string}>();
+    if (legacy && !input.replaceBody && !calculatorArticles.some(article => article.slug === input.slug)) {
+      return fail("This legacy article uses a dedicated component. To edit it, write and preview a complete Markdown replacement.", 422);
+    }
     const validation = canPublishDraft(draft, Boolean(current), Boolean(legacy), input.replaceBody);
     if (validation) return fail(validation, 422);
     const publishedAt = legacy?.publishedAt || current?.published_at || new Date().toISOString().slice(0,10);
