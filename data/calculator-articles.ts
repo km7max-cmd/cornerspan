@@ -2242,7 +2242,9 @@ const articles: CalculatorArticle[] = [
 
 // Keep historical TypeScript articles and their URLs intact. Editor changes are
 // overlay data, so publishing never rewrites the hand-maintained source.
-const editorChanges = editorOverrides as Record<string, Partial<CalculatorArticle>>;
+// Some lightweight Node regression loaders transpile without JSON default interop.
+const editorChanges = (editorOverrides ?? {}) as Record<string, Partial<CalculatorArticle>>;
+const additionalEditorPosts = (editorPosts ?? []) as CalculatorArticle[];
 const originalCalculatorArticles: CalculatorArticle[] = articles.map(article => {
   const illustration = articleImages[`/blog/${article.slug}`];
   return illustration
@@ -2253,5 +2255,5 @@ const originalSlugs = new Set(originalCalculatorArticles.map(article => article.
 
 export const calculatorArticles: CalculatorArticle[] = [
   ...originalCalculatorArticles.map(article => ({ ...article, ...(editorChanges[article.slug] ?? {}), slug: article.slug, publishedAt: article.publishedAt })),
-  ...(editorPosts as CalculatorArticle[]).filter(article => !originalSlugs.has(article.slug)),
+  ...additionalEditorPosts.filter(article => !originalSlugs.has(article.slug)),
 ];
