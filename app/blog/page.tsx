@@ -1,7 +1,9 @@
 
 import type { Metadata } from "next";
 import Link from "next/link";
-import { blogPosts } from "../../data/blog";
+import type { BlogPost } from "../../data/blog";
+import { getPublicBlogPosts } from "../../lib/published-posts";
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Construction Articles & Guides",
@@ -25,7 +27,7 @@ type Article = {
   type: "concrete" | "brick" | "square" | "materials";
 };
 
-const articles: Article[] = [...blogPosts]
+const articleCards = (posts: BlogPost[]): Article[] => [...posts]
   .sort(
     (a, b) =>
       new Date(b.publishedAt).getTime() -
@@ -194,7 +196,8 @@ function GuideIllustration({
   );
 }
 
-export default function BlogPage() {
+export default async function BlogPage() {
+  const articles = articleCards(await getPublicBlogPosts());
   return (
     <div className="min-h-screen bg-slate-50">
       {/* Hero */}
