@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { blogPosts } from "../../data/blog";
 import { calculatorArticles, type CalculatorArticle } from "../../data/calculator-articles";
 import { hasAdminAccess } from "../../lib/admin-auth";
+import { listPublishedPosts } from "../../lib/published-posts";
 import AdminPostEditor from "./post-editor";
 
 export const dynamic = "force-dynamic";
@@ -44,12 +45,25 @@ function articleToMarkdown(article: CalculatorArticle): string {
 
 export default async function AdminPage() {
   if (!(await hasAdminAccess())) notFound();
-  const posts = blogPosts.map(({ slug, title, description, category, tags, publishedAt }) => {
+  const catalog = blogPosts.map(({ slug, title, description, category, tags, publishedAt }) => {
     const article = calculatorArticles.find(item => item.slug === slug);
     return {
       slug, title, description, category, tags, publishedAt,
       body: article ? articleToMarkdown(article) : "",
     };
   });
-  return <AdminPostEditor posts={posts} />;
+  const posts = new Map(catalog.map(post => [post.slug, post]));
+  for (const published of await listPublishedPosts()) {
+    const old = posts.get(published.slug);
+    posts.set(published.slug, {
+      slug: published.slug,
+      title: published.title,
+      description: published.description,
+      category: published.category,
+      tags: published.tags,
+      publishedAt: old?.publishedAt || published.publishedAt,
+      body: published.bodyOverride ? published.body : (old?.body || ""),
+    });
+  }
+  return <AdminPostEditor posts={[...posts.values()]} />;
 }
