@@ -4,7 +4,7 @@ const { spawn } = require("node:child_process");
 const assert = require("node:assert/strict");
 const port = 31987;
 const origin = "http://127.0.0.1:" + port;
-const server = spawn("npm", ["run", "start", "--", "-p", String(port), "-H", "127.0.0.1"], {
+const server = spawn(process.execPath, ["node_modules/next/dist/bin/next", "start", "-p", String(port), "-H", "127.0.0.1"], {
   stdio: ["ignore", "pipe", "pipe"],
   env: { ...process.env, CF_ACCESS_TEAM_DOMAIN: "", CF_ACCESS_AUD: "" },
 });
