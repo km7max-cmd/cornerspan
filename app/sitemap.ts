@@ -1,11 +1,13 @@
 import type { MetadataRoute } from "next";
 
-import { blogPosts } from "../data/blog";
+import { getPublicBlogPosts } from "../lib/published-posts";
+export const dynamic = "force-dynamic";
 import { calculators, guideRoutes } from "../data/calculators";
 
 const BASE_URL = "https://www.cornerspan.com";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const blogPosts = await getPublicBlogPosts();
   const calculatorRoutes = calculators.map(
     (calculator) => calculator.href
   );
