@@ -43,7 +43,7 @@ async function gitFile<T>(token: string, path: string): Promise<Revisioned<T>> {
   });
   if (!r.ok) throw new Error(`GitHub read failed (${r.status}). Check the repository token permissions.`);
   const file = (await r.json()) as { content: string; sha: string };
-  const json = Buffer.from(file.content.replace(/\\s/g, ""), "base64").toString("utf8");
+  const json = Buffer.from(file.content, "base64").toString("utf8");
   return { value: JSON.parse(json) as T, sha: file.sha };
 }
 
@@ -53,7 +53,7 @@ async function gitWrite(token: string, path: string, sha: string, data: unknown,
     headers: { Authorization: `Bearer ${token}`, Accept: "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28", "Content-Type": "application/json" },
     body: JSON.stringify({
       message,
-      content: Buffer.from(JSON.stringify(data, null, 2) + "\\n", "utf8").toString("base64"),
+      content: Buffer.from(JSON.stringify(data, null, 2), "utf8").toString("base64"),
       sha,
       branch: BRANCH,
     }),
