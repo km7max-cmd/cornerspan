@@ -128,6 +128,16 @@ export async function POST(request: NextRequest) {
       return response({ error: "Required article fields are missing or invalid. Check title, description, introduction and sections." }, 400);
     }
     const article = payload.article;
+    // New posts need real editorial substance, not a catalog-only SEO stub.
+    if (payload.mode === "create" && (
+      article.intro.length < 2 ||
+      article.sections.length < 3 ||
+      article.faqs.length < 3 ||
+      article.sources.length < 1 ||
+      article.example.length < 1
+    )) {
+      return response({ error: "New posts require 2 introduction paragraphs, 3 substantial sections, 3 FAQs, a worked example and at least one source." }, 400);
+    }
     const slug = article.slug;
     const today = new Date().toISOString().slice(0, 10);
 
