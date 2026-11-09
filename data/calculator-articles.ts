@@ -1,4 +1,6 @@
 import { articleImages } from "./article-images";
+import editorPosts from "./editor-posts.json";
+import editorOverrides from "./editor-overrides.json";
 import { planningArticles } from "./planning-articles";
 import { roofPitchArticle } from "./roof-pitch-article";
 import { lShapedRoomArticle } from "./l-shaped-room-article";
@@ -2238,7 +2240,18 @@ const articles: CalculatorArticle[] = [
   }
 ];
 
-export const calculatorArticles: CalculatorArticle[] = articles.map(article => {
+// Keep historical TypeScript articles and their URLs intact. Editor changes are
+// overlay data, so publishing never rewrites the hand-maintained source.
+const editorChanges = editorOverrides as Record<string, Partial<CalculatorArticle>>;
+const originalCalculatorArticles: CalculatorArticle[] = articles.map(article => {
   const illustration = articleImages[`/blog/${article.slug}`];
-  return illustration ? { ...article, image: illustration.src, imageAlt: illustration.alt, imageCaption: illustration.caption, modifiedAt: article.modifiedAt > "2026-10-29" ? article.modifiedAt : "2026-10-29" } : article;
+  return illustration
+    ? { ...article, image: illustration.src, imageAlt: illustration.alt, imageCaption: illustration.caption, modifiedAt: article.modifiedAt > "2026-10-29" ? article.modifiedAt : "2026-10-29" }
+    : article;
 });
+const originalSlugs = new Set(originalCalculatorArticles.map(article => article.slug));
+
+export const calculatorArticles: CalculatorArticle[] = [
+  ...originalCalculatorArticles.map(article => ({ ...article, ...(editorChanges[article.slug] ?? {}), slug: article.slug, publishedAt: article.publishedAt })),
+  ...(editorPosts as CalculatorArticle[]).filter(article => !originalSlugs.has(article.slug)),
+];
