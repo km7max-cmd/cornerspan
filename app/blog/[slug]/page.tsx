@@ -1,4 +1,6 @@
 import { articleImages } from "../../../data/article-images";
+import { findPublishedPost } from "../../../lib/published-posts";
+import CmsArticle from "../../../components/blog/CmsArticle";
 import { calculatorArticles } from "../../../data/calculator-articles";
 import CalculatorArticle from "../../../components/blog/CalculatorArticle";
 import { notFound } from "next/navigation";
@@ -13,18 +15,28 @@ type Props = {
 const retainingWallSlug = "how-many-bricks-10-foot-retaining-wall";
 const trapezoidSlug = "trapezoid-area-calculation";
 
-export function generateStaticParams() {
-  return blogPosts.map((post) => ({
-    slug: post.slug,
-  }));
-}
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,
 }: Props): Promise<Metadata> {
   const { slug } = await params;
 
+  const published = await findPublishedPost(slug);
   const post = blogPosts.find((item) => item.slug === slug);
+
+  if (published) {
+    const url = `https://www.cornerspan.com/blog/${slug}`;
+    return {
+      title: published.title,
+      description: published.description,
+      alternates: { canonical: url },
+      openGraph: { title: published.title, description: published.description, type: "article", url,
+        publishedTime: published.publishedAt, modifiedTime: published.modifiedAt, locale: "en_US" },
+      twitter: { card: "summary_large_image", title: published.title, description: published.description },
+      robots: { index: true, follow: true },
+    };
+  }
 
   if (!post) {
     return {};
@@ -139,12 +151,16 @@ export async function generateMetadata({
 export default async function BlogPostPage({ params }: Props) {
   const { slug } = await params;
 
+  const published = await findPublishedPost(slug);
   const post = blogPosts.find((item) => item.slug === slug);
-
-  if (!post) {
-    notFound();
-  }
+  if (!post && !published) notFound();
+  if (published?.bodyOverride) return <CmsArticle post={published} />;
   const article = calculatorArticles.find(item => item.slug === slug);
+  if (published && article) return <CalculatorArticle article={{
+    ...article, title: published.title, description: published.description,
+    category: published.category, tags: published.tags,
+    modifiedAt: published.modifiedAt,
+  }} />;
   if (article) return <CalculatorArticle article={article} />;
   if (slug === trapezoidSlug) {
   return <TrapezoidAreaArticle />;
