@@ -241,7 +241,7 @@ export default function AdminPostEditor({ posts }: { posts: Post[] }) {
                 </label>
               </div>
               <label className="block text-sm font-semibold">Article body (Markdown)
-                <textarea value={form.body || ""} onChange={e=>setForm({...form,body:e.target.value})} rows={9} placeholder="Write the complete article in Markdown. Use ## section headings, lists, tables, links and images." className="mt-1 block w-full rounded-lg border p-3 font-mono text-sm font-normal" />
+                <textarea value={form.body || ""} onChange={e=>{setForm({...form,body:e.target.value});setReplaceBody(true);}} rows={9} placeholder="Write the complete article in Markdown. Use ## section headings, lists, tables, links and images." className="mt-1 block w-full rounded-lg border p-3 font-mono text-sm font-normal" />
               </label>
               <label className="flex items-start gap-3 rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm">
                 <input type="checkbox" checked={replaceBody} disabled={!selected && !form.title.trim()} onChange={e=>setReplaceBody(e.target.checked)} className="mt-1"/>
