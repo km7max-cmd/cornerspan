@@ -14,7 +14,7 @@ function validOrigin(request: NextRequest): boolean {
   const origin = request.headers.get("origin");
   return Boolean(origin && origin === request.nextUrl.origin);
 }
-type PublishInput = { slug?: unknown; revision?: unknown; replaceBody?: unknown };
+type PublishInput = { slug?: unknown; revision?: unknown; replaceBody?: unknown; expectedPublicationRevision?: unknown };
 export async function GET() {
   if (!(await hasAdminAccess())) return fail("Unauthorized", 401);
   if (!draftDatabase()) return fail("Database not configured", 503);
@@ -40,6 +40,7 @@ export async function POST(request: NextRequest) {
   } catch { return fail("Invalid request", 400); }
   if (typeof input.slug !== "string" || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(input.slug) ||
       typeof input.revision !== "number" || !Number.isSafeInteger(input.revision) || input.revision < 1 ||
+      typeof input.expectedPublicationRevision !== "number" || !Number.isSafeInteger(input.expectedPublicationRevision) || input.expectedPublicationRevision < 0 ||
       typeof input.replaceBody !== "boolean") return fail("Invalid request fields", 400);
 
   try {
@@ -47,8 +48,10 @@ export async function POST(request: NextRequest) {
     if (!draft) return fail("Save the draft first.", 404);
     if (draft.revision !== input.revision) return fail("Draft changed. Reload it before publishing.", 409);
     const legacy = blogPosts.find(post => post.slug === input.slug);
-    const current = await db.prepare("SELECT slug, published_at FROM admin_published_posts WHERE slug=?")
-      .bind(input.slug).first<{slug:string;published_at:string}>();
+    const current = await db.prepare("SELECT slug, published_at, revision FROM admin_published_posts WHERE slug=?")
+      .bind(input.slug).first<{slug:string;published_at:string;revision:number}>();
+    if ((current?.revision ?? 0) !== input.expectedPublicationRevision)
+      return fail("Publication changed. Reload before publishing.", 409);
     if (legacy && !input.replaceBody && !calculatorArticles.some(article => article.slug === input.slug)) {
       return fail("This legacy article uses a dedicated component. To edit it, write and preview a complete Markdown replacement.", 422);
     }
@@ -59,18 +62,22 @@ export async function POST(request: NextRequest) {
     const bodyOverride = !legacy || input.replaceBody;
     const result = await db.prepare(`INSERT INTO admin_published_posts
       (slug,title,description,category,tags_json,published_at,body_markdown,body_override)
-      VALUES (?,?,?,?,?,?,?,?)
+      SELECT slug,title,description,category,tags_json,?,CASE WHEN ? THEN body ELSE '' END,?
+      FROM admin_post_drafts
+      WHERE slug=? AND revision=?
+        AND COALESCE((SELECT revision FROM admin_published_posts WHERE slug=admin_post_drafts.slug),0)=?
       ON CONFLICT(slug) DO UPDATE SET
         title=excluded.title,description=excluded.description,category=excluded.category,
         tags_json=excluded.tags_json,body_markdown=excluded.body_markdown,
         body_override=excluded.body_override,
         modified_at=strftime('%Y-%m-%dT%H:%M:%fZ','now'),revision=revision+1`)
-      .bind(draft.slug, draft.title, draft.description, draft.category,
-        JSON.stringify(draft.tags), publishedAt,
-        bodyOverride ? draft.body : "", bodyOverride ? 1 : 0)
+      .bind(publishedAt, bodyOverride ? 1 : 0, bodyOverride ? 1 : 0,
+        input.slug, input.revision, input.expectedPublicationRevision)
       .run();
     if (!result.success) return fail("Publish failed", 503);
-    return NextResponse.json({ published: true, url: "/blog/" + input.slug }, { headers });
+    if ((result.meta?.changes ?? 0) !== 1)
+      return fail("Draft or publication changed. Reload before publishing.", 409);
+    return NextResponse.json({ published: true, revision: input.expectedPublicationRevision + 1, url: "/blog/" + input.slug }, { headers });
   } catch (error) {
     console.error("Admin publish failed", error);
     return fail("Could not publish. Check D1 migration.", 503);
@@ -80,12 +87,15 @@ export async function DELETE(request: NextRequest) {
   if (!(await hasAdminAccess())) return fail("Unauthorized", 401);
   if (!validOrigin(request)) return fail("Invalid request origin", 403);
   const slug = request.nextUrl.searchParams.get("slug");
-  if (!slug || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) return fail("Invalid slug", 400);
+  const revision = Number(request.nextUrl.searchParams.get("revision"));
+  if (!slug || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug) ||
+      !Number.isSafeInteger(revision) || revision < 1) return fail("Invalid publication identifier", 400);
   const db = draftDatabase();
   if (!db) return fail("Database not configured", 503);
   try {
-    const result = await db.prepare("DELETE FROM admin_published_posts WHERE slug=?").bind(slug).run();
+    const result = await db.prepare("DELETE FROM admin_published_posts WHERE slug=? AND revision=?").bind(slug, revision).run();
     if (!result.success) return fail("Unpublish failed", 503);
+    if ((result.meta?.changes ?? 0) !== 1) return fail("Publication changed. Reload before unpublishing.", 409);
     // Built-in legacy pages remain present; only the CMS override is removed.
     return NextResponse.json({ unpublished: true, legacyPageRestored: blogPosts.some(p => p.slug === slug) }, { headers });
   } catch {

@@ -1,9 +1,9 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { headers } from "next/headers";
 
-type AccessConfig = { teamDomain: string; audience: string };
+type AccessConfig = { teamDomain: string; audience: string; adminEmail: string };
 type Jwk = JsonWebKey & { kid?: string; alg?: string; use?: string };
-type Claims = { iss?: string; aud?: string | string[]; exp?: number; nbf?: number; iat?: number };
+type Claims = { iss?: string; aud?: string | string[]; exp?: number; nbf?: number; iat?: number; email?: string };
 
 function decodeBase64Url(encoded: string): Uint8Array {
   const padded = encoded.replace(/-/g, "+").replace(/_/g, "/").padEnd(Math.ceil(encoded.length / 4) * 4, "=");
@@ -16,9 +16,11 @@ function readConfig(): AccessConfig | null {
     const env = getCloudflareContext().env as unknown as Record<string, unknown>;
     const teamDomain = env.CF_ACCESS_TEAM_DOMAIN;
     const audience = env.CF_ACCESS_AUD;
-    if (typeof teamDomain !== "string" || typeof audience !== "string") return null;
+    const adminEmail = env.CF_ACCESS_ADMIN_EMAIL;
+    if (typeof teamDomain !== "string" || typeof audience !== "string" || typeof adminEmail !== "string") return null;
     if (!/^[a-z0-9-]+\.cloudflareaccess\.com$/.test(teamDomain) || !/^[a-zA-Z0-9_-]{15,200}$/.test(audience)) return null;
-    return { teamDomain, audience };
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(adminEmail.trim())) return null;
+    return { teamDomain, audience, adminEmail: adminEmail.trim().toLowerCase() };
   } catch {
     return null; // no Cloudflare context/config: deny by default
   }
@@ -40,9 +42,10 @@ export async function hasAdminAccess(): Promise<boolean> {
     const now = Math.floor(Date.now() / 1000);
     if (claims.iss !== `https://${config.teamDomain}` ||
         !(typeof claims.aud === "string" ? claims.aud === config.audience : Array.isArray(claims.aud) && claims.aud.includes(config.audience)) ||
+        typeof claims.email !== "string" || claims.email.toLowerCase() !== config.adminEmail ||
         typeof claims.exp !== "number" || claims.exp <= now ||
-        (typeof claims.nbf === "number" && claims.nbf > now + 30) ||
-        (typeof claims.iat === "number" && claims.iat > now + 30)) return false;
+        (claims.nbf !== undefined && (typeof claims.nbf !== "number" || claims.nbf > now + 30)) ||
+        (claims.iat !== undefined && (typeof claims.iat !== "number" || claims.iat > now + 30))) return false;
     const response = await fetch(`https://${config.teamDomain}/cdn-cgi/access/certs`, { next: { revalidate: 3600 } });
     if (!response.ok) return false;
     const certs = await response.json() as { keys?: Jwk[] };

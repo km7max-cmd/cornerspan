@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { blogPosts } from "../../../../data/blog";
 import { hasAdminAccess } from "../../../../lib/admin-auth";
 import { draftDatabase, getDraft, listDrafts, upsertDraft } from "../../../../lib/admin-drafts";
 
@@ -50,12 +49,7 @@ export async function POST(request: NextRequest) {
     typeof body !== "string" || body.length > 80000 ||
     typeof expectedRevision !== "number" || !Number.isSafeInteger(expectedRevision) || expectedRevision < 0
   ) return error("Invalid post fields.", 400);
-  // A local draft never modifies the live post table or the public renderer.
-  const existsInCatalog = blogPosts.some(post => post.slug === slug);
-  if (!existsInCatalog && expectedRevision > 0) {
-    const old = await getDraft(db, slug);
-    if (!old) return error("Draft no longer exists.", 409);
-  }
+  // A saved draft never modifies the live post table or the public renderer.
   try {
     const saved = await upsertDraft(db, {
       slug, title: title.trim(), description, category,

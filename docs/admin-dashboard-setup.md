@@ -6,10 +6,11 @@ Existing calculators, article slugs and live published content are untouched unt
 ## What the feature implements
 
 - `/admin`: searchable existing posts, new draft editor, SEO title/description, category/tags and Markdown body editor.
-- Cloudflare Access JWT signature + issuer + AUD + expiry validation on server. No configuration = access denied.
+- Cloudflare Access JWT signature + issuer + AUD + expiry + exact owner email validation on server. No configuration = access denied.
 - `/api/admin/drafts`: protected CRUD draft storage with revision checks in Cloudflare D1.
 - `/admin/preview/[slug]`: authenticated saved-draft preview.
 - `/api/admin/publish`: protected publish, status and unpublish APIs.
+- Publishing checks draft and publication revisions in the same SQL write; stale publish/unpublish requests return 409.
 - `/blog/[slug]`, `/blog`, categories/tags and `/sitemap.xml`: D1 published records overlay existing content.
 - New posts require substantial content with section headings. URL slugs for existing posts remain locked.
 - Existing structured articles can receive metadata-only updates while keeping the original body.
@@ -33,6 +34,7 @@ Set **runtime** environment variables on the deployed OpenNext Cloudflare Worker
 
 - `CF_ACCESS_TEAM_DOMAIN` — e.g. `example.cloudflareaccess.com` (no protocol)
 - `CF_ACCESS_AUD` — the Access application Audience (AUD) tag
+- `CF_ACCESS_ADMIN_EMAIL` — the site owner's exact verified email, matching the Access allow policy. This is also checked against the signed JWT; missing configuration, other users and service-token identities are denied.
 
 **Important:** If you create two distinct Access applications for these route patterns,
 each may have a different AUD. This implementation accepts only one AUD, so use a
@@ -66,24 +68,65 @@ is required.
 
    The migration directory contains `0001_admin_post_drafts.sql` and
    `0002_admin_published_posts.sql`. Do not run only the first migration.
-4. For preview testing, use a separate D1 database or dedicated preview binding
-   so test publications cannot affect the production database.
+4. Create a **second physical D1 database** named `cornerspan-admin-preview`.
+   Bind preview `ADMIN_DB` to its distinct UUID and apply both migrations there too.
+   A version URL alone does not prove database isolation. Check the actual binding before any write.
+   For current Worker Previews, configure `previews.d1_databases`; for an existing legacy
+   preview workflow, use a separate staging Worker with its own Wrangler configuration.
+   Do not change a legacy preview workflow blindly: Cloudflare's switch to Worker Previews is irreversible.
+5. Keep the entire preview hostname behind owner-only Access and exclude it from indexing.
+   On production, protect only admin paths, including the exact `/admin` path,
+   its descendants and `/api/admin/*`; leave the public site accessible.
+6. Record real database UUIDs in the checked-in Wrangler configuration before deployment.
+   Do not rely on a Dashboard binding that the next Wrangler deployment could replace.
 
 ## 3. Verify on a protected preview deployment
 
 - GitHub Actions job `Admin dashboard checks` must pass TypeScript and Next production build.
 - An unsigned request to `/admin` returns 404; unsigned requests to both admin API paths return 401.
 - Forged, wrong-issuer, expired or wrong-audience JWTs are rejected.
+- A correctly signed token for a different email or a service-token identity is rejected.
 - Only the authorized owner can open the dashboard; public users cannot preview drafts.
 - Confirm database migration has both tables; save, reload, edit and delete drafts.
 - Confirm two simultaneous edits cannot silently overwrite each other.
+- Change a draft while publishing it; the older publish must fail with 409. Stale unpublish requests must also fail with 409.
 - Draft preview is private and includes a noindex meta tag.
 - Publish a **new test article**, then inspect title, canonical, Article schema, Blog index, tags/categories and sitemap.
 - Unpublish that test article and confirm it disappears from search listings and sitemap.
 - Create an existing article metadata-only override; confirm content remains unchanged and the original slug stays intact.
+- Reopen a CMS-created post and an existing full-body override; their current bodies must remain selected for publishing.
 - Test full Markdown replacement only on a controlled staging article and check layout and images.
 - Check all existing calculator routes, blog URLs, canonical metadata, robots policy and redirects.
 - After Cloudflare configuration and smoke tests, decide whether to merge the PR. Do not bypass required account setup.
+
+## Local verification commands
+
+```sh
+node scripts/test-admin-behavior.cjs
+python3 scripts/test-admin-migrations.py
+npm run prebuild
+npx tsc --noEmit
+npm run build:cloudflare
+node scripts/qa-admin-security.cjs
+```
+
+The behavior suite executes the real auth and API modules with generated RSA test keys
+and an in-memory SQLite database. It verifies owner-only JWT checks, same-origin writes,
+draft CRUD, atomic publication conflicts, metadata-only preservation and unpublish restoration.
+These local checks **do not replace** authenticated tests on the real protected Cloudflare preview.
+Node 22.13+ is required by the test suite's built-in SQLite adapter.
+
+## Current deployment gate — 9 November 2026
+
+Cloudflare Dashboard opened successfully but sign-in was not completed in this session.
+No D1 instance, remote migration, Access application, binding, runtime variable or deployment
+has been created or changed by this continuation. PR #4 must stay draft and unmerged until
+the remote preview tests above pass. Existing article data, public assets, robots,
+redirects, global metadata and AdSense configuration are outside this change.
+
+Cloudflare references: [JWT validation](https://developers.cloudflare.com/cloudflare-one/access-controls/applications/http-apps/authorization-cookie/validating-json/),
+[preview resource isolation](https://developers.cloudflare.com/workers/previews/resources/),
+[preview build branches](https://developers.cloudflare.com/workers/ci-cd/builds/build-branches/).
 
 ## Limits and safeguards
 

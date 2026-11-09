@@ -50,6 +50,7 @@ export default async function AdminPage() {
     return {
       slug, title, description, category, tags, publishedAt,
       body: article ? articleToMarkdown(article) : "",
+      builtIn: true, bodyOverride: false,
     };
   });
   const posts = new Map(catalog.map(post => [post.slug, post]));
@@ -63,6 +64,7 @@ export default async function AdminPage() {
       tags: published.tags,
       publishedAt: old?.publishedAt || published.publishedAt,
       body: published.bodyOverride ? published.body : (old?.body || ""),
+      builtIn: old?.builtIn ?? false, bodyOverride: published.bodyOverride,
     });
   }
   return <AdminPostEditor posts={[...posts.values()]} />;
