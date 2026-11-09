@@ -27,3 +27,5 @@ jobs:
         run: npx tsc --noEmit
       - name: Next.js production build
         run: npm run build
+      - name: Admin security route smoke tests
+        run: node scripts/qa-admin-security.cjs
