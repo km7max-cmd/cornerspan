@@ -1,5 +1,5 @@
 const fs=require('fs'),ts=require(require('path').resolve(__dirname,'..')+'/node_modules/typescript'),assert=require('assert/strict');
-require.extensions['.ts']=(m,f)=>m._compile(ts.transpileModule(fs.readFileSync(f,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022}}).outputText,f);
+require.extensions['.ts']=(m,f)=>m._compile(ts.transpileModule(fs.readFileSync(f,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022,esModuleInterop:true,resolveJsonModule:true}}).outputText,f);
 const {planningArticles}=require(require('path').resolve(__dirname,'..')+'/data/planning-articles.ts');
 const {blogPosts}=require(require('path').resolve(__dirname,'..')+'/data/blog.ts');
 const {calculatorArticles}=require(require('path').resolve(__dirname,'..')+'/data/calculator-articles.ts');
