@@ -11,8 +11,8 @@ type Post = {
   publishedAt: string;
   body?: string;
 };
-type Draft = Post & { savedAt?: string };
-const STORAGE_KEY = "cornerspan-admin-drafts-v1";
+type Draft = Post & { updatedAt?: string; revision: number };
+
 const emptyPost: Post = {
   slug: "", title: "", description: "", category: "Construction",
   tags: [], publishedAt: "", body: "",
@@ -28,17 +28,24 @@ export default function AdminPostEditor({ posts }: { posts: Post[] }) {
   const [query, setQuery] = useState("");
   const [message, setMessage] = useState("");
   const [ready, setReady] = useState(false);
+  const [busy, setBusy] = useState(false);
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) {
-        const parsed: unknown = JSON.parse(stored);
-        if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
-          setDrafts(parsed as Record<string, Draft>);
-        }
-      }
-    } catch { /* ignore corrupt browser drafts */ }
-    setReady(true);
+    let active = true;
+    fetch("/api/admin/drafts", { cache: "no-store", credentials: "same-origin" })
+      .then(async response => {
+        if (!response.ok) throw new Error(response.status === 503 ? "Database unavailable. Configure D1 before saving." : "Unable to load drafts.");
+        return response.json() as Promise<{drafts: Draft[]}>;
+      })
+      .then(data => {
+        if (!active) return;
+        setDrafts(Object.fromEntries(data.drafts.map(draft => [draft.slug, draft])));
+        setReady(true);
+      })
+      .catch(error => {
+        if (!active) return;
+        setMessage(error instanceof Error ? error.message : "Unable to load drafts.");
+      });
+    return () => { active = false; };
   }, []);
   const allPosts = useMemo(() => {
     const combined = new Map(posts.map(p => [p.slug, p]));
@@ -55,7 +62,8 @@ export default function AdminPostEditor({ posts }: { posts: Post[] }) {
     setForm({ ...emptyPost, tags: [], publishedAt: new Date().toISOString().slice(0, 10) });
     setMessage("");
   }
-  function saveDraft() {
+  async function saveDraft() {
+    if (!ready || busy) return;
     const slug = slugify(form.slug || form.title);
     if (!slug || !form.title.trim()) {
       setMessage("A title and URL slug are required.");
@@ -65,16 +73,28 @@ export default function AdminPostEditor({ posts }: { posts: Post[] }) {
       setMessage("Changing an existing URL slug is disabled to protect SEO and backlinks.");
       return;
     }
-    const normalized: Draft = { ...form, slug, savedAt: new Date().toISOString() };
-    const next = { ...drafts, [slug]: normalized };
+    setBusy(true);
+    setMessage("");
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-      setDrafts(next);
+      const response = await fetch("/api/admin/drafts", {
+        method: "POST", cache: "no-store", credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...form, slug, body: form.body || "",
+          expectedRevision: drafts[slug]?.revision ?? 0 }),
+      });
+      const result = await response.json() as { draft?: Draft; error?: string };
+      if (!response.ok || !result.draft) {
+        throw new Error(result.error || "Could not save draft.");
+      }
+      const saved = result.draft;
+      setDrafts(previous => ({ ...previous, [slug]: saved }));
       setSelected(slug);
-      setForm(normalized);
-      setMessage("Draft saved in this browser only. The live website has NOT changed.");
-    } catch {
-      setMessage("Unable to save this draft in browser storage.");
+      setForm(saved);
+      setMessage("Saved to D1 database as a draft. Live published content has NOT changed.");
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Unable to save draft.");
+    } finally {
+      setBusy(false);
     }
   }
   function exportDraft() {
@@ -91,7 +111,7 @@ export default function AdminPostEditor({ posts }: { posts: Post[] }) {
     <main className="min-h-screen bg-slate-100 p-4 text-slate-900 md:p-8">
       <div className="mx-auto max-w-7xl">
         <div className="mb-5 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
-          <strong>Development dashboard — not a publishing system.</strong> Drafts save only in this browser.
+          <strong>Development dashboard — not a publishing system.</strong> Drafts are saved to the configured Cloudflare D1 database.
           Existing article bodies are currently React components and cannot be changed here.
           Do not deploy this route publicly until Cloudflare Access or equivalent verified authentication is configured.
         </div>
@@ -111,7 +131,7 @@ export default function AdminPostEditor({ posts }: { posts: Post[] }) {
                 <button key={post.slug} onClick={() => openPost(post)} className={`block w-full rounded-lg px-3 py-3 text-left hover:bg-blue-50 ${selected === post.slug ? "bg-blue-50 ring-1 ring-blue-300" : ""}`}>
                   <span className="block text-sm font-semibold">{post.title}</span>
                   <span className="mt-1 block break-all text-xs text-slate-500">/blog/{post.slug}</span>
-                  {drafts[post.slug] && <span className="text-xs font-semibold text-amber-700">Local draft</span>}
+                  {drafts[post.slug] && <span className="text-xs font-semibold text-amber-700">D1 draft</span>}
                 </button>
               ))}
               {allPosts.length === 0 && <p className="p-3 text-sm text-slate-500">No matching posts.</p>}
@@ -146,7 +166,7 @@ export default function AdminPostEditor({ posts }: { posts: Post[] }) {
                 <textarea value={form.body || ""} onChange={e=>setForm({...form,body:e.target.value})} rows={9} placeholder="Draft your new article here. Not connected to published articles." className="mt-1 block w-full rounded-lg border p-3 font-mono text-sm font-normal" />
               </label>
               <div className="flex flex-wrap gap-3">
-                <button type="submit" disabled={!ready} className="rounded-lg bg-blue-700 px-5 py-3 font-semibold text-white hover:bg-blue-800 disabled:opacity-50">Save local draft</button>
+                <button type="submit" className="rounded-lg bg-blue-700 px-5 py-3 font-semibold text-white hover:bg-blue-800 disabled:opacity-50" disabled={!ready || busy}>{busy ? "Saving..." : "Save D1 draft"}</button>
                 <button type="button" onClick={exportDraft} className="rounded-lg border border-slate-300 px-5 py-3 font-semibold hover:bg-slate-50">Export JSON</button>
               </div>
               {message && <p role="status" className="rounded-lg bg-slate-100 p-3 text-sm">{message}</p>}
