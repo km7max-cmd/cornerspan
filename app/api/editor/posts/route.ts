@@ -123,8 +123,8 @@ export async function POST(request: NextRequest) {
   try {
     const raw = await request.text();
     if (raw.length > 300_000) return response({ error: "Article data is too large." }, 413);
-    const payload = JSON.parse(raw) as { article?: unknown; expectedSha?: unknown };
-    if (!isArticle(payload.article) || typeof payload.expectedSha !== "string") {
+    const payload = JSON.parse(raw) as { article?: unknown; expectedSha?: unknown; mode?: unknown; originalSlug?: unknown };
+    if (!isArticle(payload.article) || typeof payload.expectedSha !== "string" || (payload.mode !== "edit" && payload.mode !== "create")) {
       return response({ error: "Required article fields are missing or invalid. Check title, description, introduction and sections." }, 400);
     }
     const article = payload.article;
@@ -140,6 +140,14 @@ export async function POST(request: NextRequest) {
     const isOriginal = !isPublishedNew && !deployedNew && calculatorArticles.some(p => p.slug === slug);
     const reserved = blogPosts.some(p => p.slug === slug) && !calculatorArticles.some(p => p.slug === slug);
     if (reserved) return response({ error: "This article has a custom code-managed layout and cannot yet be edited here." }, 409);
+    const slugExists = isOriginal || isPublishedNew || deployedNew || reserved;
+    if (payload.mode === "create" && slugExists) {
+      return response({ error: "This URL slug already exists. Open the existing post instead of creating a duplicate." }, 409);
+    }
+    if (payload.mode === "edit" && (!slugExists || payload.originalSlug !== slug)) {
+      return response({ error: "An existing post's URL cannot be changed in the editor." }, 409);
+    }
+
 
     const isOverride = isOriginal;
     const target = isOverride ? overridesFile : postsFile;
