@@ -29,6 +29,8 @@ export default function AdminPostEditor({ posts }: { posts: Post[] }) {
   const [message, setMessage] = useState("");
   const [ready, setReady] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [publishedSlugs, setPublishedSlugs] = useState<string[]>([]);
+  const [replaceBody, setReplaceBody] = useState(false);
   useEffect(() => {
     let active = true;
     fetch("/api/admin/drafts", { cache: "no-store", credentials: "same-origin" })
@@ -47,6 +49,15 @@ export default function AdminPostEditor({ posts }: { posts: Post[] }) {
       });
     return () => { active = false; };
   }, []);
+  useEffect(() => {
+    fetch("/api/admin/publish", { cache: "no-store", credentials: "same-origin" })
+      .then(async response => {
+        if (!response.ok) throw new Error("Publication status is unavailable. Run both D1 migrations.");
+        return response.json() as Promise<{ posts: { slug: string }[] }>;
+      })
+      .then(data => setPublishedSlugs(data.posts.map(post => post.slug)))
+      .catch(error => setMessage(error instanceof Error ? error.message : "Publication status unavailable."));
+  }, []);
   const allPosts = useMemo(() => {
     const combined = new Map(posts.map(p => [p.slug, p]));
     Object.values(drafts).forEach(post => combined.set(post.slug, post));
@@ -55,10 +66,12 @@ export default function AdminPostEditor({ posts }: { posts: Post[] }) {
   function openPost(post: Post) {
     setSelected(post.slug);
     setForm({ ...post, tags: [...post.tags] });
+    setReplaceBody(false);
     setMessage("");
   }
   function newPost() {
     setSelected(null);
+    setReplaceBody(true);
     setForm({ ...emptyPost, tags: [], publishedAt: new Date().toISOString().slice(0, 10) });
     setMessage("");
   }
@@ -97,6 +110,47 @@ export default function AdminPostEditor({ posts }: { posts: Post[] }) {
       setBusy(false);
     }
   }
+  async function publishPost() {
+    const slug = slugify(form.slug || form.title);
+    const saved = drafts[slug];
+    if (!saved || !selected || !ready) { setMessage("Save this draft first."); return; }
+    if (JSON.stringify({ ...form, updatedAt: undefined, revision: undefined }) !==
+        JSON.stringify({ ...saved, updatedAt: undefined, revision: undefined })) {
+      setMessage("Unsaved changes. Save draft before publishing.");
+      return;
+    }
+    if (!window.confirm("Publish the saved version to CornerSpan? Check the preview and SEO description first.")) return;
+    setBusy(true);
+    try {
+      const response = await fetch("/api/admin/publish", {
+        method: "POST", credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({slug, revision: saved.revision, replaceBody}),
+      });
+      const result = await response.json() as { published?: boolean; error?: string };
+      if (!response.ok || !result.published) throw new Error(result.error || "Publish failed.");
+      setPublishedSlugs(old => [...new Set([...old, slug])]);
+      setMessage("Published. Verify the live URL, content and canonical SEO before sharing.");
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Publish failed.");
+    } finally { setBusy(false); }
+  }
+  async function unpublishPost() {
+    if (!selected || !publishedSlugs.includes(selected)) return;
+    if (!window.confirm("Remove the CMS publication? Existing built-in articles will revert to their original versions.")) return;
+    setBusy(true);
+    try {
+      const response = await fetch("/api/admin/publish?slug=" + encodeURIComponent(selected), {
+        method: "DELETE", credentials: "same-origin",
+      });
+      const result = await response.json() as { unpublished?: boolean; error?: string };
+      if (!response.ok || !result.unpublished) throw new Error(result.error || "Could not unpublish.");
+      setPublishedSlugs(old => old.filter(slug => slug !== selected));
+      setMessage("CMS publication removed. Built-in legacy articles remain available.");
+    } catch(error) {
+      setMessage(error instanceof Error ? error.message : "Unpublish failed.");
+    } finally { setBusy(false); }
+  }
   function exportDraft() {
     const payload = JSON.stringify({ ...form, slug: slugify(form.slug || form.title) }, null, 2);
     const blob = new Blob([payload], { type: "application/json" });
@@ -113,7 +167,7 @@ export default function AdminPostEditor({ posts }: { posts: Post[] }) {
         <div className="mb-5 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
           <strong>Development dashboard — not a publishing system.</strong> Drafts are saved to the configured Cloudflare D1 database.
           Existing article bodies are currently React components and cannot be changed here.
-          Do not deploy this route publicly until Cloudflare Access or equivalent verified authentication is configured.
+          Publishing requires verified Cloudflare Access and the configured D1 database. Existing article pages are retained unless you explicitly replace the body.
         </div>
         <header className="mb-6 flex flex-wrap items-center justify-between gap-4">
           <div><p className="text-sm font-semibold text-blue-700">CornerSpan / Admin</p>
@@ -131,7 +185,7 @@ export default function AdminPostEditor({ posts }: { posts: Post[] }) {
                 <button key={post.slug} onClick={() => openPost(post)} className={`block w-full rounded-lg px-3 py-3 text-left hover:bg-blue-50 ${selected === post.slug ? "bg-blue-50 ring-1 ring-blue-300" : ""}`}>
                   <span className="block text-sm font-semibold">{post.title}</span>
                   <span className="mt-1 block break-all text-xs text-slate-500">/blog/{post.slug}</span>
-                  {drafts[post.slug] && <span className="text-xs font-semibold text-amber-700">D1 draft</span>}
+                  {publishedSlugs.includes(post.slug) && <span className="mr-2 text-xs font-semibold text-green-700">Published in CMS</span>}{drafts[post.slug] && <span className="text-xs font-semibold text-amber-700">D1 draft</span>}
                 </button>
               ))}
               {allPosts.length === 0 && <p className="p-3 text-sm text-slate-500">No matching posts.</p>}
@@ -165,8 +219,15 @@ export default function AdminPostEditor({ posts }: { posts: Post[] }) {
               <label className="block text-sm font-semibold">New draft body (Markdown notes only)
                 <textarea value={form.body || ""} onChange={e=>setForm({...form,body:e.target.value})} rows={9} placeholder="Draft your new article here. Not connected to published articles." className="mt-1 block w-full rounded-lg border p-3 font-mono text-sm font-normal" />
               </label>
+              <label className="flex items-start gap-3 rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm">
+                <input type="checkbox" checked={replaceBody} disabled={!selected && !form.title.trim()} onChange={e=>setReplaceBody(e.target.checked)} className="mt-1"/>
+                <span><strong>Publish this Markdown body as the complete article.</strong> For built-in posts, leave unchecked to preserve the current article body and change only its metadata. Replacing the body removes special embedded calculators/figures, so review the preview carefully.</span>
+              </label>
               <div className="flex flex-wrap gap-3">
                 <button type="submit" className="rounded-lg bg-blue-700 px-5 py-3 font-semibold text-white hover:bg-blue-800 disabled:opacity-50" disabled={!ready || busy}>{busy ? "Saving..." : "Save D1 draft"}</button>
+                <button type="button" onClick={publishPost} disabled={!ready || busy || !selected} className="rounded-lg bg-green-700 px-5 py-3 font-semibold text-white disabled:opacity-50">Publish saved draft</button>
+                {selected && drafts[selected] && <a href={`/admin/preview/${selected}`} target="_blank" rel="noreferrer" className="rounded-lg border border-blue-300 px-5 py-3 font-semibold text-blue-700">Preview saved draft</a>}
+                {selected && publishedSlugs.includes(selected) && <button type="button" onClick={unpublishPost} disabled={busy} className="rounded-lg border border-red-300 px-5 py-3 font-semibold text-red-700">Unpublish CMS version</button>}
                 <button type="button" onClick={exportDraft} className="rounded-lg border border-slate-300 px-5 py-3 font-semibold hover:bg-slate-50">Export JSON</button>
               </div>
               {message && <p role="status" className="rounded-lg bg-slate-100 p-3 text-sm">{message}</p>}
