@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { blogPosts } from "../../../../data/blog";
 import { hasAdminAccess } from "../../../../lib/admin-auth";
 import { draftDatabase, getDraft } from "../../../../lib/admin-drafts";
-import { canPublishDraft } from "../../../../lib/published-posts";
+import { canPublishDraft, listPublishedPosts } from "../../../../lib/published-posts";
 
 export const dynamic = "force-dynamic";
 const headers = { "Cache-Control": "no-store" };
@@ -14,6 +14,14 @@ function validOrigin(request: NextRequest): boolean {
   return Boolean(origin && origin === request.nextUrl.origin);
 }
 type PublishInput = { slug?: unknown; revision?: unknown; replaceBody?: unknown };
+export async function GET() {
+  if (!(await hasAdminAccess())) return fail("Unauthorized", 401);
+  if (!draftDatabase()) return fail("Database not configured", 503);
+  try {
+    const posts = await listPublishedPosts();
+    return NextResponse.json({ posts: posts.map(({ slug, revision }) => ({ slug, revision })) }, { headers });
+  } catch { return fail("Unable to load publication status", 503); }
+}
 export async function POST(request: NextRequest) {
   if (!(await hasAdminAccess())) return fail("Unauthorized", 401);
   if (!validOrigin(request)) return fail("Invalid request origin", 403);
