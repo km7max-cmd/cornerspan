@@ -23,6 +23,8 @@ jobs:
         run: npm install --no-package-lock --no-audit --no-fund
       - name: Generate calculator data
         run: npm run prebuild
+      - name: Validate D1 migrations with SQLite
+        run: python3 scripts/test-admin-migrations.py
       - name: TypeScript check
         run: npx tsc --noEmit
       - name: Next.js production build
