@@ -132,6 +132,10 @@ const { samePostContent, initialBodyReplacement } = load("lib/admin-editor-state
       { "cf-connecting-ip": "203.0.113.41" })).status, 429);
     assert.equal((await call(login, "POST", { password: config.ADMIN_LOGIN_PASSWORD }, "",
       { origin: "https://evil.example.test" })).status, 403);
+    env = { ADMIN_DB: database };
+    assert.equal((await call(login, "POST", { password: config.ADMIN_LOGIN_PASSWORD })).status, 503,
+      "missing private login secrets must fail closed");
+    env = { ...config };
     console.log("PASS login/logout cookies, D1 5/15-min rate limit, CSRF and protected routes");
     assert.deepEqual(normalize(await getPublicBlogPosts()), normalize(blogPosts));
     const draft = { slug: "private-preview-test", title: "Controlled preview article",
