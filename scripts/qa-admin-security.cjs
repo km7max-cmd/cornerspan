@@ -1,12 +1,12 @@
-// Smoke-test fail-closed admin routes on a production Next server without Cloudflare credentials.
-// Run after npm run build; do not set CF_ACCESS_* environment variables in CI.
+// Smoke-test fail-closed admin routes on a production Next server without admin login secrets.
+// Run after npm run build; do not set ADMIN_LOGIN_PASSWORD or ADMIN_SESSION_SECRET in CI.
 const { spawn } = require("node:child_process");
 const assert = require("node:assert/strict");
 const port = 31987;
 const origin = "http://127.0.0.1:" + port;
 const server = spawn(process.execPath, ["node_modules/next/dist/bin/next", "start", "-p", String(port), "-H", "127.0.0.1"], {
   stdio: ["ignore", "pipe", "pipe"],
-  env: { ...process.env, CF_ACCESS_TEAM_DOMAIN: "", CF_ACCESS_AUD: "" },
+  env: { ...process.env, ADMIN_LOGIN_PASSWORD: "", ADMIN_SESSION_SECRET: "" },
 });
 let output = "";
 server.stdout.on("data", chunk => { output += chunk.toString(); });
@@ -29,10 +29,13 @@ async function waitUntilReady() {
   try {
     await waitUntilReady();
     const scenarios = [
-      ["/admin", {}, 404],
+      ["/admin", {}, 307],
+      ["/admin/login", {}, 200],
       ["/admin/preview/any-test-slug", {}, 404],
       ["/api/admin/drafts", {}, 401],
       ["/api/admin/publish", {}, 401],
+      ["/api/admin/login", { method: "POST", headers: { "Content-Type": "application/json", Origin: origin }, body: JSON.stringify({ password: "irrelevant" }) }, 503],
+      ["/api/admin/logout", { method: "POST" }, 403],
       ["/api/admin/drafts", { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" }, 401],
       ["/api/admin/publish", { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" }, 401],
       ["/api/admin/drafts?slug=test&revision=1", { method: "DELETE" }, 401],
