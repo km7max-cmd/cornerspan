@@ -8,7 +8,7 @@
 - Preview D1 `cornerspan-admin-preview` → separate `ADMIN_DB` binding.
 - Their real UUIDs are synchronized in `wrangler.jsonc`.
 - In the **Preview** database, `admin_post_drafts` and `admin_published_posts` tables were created manually and verified by a read-only SQL query.
-- **No production SQL tables have been verified.** No remote login/publishing tests have been run.
+- The owner reports applying login limiter SQL on Preview, but its three-table schema has not yet been independently re-verified with a screenshot.\n- The owner has saved both `ADMIN_LOGIN_PASSWORD` and `ADMIN_SESSION_SECRET` as encrypted **Previews Base** secrets (verified by Cloudflare screenshot); Production has not been configured.\n- **No production SQL tables have been verified.** No remote login/publishing tests have been run.
 
 ## Login design (no external paid login provider)
 
@@ -57,6 +57,19 @@ WHERE type='table' AND name IN
 ```
 
 Only after authorized preview testing passes should the same three-table schema be applied to **Production**, via `npx wrangler d1 migrations apply cornerspan-admin --remote` (with authenticated Wrangler), or the corresponding SQL through the Production D1 Console. Do not drop/recreate existing tables.
+
+## One-time Worker Previews setup (do not switch without verifying the dialog)
+
+The current Cloudflare Settings → Builds page shows **Set up Worker Previews**. Cloudflare states that upgrading an existing Workers Builds workflow to Worker Previews **cannot be reversed**. The project requires Wrangler 4.135.0+; the feature branch sets that minimum version.
+
+- **First inspect** the Set up dialog; review preview build command. It must publish through `npx wrangler preview` and must follow the existing `npx opennextjs-cloudflare build` build command.
+- Never change the Production branch from `main`, the production deployment command, or the custom domain.
+- Confirm the Previews Base binding points to `cornerspan-admin-preview`; Preview secrets are encrypted.
+- Cloudflare warns Worker Preview URLs are **public by default**. The admin paths use authenticated sessions, but test articles can be publicly accessible at Preview URLs. Use only nonsensitive test articles; public `workers.dev` Preview URLs have a noindex response header. No Zero Trust activation is needed solely to inspect public test content.
+- **Do not switch yet** until confirming the dialog's commands, isolation and security behavior. Switching is irreversible for the previous workflow.
+- Do not merge the feature PR, change Production deployment or modify existing public articles before remote Preview testing.
+
+Official documentation: https://developers.cloudflare.com/workers/ci-cd/builds/build-branches/ and https://developers.cloudflare.com/workers/previews/
 
 ## Protected Preview testing checklist
 
