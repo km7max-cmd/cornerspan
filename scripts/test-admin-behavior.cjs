@@ -118,7 +118,7 @@ const { samePostContent, initialBodyReplacement } = load("lib/admin-editor-state
     assert.equal(signedIn.status, 200, JSON.stringify(signedIn.data));
     const sessionCookie = signedIn.headers.get("set-cookie") || "";
     for (const part of ["__Host-cornerspan_admin=", "HttpOnly", "Secure", "SameSite=Strict"]) {
-      assert.ok(sessionCookie.includes(part), "missing session cookie protection " + part);
+      assert.ok(sessionCookie.toLowerCase().includes(part.toLowerCase()), "missing session cookie protection " + part);
     }
     const signedOut = await call(logout, "POST");
     assert.equal(signedOut.status, 200);
