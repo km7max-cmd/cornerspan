@@ -19,5 +19,14 @@
       "database_name": "cornerspan-admin",
       "database_id": "4a41a0ba-360b-4c45-8929-1d21445eb5a0"
     }
-  ]
+  ],
+  "previews": {
+    "d1_databases": [
+      {
+        "binding": "ADMIN_DB",
+        "database_name": "cornerspan-admin-preview",
+        "database_id": "971ff2ce-5283-4df7-9ee4-a0deb0d558f9"
+      }
+    ]
+  }
 }
