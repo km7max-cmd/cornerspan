@@ -80,6 +80,20 @@ const { samePostContent, initialBodyReplacement } = load("lib/admin-editor-state
       return hasAdminAccess();
     }
     assert.equal(await authenticate(validToken), true);
+    async function signedSession(changes) {
+      const original = JSON.parse(Buffer.from(validToken.split(".")[0], "base64url").toString("utf8"));
+      const data = Buffer.from(JSON.stringify({ ...original, ...changes })).toString("base64url");
+      const key = await webcrypto.subtle.importKey("raw", new TextEncoder().encode(config.ADMIN_SESSION_SECRET),
+        { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
+      const signature = await webcrypto.subtle.sign("HMAC", key, new TextEncoder().encode(data));
+      return data + "." + Buffer.from(signature).toString("base64url");
+    }
+    const now = Math.floor(Date.now() / 1000);
+    for (const invalid of [
+      { exp: now - 10, iat: now - 10 - 8 * 60 * 60 },
+      { iat: now + 3600, exp: now + 3600 + 8 * 60 * 60 },
+      { purpose: "public" }, { nonce: "a" }, { exp: "9999999999" },
+    ]) assert.equal(await authenticate(await signedSession(invalid)), false, "invalid signed session claims");
     assert.equal(await verifyAdminPassword(config.ADMIN_LOGIN_PASSWORD), true);
     assert.equal(await verifyAdminPassword("Incorrect Password"), false);
     for (const value of [null, "", "broken", "x".repeat(3000),
