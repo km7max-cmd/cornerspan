@@ -44,23 +44,22 @@ Do not invent AUD values, commit secrets, or create broad "everyone" allow polic
 
 ## 2. Cloudflare D1 — required before draft and publish API can run
 
-No D1 instance has been created or connected by this PR. Cloudflare account access
-is required.
+Production and Preview D1 databases have now been created by the owner and verified from Cloudflare Dashboard screenshots (10 November 2026). Both ADMIN_DB bindings are present in the dashboard; the database UUIDs are synced into wrangler.jsonc. SQL tables and Access settings still require configuration and verification.
 
 1. Create D1 with `npx wrangler d1 create cornerspan-admin` (or via Dashboard).
-2. Take the **real database UUID** returned. Add to `wrangler.jsonc`:
+2. The real database IDs have been captured and added to `wrangler.jsonc`:
 
    ```json
    "d1_databases": [
      {
        "binding": "ADMIN_DB",
        "database_name": "cornerspan-admin",
-       "database_id": "<REAL-D1-UUID>"
+       "database_id": "4a41a0ba-360b-4c45-8929-1d21445eb5a0"
      }
    ]
    ```
 
-3. After saving Wrangler config, apply the two migrations in order:
+3. **Preview first:** the separate Preview database is configured in `wrangler.preview-migrations.jsonc` with `PREVIEW_DB`. From a machine with an authenticated Cloudflare Wrangler session, apply both migrations to the Preview database:\n\n   ```sh\n   npx wrangler d1 migrations apply PREVIEW_DB --remote --config wrangler.preview-migrations.jsonc\n   ```\n\n   After validating the Preview schema and owner-only Access, apply the same migration files to production (before any production code deployment):
 
    ```sh
    npx wrangler d1 migrations apply cornerspan-admin --remote
@@ -68,17 +67,11 @@ is required.
 
    The migration directory contains `0001_admin_post_drafts.sql` and
    `0002_admin_published_posts.sql`. Do not run only the first migration.
-4. Create a **second physical D1 database** named `cornerspan-admin-preview`.
-   Bind preview `ADMIN_DB` to its distinct UUID and apply both migrations there too.
-   A version URL alone does not prove database isolation. Check the actual binding before any write.
-   For current Worker Previews, configure `previews.d1_databases`; for an existing legacy
-   preview workflow, use a separate staging Worker with its own Wrangler configuration.
-   Do not change a legacy preview workflow blindly: Cloudflare's switch to Worker Previews is irreversible.
+4. Preview database `cornerspan-admin-preview` has been created and bound separately to `ADMIN_DB` with UUID `971ff2ce-5283-4df7-9ee4-a0deb0d558f9`. The feature branch `previews.d1_databases` block matches that binding. A version URL alone does not prove database isolation; verify actual Preview bindings before writes.
 5. Keep the entire preview hostname behind owner-only Access and exclude it from indexing.
    On production, protect only admin paths, including the exact `/admin` path,
    its descendants and `/api/admin/*`; leave the public site accessible.
-6. Record real database UUIDs in the checked-in Wrangler configuration before deployment.
-   Do not rely on a Dashboard binding that the next Wrangler deployment could replace.
+6. The real database UUIDs are recorded in the checked-in Wrangler configuration. Keep the Dashboard binding and Wrangler binding in sync during future deployments.
 
 ## 3. Verify on a protected preview deployment
 
@@ -116,7 +109,7 @@ draft CRUD, atomic publication conflicts, metadata-only preservation and unpubli
 These local checks **do not replace** authenticated tests on the real protected Cloudflare preview.
 Node 22.13+ is required by the test suite's built-in SQLite adapter.
 
-## Current deployment gate — 9 November 2026
+## Current deployment gate — 10 November 2026
 
 Cloudflare Dashboard opened successfully but sign-in was not completed in this session.
 No D1 instance, remote migration, Access application, binding, runtime variable or deployment
