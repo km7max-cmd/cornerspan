@@ -58,6 +58,18 @@ WHERE type='table' AND name IN
 
 Only after authorized preview testing passes should the same three-table schema be applied to **Production**, via `npx wrangler d1 migrations apply cornerspan-admin --remote` (with authenticated Wrangler), or the corresponding SQL through the Production D1 Console. Do not drop/recreate existing tables.
 
+## Preview setup confirmation — 10 November 2026
+
+Cloudflare Dashboard screenshots now show the **Previews Base → Builds** tab with:
+- Builds for Preview branches: enabled
+- Build command: `npx opennextjs-cloudflare build`
+- Preview command: `npx wrangler preview`
+- Production branch remains `main`
+- Preview Runtime Secrets were saved encrypted in Previews Base; those are not Build-time variables
+- A transient Dashboard "Request timed out" toast was visible: **Cloudflare Preview deployment has not yet been verified.**
+
+This commit on the feature branch may trigger a new Preview build now that branch previews are enabled. Verify success and obtain the actual Preview URL from Cloudflare Worker → Previews / Deployments; do not infer the URL or assume a successful deploy. Do not merge the draft PR before remote smoke testing.
+
 ## One-time Worker Previews setup (do not switch without verifying the dialog)
 
 The current Cloudflare Settings → Builds page shows **Set up Worker Previews**. Cloudflare states that upgrading an existing Workers Builds workflow to Worker Previews **cannot be reversed**. The project requires Wrangler 4.135.0+; the feature branch sets that minimum version.
