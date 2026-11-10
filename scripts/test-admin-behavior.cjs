@@ -1,4 +1,4 @@
-// Execute the real TypeScript handlers against SQLite and signed test JWTs.
+// Execute real TypeScript admin handlers against SQLite and signed test sessions.
 // No Cloudflare account, production database or real credentials are used.
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
@@ -30,15 +30,12 @@ const database = {
   },
 };
 const config = {
-  CF_ACCESS_TEAM_DOMAIN: "cornerspan-test.cloudflareaccess.com",
-  CF_ACCESS_AUD: "a".repeat(64),
-  CF_ACCESS_ADMIN_EMAIL: "owner@example.test",
+  ADMIN_LOGIN_PASSWORD: "A-Strong-Private-Example-Password-DoNotUse!",
+  ADMIN_SESSION_SECRET: "separate-test-signing-secret-minimum-32-bytes",
   ADMIN_DB: database,
 };
 let env = { ...config };
 let requestHeaders = new Headers();
-let jwk;
-let certsAvailable = true;
 const modules = new Map();
 function load(relative) {
   const filename = path.resolve(root, relative);
@@ -55,17 +52,18 @@ function load(relative) {
     return require(name);
   }
   vm.runInNewContext("(function(require,module,exports){" + code + "\n})", {
-    console, TextDecoder, TextEncoder, Uint8Array, atob,
+    console, TextDecoder, TextEncoder, Uint8Array, atob, btoa,
     crypto: webcrypto,
-    fetch: async url => {
-      assert.equal(url, "https://" + config.CF_ACCESS_TEAM_DOMAIN + "/cdn-cgi/access/certs");
-      return { ok: certsAvailable, json: async () => ({ keys: [jwk] }) };
-    },
   }, { filename })(dependency, module, module.exports);
   return module.exports;
 }
 const normalize = value => JSON.parse(JSON.stringify(value));
-const { hasAdminAccess } = load("lib/admin-auth.ts");
+const {
+  ADMIN_COOKIE_NAME, hasAdminAccess, createAdminSession,
+  verifyAdminSession, verifyAdminPassword,
+} = load("lib/admin-auth.ts");
+const login = load("app/api/admin/login/route.ts");
+const logout = load("app/api/admin/logout/route.ts");
 const drafts = load("app/api/admin/drafts/route.ts");
 const publications = load("app/api/admin/publish/route.ts");
 const { getPublicBlogPosts, findPublishedPost } = load("lib/published-posts.ts");
@@ -75,44 +73,33 @@ const { samePostContent, initialBodyReplacement } = load("lib/admin-editor-state
 
 (async () => {
   try {
-    const pair = await webcrypto.subtle.generateKey({ name: "RSASSA-PKCS1-v1_5", modulusLength: 2048,
-      publicExponent: new Uint8Array([1, 0, 1]), hash: "SHA-256" }, true, ["sign", "verify"]);
-    jwk = { ...await webcrypto.subtle.exportKey("jwk", pair.publicKey), kid: "test-key", alg: "RS256", use: "sig" };
-    const claims = { iss: "https://" + config.CF_ACCESS_TEAM_DOMAIN, aud: [config.CF_ACCESS_AUD],
-      exp: Math.floor(Date.now() / 1000) + 600, email: config.CF_ACCESS_ADMIN_EMAIL };
-    async function token(claimChanges = {}, headerChanges = {}) {
-      const encode = value => Buffer.from(JSON.stringify(value)).toString("base64url");
-      const data = encode({ alg: "RS256", kid: "test-key", ...headerChanges }) + "." + encode({ ...claims, ...claimChanges });
-      const signature = await webcrypto.subtle.sign("RSASSA-PKCS1-v1_5", pair.privateKey, new TextEncoder().encode(data));
-      return data + "." + Buffer.from(signature).toString("base64url");
-    }
-    const validToken = await token();
+    const validToken = await createAdminSession();
+    assert.ok(validToken);
     async function authenticate(value) {
-      requestHeaders = new Headers(value ? { "cf-access-jwt-assertion": value } : {});
+      requestHeaders = new Headers(value ? { cookie: ADMIN_COOKIE_NAME + "=" + value } : {});
       return hasAdminAccess();
     }
     assert.equal(await authenticate(validToken), true);
-    assert.equal(await authenticate(await token({ aud: config.CF_ACCESS_AUD })), true);
-    for (const changes of [
-      { iss: "https://wrong.cloudflareaccess.com" }, { aud: ["wrong-audience"] },
-      { exp: 1 }, { exp: "9999999999" }, { email: "other@example.test" }, { email: undefined },
-      { nbf: Math.floor(Date.now() / 1000) + 3600 }, { iat: "invalid" },
-    ]) assert.equal(await authenticate(await token(changes)), false, JSON.stringify(changes));
-    for (const value of [null, "broken", "x".repeat(12001), validToken.split(".").slice(0, 2).join(".") + ".AAAA",
-      await token({}, { alg: "none" }), await token({}, { kid: "unknown-key" })])
-      assert.equal(await authenticate(value), false);
-    for (const field of ["CF_ACCESS_TEAM_DOMAIN", "CF_ACCESS_AUD", "CF_ACCESS_ADMIN_EMAIL"]) {
+    assert.equal(await verifyAdminPassword(config.ADMIN_LOGIN_PASSWORD), true);
+    assert.equal(await verifyAdminPassword("Incorrect Password"), false);
+    for (const value of [null, "", "broken", "x".repeat(3000),
+      validToken.slice(0, -5) + "AAAAA", validToken.split(".")[0] + ".AAAA",
+      validToken.split(".")[0] + "." + validToken.split(".")[1] + ".extra"]) {
+      assert.equal(await authenticate(value), false, "invalid signed session");
+    }
+    for (const field of ["ADMIN_LOGIN_PASSWORD", "ADMIN_SESSION_SECRET"]) {
       env = { ...config, [field]: "" };
       assert.equal(await authenticate(validToken), false, "missing " + field);
     }
-    env = { ...config }; certsAvailable = false;
-    assert.equal(await authenticate(validToken), false);
-    certsAvailable = true;
-    console.log("PASS signed JWT, owner identity, issuer, audience, expiry, signature, algorithm and missing configuration");
+    env = { ...config, ADMIN_SESSION_SECRET: "this-is-an-entirely-different-long-signing-secret" };
+    assert.equal(await authenticate(validToken), false, "rotation revokes session");
+    env = { ...config };
+    assert.equal(await authenticate(validToken), true);
+    console.log("PASS password verifier, signed sessions, expiry/config fail-closed, tampering and secret rotation");
 
     const origin = "https://preview.example.test";
     async function call(api, method, input, query = "", overrides = {}) {
-      const headers = new Headers({ origin, "cf-access-jwt-assertion": validToken, "content-type": "application/json", ...overrides });
+      const headers = new Headers({ origin, cookie: ADMIN_COOKIE_NAME + "=" + validToken, "content-type": "application/json", ...overrides });
       const request = new NextRequest(origin + "/api/admin/test" + query, {
         method, headers, ...(input === undefined ? {} : { body: JSON.stringify(input) }),
       });
@@ -121,11 +108,31 @@ const { samePostContent, initialBodyReplacement } = load("lib/admin-editor-state
       return { status: response.status, data: await response.json(), headers: response.headers };
     }
     for (const api of [drafts, publications]) for (const method of ["GET", "POST", "DELETE"]) {
-      assert.equal((await call(api, method, method === "POST" ? {} : undefined, "", { "cf-access-jwt-assertion": "forged" })).status, 401);
+      assert.equal((await call(api, method, method === "POST" ? {} : undefined, "", { cookie: ADMIN_COOKIE_NAME + "=forged" })).status, 401);
     }
     assert.equal((await call(drafts, "POST", {}, "", { origin: "https://other.example.test" })).status, 403);
     assert.equal((await call(publications, "POST", {}, "", { origin: "" })).status, 403);
     assert.equal((await call(publications, "DELETE", undefined, "?slug=test&revision=1", { origin: "https://other.example.test" })).status, 403);
+    const signedIn = await call(login, "POST", { password: config.ADMIN_LOGIN_PASSWORD }, "",
+      { "cf-connecting-ip": "203.0.113.40" });
+    assert.equal(signedIn.status, 200, JSON.stringify(signedIn.data));
+    const sessionCookie = signedIn.headers.get("set-cookie") || "";
+    for (const part of ["__Host-cornerspan_admin=", "HttpOnly", "Secure", "SameSite=Strict"]) {
+      assert.ok(sessionCookie.includes(part), "missing session cookie protection " + part);
+    }
+    const signedOut = await call(logout, "POST");
+    assert.equal(signedOut.status, 200);
+    assert.ok((signedOut.headers.get("set-cookie") || "").includes("Max-Age=0"));
+    for (let i = 0; i < 5; i++) {
+      const failure = await call(login, "POST", { password: "totally-wrong" }, "",
+        { "cf-connecting-ip": "203.0.113.41" });
+      assert.equal(failure.status, 401, "first five attempts require correct credentials");
+    }
+    assert.equal((await call(login, "POST", { password: config.ADMIN_LOGIN_PASSWORD }, "",
+      { "cf-connecting-ip": "203.0.113.41" })).status, 429);
+    assert.equal((await call(login, "POST", { password: config.ADMIN_LOGIN_PASSWORD }, "",
+      { origin: "https://evil.example.test" })).status, 403);
+    console.log("PASS login/logout cookies, D1 5/15-min rate limit, CSRF and protected routes");
     assert.deepEqual(normalize(await getPublicBlogPosts()), normalize(blogPosts));
     const draft = { slug: "private-preview-test", title: "Controlled preview article",
       description: "A controlled preview article used to verify secure drafts, publication conflicts, and unchanged existing CornerSpan content.",
