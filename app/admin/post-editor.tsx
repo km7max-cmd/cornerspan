@@ -189,6 +189,15 @@ export default function AdminPostEditor({ posts }: { posts: Post[] }) {
       setMessage(error instanceof Error ? error.message : "Could not delete draft.");
     } finally { setBusy(false); }
   }
+  async function signOut() {
+    try {
+      const response = await fetch("/api/admin/logout", { method: "POST", credentials: "same-origin" });
+      if (!response.ok) throw Error("Could not end session.");
+      window.location.replace("/admin/login");
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Could not sign out.");
+    }
+  }
   function exportDraft() {
     const payload = JSON.stringify({ ...form, slug: slugify(form.slug || form.title) }, null, 2);
     const blob = new Blob([payload], { type: "application/json" });
@@ -211,7 +220,10 @@ export default function AdminPostEditor({ posts }: { posts: Post[] }) {
             <h1 className="text-3xl font-bold">Post dashboard</h1>
             <p className="mt-1 text-sm text-slate-600">{posts.length} existing posts · {Object.keys(drafts).length} saved drafts</p>
           </div>
-          <button onClick={newPost} disabled={busy} className="rounded-lg bg-blue-700 px-5 py-3 font-semibold text-white hover:bg-blue-800 disabled:opacity-50">+ New draft</button>
+          <div className="flex flex-wrap gap-2">
+            <button onClick={newPost} disabled={busy} className="rounded-lg bg-blue-700 px-5 py-3 font-semibold text-white disabled:opacity-50">+ New draft</button>
+            <button onClick={signOut} className="rounded-lg border border-slate-300 px-4 py-3 font-semibold text-slate-700">Sign out</button>
+          </div>
         </header>
         <div className="grid gap-5 lg:grid-cols-[310px_minmax(0,1fr)]">
           <aside className="rounded-xl border bg-white p-4 shadow-sm">
