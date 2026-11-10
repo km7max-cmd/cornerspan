@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { redirect } from "next/navigation";
 import { blogPosts } from "../../data/blog";
 import { calculatorArticles, type CalculatorArticle } from "../../data/calculator-articles";
 import { hasAdminAccess } from "../../lib/admin-auth";
@@ -44,7 +44,7 @@ function articleToMarkdown(article: CalculatorArticle): string {
 }
 
 export default async function AdminPage() {
-  if (!(await hasAdminAccess())) notFound();
+  if (!(await hasAdminAccess())) redirect("/admin/login");
   const catalog = blogPosts.map(({ slug, title, description, category, tags, publishedAt }) => {
     const article = calculatorArticles.find(item => item.slug === slug);
     return {
