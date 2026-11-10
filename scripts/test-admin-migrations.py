@@ -34,4 +34,4 @@ db.execute("""INSERT INTO admin_published_posts
   ("sample-article","New title","Description","Construction","[]",
    "2026-11-09","## Article",1))
 assert db.execute("SELECT count(*) FROM admin_published_posts").fetchone()[0] == 1
-print("Both D1 migrations and revision-conflict semantics passed.")
+print("D1 migrations, login limiter and revision-conflict semantics passed.")
