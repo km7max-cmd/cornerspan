@@ -25,7 +25,7 @@ jobs:
         run: npm run prebuild
       - name: Validate D1 migrations with SQLite
         run: python3 scripts/test-admin-migrations.py
-      - name: Verify JWT authorization and D1 publication safeguards
+      - name: Verify password sessions and D1 publication safeguards
         run: node scripts/test-admin-behavior.cjs
       - name: TypeScript check
         run: npx tsc --noEmit
