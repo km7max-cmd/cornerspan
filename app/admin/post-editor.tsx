@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { initialBodyReplacement, samePostContent, type PostContent } from "../../lib/admin-editor-state";
 
@@ -17,6 +17,21 @@ function slugify(value: string) {
 
 export default function AdminPostEditor({ posts }: { posts: Post[] }) {
   const router = useRouter();
+  const editorRef = useRef<HTMLElement>(null);
+  const [reloadNonce, setReloadNonce] = useState(0);
+  const [draftLoadError, setDraftLoadError] = useState("");
+  const [publicationLoadError, setPublicationLoadError] = useState("");
+  const showEditor = () => {
+    // On narrow screens the editor is below a long post list; move to it after selection.
+    window.requestAnimationFrame(() => editorRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }));
+  };
+  const retryConnection = () => {
+    setDraftLoadError("");
+    setPublicationLoadError("");
+    setReady(false);
+    setPublicationReady(false);
+    setReloadNonce(value => value + 1);
+  };
   const [drafts, setDrafts] = useState<Record<string, Draft>>({});
   const [selected, setSelected] = useState<string | null>(null);
   const [form, setForm] = useState<Post>(emptyPost);
@@ -33,6 +48,7 @@ export default function AdminPostEditor({ posts }: { posts: Post[] }) {
   const [replaceBody, setReplaceBody] = useState(false);
   useEffect(() => {
     let active = true;
+    setDraftLoadError("");
     fetch("/api/admin/drafts", { cache: "no-store", credentials: "same-origin" })
       .then(async response => {
         if (!response.ok) throw new Error(response.status === 503 ? "Database unavailable. Configure D1 before saving." : "Unable to load drafts.");
@@ -41,26 +57,32 @@ export default function AdminPostEditor({ posts }: { posts: Post[] }) {
       .then(data => {
         if (!active) return;
         setDrafts(Object.fromEntries(data.drafts.map(draft => [draft.slug, draft])));
+        setDraftLoadError("");
         setReady(true);
       })
       .catch(error => {
         if (!active) return;
-        setMessage(error instanceof Error ? error.message : "Unable to load drafts.");
+        setDraftLoadError(error instanceof Error ? error.message : "Unable to load drafts.");
       });
     return () => { active = false; };
-  }, []);
+  }, [reloadNonce]);
   useEffect(() => {
+    let active = true;
+    setPublicationLoadError("");
     fetch("/api/admin/publish", { cache: "no-store", credentials: "same-origin" })
       .then(async response => {
         if (!response.ok) throw new Error("Publication status is unavailable. Run both D1 migrations.");
         return response.json() as Promise<{ posts: { slug: string; revision: number }[] }>;
       })
       .then(data => {
+        if (!active) return;
         setPublishedRevisions(Object.fromEntries(data.posts.map(post => [post.slug, post.revision])));
+        setPublicationLoadError("");
         setPublicationReady(true);
       })
-      .catch(error => setMessage(error instanceof Error ? error.message : "Publication status unavailable."));
-  }, []);
+      .catch(error => { if (active) setPublicationLoadError(error instanceof Error ? error.message : "Publication status unavailable."); });
+    return () => { active = false; };
+  }, [reloadNonce]);
   const allPosts = useMemo(() => {
     const combined = new Map(posts.map(p => [p.slug, p]));
     Object.values(drafts).forEach(post => combined.set(post.slug, post));
@@ -74,12 +96,14 @@ export default function AdminPostEditor({ posts }: { posts: Post[] }) {
       bodyOverride: publishedBodyModes[post.slug],
     }));
     setMessage("");
+    showEditor();
   }
   function newPost() {
     setSelected(null);
     setReplaceBody(true);
     setForm({ ...emptyPost, tags: [], publishedAt: new Date().toISOString().slice(0, 10) });
     setMessage("");
+    showEditor();
   }
   async function saveDraft() {
     if (!ready || busy) return;
@@ -225,6 +249,23 @@ export default function AdminPostEditor({ posts }: { posts: Post[] }) {
             <button onClick={signOut} className="rounded-lg border border-slate-300 px-4 py-3 font-semibold text-slate-700">Sign out</button>
           </div>
         </header>
+        <div className="mb-5 rounded-xl border border-slate-200 bg-white p-4 text-sm" role="status" aria-live="polite">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div className="space-y-1">
+              <p className={ready ? "font-semibold text-green-700" : draftLoadError ? "font-semibold text-red-700" : "font-semibold text-slate-700"}>
+                Draft database: {ready ? "Connected" : draftLoadError ? "Connection failed" : "Connecting..."}
+              </p>
+              <p className={publicationReady ? "text-green-700" : publicationLoadError ? "text-red-700" : "text-slate-600"}>
+                Publishing status: {publicationReady ? "Ready" : publicationLoadError ? "Unavailable" : "Loading..."}
+              </p>
+              {(draftLoadError || publicationLoadError) && <p className="text-red-700">
+                {draftLoadError || publicationLoadError} Drafts cannot be saved until the database is connected.
+              </p>}
+            </div>
+            {(draftLoadError || publicationLoadError) && <button type="button" onClick={retryConnection}
+              className="rounded-lg border border-blue-300 px-4 py-2 font-semibold text-blue-700">Retry connection</button>}
+          </div>
+        </div>
         <div className="grid gap-5 lg:grid-cols-[310px_minmax(0,1fr)]">
           <aside className="rounded-xl border bg-white p-4 shadow-sm">
             <label htmlFor="post-search" className="mb-2 block text-sm font-semibold">Search posts</label>
@@ -240,7 +281,7 @@ export default function AdminPostEditor({ posts }: { posts: Post[] }) {
               {allPosts.length === 0 && <p className="p-3 text-sm text-slate-500">No matching posts.</p>}
             </div>
           </aside>
-          <section className="rounded-xl border bg-white p-5 shadow-sm md:p-7">
+          <section ref={editorRef} id="post-editor" className="scroll-mt-4 rounded-xl border bg-white p-5 shadow-sm md:p-7">
             <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
               <h2 className="text-xl font-bold">{selected ? "Edit post draft" : "New post draft"}</h2>
               {selected && <a target="_blank" rel="noreferrer" href={`/blog/${selected}`} className="text-sm font-semibold text-blue-700 underline">View live post</a>}
