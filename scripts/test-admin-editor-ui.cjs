@@ -146,7 +146,7 @@ function draftClick() {
     fireEvent.change(field("SEO description"), { target: {
       value: "A temporary test article to test the CornerSpan editor client workflows in a CI environment.",
     } });
-    fireEvent.change(field("Article body"), { target: { value: "## Testing editor\n\nTest draft only." } });
+    fireEvent.change(screen.getByRole("textbox", { name: "Article body (Markdown)" }), { target: { value: "## Testing editor\n\nTest draft only." } });
     fireEvent.click(screen.getByRole("button", { name: "Save D1 draft" }));
     await waitFor(() => assert.ok(screen.getByText(/Saved to D1 database as a draft/)));
     assert.equal(draftStore.get("cornerspan-ci-draft").revision, 1);
