@@ -50,7 +50,7 @@ function load(relative) {
   }
   const filenameWithExt = filename;
   vm.runInNewContext("(function(require,module,exports){" + code + "\n})", {
-    console, window: dom.window, document: dom.window.document,
+    console, fetch: global.fetch, window: dom.window, document: dom.window.document,
     URL: dom.window.URL, Blob: dom.window.Blob, File: dom.window.File,
     navigator: dom.window.navigator,
     setTimeout, clearTimeout,
