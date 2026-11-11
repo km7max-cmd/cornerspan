@@ -22,7 +22,37 @@ The owner asked to avoid repeated manual checks. Do not re-request already compl
 - Preview D1 `cornerspan-admin-preview` → separate `ADMIN_DB` binding.
 - Their real UUIDs are synchronized in `wrangler.jsonc`.
 - In the **Preview** database, `admin_post_drafts` and `admin_published_posts` tables were created manually and verified by a read-only SQL query.
-- The owner reports applying login limiter SQL on Preview, but its three-table schema has not yet been independently re-verified with a screenshot.\n- The owner has saved both `ADMIN_LOGIN_PASSWORD` and `ADMIN_SESSION_SECRET` as encrypted **Previews Base** secrets (verified by Cloudflare screenshot); Production has not been configured.\n- **No production SQL tables have been verified.** Remote Preview login and temporary D1 draft-storage test were reported successful; remote Preview publishing is not verified.
+- The owner reported applying login limiter SQL on Preview. The working Preview login and successful authenticated D1 self-test indicate the limiter and draft tables were operational, but do not prove Production configuration.
+- The owner has saved both `ADMIN_LOGIN_PASSWORD` and `ADMIN_SESSION_SECRET` as encrypted **Previews Base** secrets (verified by Cloudflare screenshot); Production has not been configured.
+- **No production SQL tables have been verified.** Remote Preview login and temporary D1 draft-storage test were reported successful; remote Preview publishing is not verified.
+
+## Production setup blocker observed 11 November 2026
+
+Cloudflare Dashboard **Production → Add variable and deploy** repeatedly returned **"Try again"** when the owner attempted to add encrypted Admin secrets. Retrying with Chrome and Firefox did not resolve the error. **Production secrets have NOT been verified**. A manually created Production dashboard deployment was also observed, while GitHub main had no corresponding admin login route: treat the active Production Worker code and source branch as potentially different.
+
+Do not retry the same failing UI indefinitely, commit secret values to GitHub, put an admin password into a plaintext Worker variable, or guess whether a secret was stored. Do not add deployment credentials or API tokens to this repository just to bypass the problem.
+
+Cloudflare's supported alternative is an **authenticated** Wrangler session on the owner's device or secure environment. The following commands prompt privately for secret values and create new versions **without immediately deploying them**:
+
+\`\`\`sh
+npx wrangler versions secret put ADMIN_LOGIN_PASSWORD --name cornerspan
+npx wrangler versions secret put ADMIN_SESSION_SECRET --name cornerspan
+\`\`\`
+
+\`wrangler secret put\` (without \`versions\`) **deploys immediately** and should not be used while the production deployment is unverified. \`wrangler versions secret put\` still changes Cloudflare account configuration, so it requires the account holder's own authorization. The ChatGPT GitHub connector cannot run those authenticated commands remotely.
+
+Prior to any merge or release, independently inspect Production secret names/types, verify its separate D1 tables with the query below, confirm current Worker version/source, complete Preview publish/unpublish and rollback plan, and recheck SEO.
+
+\`\`\`sql
+SELECT name FROM sqlite_master
+WHERE type = 'table' AND name IN
+('admin_post_drafts','admin_published_posts','admin_login_attempts')
+ORDER BY name;
+\`\`\`
+
+**Source docs:** https://developers.cloudflare.com/workers/configuration/secrets/ and https://developers.cloudflare.com/workers/wrangler/commands/workers/
+
+---
 
 ## Login design (no external paid login provider)
 
@@ -80,19 +110,19 @@ Cloudflare Dashboard screenshots now show the **Previews Base → Builds** tab w
 - Preview command: `npx wrangler preview`
 - Production branch remains `main`
 - Preview Runtime Secrets were saved encrypted in Previews Base; those are not Build-time variables
-- A transient Dashboard "Request timed out" toast was visible: **Cloudflare Preview is now Ready, and login/editor were verified by screenshots.**
+- Cloudflare Preview deployment was confirmed Ready and authenticated login/editor worked; a separate earlier Dashboard timeout did not prevent those tests.
 
 This commit on the feature branch may trigger a new Preview build now that branch previews are enabled. Verify success and obtain the actual Preview URL from Cloudflare Worker → Previews / Deployments; do not infer the URL or assume a successful deploy. Do not merge the draft PR before remote smoke testing.
 
 ## One-time Worker Previews setup (do not switch without verifying the dialog)
 
-The current Cloudflare Settings → Builds page shows **Set up Worker Previews**. Cloudflare states that upgrading an existing Workers Builds workflow to Worker Previews **cannot be reversed**. The project requires Wrangler 4.135.0+; the feature branch sets that minimum version.
+Worker Previews were activated and verified through Cloudflare's Deployments view. Cloudflare states that upgrading an existing Workers Builds workflow to Worker Previews **cannot be reversed**. The project requires Wrangler 4.135.0+; the feature branch sets that minimum version.
 
 - **First inspect** the Set up dialog; review preview build command. It must publish through `npx wrangler preview` and must follow the existing `npx opennextjs-cloudflare build` build command.
 - Never change the Production branch from `main`, the production deployment command, or the custom domain.
 - Confirm the Previews Base binding points to `cornerspan-admin-preview`; Preview secrets are encrypted.
 - Cloudflare warns Worker Preview URLs are **public by default**. The admin paths use authenticated sessions, but test articles can be publicly accessible at Preview URLs. Use only nonsensitive test articles; public `workers.dev` Preview URLs have a noindex response header. No Zero Trust activation is needed solely to inspect public test content.
-- **Do not switch yet** until confirming the dialog's commands, isolation and security behavior. Switching is irreversible for the previous workflow.
+- **Do not try to re-enable or switch previews again:** migration to Worker Previews already occurred.
 - Do not merge the feature PR, change Production deployment or modify existing public articles before remote Preview testing.
 
 Official documentation: https://developers.cloudflare.com/workers/ci-cd/builds/build-branches/ and https://developers.cloudflare.com/workers/previews/
