@@ -97,6 +97,9 @@ global.fetch = async (url, opts = {}) => {
     draftStore.delete(params.get("slug"));
     return response({ deleted: true });
   }
+  if (String(url).startsWith("/blog/admin-storage-check-")) {
+    return response({ error: "Not found" }, 404);
+  }
   if (url === "/api/admin/publish") {
     if (method === "GET") return response({ posts: [...publishedStore.values()].map(p => ({
       slug: p.slug, revision: p.revision,
@@ -133,6 +136,12 @@ function draftClick() {
     const view = render(React.createElement(Editor, { posts: [legacy] }));
     await waitFor(() => assert.ok(screen.getByText(/Draft database: Connected/)));
     await waitFor(() => assert.ok(screen.getByText(/Publishing status: Ready/)));
+    // One-click test performs a real API-style draft write/read/delete in isolated CI data.
+    fireEvent.click(screen.getByRole("button", { name: "Test draft storage safely" }));
+    await waitFor(() => assert.ok(screen.getByText(/PASS: D1 draft saved, reloaded, hidden from public blog, and deleted/)));
+    assert.equal(draftStore.size, 0, "self-test must leave no saved drafts behind");
+    assert.ok(requests.some(r => r.url.startsWith("/blog/admin-storage-check-")),
+      "self-test must verify private drafts are not publicly readable");
     const search = field("Search posts");
     fireEvent.change(search, { target: { value: "Concrete" } });
     assert.ok(screen.getByRole("button", { name: /Original Concrete Guide/ }));
@@ -189,6 +198,7 @@ function draftClick() {
     assert.ok(refreshes >= 2);
     assert.ok(confirmActions >= 3);
     cleanup();
+    console.log("PASS one-click private D1 write/read/404/delete self-test, leaving no test drafts");
     console.log("PASS editor mobile selection, search, draft save, reload, edit, preview link, publish, unpublish and delete");
     console.log("PASS existing article catalog remains unchanged; no real Preview/Production D1 writes occurred");
   } catch (error) {
