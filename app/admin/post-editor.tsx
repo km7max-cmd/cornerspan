@@ -35,6 +35,7 @@ export default function AdminPostEditor({ posts }: { posts: Post[] }) {
   const [drafts, setDrafts] = useState<Record<string, Draft>>({});
   const [selected, setSelected] = useState<string | null>(null);
   const [form, setForm] = useState<Post>(emptyPost);
+  const [tagsText, setTagsText] = useState("");
   const [query, setQuery] = useState("");
   const [message, setMessage] = useState("");
   const [ready, setReady] = useState(false);
@@ -91,6 +92,7 @@ export default function AdminPostEditor({ posts }: { posts: Post[] }) {
   function openPost(post: Post) {
     setSelected(post.slug);
     setForm({ ...post, tags: [...post.tags] });
+    setTagsText(post.tags.join(", "));
     setReplaceBody(initialBodyReplacement({
       builtIn: posts.find(item => item.slug === post.slug)?.builtIn,
       bodyOverride: publishedBodyModes[post.slug],
@@ -102,6 +104,7 @@ export default function AdminPostEditor({ posts }: { posts: Post[] }) {
     setSelected(null);
     setReplaceBody(true);
     setForm({ ...emptyPost, tags: [], publishedAt: new Date().toISOString().slice(0, 10) });
+    setTagsText("");
     setMessage("");
     showEditor();
   }
@@ -133,6 +136,7 @@ export default function AdminPostEditor({ posts }: { posts: Post[] }) {
       setDrafts(previous => ({ ...previous, [slug]: saved }));
       setSelected(slug);
       setForm(saved);
+      setTagsText(saved.tags.join(", "));
       setMessage("Saved to D1 database as a draft. Live published content has NOT changed.");
     } catch (error) {
       setMessage(error instanceof Error ? error.message : "Unable to save draft.");
@@ -206,8 +210,8 @@ export default function AdminPostEditor({ posts }: { posts: Post[] }) {
         return next;
       });
       const original = posts.find(post => post.slug === selected);
-      if (original) setForm(original);
-      else { setSelected(null); setForm({ ...emptyPost }); }
+      if (original) { setForm(original); setTagsText(original.tags.join(", ")); }
+      else { setSelected(null); setForm({ ...emptyPost }); setTagsText(""); }
       setMessage("Draft deleted. Published content remains unchanged.");
     } catch(error) {
       setMessage(error instanceof Error ? error.message : "Could not delete draft.");
@@ -259,7 +263,7 @@ export default function AdminPostEditor({ posts }: { posts: Post[] }) {
                 Publishing status: {publicationReady ? "Ready" : publicationLoadError ? "Unavailable" : "Loading..."}
               </p>
               {(draftLoadError || publicationLoadError) && <p className="text-red-700">
-                {draftLoadError || publicationLoadError} Drafts cannot be saved until the database is connected.
+                {draftLoadError || publicationLoadError} {draftLoadError ? "Drafts cannot be saved until the database is connected." : "Draft saving remains available, but publishing is temporarily unavailable."}
               </p>}
             </div>
             {(draftLoadError || publicationLoadError) && <button type="button" onClick={retryConnection}
@@ -304,7 +308,11 @@ export default function AdminPostEditor({ posts }: { posts: Post[] }) {
                   <input value={form.category} onChange={e=>setForm({...form,category:e.target.value})} className="mt-1 block w-full rounded-lg border p-3 font-normal" />
                 </label>
                 <label className="block text-sm font-semibold">Tags (comma-separated)
-                  <input value={form.tags.join(", ")} onChange={e=>setForm({...form,tags:e.target.value.split(",").map(s=>s.trim()).filter(Boolean)})} className="mt-1 block w-full rounded-lg border p-3 font-normal" />
+                  <input value={tagsText} onChange={e => {
+                    const value = e.target.value;
+                    setTagsText(value);
+                    setForm(previous => ({ ...previous, tags: value.split(",").map(tag => tag.trim()).filter(Boolean) }));
+                  }} className="mt-1 block w-full rounded-lg border p-3 font-normal" />
                 </label>
               </div>
               <label className="block text-sm font-semibold">Article body (Markdown)
