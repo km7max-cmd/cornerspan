@@ -1,6 +1,19 @@
 """Validate all Cloudflare D1 migrations, idempotency and content isolation locally."""
 import sqlite3
+import json
 from pathlib import Path
+
+# Fail closed on missing production secrets and never share Preview D1 with Production.
+wrangler = json.loads(Path("wrangler.jsonc").read_text(encoding="utf-8"))
+assert set(wrangler.get("secrets", {}).get("required", [])) == {
+    "ADMIN_LOGIN_PASSWORD", "ADMIN_SESSION_SECRET"
+}, "Do not allow a deployment without both encrypted Worker secrets"
+prod = {binding["binding"]: binding["database_id"]
+        for binding in wrangler["d1_databases"]}
+preview = {binding["binding"]: binding["database_id"]
+           for binding in wrangler["previews"]["d1_databases"]}
+assert "ADMIN_DB" in prod and "ADMIN_DB" in preview
+assert prod["ADMIN_DB"] != preview["ADMIN_DB"], "Preview must not write to Production D1"
 
 db = sqlite3.connect(":memory:")
 for path in sorted(Path("migrations").glob("*.sql")):
