@@ -1,4 +1,4 @@
-"""Validate both Cloudflare D1 migrations with local SQLite on every PR."""
+"""Validate all Cloudflare D1 migrations, idempotency and content isolation locally."""
 import sqlite3
 from pathlib import Path
 
@@ -10,7 +10,24 @@ for path in sorted(Path("migrations").glob("*.sql")):
 tables = {row[0] for row in db.execute(
     "SELECT name FROM sqlite_master WHERE type='table'"
 )}
-assert {"admin_post_drafts", "admin_published_posts"} <= tables
+expected_tables = {"admin_post_drafts", "admin_published_posts", "admin_login_attempts"}
+assert expected_tables <= tables, f"Missing D1 tables: {expected_tables - tables}"
+
+# Reapplying migrations during deployment must be safe: no drops or duplicate errors.
+for path in sorted(Path("migrations").glob("*.sql")):
+    db.executescript(path.read_text(encoding="utf-8"))
+assert expected_tables <= {
+    row[0] for row in db.execute("SELECT name FROM sqlite_master WHERE type='table'")
+}
+assert {"fingerprint", "window_start", "attempts"} <= {
+    row[1] for row in db.execute("PRAGMA table_info(admin_login_attempts)")
+}
+assert {"slug", "revision", "body"} <= {
+    row[1] for row in db.execute("PRAGMA table_info(admin_post_drafts)")
+}
+assert {"slug", "revision", "body_override"} <= {
+    row[1] for row in db.execute("PRAGMA table_info(admin_published_posts)")
+}
 
 draft = ("sample-article", "Example", "Description", "Construction", "[]",
          "2026-11-09", "## A heading\nBody")
