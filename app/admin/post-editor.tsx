@@ -20,6 +20,8 @@ export default function AdminPostEditor({ posts }: { posts: Post[] }) {
   const editorRef = useRef<HTMLElement>(null);
   const [reloadNonce, setReloadNonce] = useState(0);
   const [draftLoadError, setDraftLoadError] = useState("");
+  const [storageTestStatus, setStorageTestStatus] = useState("");
+  const [storageTesting, setStorageTesting] = useState(false);
   const [publicationLoadError, setPublicationLoadError] = useState("");
   const showEditor = () => {
     // On narrow screens the editor is below a long post list; move to it after selection.
@@ -217,6 +219,95 @@ export default function AdminPostEditor({ posts }: { posts: Post[] }) {
       setMessage(error instanceof Error ? error.message : "Could not delete draft.");
     } finally { setBusy(false); }
   }
+  async function runSafeStorageTest() {
+    if (busy || storageTesting || !ready) return;
+    setStorageTesting(true);
+    setStorageTestStatus("Testing temporary D1 draft storage. Nothing will be published...");
+    // New unique test slug; deliberately not present in the built-in article catalog.
+    const slug = "admin-storage-check-" + Date.now().toString(36) + "-" +
+      Math.random().toString(36).slice(2, 10);
+    let revision: number | null = null;
+    let wroteDraft = false;
+    let failure = "";
+    try {
+      const post = {
+        slug, title: "CornerSpan Temporary Storage Check",
+        description: "Temporary private verification of database write, read, and delete operations.",
+        category: "Construction", tags: ["admin-self-test"], publishedAt: "",
+        body: "## Test only\n\nA temporary unpublished record.",
+        expectedRevision: 0,
+      };
+      const created = await fetch("/api/admin/drafts", {
+        method: "POST", cache: "no-store", credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(post),
+      });
+      if (!created.ok) throw Error("Draft write failed (HTTP " + created.status + ").");
+      wroteDraft = true;
+      const createdBody = await created.json() as { draft?: Draft };
+      revision = createdBody.draft?.revision ?? null;
+      if (!Number.isSafeInteger(revision) || (revision ?? 0) < 1)
+        throw Error("Database did not return a saved draft revision.");
+
+      const saved = await fetch("/api/admin/drafts", { cache: "no-store", credentials: "same-origin" });
+      if (!saved.ok) throw Error("Draft read failed (HTTP " + saved.status + ").");
+      const data = await saved.json() as { drafts?: Draft[] };
+      const row = data.drafts?.find(draft => draft.slug === slug);
+      if (!row || row.revision !== revision || row.title !== post.title || row.body !== post.body)
+        throw Error("Saved draft did not match database read-back.");
+
+      // A saved draft must NEVER be visible on a public article URL.
+      const publicPage = await fetch("/blog/" + slug, { cache: "no-store" });
+      if (publicPage.status !== 404)
+        throw Error("Unpublished draft did not return HTTP 404 on its public URL.");
+
+      const published = await fetch("/api/admin/publish", {
+        cache: "no-store", credentials: "same-origin",
+      });
+      if (!published.ok) throw Error("Could not verify the publication table.");
+      const publications = await published.json() as { posts?: { slug: string }[] };
+      if (publications.posts?.some(post => post.slug === slug))
+        throw Error("Unexpected test draft in published posts.");
+    } catch (error) {
+      failure = error instanceof Error ? error.message : "Storage test failed.";
+    } finally {
+      if (wroteDraft) {
+        try {
+          // Recover the revision if the write succeeded but its JSON response was interrupted.
+          if (!revision) {
+            const response = await fetch("/api/admin/drafts", {
+              cache: "no-store", credentials: "same-origin",
+            });
+            if (response.ok) {
+              const data = await response.json() as { drafts?: Draft[] };
+              revision = data.drafts?.find(draft => draft.slug === slug)?.revision ?? null;
+            }
+          }
+          if (!revision) throw Error("Temporary test record may need manual cleanup.");
+          const removed = await fetch(
+            "/api/admin/drafts?slug=" + encodeURIComponent(slug) + "&revision=" + revision,
+            { method: "DELETE", credentials: "same-origin" },
+          );
+          if (!removed.ok) throw Error("Temporary test draft could not be deleted (HTTP " + removed.status + ").");
+          const verify = await fetch("/api/admin/drafts", {
+            cache: "no-store", credentials: "same-origin",
+          });
+          if (!verify.ok) throw Error("Could not verify draft deletion.");
+          const remaining = await verify.json() as { drafts?: Draft[] };
+          if (remaining.drafts?.some(draft => draft.slug === slug))
+            throw Error("Temporary test draft still exists after deletion.");
+        } catch (error) {
+          const cleanError = error instanceof Error ? error.message : "Cleanup failed.";
+          failure = [failure, cleanError, "Check draft slug: " + slug].filter(Boolean).join(" ");
+        }
+      }
+      setStorageTestStatus(failure
+        ? "Test failed: " + failure + " No content was published."
+        : "PASS: D1 draft saved, reloaded, hidden from public blog, and deleted. No content was published.");
+      setStorageTesting(false);
+    }
+  }
+
   async function signOut() {
     try {
       const response = await fetch("/api/admin/logout", { method: "POST", credentials: "same-origin" });
@@ -269,6 +360,17 @@ export default function AdminPostEditor({ posts }: { posts: Post[] }) {
             {(draftLoadError || publicationLoadError) && <button type="button" onClick={retryConnection}
               className="rounded-lg border border-blue-300 px-4 py-2 font-semibold text-blue-700">Retry connection</button>}
           </div>
+        </div>
+        <div className="mb-5 flex flex-wrap items-center gap-3 rounded-xl border border-blue-200 bg-blue-50 p-4 text-sm">
+          <button type="button" onClick={runSafeStorageTest}
+            disabled={!ready || busy || storageTesting}
+            className="rounded-lg bg-blue-700 px-4 py-3 font-semibold text-white disabled:opacity-50">
+            {storageTesting ? "Testing D1..." : "Test draft storage safely"}
+          </button>
+          <p className="min-w-0 flex-1 text-slate-700">
+            Creates, checks, and deletes a temporary <strong>unpublished</strong> draft. Existing articles are untouched.
+          </p>
+          {storageTestStatus && <p role="status" className="w-full break-words font-semibold text-slate-800">{storageTestStatus}</p>}
         </div>
         <div className="grid gap-5 lg:grid-cols-[310px_minmax(0,1fr)]">
           <aside className="rounded-xl border bg-white p-4 shadow-sm">
