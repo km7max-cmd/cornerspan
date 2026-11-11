@@ -146,10 +146,14 @@ function draftClick() {
     fireEvent.change(field("SEO description"), { target: {
       value: "A temporary test article to test the CornerSpan editor client workflows in a CI environment.",
     } });
+    fireEvent.change(field("Tags (comma-separated)"), { target: { value: "testing, mobile," } });
+    assert.equal(field("Tags (comma-separated)").value, "testing, mobile,",
+      "typing a comma must not remove the delimiter on mobile");
     fireEvent.change(screen.getByRole("textbox", { name: "Article body (Markdown)" }), { target: { value: "## Testing editor\n\nTest draft only." } });
     fireEvent.click(screen.getByRole("button", { name: "Save D1 draft" }));
     await waitFor(() => assert.ok(screen.getByText(/Saved to D1 database as a draft/)));
     assert.equal(draftStore.get("cornerspan-ci-draft").revision, 1);
+    assert.deepEqual(Array.from(draftStore.get("cornerspan-ci-draft").tags), ["testing", "mobile"]);
     assert.equal(draftStore.get("cornerspan-ci-draft").body, "## Testing editor\n\nTest draft only.");
     assert.ok(screen.getByText(/1 saved drafts/));
     assert.ok(screen.getByRole("link", { name: "Preview saved draft" }));
