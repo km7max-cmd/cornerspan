@@ -1,6 +1,20 @@
-# CornerSpan Admin Dashboard — NO Zero Trust billing authorization
+# CornerSpan Admin Dashboard — production release gate
 
-**Status: feature branch / draft PR #4; NOT deployed.** The owner declined Cloudflare Zero Trust Free activation because its billing screen requires authorization for possible overages. **Do not activate Cloudflare Zero Trust.** This branch replaces Cloudflare Access with standalone password sign-in secured by a signed session cookie and D1 rate limiting.
+**11 November 2026 status:** Cloudflare **Preview** login, admin dashboard and mobile New Draft editor were verified by screenshots; the owner reported **PASS** from the one-click actual Preview D1 storage test, which writes, reads and deletes a temporary unpublished draft. GitHub CI passed migrations, security/API tests, React UI workflow simulations, builds and site SEO/mobile regression checks. **PR #4 remains draft and unmerged. Production is unchanged.**
+
+## Remaining production-release blockers (do not bypass)
+
+1. Production D1 cornerspan-admin has not been verified to contain all three tables: admin_post_drafts, admin_published_posts, admin_login_attempts. The idempotent schema is in migrations/; the CI migration suite validates schema and repeat application. Never drop existing tables.
+2. Production Worker needs encrypted runtime secrets ADMIN_LOGIN_PASSWORD and ADMIN_SESSION_SECRET. These secrets are not present or verified in Production. Do not send passwords, secret values, or session tokens through GitHub or ChatGPT.
+3. Real Cloudflare Preview *publish/unpublish* has not been remotely verified. CI tests publish/unpublish against an isolated test SQLite database and mock browser state, not the owner's Cloudflare D1.
+4. After the above: verify SEO/canonicals, sitemap, existing 21 posts, calculators, production login and an actual controlled deployment. **Do not deploy or merge until gates have been verified.**
+5. There is no connected Cloudflare management tool for account-wide SQL execution, secrets or deploy changes. GitHub CI cannot substitute for production account credentials.
+
+The owner asked to avoid repeated manual checks. Do not re-request already completed Preview login, editor or private draft-storage tests.
+
+---
+
+**Status: feature branch / draft PR #4; deployed to Preview only, NOT Production.** The owner declined Cloudflare Zero Trust Free activation because its billing screen requires authorization for possible overages. **Do not activate Cloudflare Zero Trust.** This branch replaces Cloudflare Access with standalone password sign-in secured by a signed session cookie and D1 rate limiting.
 
 ## Already provisioned (verified by owner screenshots)
 
@@ -8,7 +22,7 @@
 - Preview D1 `cornerspan-admin-preview` → separate `ADMIN_DB` binding.
 - Their real UUIDs are synchronized in `wrangler.jsonc`.
 - In the **Preview** database, `admin_post_drafts` and `admin_published_posts` tables were created manually and verified by a read-only SQL query.
-- The owner reports applying login limiter SQL on Preview, but its three-table schema has not yet been independently re-verified with a screenshot.\n- The owner has saved both `ADMIN_LOGIN_PASSWORD` and `ADMIN_SESSION_SECRET` as encrypted **Previews Base** secrets (verified by Cloudflare screenshot); Production has not been configured.\n- **No production SQL tables have been verified.** No remote login/publishing tests have been run.
+- The owner reports applying login limiter SQL on Preview, but its three-table schema has not yet been independently re-verified with a screenshot.\n- The owner has saved both `ADMIN_LOGIN_PASSWORD` and `ADMIN_SESSION_SECRET` as encrypted **Previews Base** secrets (verified by Cloudflare screenshot); Production has not been configured.\n- **No production SQL tables have been verified.** Remote Preview login and temporary D1 draft-storage test were reported successful; remote Preview publishing is not verified.
 
 ## Login design (no external paid login provider)
 
@@ -66,7 +80,7 @@ Cloudflare Dashboard screenshots now show the **Previews Base → Builds** tab w
 - Preview command: `npx wrangler preview`
 - Production branch remains `main`
 - Preview Runtime Secrets were saved encrypted in Previews Base; those are not Build-time variables
-- A transient Dashboard "Request timed out" toast was visible: **Cloudflare Preview deployment has not yet been verified.**
+- A transient Dashboard "Request timed out" toast was visible: **Cloudflare Preview is now Ready, and login/editor were verified by screenshots.**
 
 This commit on the feature branch may trigger a new Preview build now that branch previews are enabled. Verify success and obtain the actual Preview URL from Cloudflare Worker → Previews / Deployments; do not infer the URL or assume a successful deploy. Do not merge the draft PR before remote smoke testing.
 
