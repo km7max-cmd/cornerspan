@@ -26,6 +26,14 @@ The owner asked to avoid repeated manual checks. Do not re-request already compl
 - The owner has saved both `ADMIN_LOGIN_PASSWORD` and `ADMIN_SESSION_SECRET` as encrypted **Previews Base** secrets (verified by Cloudflare screenshot); Production has not been configured.
 - **No production SQL tables have been verified.** Remote Preview login and temporary D1 draft-storage test were reported successful; remote Preview publishing is not verified.
 
+## Cloudflare Community support request
+
+The account owner submitted a public Cloudflare Workers community topic describing the repeatable Production variable/secret save/delete failure: https://community.cloudflare.com/t/cloudflare-worker-variables-fail-to-save-or-delete-try-again-error/979737
+
+On 12 November 2026, the thread URL was provided, but replies were not retrievable in the available research session. **Do not assume Cloudflare confirmed a root cause or remedy.** Keep Production release gated; review any future reply before attempting a live configuration change. Do not publicly reveal credentials, account tokens or secret values.
+
+---
+
 ## Production setup blocker observed 11 November 2026
 
 Cloudflare Dashboard **Production → Add variable and deploy** repeatedly returned **"Try again"** when the owner attempted to add encrypted Admin secrets. Retrying with Chrome and Firefox did not resolve the error. **Production secrets have NOT been verified**. A manually created Production dashboard deployment was also observed, while GitHub main had no corresponding admin login route: treat the active Production Worker code and source branch as potentially different.
