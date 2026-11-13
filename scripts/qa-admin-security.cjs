@@ -31,7 +31,7 @@ async function waitUntilReady() {
     const scenarios = [
       ["/admin", {}, 307],
       ["/admin/login", {}, 200],
-      ["/admin/preview/any-test-slug", {}, 404],
+      ["/admin/preview/any-test-slug", {}, 307],
       ["/api/admin/drafts", {}, 401],
       ["/api/admin/publish", {}, 401],
       ["/api/admin/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ password: "irrelevant" }) }, 403],
@@ -44,6 +44,7 @@ async function waitUntilReady() {
     for (const [path, options, expected] of scenarios) {
       const response = await request(path, options);
       assert.equal(response.status, expected, path + " must deny unauthorized requests");
+      if (path.startsWith("/admin/preview/")) assert.equal(new URL(response.headers.get("location"), origin).pathname, "/admin/login", "private previews redirect unauthenticated visitors to sign-in");
       console.log("PASS", options.method || "GET", path, response.status);
     }
     const existing = await request("/blog");
