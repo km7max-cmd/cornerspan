@@ -1,3 +1,10 @@
+## Active production deployment independently checked — 13 November 2026
+
+Owner ran `wrangler@4.160.1 deployments list --name cornerspan`. Most recent deployment showed **100% production traffic** on `da4e7677-f159-4989-a9f1-d3ac60fbfcfc` (created 2026-11-11T03:33:27Z; message includes the unexpected random-named variable). Prior entry was `1659b910-9d08-4e83-9588-ca779322fde4` (100% as of an earlier deployment). This confirms that the secret-bearing version `1123d5fd-16ad-4f22-bb9b-c30ce07fdbd1` **has not been deployed**.
+
+GitHub `main` was checked separately and **does not contain `app/admin/login/page.tsx`**, while the feature branch does. Therefore **do not assume Production Worker currently matches GitHub main or the feature branch**; a previous dashboard version was deployed. For release, verify live/runtime code lineage and prepare an explicit rollback target. A successful Preview draft-storage self-test is not the same as real Preview publish/unpublish. No merge/deploy without owner's explicit approval.
+
+---
 ## Production configuration verified by owner — 13 November 2026
 
 **Confirmed by real Wrangler output/screenshots, not a local simulation:**
