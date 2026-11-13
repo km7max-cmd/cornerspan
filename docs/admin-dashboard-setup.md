@@ -1,3 +1,19 @@
+## Production configuration verified by owner — 13 November 2026
+
+**Confirmed by real Wrangler output/screenshots, not a local simulation:**
+
+- `wrangler@4.160.1 login --device --browser=false` succeeded under the owner's Cloudflare account.
+- `wrangler versions secret put ADMIN_LOGIN_PASSWORD --name cornerspan` created version `ab498bd7-3ae8-46ed-980d-580c75cf98d2` without deployment.
+- `wrangler versions secret put ADMIN_SESSION_SECRET --name cornerspan` created subsequent version `1123d5fd-16ad-4f22-bb9b-c30ce07fdbd1` without deployment.
+- `wrangler versions view 1123d5fd-16ad-4f22-bb9b-c30ce07fdbd1 --name cornerspan` showed **both secret names** in the same version, together with Production `env.ADMIN_DB` D1 binding to database `4a41a0ba-360b-4c45-8929-1d21445eb5a0`.
+- A **read-only** remote D1 query on `cornerspan-admin` confirmed all three required table names: `admin_login_attempts`, `admin_post_drafts`, and `admin_published_posts` (and internal `_cf_KV`). The query did not validate individual columns or production content counts.
+- The existing unexpected `wcXE...` plaintext environment variable was present in the non-deployed version; do not copy its value into source code or assume it is an admin secret.
+- **Do not deploy the secret-bearing Worker version yet.** The active Production Worker code/source diverged from the GitHub `main` branch in a previous dashboard deployment. The owner originally required no production publishing or changes without approval. Confirm active version code and origin, complete genuine isolated Preview publish/unpublish testing and verify security/SEO first.
+
+The historical paragraphs below describe the older 11 November blocker, which Wrangler device authorization ultimately bypassed. Production secrets and table-name existence are now **verified**, not pending.
+
+---
+
 # CornerSpan Admin Dashboard — production release gate
 
 **11 November 2026 status:** Cloudflare **Preview** login, admin dashboard and mobile New Draft editor were verified by screenshots; the owner reported **PASS** from the one-click actual Preview D1 storage test, which writes, reads and deletes a temporary unpublished draft. GitHub CI passed migrations, security/API tests, React UI workflow simulations, builds and site SEO/mobile regression checks. **PR #4 remains draft and unmerged. Production is unchanged.**
