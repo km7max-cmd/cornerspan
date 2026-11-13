@@ -102,7 +102,7 @@ export default function CmsArticle({post, preview = false}: CmsArticleProps) {
       <p className="mb-3 text-sm font-bold uppercase tracking-wide text-blue-700">{post.category}</p>
       <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl">{post.title}</h1>
       <p className="mt-5 text-lg leading-8 text-slate-600">{post.description}</p>
-      <p className="mt-4 text-sm text-slate-500">Published {post.publishedAt}{post.modifiedAt && post.modifiedAt !== post.publishedAt ? " · Updated " + post.modifiedAt.slice(0,10) : ""}</p>
+      <p className="mt-4 text-sm text-slate-500">{preview ? "Draft preview · Not published" : `Published ${post.publishedAt}${post.modifiedAt && post.modifiedAt !== post.publishedAt ? " · Updated " + post.modifiedAt.slice(0,10) : ""}`}</p>
     </header>
     <div>{renderMarkdown(post.body)}</div>
     {post.tags.length > 0 && <footer className="mt-10 border-t pt-5 text-sm text-slate-500">Tags: {post.tags.join(", ")}</footer>}
