@@ -427,7 +427,7 @@ export default function AdminPostEditor({ posts }: { posts: Post[] }) {
               <div className="flex flex-wrap gap-3">
                 <button type="submit" className="rounded-lg bg-blue-700 px-5 py-3 font-semibold text-white hover:bg-blue-800 disabled:opacity-50" disabled={!ready || busy}>{busy ? "Saving..." : "Save D1 draft"}</button>
                 <button type="button" onClick={publishPost} disabled={!ready || !publicationReady || busy || !selected} className="rounded-lg bg-green-700 px-5 py-3 font-semibold text-white disabled:opacity-50">Publish saved draft</button>
-                {selected && drafts[selected] && <a href={`/admin/preview/${selected}?replaceBody=${replaceBody ? "1" : "0"}`} target="_blank" rel="noreferrer" className="rounded-lg border border-blue-300 px-5 py-3 font-semibold text-blue-700">Preview saved draft</a>}
+                {selected && drafts[selected] && <a href={`/admin/preview/${selected}?replaceBody=${replaceBody ? "1" : "0"}`} className="rounded-lg border border-blue-300 px-5 py-3 font-semibold text-blue-700">Preview saved draft</a>}
                 {selected && publishedSlugs.includes(selected) && <button type="button" onClick={unpublishPost} disabled={busy} className="rounded-lg border border-red-300 px-5 py-3 font-semibold text-red-700">Unpublish CMS version</button>}
                 {selected && drafts[selected] && <button type="button" onClick={deleteDraft} disabled={busy} className="rounded-lg border border-amber-400 px-5 py-3 font-semibold text-amber-800">Delete draft</button>}
                 <button type="button" onClick={exportDraft} className="rounded-lg border border-slate-300 px-5 py-3 font-semibold hover:bg-slate-50">Export JSON</button>
