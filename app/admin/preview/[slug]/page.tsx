@@ -1,4 +1,4 @@
-import { notFound } from "next/navigation";
+import { redirect, notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { hasAdminAccess } from "../../../../lib/admin-auth";
 import { draftDatabase, getDraft } from "../../../../lib/admin-drafts";
@@ -10,17 +10,28 @@ import { blogPosts } from "../../../../data/blog";
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Private Post Preview | CornerSpan", robots: { index: false, follow: false } };
 
+function PreviewUnavailable({ title, explanation }: { title: string; explanation: string }) {
+  return <main className="mx-auto max-w-3xl px-6 py-16">
+    <h1 className="text-3xl font-bold text-slate-900">{title}</h1>
+    <p className="mt-4 text-slate-700">{explanation}</p>
+    <a href="/admin" className="mt-6 inline-block rounded-lg bg-blue-700 px-5 py-3 font-semibold text-white">
+      Return to post editor
+    </a>
+  </main>;
+}
+
 export default async function PreviewPage({ params, searchParams }: {
   params: Promise<{slug:string}>;
   searchParams: Promise<{replaceBody?:string}>;
 }) {
-  if (!(await hasAdminAccess())) notFound();
+  // A missing or expired session should lead back to sign-in, not a misleading 404.
+  if (!(await hasAdminAccess())) redirect("/admin/login");
   const { slug } = await params;
   if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) notFound();
   const db = draftDatabase();
-  if (!db) notFound();
+  if (!db) return <PreviewUnavailable title="Preview database unavailable" explanation="This preview deployment cannot access its draft database. Reopen the latest branch preview and check the ADMIN_DB binding." />;
   const draft = await getDraft(db, slug);
-  if (!draft) notFound();
+  if (!draft) return <PreviewUnavailable title="Saved draft not found" explanation="This article is not in the database connected to this preview deployment. Return to the editor, reload saved drafts, and make sure you opened the latest branch preview." />;
   const { replaceBody } = await searchParams;
   const legacy = blogPosts.some(post => post.slug === slug);
   if (legacy && replaceBody !== "1") {
