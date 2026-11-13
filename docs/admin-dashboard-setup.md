@@ -1,3 +1,12 @@
+## Remote mobile Preview 404 under investigation — 13 November 2026
+
+The owner created and saved a new D1 draft on the Cloudflare **branch Preview**; the editor returned **"Saved to D1 database as a draft. Live published content has NOT changed."** However, tapping **Preview saved draft** in a new browser tab showed a CornerSpan 404. **No CMS publication was attempted.**
+
+The Preview route previously called `notFound()` both when the admin cookie was missing/expired and when its D1 binding or saved draft was unavailable, so the screenshot alone cannot identify the root cause. To improve diagnosability and mobile behavior, this branch now redirects unauthenticated previews to `/admin/login`, displays protected explanatory messages for missing D1 or saved drafts, and navigates in the same browser tab instead of opening a new tab. Regression smoke check updated to expect unauthenticated redirect instead of generic 404.
+
+**Release gate remains closed.** Rebuild the branch Preview, sign into the latest Preview host, re-open the *existing* D1 draft, and retry preview. If this still produces a plain Next 404, investigate Cloudflare/OpenNext Preview route deployment and dynamic route handling; do not publish the temporary article. Once preview renders correctly, validate genuine isolated Preview publish/unpublish, cleanup the test draft, and only then consider Production release with explicit owner authorization.
+
+---
 ## Active production deployment independently checked — 13 November 2026
 
 Owner ran `wrangler@4.160.1 deployments list --name cornerspan`. Most recent deployment showed **100% production traffic** on `da4e7677-f159-4989-a9f1-d3ac60fbfcfc` (created 2026-11-11T03:33:27Z; message includes the unexpected random-named variable). Prior entry was `1659b910-9d08-4e83-9588-ca779322fde4` (100% as of an earlier deployment). This confirms that the secret-bearing version `1123d5fd-16ad-4f22-bb9b-c30ce07fdbd1` **has not been deployed**.
