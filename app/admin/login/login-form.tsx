@@ -25,7 +25,7 @@ export default function LoginForm() {
       setError(error instanceof Error ? error.message : "Could not sign in.");
     } finally { setBusy(false); }
   }
-  return <main className="flex min-h-screen items-center justify-center bg-slate-100 px-4 py-16">
+  return <section aria-label="Admin sign in" className="flex min-h-screen items-center justify-center bg-slate-100 px-4 py-16">
     <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-7 shadow-lg">
       <p className="mb-2 text-sm font-semibold uppercase tracking-wide text-blue-700">CornerSpan</p>
       <h1 className="text-3xl font-extrabold text-slate-900">Admin sign in</h1>
@@ -44,5 +44,5 @@ export default function LoginForm() {
       </form>
       <p className="mt-5 text-xs leading-5 text-slate-500">Never enter your admin password into ChatGPT or commit it to GitHub. Your session expires after eight hours.</p>
     </div>
-  </main>;
+  </section>;
 }

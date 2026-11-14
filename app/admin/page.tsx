@@ -10,7 +10,7 @@ import AdminPostEditor, { type Post } from "./post-editor";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
-  title: "Post Editor | CornerSpan",
+  title: { absolute: "Post Editor | CornerSpan" },
   robots: { index: false, follow: false },
 };
 

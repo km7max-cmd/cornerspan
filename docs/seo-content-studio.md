@@ -1,3 +1,5 @@
+Current delivery and remaining acceptance gates: [delivery status](admin-delivery-status.md).
+
 ## Preview D1 migration completed — owner screenshot, 14 November 2026
 
 The owner ran Wrangler 4.160.1 against the **remote** `cornerspan-admin-preview` database (`971ff2ce-5283-4df7-9ee4-a0deb0d558f9`). The command output shows successful application (green checks) of `0001_admin_post_drafts.sql`, `0002_admin_published_posts.sql`, `0003_admin_login_attempts.sql`, and **`0004_admin_seo_media.sql`**. The SEO/media migration now has a successful Wrangler completion record. The command targeted Preview, not Production.
@@ -16,7 +18,7 @@ Status: feature branch `feature/posts-admin-dashboard`, draft PR #4. **No merge 
 3. Choose Add New Post. Keep the article H1 separate from SEO Meta Title and SEO Meta Description. URL slugs lock after the first save.
 4. Write Markdown. Toolbar actions insert H2/H3/H4, bold, italic, links, lists and tables at the selection. The full body is editable. Raw HTML stays escaped.
 5. Add a focus keyword and optional secondary topics. The checklist recalculates while typing. It explains each PASS, WARNING and FAIL; its weighted score is an editorial aid, never a prediction of rankings or AdSense approval. There is no density target or minimum ranking word count.
-6. Add an HTTPS or site-relative featured image URL, ALT, optional title/caption/source/click-through link and dimensions. The media library saves reusable URL records in D1. Selecting a library image copies its current details into the draft; later library edits do not silently change articles. Inline images support `![ALT](URL "title")` and `[![ALT](URL)](LINK)`.
+6. Add an HTTPS or site-relative featured image URL, ALT, optional title/caption/source/click-through link and dimensions. The media library saves reusable URL records in D1. Selecting a library image copies its current details into the draft; later library edits do not silently change articles. Remove from library deletes only that reusable record after confirmation and a revision check; inserted article images remain unchanged. Inline images support `![ALT](URL "title")` and `[![ALT](URL)](LINK)`.
 7. Toggle the TOC. H2/H3 headings become clickable entries with unique stable IDs, including duplicate-heading collision handling. The editor warns about duplicates, body H1 and skipped levels. The public renderer demotes body H1 to H2 to retain one article H1.
 8. Use Live article preview or SEO analysis. Save Draft, then Preview saved draft to verify the persisted version. Unsaved edits block publishing; old revisions return conflicts rather than overwriting another editor.
 9. Advanced settings control canonical URL, index/noindex, follow/nofollow, Open Graph and Twitter/X cards, and Article JSON-LD. Noindex and canonical-to-another-page publications are excluded from the sitemap. New CMS posts render featured images, dimensions, captions/source links and TOC in public articles.

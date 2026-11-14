@@ -36,6 +36,7 @@ async function waitUntilReady() {
       ["/api/admin/publish", {}, 401],
       ["/api/admin/media", {}, 401],
       ["/api/admin/media", { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" }, 401],
+      ["/api/admin/media?id=test&revision=1", { method: "DELETE" }, 401],
       ["/api/admin/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ password: "irrelevant" }) }, 403],
       ["/api/admin/logout", { method: "POST" }, 403],
       ["/api/admin/drafts", { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" }, 401],
@@ -47,6 +48,13 @@ async function waitUntilReady() {
       const response = await request(path, options);
       assert.equal(response.status, expected, path + " must deny unauthorized requests");
       if (path.startsWith("/admin/preview/")) assert.equal(new URL(response.headers.get("location"), origin).pathname, "/admin/login", "private previews redirect unauthenticated visitors to sign-in");
+      if (path === "/admin/login") {
+        const html = await response.text();
+        assert.equal((html.match(/<main(?:\s|>)/g) || []).length, 1, "login has one main landmark");
+        assert.equal((html.match(/<h1(?:\s|>)/g) || []).length, 1, "login has one H1");
+        assert.match(html, /<title>Admin Sign In \| CornerSpan<\/title>/, "admin title does not repeat the site name");
+        assert.match(html, /<meta name="robots" content="[^"]*noindex/, "admin login stays noindex");
+      }
       console.log("PASS", options.method || "GET", path, response.status);
     }
     const existing = await request("/blog");

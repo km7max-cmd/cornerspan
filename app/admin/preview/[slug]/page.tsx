@@ -8,16 +8,16 @@ import { calculatorArticles } from "../../../../data/calculator-articles";
 import { blogPosts } from "../../../../data/blog";
 
 export const dynamic = "force-dynamic";
-export const metadata: Metadata = { title: "Private Post Preview | CornerSpan", robots: { index: false, follow: false } };
+export const metadata: Metadata = { title: { absolute: "Private Post Preview | CornerSpan" }, robots: { index: false, follow: false } };
 
 function PreviewUnavailable({ title, explanation }: { title: string; explanation: string }) {
-  return <main className="mx-auto max-w-3xl px-6 py-16">
+  return <section className="mx-auto max-w-3xl px-6 py-16">
     <h1 className="text-3xl font-bold text-slate-900">{title}</h1>
     <p className="mt-4 text-slate-700">{explanation}</p>
     <a href="/admin" className="mt-6 inline-block rounded-lg bg-blue-700 px-5 py-3 font-semibold text-white">
       Return to post editor
     </a>
-  </main>;
+  </section>;
 }
 
 export default async function PreviewPage({ params, searchParams }: {

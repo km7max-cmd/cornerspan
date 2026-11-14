@@ -5,7 +5,7 @@ import LoginForm from "./login-form";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
-  title: "Admin Sign In | CornerSpan",
+  title: { absolute: "Admin Sign In | CornerSpan" },
   robots: { index: false, follow: false },
 };
 

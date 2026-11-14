@@ -1,3 +1,11 @@
+## Current delivery gate — 15 November 2026
+
+See [delivery and acceptance status](admin-delivery-status.md) for the completed implementation and the distinction between isolated tests, read-only Preview checks and pending authenticated acceptance. The owner has supplied successful **Preview** migration `0004` evidence; do not run that migration again merely because older entries below list it as pending. The latest verified feature implementation includes safe media-library removal and preservation of legacy metadata defaults.
+
+**HOLD / NO MERGE / NO PRODUCTION DEPLOY.** The remaining blockers are genuine remote Preview editing/publication/cleanup verification and fresh authenticated Production version, code-lineage, binding/schema, required-secret-name and rollback checks. The current work environment reports Wrangler unauthenticated and the Preview admin remains at sign-in. This is an access limitation, not a failed D1 migration or permission to alter authentication.
+
+---
+
 ## Advanced SEO redesign — 14 November 2026
 
 The feature branch now includes the SEO Content Studio implementation and additive migration `0004_admin_seo_media.sql`. See [SEO Content Studio](seo-content-studio.md) for field behavior, test coverage, Preview migration/acceptance, limitations and rollback steps.
