@@ -62,10 +62,16 @@ let browser;
         await page.getByText('CMS publication removed.', { exact: false }).waitFor();
         await page.getByRole('button', { name: 'Delete draft', exact: true }).click();
         await page.getByText('Draft deleted.', { exact: false }).waitFor();
+        await page.getByRole('button', { name: 'Media Library', exact: true }).click();
+        await page.getByRole('button', { name: 'Remove from library', exact: true }).click();
+        await page.getByText('Image removed from the media library.', { exact: false }).waitFor();
+        assert.equal(await page.getByRole('button', { name: 'Remove from library', exact: true }).count(), 0);
+        assert.ok(await page.getByText('0 images', { exact: true }).isVisible(), 'Temporary media record was cleaned up');
+        await noOverflow();
         await page.goto(`${origin}/blog/preview-qa-${name}`);
         await page.getByRole('heading', { name: '404 — Article not published', exact: true }).waitFor();
         assert.equal(errors.length, 0, errors.join('\n'));
-        console.log(`PASS ${name}: responsive layout, editor, live SEO, media/ALT, TOC, save/reload, preview, simulated publish/unpublish/delete`);
+        console.log(`PASS ${name}: responsive layout, editor, live SEO, media/ALT/delete, TOC, save/reload, preview, simulated publish/unpublish/delete`);
       } catch (error) { await page.screenshot({ path: `qa-artifacts/admin-${name}-failure.png`, fullPage: true }); throw error; }
       finally { await context.close(); }
     }
