@@ -28,6 +28,11 @@ window.fetch = async (input, options = {}) => {
   }
   if (path === '/api/admin/media') {
     if (method === 'GET') return reply({ media: Object.values(media), uploadAvailable: false });
+    if (method === 'DELETE') {
+      const id = url.searchParams.get('id'); const revision = Number(url.searchParams.get('revision'));
+      if (!media[id] || media[id].revision !== revision) return reply({ error: 'Image changed or was already removed.' }, 409);
+      delete media[id]; persist(); return reply({ deleted: true });
+    }
     const record = { ...payload.image, id: payload.id || crypto.randomUUID(), revision: payload.expectedRevision + 1, updatedAt: new Date().toISOString() };
     media[record.id] = record; persist(); return reply({ media: record });
   }
