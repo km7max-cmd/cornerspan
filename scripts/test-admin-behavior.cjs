@@ -321,6 +321,16 @@ const { samePostContent, initialBodyReplacement } = load("lib/admin-editor-state
     assert.equal((await call(media, "POST", imageUpdate)).status, 200);
     assert.equal((await call(media, "POST", imageUpdate)).status, 409);
     assert.equal((await call(media, "GET")).data.uploadAvailable, false);
+    const recordId = imageSaved.data.media.id;
+    const deleteQuery = "?id=" + recordId + "&revision=2";
+    assert.equal((await call(media, "DELETE", undefined, deleteQuery, { cookie: "forged" })).status, 401, "media deletion requires login");
+    assert.equal((await call(media, "DELETE", undefined, deleteQuery, { origin: "https://evil.example.test" })).status, 403, "media deletion requires same-origin");
+    assert.equal((await call(media, "DELETE", undefined, "?id=" + recordId + "&revision=0")).status, 400, "media deletion requires a valid revision");
+    assert.equal((await call(media, "DELETE", undefined, "?id=" + recordId + "&revision=1")).status, 409, "media deletion refuses stale revisions");
+    assert.equal((await call(media, "GET")).data.media.length, 1, "stale delete must preserve image");
+    assert.equal((await call(media, "DELETE", undefined, deleteQuery)).status, 200, "matching revision deletes image");
+    assert.equal((await call(media, "GET")).data.media.length, 0, "no reusable test media left in D1");
+    assert.equal((await call(media, "DELETE", undefined, deleteQuery)).status, 409, "repeat delete is rejected safely");
     console.log("PASS original content/URLs/dates, explicit legacy approval, metadata-only overrides, CMS body reopening and unsaved SEO edits");
     console.log("PASS SEO field persistence, real public metadata, robots/sitemap, social image, Article schema, linked featured image, TOC, tables and safe Markdown");
     console.log("PASS persistent URL media library, CSRF/auth checks, unsafe URL rejection and revision conflicts");
