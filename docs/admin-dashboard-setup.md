@@ -1,3 +1,15 @@
+## Owner-verified remote Preview workflow — 14 November 2026
+
+The owner supplied screenshots of the latest Cloudflare branch Preview dashboard and confirmed:
+
+- Saving a temporary CMS test draft to Preview D1 returned "Saved to D1 database as a draft. Live published content has NOT changed."
+- Private draft preview rendered the title, SEO description, Markdown headings, body and tags; the preview label correctly read "Draft preview · Not published."
+- Clicking "Publish saved draft" returned "Published. Verify the live URL, content and canonical SEO before sharing", the post list showed "Published in CMS", and the unpublish action appeared.
+- Owner clicked "Unpublish CMS version" and **confirmed the article URL returned 404 afterward**.
+
+**Release gate:** The owner did **not** document a successful visit to the public Preview article URL *before* unpublishing. Therefore the remote publish/unpublish API operation is verified, but end-to-end Preview public-route rendering after publication remains unverified. Test-draft deletion and confirmation of cleanup are also pending. No Production deployment or PR merge is authorized by these tests.
+
+---
 ## Remote mobile Preview 404 under investigation — 13 November 2026
 
 The owner created and saved a new D1 draft on the Cloudflare **branch Preview**; the editor returned **"Saved to D1 database as a draft. Live published content has NOT changed."** However, tapping **Preview saved draft** in a new browser tab showed a CornerSpan 404. **No CMS publication was attempted.**
