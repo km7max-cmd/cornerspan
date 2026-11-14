@@ -1,3 +1,20 @@
+## Autonomous release audit — 14 November 2026
+
+The owner asked to handle further checks without additional Cloudflare screenshots or repeated manual steps.
+
+**GitHub / publicly verifiable checks completed:**
+- GitHub repository default branch is `main`, PR #4 remains **open and draft**, branch `feature/posts-admin-dashboard`, not merged.
+- Both latest verified workflow runs for previous PR commit `74f519dd` finished **successfully**: *Admin dashboard checks* and *CornerSpan website QA*.
+- Verified `main` currently lacks `app/admin/login/page.tsx`, `app/admin/page.tsx`, and `ADMIN_DB` in `wrangler.jsonc`; the feature branch adds them. The previous owner dashboard screenshots show the active Production Worker `da4e7677` was deployed by **Dashboard**, so do **not** assume it equals `main`.
+- Cloudflare public docs say commits pushed to the configured production branch trigger a production build and deploy, making a PR merge potentially **production-impacting**: https://developers.cloudflare.com/workers/ci-cd/builds/build-branches/
+- The public `https://www.cornerspan.com/blog` route returns the CornerSpan article catalog in the web index, with 21 article entries in the retrieved page, consistent with the owner's 21-post Preview Dashboard. A retrieved live area guide contains a full original article with calculator links and worked examples. These public observations do **not** establish current private Cloudflare build settings or the current active Worker code checksum.
+- Cloudflare docs confirm a `wrangler versions secret put` version is **not automatically deployed**; likewise a rollback does not restore D1 database content. See https://developers.cloudflare.com/workers/configuration/secrets/ and https://developers.cloudflare.com/workers/versions-and-deployments/rollbacks/ .
+
+**Access limitation:** The connected GitHub integration can read and change feature-branch source code and CI. It cannot authenticate to the owner's private Cloudflare dashboard, inspect live Cloudflare Worker source/production Build Settings, or access production D1. No Cloudflare connector is available. Public web browsing cannot substitute for those authenticated private checks. The prior owner's read-only Cloudflare screenshots verify active version, release history and rollback menu only.
+
+**Decision:** `HOLD / NO MERGE / NO DEPLOY`. The outstanding release blockers are active Production Worker code/source lineage, production Build Branch settings, correct required secrets and D1 binding in a reviewed candidate version, and an authorized deployment/rollback plan. Do **not** deploy either older secret-update-only version. The owner previously required explicit signoff before any change to Live CornerSpan.com.
+
+---
 ## Owner screenshot: Production rollback menu visible — 14 November 2026
 
 The owner supplied a Cloudflare **Production > Deployments** screenshot showing a version's ellipsis menu with **Rollback**, **Split versions**, and **View logs**. This demonstrates the dashboard exposes a rollback control for at least one selectable deployment version. However, the screenshot is horizontally scrolled and crops the target version ID; **do not claim that specific version `1659b910` was selected** or that it is verified safe to roll back. The owner did not click Rollback and did not authorize a deployment.
