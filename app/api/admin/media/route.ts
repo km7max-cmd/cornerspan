@@ -38,3 +38,28 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ media: row ? mapRow(row) : null }, { headers });
   } catch { return fail('Unable to save image record. Check the media migration and input.', 503); }
 }
+
+/**
+ * Remove a reusable media-library record only. Images already inserted into
+ * saved or published articles are independent copies and remain unchanged.
+ */
+export async function DELETE(request: NextRequest) {
+  if (!(await hasAdminAccess())) return fail('Unauthorized', 401);
+  if (request.headers.get('origin') !== request.nextUrl.origin) return fail('Invalid request origin', 403);
+  const id = request.nextUrl.searchParams.get('id');
+  const revisionText = request.nextUrl.searchParams.get('revision');
+  const revision = revisionText === null ? NaN : Number(revisionText);
+  if (!id || !/^[a-zA-Z0-9-]{1,64}$/.test(id) || !Number.isSafeInteger(revision) || revision < 1) {
+    return fail('Invalid image identifier or revision', 400);
+  }
+  const db = draftDatabase();
+  if (!db) return fail('Database unavailable', 503);
+  try {
+    const result = await db.prepare('DELETE FROM admin_media WHERE id=? AND revision=?').bind(id, revision).run();
+    if (!result.success) return fail('Could not delete image record', 503);
+    if ((result.meta?.changes ?? 0) !== 1) return fail('Image changed or was already removed. Reload the library.', 409);
+    return NextResponse.json({ deleted: true }, { headers });
+  } catch {
+    return fail('Could not delete image record. Check the media migration.', 503);
+  }
+}
