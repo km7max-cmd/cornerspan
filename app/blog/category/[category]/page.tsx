@@ -1,25 +1,19 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { blogPosts } from "../../../../data/blog";
+import { getPublicBlogPosts } from "../../../../lib/published-posts";
+export const dynamic = "force-dynamic";
 
 type Props = {
   params: Promise<{ category: string }>;
 };
-
-export function generateStaticParams() {
-  const categories = [...new Set(blogPosts.map((post) => post.category))];
-
-  return categories.map((category) => ({
-    category: category.toLowerCase(),
-  }));
-}
 
 export async function generateMetadata({
   params,
 }: Props): Promise<Metadata> {
   const { category } = await params;
 
+  const blogPosts = await getPublicBlogPosts();
   const posts = blogPosts.filter(
     (post) =>
       post.category.toLowerCase() === category.toLowerCase()
@@ -47,6 +41,7 @@ export async function generateMetadata({
 export default async function CategoryPage({ params }: Props) {
   const { category } = await params;
 
+  const blogPosts = await getPublicBlogPosts();
   const posts = blogPosts.filter(
     (post) =>
       post.category.toLowerCase() === category.toLowerCase()

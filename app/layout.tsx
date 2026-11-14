@@ -1,8 +1,7 @@
 import "./globals.css";
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
+import SiteChrome from "../components/SiteChrome";
 import ThemeProvider from "./components/ThemeProvider";
 
 const GA_MEASUREMENT_ID = "G-F6Y04EJR2P";
@@ -101,13 +100,7 @@ export default function RootLayout({
         </Script>
 
         <ThemeProvider>
-          <Header />
-
-          <main className="min-h-screen min-h-[100svh] pt-[76px]">
-            {children}
-          </main>
-
-          <Footer />
+          <SiteChrome>{children}</SiteChrome>
         </ThemeProvider>
       </body>
     </html>

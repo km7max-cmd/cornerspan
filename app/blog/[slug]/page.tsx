@@ -1,4 +1,7 @@
+import { cmsMetadata, legacyCmsMetadata } from "../../../lib/cms-metadata";
 import { articleImages } from "../../../data/article-images";
+import { findPublishedPost } from "../../../lib/published-posts";
+import CmsArticle from "../../../components/blog/CmsArticle";
 import { calculatorArticles } from "../../../data/calculator-articles";
 import CalculatorArticle from "../../../components/blog/CalculatorArticle";
 import { notFound } from "next/navigation";
@@ -13,18 +16,18 @@ type Props = {
 const retainingWallSlug = "how-many-bricks-10-foot-retaining-wall";
 const trapezoidSlug = "trapezoid-area-calculation";
 
-export function generateStaticParams() {
-  return blogPosts.map((post) => ({
-    slug: post.slug,
-  }));
-}
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,
 }: Props): Promise<Metadata> {
   const { slug } = await params;
 
+  const published = await findPublishedPost(slug);
   const post = blogPosts.find((item) => item.slug === slug);
+
+  if (published?.bodyOverride) return cmsMetadata(published);
+  const preserveLegacyMetadata = (metadata: Metadata) => published ? legacyCmsMetadata(metadata, published) : metadata;
 
   if (!post) {
     return {};
@@ -35,13 +38,13 @@ export async function generateMetadata({
     const illustration = articleImages[`/blog/${slug}`];
     const image = illustration?.social ?? (article.image && !article.image.endsWith(".svg") ? article.image : "/og-image.webp");
     const seoTitle = article.seoTitle ?? article.title;
-    return {
+    return preserveLegacyMetadata({
       title:seoTitle, description:article.description,
       alternates:{canonical:`/blog/${slug}`},
       openGraph:{title:seoTitle, description:article.description, type:"article", url:`https://www.cornerspan.com/blog/${slug}`, locale:"en_US", publishedTime:article.publishedAt, modifiedTime:article.modifiedAt, images:[{url:image,alt:illustration?.alt ?? article.imageAlt ?? article.title}]},
       twitter:{card:"summary_large_image",title:seoTitle,description:article.description,images:[image]},
       robots:{index:true,follow:true,googleBot:{index:true,follow:true,"max-image-preview":"large"}},
-    };
+    });
   }
 
 
@@ -52,7 +55,7 @@ export async function generateMetadata({
     const imageUrl =
       "https://www.cornerspan.com/trapezoid-area-guide.webp";
 
-    return {
+    return preserveLegacyMetadata({
       title: "How to Calculate the Area of a Trapezoid",
       description:
         "Learn the trapezoid area formula with step-by-step examples in square feet and square meters, a calculation table, and practical measurement tips.",
@@ -103,7 +106,7 @@ export async function generateMetadata({
           "max-image-preview": "large",
         },
       },
-    };
+    });
   }
 
 
@@ -111,7 +114,7 @@ export async function generateMetadata({
    * Other blog posts
    */
   const illustration = articleImages[`/blog/${slug}`];
-  return {
+  return preserveLegacyMetadata({
     title: post.title,
     description: post.description,
     alternates: {
@@ -133,18 +136,22 @@ export async function generateMetadata({
       index: true,
       follow: true,
     },
-  };
+  });
 }
 
 export default async function BlogPostPage({ params }: Props) {
   const { slug } = await params;
 
+  const published = await findPublishedPost(slug);
   const post = blogPosts.find((item) => item.slug === slug);
-
-  if (!post) {
-    notFound();
-  }
+  if (!post && !published) notFound();
+  if (published?.bodyOverride) return <CmsArticle post={published} />;
   const article = calculatorArticles.find(item => item.slug === slug);
+  if (published && article) return <CalculatorArticle article={{
+    ...article, title: published.title, seoTitle: published.title, description: published.description,
+    category: published.category, tags: published.tags,
+    modifiedAt: published.modifiedAt,
+  }} />;
   if (article) return <CalculatorArticle article={article} />;
   if (slug === trapezoidSlug) {
   return <TrapezoidAreaArticle />;

@@ -1,0 +1,39 @@
+name: Admin dashboard checks
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install dependencies (no lockfile in repository)
+        run: npm install --no-package-lock --no-audit --no-fund
+      - name: Generate calculator data
+        run: npm run prebuild
+      - name: Validate D1 migrations with SQLite
+        run: python3 scripts/test-admin-migrations.py
+      - name: Verify password sessions and D1 publication safeguards
+        run: node scripts/test-admin-behavior.cjs
+      - name: Preserve 21 legacy metadata outputs and calculator source
+        run: node scripts/test-legacy-preservation.cjs
+      - name: Browser-like React editor workflow tests
+        run: node scripts/test-admin-editor-ui.cjs
+      - name: TypeScript check
+        run: npx tsc --noEmit
+      - name: Next.js production build
+        run: npm run build
+      - name: Admin security route smoke tests
+        run: node scripts/qa-admin-security.cjs

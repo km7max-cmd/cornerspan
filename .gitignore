@@ -4,3 +4,7 @@ node_modules/
 .wrangler/
 .env*
 !.env.example
+.dev.vars*
+
+*.tsbuildinfo
+qa-artifacts/
