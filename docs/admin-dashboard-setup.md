@@ -7,7 +7,7 @@ The owner supplied screenshots of the latest Cloudflare branch Preview dashboard
 - Clicking "Publish saved draft" returned "Published. Verify the live URL, content and canonical SEO before sharing", the post list showed "Published in CMS", and the unpublish action appeared.
 - Owner clicked "Unpublish CMS version" and **confirmed the article URL returned 404 afterward**.
 
-**Release gate:** The owner did **not** document a successful visit to the public Preview article URL *before* unpublishing. Therefore the remote publish/unpublish API operation is verified, but end-to-end Preview public-route rendering after publication remains unverified. Test-draft deletion and confirmation of cleanup are also pending. No Production deployment or PR merge is authorized by these tests.
+**Release gate:** The owner did **not** document a successful visit to the public Preview article URL *before* unpublishing. Therefore the remote publish/unpublish API operation is verified, but end-to-end Preview public-route rendering after publication remains unverified. The owner subsequently reported pressing **Delete draft** and confirmed **"Deleted"**. The draft-list removal and Preview D1 deletion have **not** been independently read back; do not mark the cleanup as verified unless a read-only query or reopened dashboard confirms it. No Production deployment or PR merge is authorized by these tests.
 
 ---
 ## Remote mobile Preview 404 under investigation — 13 November 2026
