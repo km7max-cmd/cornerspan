@@ -23,9 +23,24 @@ export default function MediaManager({ onUse }: { onUse: (image: MediaImage, pla
       setMedia(old => [data.media, ...old.filter(m => m.id !== data.media.id)]); setEdit(null); setForm(emptyImage()); setMessage('Image saved to the media library. Articles change only when you select and publish an image.');
     } catch (e) { setMessage(e instanceof Error ? e.message : 'Could not save image'); } finally { setBusy(false); }
   }
+  async function remove(record: MediaRecord) {
+    if (busy || !window.confirm('Delete this image from the media library? Images already used in articles will not change.')) return;
+    setBusy(true);
+    setMessage('');
+    try {
+      const response = await fetch(`/api/admin/media?id=${encodeURIComponent(record.id)}&revision=${record.revision}`, { method: 'DELETE' });
+      const data = await response.json();
+      if (!response.ok) throw Error(data.error || 'Could not delete image');
+      setMedia(old => old.filter(item => item.id !== record.id));
+      if (edit?.id === record.id) { setEdit(null); setForm(emptyImage()); }
+      setMessage('Image removed from the media library. Existing article images were not changed.');
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : 'Could not delete image');
+    } finally { setBusy(false); }
+  }
   return <div className="cms-media-layout"><section className="cms-card"><div className="cms-card-heading"><div><span className="cms-eyebrow">Reusable images</span><h2>Media Library</h2></div><span className="cms-badge">{media.length} images</span></div>
     <label className="cms-field">Search images<input type="search" value={query} onChange={e => setQuery(e.target.value)} placeholder="Title, ALT text or filename"/></label>
-    <div className="cms-media-grid">{media.filter(m => `${m.url} ${m.title} ${m.alt}`.toLowerCase().includes(query.toLowerCase())).map(m => <div className="cms-media-item" key={m.id}><img src={m.url} alt={m.alt} loading="lazy"/><strong>{m.title || m.alt || 'Untitled image'}</strong><p>{m.width && m.height ? `${m.width} × ${m.height}` : 'Dimensions unknown'} · {m.alt ? 'ALT added' : 'Missing ALT'}</p><div className="cms-actions"><button onClick={() => onUse(m, 'featured')}>Set featured</button><button onClick={() => onUse(m, 'inline')}>Insert in article</button><button onClick={() => { setEdit(m); setForm(m); }}>Edit details</button></div></div>)}</div>
+    <div className="cms-media-grid">{media.filter(m => `${m.url} ${m.title} ${m.alt}`.toLowerCase().includes(query.toLowerCase())).map(m => <div className="cms-media-item" key={m.id}><img src={m.url} alt={m.alt} loading="lazy"/><strong>{m.title || m.alt || 'Untitled image'}</strong><p>{m.width && m.height ? `${m.width} × ${m.height}` : 'Dimensions unknown'} · {m.alt ? 'ALT added' : 'Missing ALT'}</p><div className="cms-actions"><button onClick={() => onUse(m, 'featured')}>Set featured</button><button onClick={() => onUse(m, 'inline')}>Insert in article</button><button onClick={() => { setEdit(m); setForm(m); }}>Edit details</button><button className="cms-danger" disabled={busy} onClick={() => remove(m)}>Remove from library</button></div></div>)}</div>
     {!media.length && <div className="cms-empty"><strong>Your image collection starts here</strong><p>Add a hosted image URL, ALT text and source details. Then reuse it in your articles.</p></div>}
   </section><section className="cms-card"><h2>{edit ? 'Edit image details' : 'Add image by URL'}</h2><p className="cms-help">File uploads are unavailable: no verified R2 or other upload storage is configured. Hosted image URLs work now.</p><fieldset disabled={busy}><ImageFields value={form} onChange={setForm} prefix="Library image"/><div className="cms-actions"><button className="cms-primary" onClick={save}>{busy ? 'Saving…' : 'Save image'}</button>{edit && <button onClick={() => { setEdit(null); setForm(emptyImage()); }}>Cancel edit</button>}</div></fieldset>{message && <p role="status" className="cms-notice">{message}</p>}</section></div>;
 }
