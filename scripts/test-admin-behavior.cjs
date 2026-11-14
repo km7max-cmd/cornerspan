@@ -284,7 +284,9 @@ const { samePostContent, initialBodyReplacement } = load("lib/admin-editor-state
 
     const article = calculatorArticles.find(article => blogPosts.some(post => post.slug === article.slug));
     const existing = blogPosts.find(post => post.slug === article.slug);
-    await call(drafts, "POST", { ...draft, slug: article.slug, body: "", seo: undefined, publishedAt: "2099-01-01" });
+    const originalLegacyMetadata = await load("app/blog/[slug]/page.tsx").generateMetadata({ params: Promise.resolve({ slug: article.slug }) });
+    const legacySeo = { ...defaultSeo(), metaTitle: "Metadata-only legacy SEO title", ogTitle: "Metadata-only social title", ogDescription: "Metadata-only updated social description." };
+    await call(drafts, "POST", { ...draft, slug: article.slug, body: "", seo: legacySeo, publishedAt: "2099-01-01" });
     assert.equal((await call(publications, "POST", { ...publish, slug: article.slug, replaceBody: false })).status, 409, "legacy update needs explicit approval");
     const metadataPublish = await call(publications, "POST", { ...publish, slug: article.slug, replaceBody: false, approveLegacyUpdate: true });
     assert.equal(metadataPublish.status, 200);
@@ -292,6 +294,14 @@ const { samePostContent, initialBodyReplacement } = load("lib/admin-editor-state
     assert.equal(override.bodyOverride, false);
     assert.equal(override.body, "");
     assert.equal(override.publishedAt, existing.publishedAt);
+    const updatedLegacyMetadata = await load("app/blog/[slug]/page.tsx").generateMetadata({ params: Promise.resolve({ slug: article.slug }) });
+    assert.deepEqual(normalize(updatedLegacyMetadata.title), { absolute: legacySeo.metaTitle }, "legacy SEO title updated");
+    assert.equal(updatedLegacyMetadata.openGraph.title, legacySeo.ogTitle, "legacy social title updated");
+    assert.equal(updatedLegacyMetadata.openGraph.description, legacySeo.ogDescription, "legacy social description updated");
+    assert.deepEqual(normalize(updatedLegacyMetadata.alternates), normalize(originalLegacyMetadata.alternates), "legacy canonical and alternate URLs preserved");
+    assert.deepEqual(normalize(updatedLegacyMetadata.openGraph.images), normalize(originalLegacyMetadata.openGraph.images), "original legacy social images and ALT preserved");
+    assert.deepEqual(normalize(updatedLegacyMetadata.twitter.images), normalize(originalLegacyMetadata.twitter.images), "original legacy Twitter image preserved");
+    assert.deepEqual(normalize(updatedLegacyMetadata.robots), normalize(originalLegacyMetadata.robots), "original legacy robot directives preserved without an explicit override");
     await call(publications, "DELETE", undefined, "?slug=" + article.slug + "&revision=1");
     assert.deepEqual(normalize(await getPublicBlogPosts()), normalize(blogPosts));
     assert.equal(initialBodyReplacement({ builtIn: true, bodyOverride: false }), false);
