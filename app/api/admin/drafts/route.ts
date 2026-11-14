@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { hasAdminAccess } from "../../../../lib/admin-auth";
 import { draftDatabase, getDraft, listDrafts, upsertDraft } from "../../../../lib/admin-drafts";
 
+import { validateSeo, type SeoSettings } from "../../../../lib/cms-model";
+
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
@@ -49,11 +51,15 @@ export async function POST(request: NextRequest) {
     typeof body !== "string" || body.length > 80000 ||
     typeof expectedRevision !== "number" || !Number.isSafeInteger(expectedRevision) || expectedRevision < 0
   ) return error("Invalid post fields.", 400);
+  if (input.seo !== undefined) {
+    const invalidSeo = validateSeo(input.seo);
+    if (invalidSeo) return error(invalidSeo, 400);
+  }
   // A saved draft never modifies the live post table or the public renderer.
   try {
     const saved = await upsertDraft(db, {
       slug, title: title.trim(), description, category,
-      tags: tags as string[], publishedAt, body,
+      tags: tags as string[], publishedAt, body, seo: input.seo as SeoSettings | undefined,
     }, expectedRevision);
     if (!saved) return error("Draft changed elsewhere. Refresh before saving.", 409);
     return NextResponse.json({ draft: await getDraft(db, slug) }, { headers: noStore });

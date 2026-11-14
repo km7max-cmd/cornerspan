@@ -32,6 +32,7 @@ const repoFiles = new Map();
 function load(relative) {
   let filename = path.resolve(root, relative);
   if (!path.extname(filename)) filename += ".ts";
+  if (!fs.existsSync(filename) && filename.endsWith(".ts")) filename = filename.slice(0, -3) + ".tsx";
   if (repoFiles.has(filename)) return repoFiles.get(filename).exports;
   const mod = { exports: {} };
   repoFiles.set(filename, mod);
@@ -44,6 +45,8 @@ function load(relative) {
     },
   }).outputText;
   function dependency(name) {
+    if (name.endsWith(".css")) return {};
+    if (name === "next/link") return { default: props => React.createElement("a", { href: props.href }, props.children) };
     if (name === "next/navigation") return { useRouter: () => ({ refresh: () => { refreshes++; } }) };
     if (name.startsWith(".")) return load(path.resolve(path.dirname(filename), name));
     return require(name);
@@ -134,6 +137,7 @@ function draftClick() {
 (async () => {
   try {
     const view = render(React.createElement(Editor, { posts: [legacy] }));
+    fireEvent.click(screen.getByRole("button", { name: /Settings/ }));
     await waitFor(() => assert.ok(screen.getByText(/Draft database: Connected/)));
     await waitFor(() => assert.ok(screen.getByText(/Publishing status: Ready/)));
     // One-click test performs a real API-style draft write/read/delete in isolated CI data.
@@ -142,43 +146,56 @@ function draftClick() {
     assert.equal(draftStore.size, 0, "self-test must leave no saved drafts behind");
     assert.ok(requests.some(r => r.url.startsWith("/blog/admin-storage-check-")),
       "self-test must verify private drafts are not publicly readable");
+    fireEvent.click(screen.getByRole("button", { name: /All Posts/ }));
     const search = field("Search posts");
     fireEvent.change(search, { target: { value: "Concrete" } });
     assert.ok(screen.getByRole("button", { name: /Original Concrete Guide/ }));
     fireEvent.change(search, { target: { value: "" } });
 
     fireEvent.click(draftClick());
-    assert.equal(scrollTarget, "post-editor", "mobile selection moves to editor");
-    assert.equal(field("Post title").value, "", "new draft starts empty");
-    fireEvent.change(field("Post title"), { target: { value: "CornerSpan CI Draft" } });
-    fireEvent.change(field("URL slug"), { target: { value: "cornerspan-ci-draft" } });
-    fireEvent.change(field("SEO description"), { target: {
+    assert.ok(document.getElementById("post-editor"), "mobile editor is a dedicated view");
+    assert.equal(field("H1 Article Title").value, "", "new draft starts empty");
+    fireEvent.change(field("H1 Article Title"), { target: { value: "CornerSpan CI Draft" } });
+    fireEvent.change(field("URL Slug"), { target: { value: "cornerspan-ci-draft" } });
+    fireEvent.change(field("SEO Meta Description"), { target: {
       value: "A temporary test article to test the CornerSpan editor client workflows in a CI environment.",
     } });
+    fireEvent.change(field("SEO Meta Title"), { target: { value: "A distinct search title" } });
+    fireEvent.change(field("Focus Keyword"), { target: { value: "editor" } });
+    fireEvent.change(field("Featured image URL"), { target: { value: "/og-image.webp" } });
+    fireEvent.change(field("Featured image ALT text"), { target: { value: "A clear project diagram" } });
     fireEvent.change(field("Tags (comma-separated)"), { target: { value: "testing, mobile," } });
     assert.equal(field("Tags (comma-separated)").value, "testing, mobile,",
       "typing a comma must not remove the delimiter on mobile");
     fireEvent.change(screen.getByRole("textbox", { name: "Article body (Markdown)" }), { target: { value: "## Testing editor\n\nTest draft only." } });
-    fireEvent.click(screen.getByRole("button", { name: "Save D1 draft" }));
+    fireEvent.click(screen.getByRole("button", { name: "Save Draft" }));
     await waitFor(() => assert.ok(screen.getByText(/Saved to D1 database as a draft/)));
     assert.equal(draftStore.get("cornerspan-ci-draft").revision, 1);
     assert.deepEqual(Array.from(draftStore.get("cornerspan-ci-draft").tags), ["testing", "mobile"]);
     assert.equal(draftStore.get("cornerspan-ci-draft").body, "## Testing editor\n\nTest draft only.");
-    assert.ok(screen.getByText(/1 saved drafts/));
-    assert.ok(screen.getByRole("link", { name: "Preview saved draft" }));
+    assert.ok(screen.getByText(/Saved · Revision 1/));
+    assert.ok(screen.getByRole("link", { name: /Preview saved draft/ }));
     assert.equal(legacy.title, "Original Concrete Guide", "original catalog must remain unchanged");
+    assert.equal(draftStore.get("cornerspan-ci-draft").seo.metaTitle, "A distinct search title");
+    fireEvent.click(screen.getByRole("tab", { name: "Live article preview" }));
+    assert.ok(screen.getByRole("navigation", { name: "Table of Contents" }));
+    assert.ok(screen.getByRole("link", { name: "Testing editor" }));
+    assert.ok(screen.getByRole("img", { name: "A clear project diagram" }));
+    fireEvent.click(screen.getByRole("tab", { name: "Content editor" }));
 
     // Reload the component, just as a browser reload would, and verify D1 persistence.
     cleanup();
     render(React.createElement(Editor, { posts: [legacy] }));
     await waitFor(() => assert.ok(screen.getByText(/1 saved drafts/)));
     fireEvent.click(screen.getByRole("button", { name: /CornerSpan CI Draft/ }));
-    assert.equal(field("Post title").value, "CornerSpan CI Draft");
-    assert.equal(scrollTarget, "post-editor");
+    assert.equal(field("H1 Article Title").value, "CornerSpan CI Draft");
+    assert.equal(field("SEO Meta Title").value, "A distinct search title");
+    assert.equal(field("Featured image ALT text").value, "A clear project diagram");
+    assert.ok(document.getElementById("post-editor"));
 
     // Test update revision and then mock publication; only fake CI data is written.
-    fireEvent.change(field("Post title"), { target: { value: "Updated CornerSpan CI Draft" } });
-    fireEvent.click(screen.getByRole("button", { name: "Save D1 draft" }));
+    fireEvent.change(field("H1 Article Title"), { target: { value: "Updated CornerSpan CI Draft" } });
+    fireEvent.click(screen.getByRole("button", { name: "Save Draft" }));
     await waitFor(() => assert.equal(draftStore.get("cornerspan-ci-draft").revision, 2));
     assert.equal(draftStore.get("cornerspan-ci-draft").title, "Updated CornerSpan CI Draft");
 

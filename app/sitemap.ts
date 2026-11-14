@@ -7,7 +7,7 @@ import { calculators, guideRoutes } from "../data/calculators";
 const BASE_URL = "https://www.cornerspan.com";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const blogPosts = await getPublicBlogPosts();
+  const blogPosts = await getPublicBlogPosts({ forSitemap: true });
   const calculatorRoutes = calculators.map(
     (calculator) => calculator.href
   );

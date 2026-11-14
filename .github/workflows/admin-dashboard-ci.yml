@@ -27,6 +27,8 @@ jobs:
         run: python3 scripts/test-admin-migrations.py
       - name: Verify password sessions and D1 publication safeguards
         run: node scripts/test-admin-behavior.cjs
+      - name: Preserve 21 legacy metadata outputs and calculator source
+        run: node scripts/test-legacy-preservation.cjs
       - name: Browser-like React editor workflow tests
         run: node scripts/test-admin-editor-ui.cjs
       - name: TypeScript check

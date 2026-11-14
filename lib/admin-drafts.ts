@@ -1,6 +1,9 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 
+import { readSeo, type SeoSettings } from "./cms-model";
+
 export type DraftRecord = {
+  seo?: SeoSettings;
   slug: string;
   title: string;
   description: string;
@@ -15,7 +18,7 @@ export type DraftRecord = {
 type Row = {
   slug: string; title: string; description: string; category: string;
   tags_json: string; published_at: string; body: string;
-  updated_at: string; revision: number;
+  updated_at: string; revision: number; seo_json?: string;
 };
 type D1Stmt = {
   bind: (...values: (string | number | null)[]) => D1Stmt;
@@ -43,7 +46,7 @@ export function fromRow(row: Row): DraftRecord {
   return {
     slug: row.slug, title: row.title, description: row.description,
     category: row.category, tags, publishedAt: row.published_at,
-    body: row.body, updatedAt: row.updated_at, revision: row.revision,
+    seo: readSeo(row.seo_json), body: row.body, updatedAt: row.updated_at, revision: row.revision,
   };
 }
 export async function listDrafts(db: D1Db): Promise<DraftRecord[]> {
@@ -60,16 +63,16 @@ export async function getDraft(db: D1Db, slug: string): Promise<DraftRecord | nu
 export async function upsertDraft(db: D1Db, draft: Omit<DraftRecord, "updatedAt" | "revision">, expectedRevision: number): Promise<boolean> {
   const fields: (string | number)[] = [
     draft.title, draft.description, draft.category,
-    JSON.stringify(draft.tags), draft.publishedAt, draft.body,
+    JSON.stringify(draft.tags), draft.publishedAt, draft.body, JSON.stringify(draft.seo || {}),
   ];
   // Insert-only for a new draft; conditional update for an existing revision.
   // Never overwrite another editor's newer revision.
   const result = expectedRevision === 0
     ? await db.prepare(`INSERT OR IGNORE INTO admin_post_drafts
-        (slug, title, description, category, tags_json, published_at, body)
-        VALUES (?, ?, ?, ?, ?, ?, ?)`).bind(draft.slug, ...fields).run()
+        (slug, title, description, category, tags_json, published_at, body, seo_json)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)`).bind(draft.slug, ...fields).run()
     : await db.prepare(`UPDATE admin_post_drafts
-        SET title=?, description=?, category=?, tags_json=?, published_at=?, body=?,
+        SET title=?, description=?, category=?, tags_json=?, published_at=?, body=?, seo_json=?,
           revision=revision+1, updated_at=strftime('%Y-%m-%dT%H:%M:%fZ','now')
         WHERE slug=? AND revision=?`).bind(...fields, draft.slug, expectedRevision).run();
   return Boolean(result.success && (result.meta?.changes ?? 0) > 0);

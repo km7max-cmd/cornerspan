@@ -58,7 +58,7 @@ function load(relative) {
     return require(name);
   }
   vm.runInNewContext("(function(require,module,exports){" + code + "\n})", {
-    console, TextDecoder, TextEncoder, Uint8Array, atob, btoa,
+    console, URL, TextDecoder, TextEncoder, Uint8Array, atob, btoa,
     crypto: webcrypto,
   }, { filename })(dependency, module, module.exports);
   return module.exports;
@@ -71,6 +71,7 @@ const {
 const login = load("app/api/admin/login/route.ts");
 const logout = load("app/api/admin/logout/route.ts");
 const drafts = load("app/api/admin/drafts/route.ts");
+const media = load("app/api/admin/media/route.ts");
 const publications = load("app/api/admin/publish/route.ts");
 const { getPublicBlogPosts, findPublishedPost } = load("lib/published-posts.ts");
 const { blogPosts } = load("data/blog.ts");
@@ -162,9 +163,39 @@ const { samePostContent, initialBodyReplacement } = load("lib/admin-editor-state
       description: "A controlled preview article used to verify secure drafts, publication conflicts, and unchanged existing CornerSpan content.",
       category: "Construction", tags: ["preview-test"], publishedAt: "2026-11-09",
       body: "## Test section\n\n" + "A useful measurement example for a controlled draft. ".repeat(40), expectedRevision: 0 };
+    const { defaultSeo, validateSeo, emptyImage } = load("lib/cms-model.ts");
+    const { analyzeSeo } = load("lib/seo-analysis.ts");
+    const { parseMarkdown, contentsFor } = load("lib/cms-markdown.ts");
+    const { cmsMetadata } = load("lib/cms-metadata.ts");
+    const CmsArticle = load("components/blog/CmsArticle.tsx").default;
+    draft.seo = { ...defaultSeo(), metaTitle: "Concrete planning: an independent SEO title", focusKeyword: "concrete planning",
+      secondaryKeywords: ["measurement example"], canonicalUrl: "https://www.cornerspan.com/blog/private-preview-test",
+      noindex: true, nofollow: true, ogTitle: "Social construction title", ogDescription: "Social summary with a useful worked example.",
+      featuredImage: { ...emptyImage(), url: "/og-image.webp", alt: "A project measurement diagram", title: "Measurement diagram", caption: "Measure twice", sourceUrl: "https://example.com/source", linkUrl: "/calculators/concrete", width: 1200, height: 630 } };
+    draft.body += "\n\n### Measurement details\n\nRead the [concrete calculator](/calculators/concrete) and [reference](https://example.com/reference).\n\n![Measured slab](/og-image.webp)\n\n| Size | Units |\n| --- | --- |\n| 12 | feet |";
+    for (const url of ["javascript:alert(1)", "//evil.test/x", "/\\evil.test/x", "data:image/svg+xml,bad"]) {
+      assert.ok(validateSeo({ ...draft.seo, featuredImage: { ...draft.seo.featuredImage, url } }), "unsafe image URL rejected");
+      assert.equal((await call(drafts, "POST", { ...draft, seo: { ...draft.seo, ogImage: url } })).status, 400);
+    }
+    const headingBlocks = parseMarkdown("# Accidental H1\n\n## Repeat\n\n### Repeat\n\n## Repeat-2\n\n```md\n## Not a heading\n```\n\n<script>alert(1)</script>\n\n[unsafe](javascript:alert) ");
+    const ids = headingBlocks.filter(b => b.id).map(b => b.id);
+    assert.equal(new Set(ids).size, ids.length, "collision-free stable heading anchors");
+    assert.equal(contentsFor(headingBlocks).length, 3, "TOC ignores code and H1");
+    const unsafeHtml = renderToStaticMarkup(React.createElement(CmsArticle, { post: { ...draft, body: "# Accident\n\n<script>alert(1)</script>\n\n[bad](javascript:alert)" } }));
+    assert.equal((unsafeHtml.match(/<h1[ >]/g) || []).length, 1, "public article has exactly one H1");
+    assert.doesNotMatch(unsafeHtml, /href="javascript:|<script>alert/, "raw markup and unsafe links cannot execute");
+    const report = analyzeSeo(draft, [{ ...draft, slug: "duplicate" }]);
+    assert.ok(report.score >= 0 && report.score <= 100);
+    assert.equal(report.checks.find(c => c.id === "unique-meta").status, "WARNING");
+    assert.equal(report.checks.find(c => c.id === "alt").status, "PASS");
+    assert.equal(report.checks.find(c => c.id === "internal").status, "PASS");
+    assert.equal(report.checks.find(c => c.id === "external").status, "PASS");
+    assert.equal(analyzeSeo({ ...draft, body: "## Title\n\n![](/og-image.webp)" }).checks.find(c => c.id === "alt").status, "FAIL");
+    assert.equal(analyzeSeo({ ...draft, body: "# Wrong\n\n#### Skipped" }).checks.find(c => c.id === "hierarchy").status, "FAIL");
     let saved = await call(drafts, "POST", draft);
     assert.equal(saved.status, 200);
     assert.equal(saved.data.draft.revision, 1);
+    assert.deepEqual(normalize(saved.data.draft.seo), normalize(draft.seo), "all SEO/media fields survive D1 serialization");
     assert.equal(saved.headers.get("cache-control"), "no-store");
     assert.equal(await findPublishedPost(draft.slug), null);
     assert.deepEqual(normalize(await getPublicBlogPosts()), normalize(blogPosts));
@@ -185,6 +216,29 @@ const { samePostContent, initialBodyReplacement } = load("lib/admin-editor-state
     assert.match(publishedHtml, /A useful measurement example/, "public CMS route renders saved body");
     assert.doesNotMatch(publishedHtml, /Private draft preview/, "public CMS page is not marked private");
 
+    assert.match(publishedHtml, /aria-label="Table of Contents"/);
+    assert.match(publishedHtml, /href="#measurement-details"/);
+    assert.match(publishedHtml, /id="measurement-details"/);
+    assert.match(publishedHtml, /alt="A project measurement diagram"/);
+    assert.match(publishedHtml, /width="1200" height="630"/);
+    assert.match(publishedHtml, /Measure twice/);
+    assert.match(publishedHtml, /<table/);
+    const loadedPost = await findPublishedPost(draft.slug);
+    const metadata = await load("app/blog/[slug]/page.tsx").generateMetadata({ params: Promise.resolve({ slug: draft.slug }) });
+    assert.deepEqual(normalize(metadata.title), { absolute: draft.seo.metaTitle });
+    assert.equal(metadata.alternates.canonical, draft.seo.canonicalUrl);
+    assert.equal(metadata.robots.index, false);
+    assert.equal(metadata.robots.follow, false);
+    assert.equal(metadata.openGraph.title, draft.seo.ogTitle);
+    assert.equal(metadata.twitter.title, draft.seo.ogTitle);
+    assert.equal(metadata.openGraph.images[0].url, "https://www.cornerspan.com/og-image.webp");
+    const schema = JSON.parse(publishedHtml.match(/<script type="application\/ld\+json">(.*?)<\/script>/s)[1]);
+    assert.equal(schema.headline, draft.title);
+    assert.equal(schema.mainEntityOfPage, draft.seo.canonicalUrl);
+    assert.equal(schema.image[0], "https://www.cornerspan.com/og-image.webp");
+    const toggled = renderToStaticMarkup(React.createElement(CmsArticle, { post: { ...loadedPost, seo: { ...loadedPost.seo, tocEnabled: false, schemaEnabled: false } } }));
+    assert.doesNotMatch(toggled, /aria-label="Table of Contents"|application\/ld\+json/);
+    assert.equal((await getPublicBlogPosts({ forSitemap: true })).some(p => p.slug === draft.slug), false, "noindex is excluded from sitemap");
     assert.equal((await getPublicBlogPosts()).length, blogPosts.length + 1);
     assert.equal((await call(publications, "POST", publish)).status, 409);
     saved = await call(drafts, "POST", { ...draft, title: "Updated draft", expectedRevision: 1 });
@@ -230,8 +284,9 @@ const { samePostContent, initialBodyReplacement } = load("lib/admin-editor-state
 
     const article = calculatorArticles.find(article => blogPosts.some(post => post.slug === article.slug));
     const existing = blogPosts.find(post => post.slug === article.slug);
-    await call(drafts, "POST", { ...draft, slug: article.slug, body: "", publishedAt: "2099-01-01" });
-    const metadataPublish = await call(publications, "POST", { ...publish, slug: article.slug, replaceBody: false });
+    await call(drafts, "POST", { ...draft, slug: article.slug, body: "", seo: undefined, publishedAt: "2099-01-01" });
+    assert.equal((await call(publications, "POST", { ...publish, slug: article.slug, replaceBody: false })).status, 409, "legacy update needs explicit approval");
+    const metadataPublish = await call(publications, "POST", { ...publish, slug: article.slug, replaceBody: false, approveLegacyUpdate: true });
     assert.equal(metadataPublish.status, 200);
     const override = await findPublishedPost(article.slug);
     assert.equal(override.bodyOverride, false);
@@ -245,6 +300,19 @@ const { samePostContent, initialBodyReplacement } = load("lib/admin-editor-state
     assert.equal(initialBodyReplacement(), true);
     assert.equal(samePostContent(draft, { ...draft, updatedAt: "ignored", revision: 8 }), true);
     assert.equal(samePostContent(draft, { ...draft, body: draft.body + " unsaved" }), false);
-    console.log("PASS original content/URLs/dates, metadata-only overrides, CMS body reopening and unsaved edits");
+    assert.equal(samePostContent(draft, { ...draft, seo: { ...draft.seo, metaTitle: "Unsaved SEO title" } }), false);
+    assert.equal((await call(media, "GET", undefined, "", { cookie: "forged" })).status, 401);
+    assert.equal((await call(media, "POST", {}, "", { origin: "https://evil.example.test" })).status, 403);
+    assert.equal((await call(media, "POST", { image: { ...emptyImage(), url: "javascript:evil" }, expectedRevision: 0 })).status, 400);
+    const imageSaved = await call(media, "POST", { image: draft.seo.featuredImage, expectedRevision: 0 });
+    assert.equal(imageSaved.status, 200, JSON.stringify(imageSaved.data));
+    assert.equal((await call(media, "GET")).data.media[0].alt, draft.seo.featuredImage.alt);
+    const imageUpdate = { image: { ...draft.seo.featuredImage, alt: "New description" }, id: imageSaved.data.media.id, expectedRevision: 1 };
+    assert.equal((await call(media, "POST", imageUpdate)).status, 200);
+    assert.equal((await call(media, "POST", imageUpdate)).status, 409);
+    assert.equal((await call(media, "GET")).data.uploadAvailable, false);
+    console.log("PASS original content/URLs/dates, explicit legacy approval, metadata-only overrides, CMS body reopening and unsaved SEO edits");
+    console.log("PASS SEO field persistence, real public metadata, robots/sitemap, social image, Article schema, linked featured image, TOC, tables and safe Markdown");
+    console.log("PASS persistent URL media library, CSRF/auth checks, unsafe URL rejection and revision conflicts");
   } finally { sql.close(); }
 })().catch(error => { console.error(error); process.exitCode = 1; });

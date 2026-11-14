@@ -14,7 +14,7 @@ function validOrigin(request: NextRequest): boolean {
   const origin = request.headers.get("origin");
   return Boolean(origin && origin === request.nextUrl.origin);
 }
-type PublishInput = { slug?: unknown; revision?: unknown; replaceBody?: unknown; expectedPublicationRevision?: unknown };
+type PublishInput = { slug?: unknown; revision?: unknown; replaceBody?: unknown; expectedPublicationRevision?: unknown; approveLegacyUpdate?: unknown };
 export async function GET() {
   if (!(await hasAdminAccess())) return fail("Unauthorized", 401);
   if (!draftDatabase()) return fail("Database not configured", 503);
@@ -47,7 +47,10 @@ export async function POST(request: NextRequest) {
     const draft = await getDraft(db, input.slug);
     if (!draft) return fail("Save the draft first.", 404);
     if (draft.revision !== input.revision) return fail("Draft changed. Reload it before publishing.", 409);
+    if (draft.seo?.bodyReplacement !== undefined && draft.seo.bodyReplacement !== input.replaceBody) return fail("Article replacement mode changed. Save and preview it before publishing.", 409);
     const legacy = blogPosts.find(post => post.slug === input.slug);
+    if (legacy && input.approveLegacyUpdate !== true) return fail("Existing articles are protected. Explicitly approve this article update first.", 409);
+    if (legacy && !input.replaceBody && draft.seo && (draft.seo.featuredImage.url || draft.seo.tocEnabled === false || draft.seo.schemaEnabled === false || Boolean(draft.seo.canonicalUrl))) return fail("Image, TOC and schema changes require a complete article replacement for legacy posts.", 422);
     const current = await db.prepare("SELECT slug, published_at, revision FROM admin_published_posts WHERE slug=?")
       .bind(input.slug).first<{slug:string;published_at:string;revision:number}>();
     if ((current?.revision ?? 0) !== input.expectedPublicationRevision)
@@ -61,15 +64,15 @@ export async function POST(request: NextRequest) {
     // Existing built-in articles retain their original rendering unless explicitly replaced.
     const bodyOverride = !legacy || input.replaceBody;
     const result = await db.prepare(`INSERT INTO admin_published_posts
-      (slug,title,description,category,tags_json,published_at,body_markdown,body_override)
-      SELECT slug,title,description,category,tags_json,?,CASE WHEN ? THEN body ELSE '' END,?
+      (slug,title,description,category,tags_json,published_at,body_markdown,body_override,seo_json)
+      SELECT slug,title,description,category,tags_json,?,CASE WHEN ? THEN body ELSE '' END,?,seo_json
       FROM admin_post_drafts
       WHERE slug=? AND revision=?
         AND COALESCE((SELECT revision FROM admin_published_posts WHERE slug=admin_post_drafts.slug),0)=?
       ON CONFLICT(slug) DO UPDATE SET
         title=excluded.title,description=excluded.description,category=excluded.category,
         tags_json=excluded.tags_json,body_markdown=excluded.body_markdown,
-        body_override=excluded.body_override,
+        body_override=excluded.body_override,seo_json=excluded.seo_json,
         modified_at=strftime('%Y-%m-%dT%H:%M:%fZ','now'),revision=revision+1`)
       .bind(publishedAt, bodyOverride ? 1 : 0, bodyOverride ? 1 : 0,
         input.slug, input.revision, input.expectedPublicationRevision)

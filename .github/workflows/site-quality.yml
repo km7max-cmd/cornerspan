@@ -49,13 +49,15 @@ jobs:
         run: |
           npm install --no-save --no-audit --no-fund playwright@1.56.1
           npx playwright install --with-deps chromium
+      - name: Test redesigned admin on desktop and Android (isolated fixture)
+        run: node scripts/qa-admin-mobile.cjs
       - name: Test mobile pages and interactive calculator examples
         run: node scripts/qa-mobile.cjs
-      - name: Upload mobile failure screenshots
-        if: failure()
+      - name: Upload browser QA screenshots
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: qa-mobile-failure-screenshots
+          name: qa-browser-screenshots
           path: qa-artifacts/*.png
           if-no-files-found: ignore
       - name: Print production server errors

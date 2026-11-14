@@ -1,3 +1,13 @@
+## Advanced SEO redesign — 14 November 2026
+
+The feature branch now includes the SEO Content Studio implementation and additive migration `0004_admin_seo_media.sql`. See [SEO Content Studio](seo-content-studio.md) for field behavior, test coverage, Preview migration/acceptance, limitations and rollback steps.
+
+Local migration, signed-session/API, React editor, TypeScript and legacy-preservation checks passed. The snapshot verifies all 21 legacy metadata outputs and 84 protected article/calculator files. A local desktop browser inspection verified the editor, live analysis, draft save and TOC preview with explicitly simulated storage. Check GitHub CI and the Cloudflare deployment comment for the final commit; do not confuse this local evidence with a fresh remote acceptance test.
+
+**Current gate: HOLD / NO MERGE / NO PRODUCTION DEPLOY.** This session's GitHub integration can write the feature branch, but the browser reaches GitHub sign-in for Codespaces. The authenticated Codespace was not available here. Production version `da4e7677`, current secret names/bindings, rollback readiness, and remote Preview migration/acceptance have not been freshly reconfirmed. Existing historical entries below remain historical observations.
+
+---
+
 ## Autonomous release audit — 14 November 2026
 
 The owner asked to handle further checks without additional Cloudflare screenshots or repeated manual steps.

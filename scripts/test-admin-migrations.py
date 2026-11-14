@@ -16,19 +16,18 @@ assert "ADMIN_DB" in prod and "ADMIN_DB" in preview
 assert prod["ADMIN_DB"] != preview["ADMIN_DB"], "Preview must not write to Production D1"
 
 db = sqlite3.connect(":memory:")
-for path in sorted(Path("migrations").glob("*.sql")):
-    db.executescript(path.read_text(encoding="utf-8"))
-    print("Applied:", path)
-
-tables = {row[0] for row in db.execute(
-    "SELECT name FROM sqlite_master WHERE type='table'"
-)}
-expected_tables = {"admin_post_drafts", "admin_published_posts", "admin_login_attempts"}
-assert expected_tables <= tables, f"Missing D1 tables: {expected_tables - tables}"
-
-# Reapplying migrations during deployment must be safe: no drops or duplicate errors.
-for path in sorted(Path("migrations").glob("*.sql")):
-    db.executescript(path.read_text(encoding="utf-8"))
+# Mirror the once-only migration ledger: CREATE migrations are repeatable; ALTER is applied once.
+db.execute("CREATE TABLE d1_migrations (name TEXT PRIMARY KEY)")
+def apply_pending():
+    for path in sorted(Path("migrations").glob("*.sql")):
+        if db.execute("SELECT 1 FROM d1_migrations WHERE name=?", (path.name,)).fetchone():
+            continue
+        db.executescript(path.read_text(encoding="utf-8"))
+        db.execute("INSERT INTO d1_migrations VALUES (?)", (path.name,))
+        print("Applied:", path)
+apply_pending()
+expected_tables = {"admin_post_drafts", "admin_published_posts", "admin_login_attempts", "admin_media"}
+apply_pending() # no duplicate ALTER, no resets or deletions
 assert expected_tables <= {
     row[0] for row in db.execute("SELECT name FROM sqlite_master WHERE type='table'")
 }
@@ -65,3 +64,16 @@ db.execute("""INSERT INTO admin_published_posts
    "2026-11-09","## Article",1))
 assert db.execute("SELECT count(*) FROM admin_published_posts").fetchone()[0] == 1
 print("D1 migrations, login limiter and revision-conflict semantics passed.")
+
+# Upgrade an existing pre-SEO database with real rows, retaining every old column and value.
+legacy = sqlite3.connect(":memory:")
+for path in sorted(Path("migrations").glob("000[123]_*.sql")):
+    legacy.executescript(path.read_text())
+legacy.execute("INSERT INTO admin_post_drafts (slug,title,body,revision) VALUES ('keep-me','Original','Do not replace',7)")
+legacy.execute("INSERT INTO admin_published_posts (slug,title,category,published_at,revision) VALUES ('keep-me','Original','Construction','2026-01-01',3)")
+old_draft = legacy.execute("SELECT * FROM admin_post_drafts").fetchone()
+old_post = legacy.execute("SELECT * FROM admin_published_posts").fetchone()
+legacy.executescript(Path("migrations/0004_admin_seo_media.sql").read_text())
+assert legacy.execute("SELECT * FROM admin_post_drafts").fetchone() == old_draft + ('{}',)
+assert legacy.execute("SELECT * FROM admin_published_posts").fetchone() == old_post + ('{}',)
+print("PASS additive SEO upgrade preserves existing draft/publication records and revisions")

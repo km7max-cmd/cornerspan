@@ -1,3 +1,4 @@
+import { cmsMetadata } from "../../../lib/cms-metadata";
 import { articleImages } from "../../../data/article-images";
 import { findPublishedPost } from "../../../lib/published-posts";
 import CmsArticle from "../../../components/blog/CmsArticle";
@@ -25,18 +26,7 @@ export async function generateMetadata({
   const published = await findPublishedPost(slug);
   const post = blogPosts.find((item) => item.slug === slug);
 
-  if (published) {
-    const url = `https://www.cornerspan.com/blog/${slug}`;
-    return {
-      title: published.title,
-      description: published.description,
-      alternates: { canonical: url },
-      openGraph: { title: published.title, description: published.description, type: "article", url,
-        publishedTime: published.publishedAt, modifiedTime: published.modifiedAt, locale: "en_US" },
-      twitter: { card: "summary_large_image", title: published.title, description: published.description },
-      robots: { index: true, follow: true },
-    };
-  }
+  if (published) return cmsMetadata(published);
 
   if (!post) {
     return {};

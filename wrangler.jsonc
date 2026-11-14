@@ -27,7 +27,10 @@
         "database_name": "cornerspan-admin-preview",
         "database_id": "971ff2ce-5283-4df7-9ee4-a0deb0d558f9"
       }
-    ]
+    ],
+    "vars": {
+      "CMS_ENVIRONMENT": "preview"
+    }
   },
   "secrets": {
     "required": [

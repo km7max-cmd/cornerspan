@@ -34,6 +34,8 @@ async function waitUntilReady() {
       ["/admin/preview/any-test-slug", {}, 307],
       ["/api/admin/drafts", {}, 401],
       ["/api/admin/publish", {}, 401],
+      ["/api/admin/media", {}, 401],
+      ["/api/admin/media", { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" }, 401],
       ["/api/admin/login", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ password: "irrelevant" }) }, 403],
       ["/api/admin/logout", { method: "POST" }, 403],
       ["/api/admin/drafts", { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" }, 401],

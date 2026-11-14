@@ -1,7 +1,10 @@
 import { blogPosts, type BlogPost } from "../data/blog";
 import { draftDatabase, type DraftRecord } from "./admin-drafts";
 
+import { readSeo, canonicalFor, SITE_URL, type SeoSettings } from "./cms-model";
+
 export type PublishedPost = {
+  seo?: SeoSettings;
   slug: string; title: string; description: string; category: string;
   tags: string[]; publishedAt: string; modifiedAt: string;
   body: string; bodyOverride: boolean; revision: number;
@@ -9,7 +12,7 @@ export type PublishedPost = {
 type PublicationRow = {
   slug: string; title: string; description: string; category: string;
   tags_json: string; published_at: string; modified_at: string;
-  body_markdown: string; body_override: number; revision: number;
+  body_markdown: string; body_override: number; revision: number; seo_json?: string;
 };
 function mapRow(row: PublicationRow): PublishedPost {
   let tags: string[] = [];
@@ -20,7 +23,7 @@ function mapRow(row: PublicationRow): PublishedPost {
   return {
     slug: row.slug, title: row.title, description: row.description,
     category: row.category, tags, publishedAt: row.published_at,
-    modifiedAt: row.modified_at, body: row.body_markdown,
+    seo: readSeo(row.seo_json), modifiedAt: row.modified_at, body: row.body_markdown,
     bodyOverride: row.body_override === 1, revision: row.revision,
   };
 }
@@ -47,7 +50,7 @@ export async function listPublishedPosts(): Promise<PublishedPost[]> {
     return [];
   }
 }
-export async function getPublicBlogPosts(): Promise<BlogPost[]> {
+export async function getPublicBlogPosts(options: { forSitemap?: boolean } = {}): Promise<BlogPost[]> {
   const published = await listPublishedPosts();
   const merged = new Map(blogPosts.map(post => [post.slug, post]));
   for (const post of published) {
@@ -60,16 +63,20 @@ export async function getPublicBlogPosts(): Promise<BlogPost[]> {
       calculatorHref: previous?.calculatorHref || "/calculators",
     });
   }
-  return [...merged.values()];
+  return [...merged.values()].filter(post => {
+    if (!options.forSitemap) return true;
+    const publication = published.find(p => p.slug === post.slug);
+    return !publication || (!publication.seo?.noindex && canonicalFor(publication).replace(/\/$/, "") === `${SITE_URL}/blog/${post.slug}`);
+  });
 }
 export function canPublishDraft(draft: DraftRecord, alreadyPublished: boolean, existingArticle: boolean, replaceBody: boolean): string | null {
   if (!draft.title.trim() || draft.title.length > 160) return "A valid title is required.";
-  if (draft.description.length < 70 || draft.description.length > 170) return "SEO description should be 70–170 characters.";
+  if (!draft.description.trim()) return "Add a meta description before publishing.";
   if (!draft.category.trim()) return "Category is required.";
   // Empty body is acceptable only when publishing metadata-only changes to a legacy article.
   if (!existingArticle || replaceBody) {
     const words = draft.body.trim().split(/\s+/).filter(Boolean).length;
-    if (words < 300) return "Write at least 300 words before publishing a new or replacement article.";
+    if (words === 0) return "Write article content before publishing.";
     if (!/^#{1,4} +\S/m.test(draft.body)) return "Use at least one Markdown section heading.";
   }
   // Avoid deleting published content with a metadata-only update for CMS-native posts.

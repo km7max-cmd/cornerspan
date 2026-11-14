@@ -1,10 +1,12 @@
+import { getCloudflareContext } from "@opennextjs/cloudflare";
+import { defaultSeo } from "../../lib/cms-model";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { blogPosts } from "../../data/blog";
 import { calculatorArticles, type CalculatorArticle } from "../../data/calculator-articles";
 import { hasAdminAccess } from "../../lib/admin-auth";
 import { listPublishedPosts } from "../../lib/published-posts";
-import AdminPostEditor from "./post-editor";
+import AdminPostEditor, { type Post } from "./post-editor";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
@@ -51,9 +53,10 @@ export default async function AdminPage() {
       slug, title, description, category, tags, publishedAt,
       body: article ? articleToMarkdown(article) : "",
       builtIn: true, bodyOverride: false,
+      seo: { ...defaultSeo(), metaTitle: article?.seoTitle || title },
     };
   });
-  const posts = new Map(catalog.map(post => [post.slug, post]));
+  const posts = new Map<string, Post>(catalog.map(post => [post.slug, post]));
   for (const published of await listPublishedPosts()) {
     const old = posts.get(published.slug);
     posts.set(published.slug, {
@@ -63,9 +66,14 @@ export default async function AdminPage() {
       category: published.category,
       tags: published.tags,
       publishedAt: old?.publishedAt || published.publishedAt,
-      body: published.bodyOverride ? published.body : (old?.body || ""),
+      seo: published.seo, body: published.bodyOverride ? published.body : (old?.body || ""),
       builtIn: old?.builtIn ?? false, bodyOverride: published.bodyOverride,
     });
   }
-  return <AdminPostEditor posts={[...posts.values()]} />;
+  let environment = "Environment not verified";
+  try {
+    const env = getCloudflareContext().env as unknown as Record<string, unknown>;
+    if (env.CMS_ENVIRONMENT === "preview") environment = "Isolated Preview";
+  } catch { /* authentication still fails closed without a runtime */ }
+  return <AdminPostEditor posts={[...posts.values()]} environment={environment} />;
 }
