@@ -1,4 +1,4 @@
-import { cmsMetadata } from "../../../lib/cms-metadata";
+import { cmsMetadata, legacyCmsMetadata } from "../../../lib/cms-metadata";
 import { articleImages } from "../../../data/article-images";
 import { findPublishedPost } from "../../../lib/published-posts";
 import CmsArticle from "../../../components/blog/CmsArticle";
@@ -26,7 +26,8 @@ export async function generateMetadata({
   const published = await findPublishedPost(slug);
   const post = blogPosts.find((item) => item.slug === slug);
 
-  if (published) return cmsMetadata(published);
+  if (published?.bodyOverride) return cmsMetadata(published);
+  const preserveLegacyMetadata = (metadata: Metadata) => published ? legacyCmsMetadata(metadata, published) : metadata;
 
   if (!post) {
     return {};
@@ -37,13 +38,13 @@ export async function generateMetadata({
     const illustration = articleImages[`/blog/${slug}`];
     const image = illustration?.social ?? (article.image && !article.image.endsWith(".svg") ? article.image : "/og-image.webp");
     const seoTitle = article.seoTitle ?? article.title;
-    return {
+    return preserveLegacyMetadata({
       title:seoTitle, description:article.description,
       alternates:{canonical:`/blog/${slug}`},
       openGraph:{title:seoTitle, description:article.description, type:"article", url:`https://www.cornerspan.com/blog/${slug}`, locale:"en_US", publishedTime:article.publishedAt, modifiedTime:article.modifiedAt, images:[{url:image,alt:illustration?.alt ?? article.imageAlt ?? article.title}]},
       twitter:{card:"summary_large_image",title:seoTitle,description:article.description,images:[image]},
       robots:{index:true,follow:true,googleBot:{index:true,follow:true,"max-image-preview":"large"}},
-    };
+    });
   }
 
 
@@ -54,7 +55,7 @@ export async function generateMetadata({
     const imageUrl =
       "https://www.cornerspan.com/trapezoid-area-guide.webp";
 
-    return {
+    return preserveLegacyMetadata({
       title: "How to Calculate the Area of a Trapezoid",
       description:
         "Learn the trapezoid area formula with step-by-step examples in square feet and square meters, a calculation table, and practical measurement tips.",
@@ -105,7 +106,7 @@ export async function generateMetadata({
           "max-image-preview": "large",
         },
       },
-    };
+    });
   }
 
 
@@ -113,7 +114,7 @@ export async function generateMetadata({
    * Other blog posts
    */
   const illustration = articleImages[`/blog/${slug}`];
-  return {
+  return preserveLegacyMetadata({
     title: post.title,
     description: post.description,
     alternates: {
@@ -135,7 +136,7 @@ export async function generateMetadata({
       index: true,
       follow: true,
     },
-  };
+  });
 }
 
 export default async function BlogPostPage({ params }: Props) {
