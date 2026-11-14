@@ -1,3 +1,17 @@
+## Owner-confirmed Cloudflare Preview cleanup — 14 November 2026
+
+The owner supplied an Android screenshot from the Cloudflare branch Preview Admin dashboard, after unpublishing and deleting `preview-cms-test-20261113`. It clearly shows:
+
+- **21 existing posts · 0 saved drafts**
+- **Draft database: Connected**
+- **Publishing status: Ready**
+- Search for `preview-cms-test-20261113` → **No matching posts**
+
+This is direct UI evidence that the test draft has disappeared from the Preview editor's D1-backed list and the CMS publication has disappeared from its displayed catalog. The owner previously verified the Preview public article returned 404 *after* unpublication. The public Preview URL being accessible while the post was published was **not captured separately**, although automated integration tests exercise rendering then 404. The Preview database has not been independently queried through Wrangler after cleanup.
+
+**Production release status:** PR #4 remains draft/unmerged; no production deployment authorized. Before production release, compare live Worker version/code lineage against branch, verify release rollback and bindings, and obtain explicit owner approval.
+
+---
 ## Owner-verified remote Preview workflow — 14 November 2026
 
 The owner supplied screenshots of the latest Cloudflare branch Preview dashboard and confirmed:
