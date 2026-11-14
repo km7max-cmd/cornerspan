@@ -168,6 +168,7 @@ const { samePostContent, initialBodyReplacement } = load("lib/admin-editor-state
     assert.equal(published.status, 200, JSON.stringify(published.data));
     assert.equal(published.data.revision, 1);
     assert.equal((await findPublishedPost(draft.slug)).body, draft.body);
+    assert.equal((await findPublishedPost(draft.slug)).bodyOverride, true, "new CMS posts must render their saved Markdown body");
     assert.equal((await getPublicBlogPosts()).length, blogPosts.length + 1);
     assert.equal((await call(publications, "POST", publish)).status, 409);
     saved = await call(drafts, "POST", { ...draft, title: "Updated draft", expectedRevision: 1 });
@@ -199,7 +200,11 @@ const { samePostContent, initialBodyReplacement } = load("lib/admin-editor-state
     assert.equal((await call(drafts, "DELETE", undefined, "?slug=" + draft.slug + "&revision=2")).status, 409);
     assert.equal((await call(drafts, "DELETE", undefined, "?slug=" + draft.slug + "&revision=3")).status, 200);
     assert.deepEqual(normalize(await getPublicBlogPosts()), normalize(blogPosts));
+    assert.equal(await findPublishedPost(draft.slug), null, "unpublished test content must not remain public");
+    assert.equal((await call(drafts, "GET")).data.drafts.some(post => post.slug === draft.slug), false, "deleted test draft must not appear in saved drafts");
+    assert.equal((await call(publications, "GET")).data.posts.some(post => post.slug === draft.slug), false, "unpublished test post must not appear in publication status");
     console.log("PASS real draft and publish handlers: CRUD, CSRF, private drafts, atomic conflicts and unpublish");
+    console.log("PASS new CMS article body override, unpublished public lookup, and complete D1 test-record cleanup");
 
     const article = calculatorArticles.find(article => blogPosts.some(post => post.slug === article.slug));
     const existing = blogPosts.find(post => post.slug === article.slug);
