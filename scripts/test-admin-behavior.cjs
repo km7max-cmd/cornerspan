@@ -6,6 +6,8 @@ const path = require("node:path");
 const vm = require("node:vm");
 const { webcrypto } = require("node:crypto");
 const { DatabaseSync } = require("node:sqlite");
+const { renderToStaticMarkup } = require("react-dom/server");
+const React = require("react");
 const ts = require("typescript");
 const { NextRequest } = require("next/server");
 const root = path.resolve(__dirname, "..");
@@ -38,16 +40,20 @@ let env = { ...config };
 let requestHeaders = new Headers();
 const modules = new Map();
 function load(relative) {
-  const filename = path.resolve(root, relative);
+  let filename = path.resolve(root, relative);
+  if (!fs.existsSync(filename) && filename.endsWith(".ts")) filename = filename.slice(0, -3) + ".tsx";
   if (modules.has(filename)) return modules.get(filename).exports;
   const module = { exports: {} };
   modules.set(filename, module);
   const code = ts.transpileModule(fs.readFileSync(filename, "utf8"), {
-    compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 },
+    compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.ReactJSX },
   }).outputText;
   function dependency(name) {
     if (name === "@opennextjs/cloudflare") return { getCloudflareContext: () => ({ env }) };
     if (name === "next/headers") return { headers: async () => requestHeaders };
+    if (name === "next/navigation") return { notFound: () => { throw new Error("NEXT_HTTP_ERROR_FALLBACK;404"); } };
+    if (name === "next/link") return { default: props => React.createElement("a", { href: props.href }, props.children) };
+    if (/components\/blog\/(CalculatorArticle|TrapezoidAreaArticle|RetainingWallArticle)$/.test(name)) return { default: () => null };
     if (name.startsWith(".")) return load(path.resolve(path.dirname(filename), name + ".ts"));
     return require(name);
   }
@@ -169,6 +175,16 @@ const { samePostContent, initialBodyReplacement } = load("lib/admin-editor-state
     assert.equal(published.data.revision, 1);
     assert.equal((await findPublishedPost(draft.slug)).body, draft.body);
     assert.equal((await findPublishedPost(draft.slug)).bodyOverride, true, "new CMS posts must render their saved Markdown body");
+    // Exercise the real Next blog route and CMS React renderer, not just the D1 record.
+    const publicPage = load("app/blog/[slug]/page.tsx").default;
+    const publishedHtml = renderToStaticMarkup(await publicPage({
+      params: Promise.resolve({ slug: draft.slug }),
+    }));
+    assert.match(publishedHtml, /Controlled preview article/, "public CMS route renders published title");
+    assert.match(publishedHtml, /Test section/, "public CMS route renders Markdown heading");
+    assert.match(publishedHtml, /A useful measurement example/, "public CMS route renders saved body");
+    assert.doesNotMatch(publishedHtml, /Private draft preview/, "public CMS page is not marked private");
+
     assert.equal((await getPublicBlogPosts()).length, blogPosts.length + 1);
     assert.equal((await call(publications, "POST", publish)).status, 409);
     saved = await call(drafts, "POST", { ...draft, title: "Updated draft", expectedRevision: 1 });
@@ -201,6 +217,12 @@ const { samePostContent, initialBodyReplacement } = load("lib/admin-editor-state
     assert.equal((await call(drafts, "DELETE", undefined, "?slug=" + draft.slug + "&revision=3")).status, 200);
     assert.deepEqual(normalize(await getPublicBlogPosts()), normalize(blogPosts));
     assert.equal(await findPublishedPost(draft.slug), null, "unpublished test content must not remain public");
+    await assert.rejects(
+      () => publicPage({ params: Promise.resolve({ slug: draft.slug }) }),
+      /NEXT_HTTP_ERROR_FALLBACK;404/,
+      "unpublished CMS-only slug must render public 404",
+    );
+
     assert.equal((await call(drafts, "GET")).data.drafts.some(post => post.slug === draft.slug), false, "deleted test draft must not appear in saved drafts");
     assert.equal((await call(publications, "GET")).data.posts.some(post => post.slug === draft.slug), false, "unpublished test post must not appear in publication status");
     console.log("PASS real draft and publish handlers: CRUD, CSRF, private drafts, atomic conflicts and unpublish");
