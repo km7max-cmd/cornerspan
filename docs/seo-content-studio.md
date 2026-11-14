@@ -1,3 +1,10 @@
+## Preview D1 migration completed — owner screenshot, 14 November 2026
+
+The owner ran Wrangler 4.160.1 against the **remote** `cornerspan-admin-preview` database (`971ff2ce-5283-4df7-9ee4-a0deb0d558f9`). The command output shows successful application (green checks) of `0001_admin_post_drafts.sql`, `0002_admin_published_posts.sql`, `0003_admin_login_attempts.sql`, and **`0004_admin_seo_media.sql`**. The SEO/media migration now has a successful Wrangler completion record. The command targeted Preview, not Production.
+
+Still to verify: a read-only check that `seo_json` appears in both post tables and `admin_media` exists, plus genuine remote application acceptance for the latest SEO Content Studio editor. **Do not re-run `migrations apply` unnecessarily, and do not apply Production migrations without the owner's separate explicit authorization.**
+
+---
 # CornerSpan SEO Content Studio
 
 Status: feature branch `feature/posts-admin-dashboard`, draft PR #4. **No merge or Production deployment is authorized.** This redesign adds a working editor, APIs and additive database migration; it is not a static mockup.
