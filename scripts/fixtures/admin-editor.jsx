@@ -31,7 +31,7 @@ window.fetch = async (input, options = {}) => {
     const record = { ...payload.image, id: payload.id || crypto.randomUUID(), revision: payload.expectedRevision + 1, updatedAt: new Date().toISOString() };
     media[record.id] = record; persist(); return reply({ media: record });
   }
-  if (path.startsWith('/blog/')) return reply({}, published[path.split('/').pop()!] ? 200 : 404);
+  if (path.startsWith('/blog/')) return reply({}, published[path.split('/').pop()] ? 200 : 404);
   return reply({ error: 'No remote network requests are available in this test fixture.' }, 404);
 };
 const catalog = blogPosts.map(post => {
