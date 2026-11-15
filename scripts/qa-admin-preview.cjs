@@ -5,8 +5,9 @@ const { randomUUID } = require('node:crypto');
 const { JSDOM } = require('jsdom');
 const origin = 'https://feature-posts-admin-dashboard-cornerspan.eenadutech.workers.dev';
 const slug = 'preview-seo-smoke-' + randomUUID();
+const mediaId = 'preview-media-' + randomUUID();
 let cookie = ''; let draftRevision = 0; let publicationRevision = 0;
-let attemptedDraft = false; let attemptedPublication = false;
+let attemptedDraft = false; let attemptedPublication = false; let attemptedMedia = false;
 async function request(path, options = {}) {
   assert.ok(path.startsWith('/') && !path.startsWith('//'), 'Same-host paths only');
   return fetch(origin + path, { ...options, redirect: 'manual', signal: AbortSignal.timeout(30000),
@@ -39,6 +40,14 @@ async function cleanup() {
   }
   const { drafts } = await json('/api/admin/drafts', 'GET');
   assert.ok(!drafts.some(p => p.slug === slug), 'Test draft cleanup');
+  if (attemptedMedia) {
+    const { media } = await json('/api/admin/media', 'GET');
+    const record = media.find(item => item.id === mediaId);
+    if (record) await json(`/api/admin/media?id=${mediaId}&revision=${record.revision}`, 'DELETE');
+    attemptedMedia = false;
+  }
+  const { media } = await json('/api/admin/media', 'GET');
+  assert.ok(!media.some(item => item.id === mediaId), 'Test media cleanup');
 }
 (async () => {
   assert.equal(process.env.CMS_PREVIEW_URL, origin, 'Explicitly set CMS_PREVIEW_URL to the documented branch Preview origin');
@@ -65,6 +74,28 @@ async function cleanup() {
     body: 'Measure the concrete patio before ordering. This disposable article tests Preview only.\n\n## Concrete patio measurements\n\nUse the [concrete calculator](/calculators/concrete) and check assumptions.\n\n### Depth conversion\n\nConvert inches to feet.\n\n| Width | Length |\n| --- | --- |\n| 12 ft | 20 ft |\n\n![Diagram ALT](/og-image.webp "Planning")', seo };
   console.log('Testing isolated Preview slug:', slug);
   try {
+    // Use a unique media-library ID. Never edit or remove an existing record.
+    const image = { url: '/og-image.webp', alt: 'Disposable Preview acceptance image', title: 'Preview-only image',
+      caption: 'Temporary library record', sourceUrl: 'https://www.cornerspan.com',
+      linkUrl: '/calculators/concrete', width: 1200, height: 630 };
+    attemptedMedia = true;
+    let mediaRecord = (await json('/api/admin/media', 'POST', { id: mediaId, image, expectedRevision: 0 })).media;
+    assert.equal(mediaRecord.id, mediaId, 'Only the unique test image was created');
+    assert.equal(mediaRecord.revision, 1, 'New media revision');
+    assert.equal((await json('/api/admin/media', 'GET')).media.find(item => item.id === mediaId)?.alt, image.alt,
+      'Media library persists the original ALT text');
+    mediaRecord = (await json('/api/admin/media', 'POST', {
+      id: mediaId, image: { ...image, alt: 'Updated disposable Preview image ALT' },
+      expectedRevision: mediaRecord.revision,
+    })).media;
+    assert.equal(mediaRecord.revision, 2, 'Media edit revision');
+    assert.equal((await json('/api/admin/media', 'GET')).media.find(item => item.id === mediaId)?.alt,
+      'Updated disposable Preview image ALT', 'Edited media ALT persists');
+    const stale = await request('/api/admin/media', { method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: mediaId, image, expectedRevision: 1 }) });
+    assert.equal(stale.status, 409, 'Media cannot be overwritten at a stale revision');
+
     attemptedDraft = true;
     let saved = (await json('/api/admin/drafts', 'POST', { ...post, expectedRevision: 0 })).draft;
     draftRevision = saved.revision;
@@ -103,7 +134,7 @@ async function cleanup() {
     console.log('PASS Preview D1 create/edit/reload, featured image/ALT, private preview, publish, public SEO/TOC/social/schema and noindex sitemap');
   } finally {
     await cleanup();
-    console.log('PASS Preview unpublish → HTTP 404 → delete test draft');
+    console.log('PASS Preview unpublish → HTTP 404 → delete test draft and media; no disposable records left');
     await request('/api/admin/logout', { method: 'POST' }); cookie = '';
   }
 })().catch(error => { console.error(error.message); process.exitCode = 1; });
