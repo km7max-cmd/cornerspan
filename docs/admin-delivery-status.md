@@ -39,7 +39,7 @@ An existing authenticated Preview admin session is required. Credentials must be
 
 1. Match the Cloudflare Preview deployment to the reviewed Git SHA. Confirm the Preview D1 target and read its schema without applying migrations again.
 2. Use only an exclusive disposable `preview-seo-smoke-*` slug and test media record. Create → edit → SEO/image/ALT/TOC → save → reload → private preview → publish on Preview → inspect public HTML and metadata → unpublish → verify HTTP 404 → delete the draft and test media record. Leave every existing article and media record untouched.
-3. `scripts/qa-admin-preview.cjs` automates the article/API/public-HTML portion on the exact branch Preview origin with cleanup. Complete media-library save/reload/remove through the authenticated interface as well. Verify desktop and mobile behavior on that actual deployment.
+3. `scripts/qa-admin-preview.cjs` now automates article/API/public-HTML **and media-library create/edit/reload/revision/cleanup** on the exact branch Preview origin using unique disposable IDs. It has not yet been run against authenticated remote D1. Verify desktop and mobile behavior on that actual deployment as well.
 4. Record results with the commit/deployment and confirm no disposable records remain. Keep the release hold until the separate Production preflight is complete. Owner release authorization is already recorded.
 
 ## Limitations
