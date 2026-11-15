@@ -1,3 +1,15 @@
+## 16 November 2026: Authenticated remote Preview acceptance — PASS
+
+The owner ran `scripts/run-preview-acceptance.sh` in the authenticated Codespace and supplied a terminal screenshot at approximately 05:27 IST. The named Cloudflare feature Preview completed a new encrypted `ADMIN_SESSION_SECRET` deployment `ef79b40f-eba0-4fa5-abe1-514ad4fb106a` (the preceding password rotation is part of the owner-run helper; no secret values are recorded here).
+
+The exact Preview-only smoke run created the unique disposable article slug `preview-seo-smoke-43633aa8-a38a-42da-b5b0-5a98321da141`. The script reported:
+
+- **PASS** actual remote Preview D1 draft create/edit/reload, reusable media record and featured image/ALT persistence, private article preview, publication, public HTML/SEO/TOC/social/schema, noindex sitemap.
+- **PASS** unpublish → HTTP 404 → deletion of disposable draft and media; test script reported no disposable records left.
+- **PASS** Preview acceptance completed, with no Production deployment or migration requested.
+
+This closes the **remote authenticated Preview acceptance** release gate. Remote output is owner-supplied evidence; it is distinct from CI's isolated editor fixtures. Before any Production deployment, verify a clean release candidate's code/config and secrets, carefully reconcile Production's legacy D1 schema and absent migration ledger, and retain a verified Worker rollback version. Production's inspected active version still lacked both required admin secrets. Preserve the four uncommitted Codespace files without overwriting them. Do not merge PR #4 as a shortcut.
+
 ## 16 November 2026: Owner-run Preview acceptance shortcut
 
 The owner's authenticated Codespace screenshot shows both required admin credential names listed with masked values in the latest feature Preview, **not** evidence that login works or that their binding types are encrypted secrets. Production still lacks those names on the inspected active version. The owner previously reported that the current Preview password was unknown.
