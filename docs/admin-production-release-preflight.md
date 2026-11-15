@@ -1,3 +1,11 @@
+## Preview binding-name evidence — 16 November 2026, 05:12 IST
+
+The owner ran `wrangler preview secret list` in the authenticated Codespace and supplied a screenshot for Worker `cornerspan`, Preview `feature/posts-admin-dashboard`: the latest Preview deployment lists both `ADMIN_LOGIN_PASSWORD` and `ADMIN_SESSION_SECRET` under Secrets with masked values. Wrangler labeled the entries `Environment Variable`; this screenshot confirms the names are listed but does not independently prove encrypted binding type, valid lengths, login success, or the latest application's authenticated D1 workflow. Do not expose their values.
+
+Production binding/secret presence remains independent. Production's active version still reported both required secret names missing during the read-only preflight. Do not copy Preview secrets into Production or promote an unreviewed secret-only version.
+
+Next: verify Preview login through a secure user-entered password (or rotate the password **on this Preview only**, if the owner does not know it), then run the unique-disposable-record acceptance script against the real Preview database. `wrangler preview secret put ... --name feature/posts-admin-dashboard --worker-name cornerspan` affects the named Preview and creates a new Preview deployment, not a Production deploy. Avoid passing secret values on the command line or in chat.
+
 ## Authenticated Production gate evidence — 16 November 2026, 05:06 IST
 
 The owner supplied the upper half of the sanitized read-only preflight run (`2026-11-15T23:36:52.997Z`). Findings, as reported by the helper (secret-name check uses `versions view` binding metadata):
