@@ -138,7 +138,9 @@ function collect(read, checkout = null) {
   }
   const bookmark = check('Production recovery bookmark', () => {
     const raw = read({ kind: 'bookmark' });
-    requireValue(typeof raw?.bookmark === 'string' && raw.bookmark.length <= 128 && /^[0-9a-f]{8,}(?:-[0-9a-f]{8,}){2}$/i.test(raw.bookmark));
+    // https://developers.cloudflare.com/d1/reference/time-travel/#retrieve-a-bookmark
+    // Three 8-digit hexadecimal groups followed by a 32-digit hexadecimal suffix.
+    requireValue(typeof raw?.bookmark === 'string' && raw.bookmark.length === 59 && /^[0-9a-f]{8}(?:-[0-9a-f]{8}){2}-[0-9a-f]{32}$/i.test(raw.bookmark));
     return raw.bookmark;
   });
   return { checkedAt: new Date().toISOString(), checkout, deployment, activeVersions, databases, bookmark, errors };
@@ -198,3 +200,4 @@ if (require.main === module) {
 }
 module.exports = { ACCOUNT, DATABASES, COLUMNS, TABLES, MIGRATIONS, SCHEMA_SQL, MIGRATION_SQL,
   buildArgs, makeReader, parseResult, deploymentSummary, versionSummary, schemaSummary, collect, checkoutSummary, format };
+

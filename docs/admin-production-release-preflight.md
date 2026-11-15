@@ -1,3 +1,13 @@
+## Preflight follow-up — 16 November 2026
+
+The owner ran the pinned read-only helper in the existing authenticated Codespace. The supplied screenshot shows the lower part of its report:
+
+- Preview: all expected columns are present; migrations 0001–0004 are recorded. Draft, published-post and media row counts are zero; login-attempt rows are two.
+- Production: `admin_media` and `d1_migrations` are missing. The active version, binding/secret presence and remaining Production schema lines are above the captured area and still require the full report.
+- The helper incorrectly expected a three-part Time Travel bookmark. Cloudflare documents four hexadecimal groups (8-8-8-32); the corrected validator and regression fixture now accept that format and reject malformed values. All nine read-only/redaction/preflight tests pass locally.
+- The actual Production recovery bookmark remains unverified until the corrected helper runs remotely. This parser fix does not establish a backup, restore the database or resolve missing schema.
+- Preview publication/media acceptance and the candidate/Production release checks remain pending. No Production migration, deployment, existing-content edit or PR merge was performed.
+
 ## Current release gate — 15 November 2026
 
 **The owner authorized the Live release after all checks.** That authorization includes the necessary additive Production migration after its schema review and Preview verification. Do not request the same release approval again. PR #4 remains draft and must not be merged to bypass the checks. Existing article changes and destructive D1 recovery remain outside this release.
@@ -127,3 +137,4 @@ Official docs:
 - https://developers.cloudflare.com/workers/ci-cd/builds/build-branches/
 - https://developers.cloudflare.com/workers/configuration/secrets/
 - https://developers.cloudflare.com/d1/reference/time-travel/
+

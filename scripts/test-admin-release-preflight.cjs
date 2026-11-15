@@ -5,6 +5,8 @@ const { ACCOUNT, DATABASES, COLUMNS, TABLES, MIGRATIONS, SCHEMA_SQL, MIGRATION_S
 const ACTIVE = 'da4e7677-f159-4989-a9f1-d3ac60fbfcfc';
 const OLD = '1659b910-9d08-4e83-9588-ca779322fde4';
 const SENTINEL = 'SENSITIVE_VALUE_MUST_NOT_ESCAPE';
+// Cloudflare's documented Time Travel bookmark: three 8-digit groups and a 32-digit suffix.
+const BOOKMARK = '00000085-0000024c-00004c6d-8e61117bf38d7adb71b934ebbf891683';
 const rows = results => ({ success: true, results });
 function version() {
   return { id: ACTIVE, metadata: { source: 'dash', author_email: SENTINEL },
@@ -33,7 +35,7 @@ function fakeRead(task) {
     case 'schema': return schema();
     case 'counts': return task.tables.map(table_name => rows([{ table_name, records: table_name === 'd1_migrations' ? 4 : 0 }]));
     case 'migrations': return [rows(MIGRATIONS.map(name => ({ name })))];
-    case 'bookmark': return { bookmark: '00000001-00000002-' + '0'.repeat(32), annotation: SENTINEL };
+    case 'bookmark': return { bookmark: BOOKMARK, annotation: SENTINEL };
     default: throw new Error(SENTINEL);
   }
 }
@@ -170,3 +172,25 @@ test('checkout inspection only reads Git and suppresses file paths/unknown branc
   assert.equal(result.changedFiles, 1);
   assert.ok(!JSON.stringify(result).includes(SENTINEL));
 });
+
+test('documented Time Travel bookmark is accepted; malformed values stay unverified', () => {
+  for (const bookmark of [BOOKMARK, BOOKMARK.toUpperCase()]) {
+    const report = collect(task => task.kind === 'bookmark' ? { bookmark, annotation: SENTINEL } : fakeRead(task));
+    assert.equal(report.bookmark, bookmark);
+    assert.equal(report.errors.length, 0);
+    assert.ok(!format(report).includes(SENTINEL));
+  }
+  for (const bookmark of [
+    undefined, null, 123, [], {}, SENTINEL,
+    '00000001-00000002-' + '0'.repeat(32),
+    BOOKMARK.slice(1), BOOKMARK + '0', BOOKMARK + '\n',
+    ' ' + BOOKMARK, BOOKMARK.replace('00000085', 'g0000085'),
+  ]) {
+    const report = collect(task => task.kind === 'bookmark' ? { bookmark } : fakeRead(task));
+    assert.equal(report.bookmark, null);
+    assert.equal(report.errors.length, 1);
+    assert.match(format(report), /D1 recovery bookmark: UNVERIFIED/);
+    assert.ok(!format(report).includes(SENTINEL));
+  }
+});
+
