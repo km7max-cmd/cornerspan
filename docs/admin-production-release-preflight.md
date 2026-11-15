@@ -1,3 +1,17 @@
+## Authenticated Production gate evidence — 16 November 2026, 05:06 IST
+
+The owner supplied the upper half of the sanitized read-only preflight run (`2026-11-15T23:36:52.997Z`). Findings, as reported by the helper (secret-name check uses `versions view` binding metadata):
+
+- Active version `da4e7677-f159-4989-a9f1-d3ac60fbfcfc`, **100%**, source Dashboard; retrievable but code/Git parity unverified.
+- `ADMIN_DB` binding matches the pinned Production database.
+- **`ADMIN_LOGIN_PASSWORD` and `ADMIN_SESSION_SECRET` both reported MISSING** on the inspected active version. Do not release until both are configured and verified on the reviewed candidate. Do not use `wrangler secret put` during preflight: Cloudflare documents it deploys immediately. `wrangler versions secret put` creates an undeployed version that still needs review.
+- Production D1: draft and published tables exist with 0 rows, but **both lack `seo_json`**; login attempts table exists with 0 rows; `admin_media` and `d1_migrations` are absent.
+- Because `d1_migrations` is absent, **do not assume migrations 0001–0003 were applied through Wrangler**. Inspect exact indexes/schema and migration plan before using migration commands; do not manually insert guessed ledger rows.
+- Codespace checkout `4fa6958854f603ed95048f8c69dee8ac198bb985` on the feature branch had **four changed files**. Do not reset or overwrite them or use this checkout for the release build.
+- The preceding screenshot's lower half showed Preview migrations 0001–0004 and expected columns, plus a Production D1 recovery bookmark. This is not proof of a restore test.
+
+**Release gate: HOLD** until remote authenticated Preview lifecycle, Production secrets, candidate code/config parity, safe schema upgrade and rollback planning are verified. No Production changes were initiated by this verification.
+
 ## Preflight follow-up — 16 November 2026
 
 The owner ran the pinned read-only helper in the existing authenticated Codespace. The supplied screenshot shows the lower part of its report:
