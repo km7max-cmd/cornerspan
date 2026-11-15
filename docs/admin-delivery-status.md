@@ -1,3 +1,17 @@
+## 16 November 2026: Owner-run Preview acceptance shortcut
+
+The owner's authenticated Codespace screenshot shows both required admin credential names listed with masked values in the latest feature Preview, **not** evidence that login works or that their binding types are encrypted secrets. Production still lacks those names on the inspected active version. The owner previously reported that the current Preview password was unknown.
+
+`scripts/run-preview-acceptance.sh` is a reviewed, strictly Preview-targeted owner-run helper. It checks the branch, dependencies and authenticated Wrangler access **before changing any secret**. The owner enters a new Preview password with terminal echo disabled (and saves it privately). The helper rotates only the named Preview's password and a high-entropy session secret using `wrangler preview secret put`, which creates fresh **Preview** deployments; these operations invalidate previous Preview sessions but do not deploy to Production. It runs the pinned unique-slug `qa-admin-preview.cjs` acceptance flow against isolated Preview D1 with cleanup. Credentials are not written to a file, git history or chat. The script does not run in CI; CI only parses its Bash syntax. Remote execution and test results are still pending.
+
+From the existing authenticated Codespace, without resetting four local modified files:
+
+```bash
+cd /workspaces/cornerspan && git fetch origin feature/posts-admin-dashboard && git show 960bac844ce291c1adc44e15fca9f96ef8ef927d:scripts/run-preview-acceptance.sh > /tmp/cornerspan-preview-acceptance.sh && bash /tmp/cornerspan-preview-acceptance.sh
+```
+
+Do not treat password rotation or CI success as passing authenticated Preview acceptance; require the actual PASS transcript and confirmation of cleanup. Live release remains on hold pending Production schema/secrets/candidate/rollback checks.
+
 # SEO Content Studio — delivery and acceptance status
 
 Updated: 15 November 2026 (India). Repository: `km7max-cmd/cornerspan`, draft PR #4, branch `feature/posts-admin-dashboard`.
