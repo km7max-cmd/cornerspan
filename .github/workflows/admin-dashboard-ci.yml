@@ -25,6 +25,8 @@ jobs:
         run: npm run prebuild
       - name: Validate D1 migrations with SQLite
         run: python3 scripts/test-admin-migrations.py
+      - name: Verify read-only release preflight and redaction
+        run: node --test scripts/test-admin-release-preflight.cjs
       - name: Verify password sessions and D1 publication safeguards
         run: node scripts/test-admin-behavior.cjs
       - name: Preserve 21 legacy metadata outputs and calculator source

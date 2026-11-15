@@ -2,7 +2,7 @@
 
 Updated: 15 November 2026 (India). Repository: `km7max-cmd/cornerspan`, draft PR #4, branch `feature/posts-admin-dashboard`.
 
-**Implementation is delivered on the feature branch. Authenticated remote Preview acceptance remains incomplete. Production release is on hold.** A working login page or passing isolated tests does not establish a successful remote D1 publication workflow.
+**Implementation is delivered on the feature branch. The owner authorized a Live release after verification on 15 November. Authenticated remote Preview acceptance and private Production preflight remain incomplete.** A working login page or passing isolated tests does not establish a successful remote D1 publication workflow. No repeat release approval is required; keep PR #4 unmerged.
 
 ## Implemented
 
@@ -22,11 +22,12 @@ Updated: 15 November 2026 (India). Repository: `km7max-cmd/cornerspan`, draft PR
 | Migration safety | Upgrade tests retain existing content and revisions; the new migration is additive. |
 | Legacy protection | All 21 legacy metadata outputs and 84 protected article/calculator source files match the pre-redesign baseline. |
 | Browser workflow | Desktop and Pixel 7 Android emulation pass against the real editor with an explicitly simulated transport, including media save/removal. This is not remote D1 evidence or a physical-device test. |
-| GitHub CI | Both workflows passed at `092d705e0bec182bd4ea52733f2a7305629500b9`. The final admin-markup follow-up runs the same workflows; inspect the checks attached to the current PR head before acceptance. |
+| GitHub CI | Both workflows passed at application commit `a51f997c966852dd7846f1cd01afe7747abeadc3`: Admin dashboard run `43649293306`, website QA run `43649293223`. Cloudflare deployed that commit as Preview `1843ca34-d80d-46aa-97fd-f671e0c66149`. Check subsequent helper/documentation commits too. |
 | Remote Preview public routes | Read-only smoke checks passed for 48 sitemap routes, including 14 calculators, 21 posts and 4 guides. Unauthenticated admin/draft-preview requests redirect to login; draft, publication and media APIs deny unauthenticated access. |
 | Preview migration | Owner-provided Wrangler evidence records successful migration `0004` on database `971ff2ce-5283-4df7-9ee4-a0deb0d558f9`. Do not reapply it unnecessarily. Direct schema inspection is still pending authenticated access. |
 | Real remote editing lifecycle | **Pending.** This work session reaches Preview sign-in and has no authenticated Wrangler session. No new remote test article or media record was created during this verification. |
-| Production preflight | **Pending fresh authenticated checks.** `da4e7677` is a historical version observation, not a fresh verification. No Production migration, data change, deployment or PR merge was performed. |
+| Live/Preview preservation | Read-only checks on 15 November found identical sitemap route sets and rendered content/SEO across all 48 routes. Live smoke also passed for 14 calculators, 21 posts and 4 guides. This does not prove private Worker source or D1 state. |
+| Production preflight | **Partially evidenced; private checks pending.** The owner's latest authenticated Codespace screenshot reconfirms `da4e7677-f159-4989-a9f1-d3ac60fbfcfc` at 100%. `scripts/admin-release-preflight.cjs` safely reports active version, expected binding/secret presence, both fixed D1 schemas/counts/ledger entries and a recovery bookmark without raw values/annotations. No Production migration, data change, deployment or PR merge was performed. |
 
 The current build/deployment evidence and exact commit are linked from [PR #4](https://github.com/km7max-cmd/cornerspan/pull/4). The branch Preview login is:
 
@@ -39,7 +40,7 @@ An existing authenticated Preview admin session is required. Credentials must be
 1. Match the Cloudflare Preview deployment to the reviewed Git SHA. Confirm the Preview D1 target and read its schema without applying migrations again.
 2. Use only an exclusive disposable `preview-seo-smoke-*` slug and test media record. Create → edit → SEO/image/ALT/TOC → save → reload → private preview → publish on Preview → inspect public HTML and metadata → unpublish → verify HTTP 404 → delete the draft and test media record. Leave every existing article and media record untouched.
 3. `scripts/qa-admin-preview.cjs` automates the article/API/public-HTML portion on the exact branch Preview origin with cleanup. Complete media-library save/reload/remove through the authenticated interface as well. Verify desktop and mobile behavior on that actual deployment.
-4. Record results with the commit/deployment and confirm no disposable records remain. Keep the release hold until the separate Production preflight and explicit owner approval are complete.
+4. Record results with the commit/deployment and confirm no disposable records remain. Keep the release hold until the separate Production preflight is complete. Owner release authorization is already recorded.
 
 ## Limitations
 
@@ -50,6 +51,6 @@ An existing authenticated Preview admin session is required. Credentials must be
 
 ## Production release and rollback
 
-Follow [the release preflight](admin-production-release-preflight.md) and [the implementation/rollback guide](seo-content-studio.md). Reconfirm active version, code lineage, actual candidate bindings/secret names, production build branch and a known-good rollback target. Do not promote historical secret-only versions. Obtain explicit owner approval before any Production migration, deployment or merge.
+Follow [the release preflight](admin-production-release-preflight.md) and [the implementation/rollback guide](seo-content-studio.md). Reconfirm active version, code lineage, actual candidate bindings/secret names, production build branch and a known-good rollback target. Do not promote historical secret-only versions. The owner's Live release authorization covers the reviewed release and necessary additive migration after verification; it does not authorize an unreviewed merge, existing article edits or destructive data operations.
 
 If an approved rollout fails, restore the recorded known-good Worker version through the established release path. Worker rollback does **not** restore D1: retain additive columns/tables and existing content. Any D1 recovery or content reversal requires separate review and authorization.

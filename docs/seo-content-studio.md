@@ -4,7 +4,7 @@ Current delivery and remaining acceptance gates: [delivery status](admin-deliver
 
 The owner ran Wrangler 4.160.1 against the **remote** `cornerspan-admin-preview` database (`971ff2ce-5283-4df7-9ee4-a0deb0d558f9`). The command output shows successful application (green checks) of `0001_admin_post_drafts.sql`, `0002_admin_published_posts.sql`, `0003_admin_login_attempts.sql`, and **`0004_admin_seo_media.sql`**. The SEO/media migration now has a successful Wrangler completion record. The command targeted Preview, not Production.
 
-Still to verify: a read-only check that `seo_json` appears in both post tables and `admin_media` exists, plus genuine remote application acceptance for the latest SEO Content Studio editor. **Do not re-run `migrations apply` unnecessarily, and do not apply Production migrations without the owner's separate explicit authorization.**
+Still to verify: a read-only check that `seo_json` appears in both post tables and `admin_media` exists, plus genuine remote application acceptance for the latest SEO Content Studio editor. **Do not re-run `migrations apply` unnecessarily.** The owner authorized the Live release on 15 November, including the necessary additive migration after schema review and Preview verification; see the current [release gate](admin-production-release-preflight.md).
 
 ---
 # CornerSpan SEO Content Studio
@@ -91,8 +91,8 @@ For manual browser acceptance, use a unique disposable `preview-seo-smoke-*` slu
 - SEO scoring is transparent heuristics, not factual construction review, plagiarism detection, keyword research or a Google ranking formula. The search/social previews are illustrative.
 - Admin lists currently load up to 500 drafts, publications and media records. No pagination or multi-user roles are added. Existing single-password authentication is retained.
 - Admin and saved drafts are private behind login. The whole workers.dev Preview environment is not an access-controlled private site: a deliberately published test article can be publicly reachable. Cloudflare Preview noindex is not access control. No Zero Trust/billing changes were made.
-- This work session did not inherit the authenticated Codespace/browser session. Fresh remote D1 migration/application testing and read-only Production version/binding/secret-name/rollback checks require that session. Never claim historical `da4e7677` verification is a fresh check.
-- Production release remains blocked until the current release checklist is completed and the owner approves the specific candidate.
+- This work session did not inherit the authenticated Codespace/browser session. The owner's latest Codespace screenshot reconfirms active `da4e7677` at 100%; private binding/schema/secret-name checks and genuine remote Preview application acceptance remain pending. Run the sanitized preflight helper from that working Codespace session.
+- The owner authorized the Live release after verification on 15 November. Production remains blocked by the incomplete verification checklist, not missing repeat approval.
 
 ## Production release and rollback
 
@@ -103,7 +103,7 @@ See `admin-production-release-preflight.md` for the established history. Before 
 - Do not deploy secret-update-only versions `1123d5fd-*` or `ab498bd7-*` without reviewing their code and bindings.
 - Validate Production table columns/counts read-only. Record the D1 recovery bookmark and a known-good Worker rollback target. Do not alter Production records during development.
 - Complete real Preview acceptance and confirm CI is green at the candidate commit. Snapshot all 21 public legacy articles, calculator outputs, titles/canonicals/schema/robots/sitemap.
-- Obtain explicit approval for the exact Production migration/deployment or merge. A merge to main may auto-deploy.
-- After approval only, apply the additive migration and deploy the reviewed candidate through the existing controlled release path; verify public routes and admin security.
+- Preserve the owner's recorded Live release authorization; keep PR #4 unmerged. A merge to main may auto-deploy.
+- After schema/Preview/candidate checks pass, apply only the missing additive migration and deploy the reviewed candidate through the existing controlled release path; verify public routes and admin security.
 
 If release verification fails, restore traffic to the previously recorded known-good Worker version only after checking its configuration. **Worker rollback does not restore D1.** Leave the additive SEO columns and media table in place: older code can ignore them. Do not drop columns, truncate tables, delete publications, or restore all D1 data as a code rollback. Inspect any content publication separately; preserve newer drafts. A D1 recovery is a distinct owner-approved operation, not an automatic rollback step.

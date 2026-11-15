@@ -1,8 +1,37 @@
-## Current delivery gate — 15 November 2026
+## Current release gate — 15 November 2026
 
-See [delivery and acceptance status](admin-delivery-status.md) for the completed implementation and the distinction between isolated tests, read-only Preview checks and pending authenticated acceptance. The owner has supplied successful **Preview** migration `0004` evidence; do not run that migration again merely because older entries below list it as pending. The latest verified feature implementation includes safe media-library removal and preservation of legacy metadata defaults.
+**The owner authorized the Live release after all checks.** That authorization includes the necessary additive Production migration after its schema review and Preview verification. Do not request the same release approval again. PR #4 remains draft and must not be merged to bypass the checks. Existing article changes and destructive D1 recovery remain outside this release.
 
-**HOLD / NO MERGE / NO PRODUCTION DEPLOY.** The remaining blockers are genuine remote Preview editing/publication/cleanup verification and fresh authenticated Production version, code-lineage, binding/schema, required-secret-name and rollback checks. The current work environment reports Wrangler unauthenticated and the Preview admin remains at sign-in. This is an access limitation, not a failed D1 migration or permission to alter authentication.
+The implementation at `a51f997c966852dd7846f1cd01afe7747abeadc3` passed both GitHub workflows and Cloudflare Preview deployment. Live and Preview matched across all 48 sitemap routes for content, titles/descriptions, canonicals, robots, social metadata, structured data, headings, images and initial input markup. See [delivery and acceptance status](admin-delivery-status.md). The owner already supplied successful **Preview** migration `0004` evidence; do not apply it again merely because historical entries below list it as pending.
+
+The owner's latest Termux/Codespace screenshot shows Production version `da4e7677-f159-4989-a9f1-d3ac60fbfcfc` at **100%**, deployed on 11 November. This is fresh owner-supplied deployment evidence, not a verification of its private source, bindings or secrets. The authenticated session is working in `/workspaces/cornerspan`; this work environment does not inherit it. No new Google login is needed for these checks.
+
+**Remaining gate: authenticated remote verification.** Complete the redesigned editor's genuine Preview D1 publication/media lifecycle and inspect current Production schema, bindings, required secret names, code lineage and rollback readiness. Production is unchanged. No Production migration, deployment or PR merge has been performed by this work session.
+
+### Read-only preflight in the authenticated Codespace
+
+Run `node scripts/admin-release-preflight.cjs` from a reviewed checkout. If the Codespace checkout is old or contains edits, fetch the feature branch and extract only this helper from the reviewed full commit SHA into `/tmp`, then run it from the repository directory. Do not overwrite local work just to run preflight.
+
+The self-contained helper uses the installed Wrangler, a temporary explicit account/database config, and only `deployments list`, `versions view`, D1 `SELECT`/`PRAGMA table_info`, and `time-travel info`. It inspects both fixed, distinct D1 targets, column presence, table row counts and the known migration ledger entries. It does not install packages, deploy, apply migrations, change secrets or read article bodies. Raw CLI output, variable values, arbitrary binding names and version annotations are suppressed; temporary Wrangler logs are removed. Its tests exercise read-only targets, malformed-response handling and secret redaction in CI.
+
+Share only the helper's sanitized report. Missing tables/columns or secrets are findings to review, not permission to run broad setup commands. A retrievable Worker version and D1 bookmark support rollback planning; they do not establish a tested rollback or matching Git source. Schema output checks column presence, not every index, constraint or default. The helper never declares a release candidate approved.
+
+### Current release checklist
+
+- [x] Owner authorized a Live release after verification; leave PR unmerged.
+- [x] Application CI and read-only Live/Preview parity passed at `a51f997`; verify any subsequent helper/documentation commit checks too.
+- [x] Owner confirmed the active `da4e7677` deployment at 100%; recheck immediately before changing traffic.
+- [ ] Read-only preflight: Production and Preview schema, migration ledger, row counts, active binding/secret names and recovery bookmark.
+- [ ] Authenticated Preview: create/edit, image/ALT, TOC, save/reload, preview, publish, verify public HTML/SEO, unpublish to 404, remove disposable draft and media.
+- [ ] Build the reviewed candidate in a clean checkout; verify its code/source, actual Production D1 binding and both required secret names. Never promote historical secret-only versions.
+- [ ] Inspect Production build/branch settings; retain a verified previous Worker version for rollback. Do not merge as a deployment shortcut.
+- [ ] Apply only missing additive Production migrations after comparing schema and ledger; never reset data or blindly retry a migration whose columns already exist.
+- [ ] Deploy the verified candidate through the established release path, then recheck public routes, 21 legacy posts, calculators, canonical/robots/sitemap, login security and admin availability.
+- [ ] If release verification fails, return traffic to the recorded stable Worker version. Retain D1 data and additive schema; any database restoration is a separate operation requiring review.
+
+## Historical observations (superseded by the current release gate above)
+
+The following dated notes record the earlier approval/access state. Their old approval holds are not a request for new release permission. Their safety findings about unreviewed Worker versions and protecting data still apply.
 
 ---
 
@@ -74,16 +103,9 @@ Cloudflare Workers & Pages > `cornerspan` > **Production** > Deployments shows a
 6. **SEO and content**: Record key existing public routes and compare titles, canonicals, robots, content and sitemap output before/after; the PR changes the blog and sitemap routes from static to D1-aware dynamic rendering. Verify the 21 existing posts retain their content, assets, calculator embeds and URLs when there are no CMS overrides.
 7. **Preview public route**: During the prior manual Preview test, published status was confirmed, but a successful **public URL screenshot before unpublish** was not captured. Automated local integration covers public route rendering, not a fresh remote runtime check. Consider another isolated public Preview smoke test without touching Production.
 
-## Read-only commands for the owner's authenticated Codespace
+## Historical read-only command guidance
 
-These do **not** deploy or change Production, but they do require valid Cloudflare authentication. Never share passwords, auth tokens, environment variable values, or full `versions view` output in chat.
-
-```sh
-npx --yes wrangler@4.160.1 deployments list --name cornerspan
-npx --yes wrangler@4.160.1 d1 info cornerspan-admin
-npx --yes wrangler@4.160.1 d1 execute cornerspan-admin --remote --command "SELECT name FROM sqlite_master WHERE type='table' AND name IN ('admin_post_drafts','admin_published_posts','admin_login_attempts') ORDER BY name;"
-npx --yes wrangler@4.160.1 d1 execute cornerspan-admin --remote --command "SELECT 'admin_post_drafts' AS name, COUNT(*) AS records FROM admin_post_drafts UNION ALL SELECT 'admin_published_posts', COUNT(*) FROM admin_published_posts;"
-```
+Use the sanitized `scripts/admin-release-preflight.cjs` helper documented above. Raw deployment listings can contain sensitive version annotations; do not share their complete output or full `versions view` responses. Never share passwords, auth tokens or variable values in chat.
 
 Do not run `wrangler deploy`, `wrangler versions deploy`, `wrangler secret put`, or merge the PR during preflight. `wrangler secret put` **deploys immediately**; the `versions secret put` variant only prepares a non-deployed version.
 
