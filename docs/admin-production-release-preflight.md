@@ -5,7 +5,7 @@ The owner ran the pinned read-only helper in the existing authenticated Codespac
 - Preview: all expected columns are present; migrations 0001–0004 are recorded. Draft, published-post and media row counts are zero; login-attempt rows are two.
 - Production: `admin_media` and `d1_migrations` are missing. The active version, binding/secret presence and remaining Production schema lines are above the captured area and still require the full report.
 - The helper incorrectly expected a three-part Time Travel bookmark. Cloudflare documents four hexadecimal groups (8-8-8-32); the corrected validator and regression fixture now accept that format and reject malformed values. All nine read-only/redaction/preflight tests pass locally.
-- The actual Production recovery bookmark remains unverified until the corrected helper runs remotely. This parser fix does not establish a backup, restore the database or resolve missing schema.
+- On 16 November the owner reran the corrected read-only helper and supplied the lower report screenshot. A Production Time Travel recovery bookmark matching the corrected documented format is **now reported** (full value deliberately not copied into this document). This is a recoverability reference, not evidence of a tested restore or a database backup. Production `admin_media` and `d1_migrations` are still missing, and the upper report containing active binding/secret indicators and other Production columns was not visible.
 - Preview publication/media acceptance and the candidate/Production release checks remain pending. No Production migration, deployment, existing-content edit or PR merge was performed.
 
 ## Current release gate — 15 November 2026
