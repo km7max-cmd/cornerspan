@@ -29,6 +29,8 @@ jobs:
         run: node --test scripts/test-admin-release-preflight.cjs
       - name: Check Preview acceptance script syntax (never run remote writes in CI)
         run: node --check scripts/qa-admin-preview.cjs
+      - name: Check owner-run Preview-only wrapper syntax (never run remote writes in CI)
+        run: bash -n scripts/run-preview-acceptance.sh
       - name: Verify password sessions and D1 publication safeguards
         run: node scripts/test-admin-behavior.cjs
       - name: Preserve 21 legacy metadata outputs and calculator source
