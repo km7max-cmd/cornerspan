@@ -75,7 +75,8 @@ const webp=Uint8Array.from([0x52,0x49,0x46,0x46,0x0e,0,0,0,0x57,0x45,0x42,0x50,0
   assert.equal((await upload.POST(request(png,{mime:'image/jpeg'}))).status,415,'MIME mismatch forbidden');
   assert.equal((await upload.POST(request(png,{length:String(helpers.MAX_IMAGE_BYTES+1)}))).status,413,'Content-Length enforced');
   assert.equal((await upload.POST(request(new Uint8Array(helpers.MAX_IMAGE_BYTES+1)))).status,413,'Streaming cap enforced');
-  assert.equal((await upload.POST(request(Uint8Array.from(Buffer.from('<svg><script/></svg>')))).status,415,'Magic header enforced');
+  const invalidSvg = await upload.POST(request(Uint8Array.from(Buffer.from('<svg><script/></svg>'))));
+  assert.equal(invalidSvg.status,415,'Magic header enforced');
   const saved=await upload.POST(request(png));
   assert.equal(saved.status,201);
   const data=await saved.json();
