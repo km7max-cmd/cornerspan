@@ -37,6 +37,8 @@ jobs:
         run: bash -n scripts/prepare-production-candidate.sh
       - name: Check read-only candidate verification script syntax (no remote access in CI)
         run: node --check scripts/verify-production-candidate.cjs
+      - name: Check guarded live release wrapper syntax (never deploy in CI)
+        run: bash -n scripts/guarded-live-release.sh
       - name: Verify password sessions and D1 publication safeguards
         run: node scripts/test-admin-behavior.cjs
       - name: Preserve 21 legacy metadata outputs and calculator source
