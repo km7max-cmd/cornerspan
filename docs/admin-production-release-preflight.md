@@ -1,3 +1,19 @@
+## Candidate metadata and five public routes — PASS, 16 November 2026, 06:18 IST
+
+The owner ran `scripts/verify-production-candidate.cjs` from the authenticated Codespace. The supplied screenshot reports:
+
+- Candidate source `wrangler`, candidate message contains expected clean-build Git SHA `062419126fa6ecd702823d0d18499de9dae8011f` (**MATCH**).
+- `ADMIN_DB` **MATCH**; `ADMIN_LOGIN_PASSWORD` and `ADMIN_SESSION_SECRET` are both **PRESENT** on the uploaded candidate. Runtime compatibility date **MATCH** and `nodejs_compat: true`.
+- Previous Production Worker `da4e7677-f159-4989-a9f1-d3ac60fbfcfc` is retrievable as a rollback target. Candidate and previous Worker script ETags differ, as expected for a new code bundle.
+- Five public GET smoke checks (`/`, `/calculators`, `/calculators/concrete`, `/blog`, `/guides`) returned HTTP 200 on both candidate Version URL and Live, with matching title and H1.
+- Final line: `VERDICT: VERSION METADATA & PUBLIC SMOKE PASS; release still requires route/build/rollback checks` and `NO PRODUCTION DEPLOYMENT OR DATABASE WRITES PERFORMED`.
+
+This is real remote candidate verification, not simply CI. Upload helper extracted/builds the exact pinned commit in a clean directory, which grounds source provenance beyond the upload-message marker. GitHub CI also passed for this application commit. Version URLs use Production resources, so do not use that URL for publication/write acceptance.
+
+Per current Cloudflare docs (Workers versions and deployments), uploading versions and activating a deployment are separate; deploying an existing Worker version does not require `triggers deploy` unless there are intentional trigger/route changes. Repo `wrangler.jsonc` has no new route declarations, and the owner is retaining the existing Live Worker/custom-domain setup. Verify that the old deployment is still the active `cornerspan` Worker immediately before release and that its rollback version is retrievable. If these or domain mapping are unclear, do not deploy or alter triggers. Cloudflare rollback restores Worker code/bindings, not D1 state; the new D1 schema is additive and compatible with the old Worker.
+
+The final outstanding gate is a guarded explicit promotion of the identified **full** new version ID (prefix `1d3c3256`) with an immediate post-deployment smoke test and recorded rollback plan. No PR merge or ad/content editing is needed to release the already-uploaded candidate.
+
 ## Production candidate uploaded, traffic unchanged — 16 November 2026, 06:09 IST
 
 The owner ran the clean Git-pinned candidate build/upload helper in the authenticated Codespace. The supplied terminal screenshot reports `PASS: Candidate uploaded; Production Worker still da4e7677-f159-4989-a9f1-d3ac60fbfcfc at 100%` and a Version URL `https://1d3c3256-cornerspan.eenadutech.workers.dev`. This is **not** a production deployment. The candidate was prepared from pinned Git commit `062419126fa6ecd702823d0d18499de9dae8011f`, with both required encrypted admin secrets passed together in the undeployed upload; the script reported success. This is owner-provided execution evidence; candidate's actual remote bindings and full ID still require read-only inspection.
