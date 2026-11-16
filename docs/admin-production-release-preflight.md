@@ -1,3 +1,23 @@
+## Production base indexes verified; guarded migration prepared — 16 November 2026, 05:35 IST
+
+The owner's authenticated read-only `sqlite_master` query confirmed **all three expected base indexes** in `cornerspan-admin` match the original migration definitions:
+
+- `idx_admin_login_attempts_window` on `admin_login_attempts(window_start)`
+- `idx_admin_post_drafts_updated` on `admin_post_drafts(updated_at DESC)`
+- `idx_admin_published_posts_date` on `admin_published_posts(published_at DESC)`
+
+The query returned `success:true`, `changes:0`, `changed_db:false`. Along with previous table/column, zero-row and D1 bookmark evidence, it establishes the observed pre-SEO-migration baseline. No Production schema write has been performed.
+
+`scripts/guarded-production-d1-migration.sh` was added to the feature branch. It is **not** run in CI. It extracts only the reviewed migration files from pinned Git commit `29cd7f8b22c21495f7c7c20a9bb6a99849181223` to a temporary isolated directory, pins account and Production database ID in a temporary Wrangler config, rechecks the three base tables/indexes and zero row counts, verifies the recovery bookmark, and requires the owner to type an explicit confirmation before asking Wrangler to apply missing migrations 0001–0004 through the standard ledger. Its purpose is to reconcile the already-existing 0001–0003 objects using their `IF NOT EXISTS` DDL, then add the two missing `seo_json` columns and new media table via 0004. The wrapper checks the final schema and ledger using the pinned read-only preflight and never deploys a Worker, changes secrets, merges PR #4, or modifies article content. It uses `git show` for pinned migration sources because the owner's Codespace has four local modified files.
+
+The owner should inspect all output and confirm the correct database name before applying; if any table/index/count/bookmark deviates, the script stops before changing Production. If Wrangler reports an error, **do not rerun blindly**. Inspect the migration ledger and schema first. Production secrets and candidate Worker source/config verification are still required before a Live deployment.
+
+From the existing authenticated Codespace, after a fresh fetch:
+
+```bash
+cd /workspaces/cornerspan && git fetch origin feature/posts-admin-dashboard && git show 390fbf549daa7de4a1d40eae687c90cf05cf14a2:scripts/guarded-production-d1-migration.sh > /tmp/cornerspan-production-d1.sh && bash /tmp/cornerspan-production-d1.sh
+```
+
 ## Production schema read-only SQL evidence — 16 November 2026, 05:32 IST
 
 The owner executed the read-only Wrangler query against `cornerspan-admin` to inspect `sqlite_master` table and index definitions. The supplied lower-screen screenshot reports `success:true`, `changes:0`, `changed_db:false`, 16 rows read, and the stored `CREATE TABLE` definitions for `admin_post_drafts` and `admin_published_posts`.
