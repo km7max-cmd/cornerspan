@@ -94,6 +94,14 @@ const webp=Uint8Array.from([0x52,0x49,0x46,0x46,0x0e,0,0,0,0x57,0x45,0x42,0x50,0
   assert.equal((await publicImages.GET(null,{params:Promise.resolve({filename:'00000000-0000-0000-0000-000000000000.jpg'})})).status,404);
   environment.CMS_MEDIA_BUCKET=undefined;
   assert.equal((await publicImages.GET(null,{params:Promise.resolve({filename:data.url.split('/').pop()})})).status,503,'Bucket unavailable fails safely');
+  const config=JSON.parse(fs.readFileSync(path.join(root,'wrangler.jsonc'),'utf8'));
+  const prod=config.r2_buckets.find(x=>x.binding==='CMS_MEDIA_BUCKET');
+  const preview=config.previews?.r2_buckets?.find(x=>x.binding==='CMS_MEDIA_BUCKET');
+  assert.equal(prod?.bucket_name,'cornerspan-cms-media','Production media bucket must be pinned');
+  assert.equal(preview?.bucket_name,'cornerspan-cms-media-preview','Preview media bucket must be isolated');
+  assert.notEqual(prod.bucket_name,preview.bucket_name,'Preview may not write to Production R2');
+  assert.equal(config.d1_databases?.find(x=>x.binding==='ADMIN_DB')?.database_name,'cornerspan-admin');
+  assert.equal(config.previews.d1_databases?.find(x=>x.binding==='ADMIN_DB')?.database_name,'cornerspan-admin-preview');
   const ui=fs.readFileSync(path.join(root,'app/admin/media-manager.tsx'),'utf8');
   assert.match(ui,/type="file"/);
   assert.match(ui,/\/api\/admin\/media\/upload/);
