@@ -26,7 +26,7 @@ def apply_pending():
         db.execute("INSERT INTO d1_migrations VALUES (?)", (path.name,))
         print("Applied:", path)
 apply_pending()
-expected_tables = {"admin_post_drafts", "admin_published_posts", "admin_login_attempts", "admin_media"}
+expected_tables = {"admin_post_drafts", "admin_published_posts", "admin_login_attempts", "admin_media", "admin_uploaded_images"}
 apply_pending() # no duplicate ALTER, no resets or deletions
 assert expected_tables <= {
     row[0] for row in db.execute("SELECT name FROM sqlite_master WHERE type='table'")
@@ -63,6 +63,16 @@ db.execute("""INSERT INTO admin_published_posts
   ("sample-article","New title","Description","Construction","[]",
    "2026-11-09","## Article",1))
 assert db.execute("SELECT count(*) FROM admin_published_posts").fetchone()[0] == 1
+# Bounded image storage is additive and does not alter draft or publication rows.
+small_webp = "UklGRhYAAABXRUJQVlA4WAoAAAAQAAAAAQAAAAEA"
+db.execute("""INSERT INTO admin_uploaded_images
+  (filename,mime_type,data_base64,byte_length)
+  VALUES (?,?,?,?)""",
+  ("00000000-0000-4000-8000-000000000000.webp", "image/webp", small_webp, 30))
+assert db.execute("SELECT mime_type,byte_length FROM admin_uploaded_images").fetchone() == ("image/webp", 30)
+assert db.execute("SELECT count(*) FROM admin_post_drafts").fetchone()[0] == 1
+assert db.execute("SELECT count(*) FROM admin_published_posts").fetchone()[0] == 1
+
 print("D1 migrations, login limiter and revision-conflict semantics passed.")
 
 # Upgrade an existing pre-SEO database with real rows, retaining every old column and value.
