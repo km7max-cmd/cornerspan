@@ -320,7 +320,7 @@ const { samePostContent, initialBodyReplacement } = load("lib/admin-editor-state
     const imageUpdate = { image: { ...draft.seo.featuredImage, alt: "New description" }, id: imageSaved.data.media.id, expectedRevision: 1 };
     assert.equal((await call(media, "POST", imageUpdate)).status, 200);
     assert.equal((await call(media, "POST", imageUpdate)).status, 409);
-    assert.equal((await call(media, "GET")).data.uploadAvailable, false);
+    assert.equal((await call(media, "GET")).data.uploadAvailable, true, 'D1 image storage is available after additive migration');
     const recordId = imageSaved.data.media.id;
     const deleteQuery = "?id=" + recordId + "&revision=2";
     assert.equal((await call(media, "DELETE", undefined, deleteQuery, { cookie: "forged" })).status, 401, "media deletion requires login");
