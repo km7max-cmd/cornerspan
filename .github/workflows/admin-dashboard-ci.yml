@@ -45,6 +45,8 @@ jobs:
         run: node scripts/test-admin-image-upload.cjs
       - name: Check opt-in R2 setup helper syntax (no remote creation in CI)
         run: bash -n scripts/setup-admin-r2.sh
+      - name: Check isolated R2 Preview deploy script syntax (no remote deploy in CI)
+        run: bash -n scripts/deploy-image-upload-preview.sh
       - name: Preserve 21 legacy metadata outputs and calculator source
         run: node scripts/test-legacy-preservation.cjs
       - name: Browser-like React editor workflow tests
