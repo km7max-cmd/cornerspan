@@ -1,3 +1,21 @@
+## Final Worker rollout guard prepared — 16 November 2026, 06:18 IST evidence
+
+The owner completed the authenticated candidate verification: version metadata, pinned application Git SHA in upload message, `ADMIN_DB` production binding, both `secret_text` admin names, runtime compatibility flags, rollback target readability and **five Live-versus-Version URL public title/H1 comparisons all PASS**. Live remained on `da4e7677-f159-4989-a9f1-d3ac60fbfcfc` at 100%, as observed in the prior script. No D1 writes or Worker traffic changes occurred.
+
+`scripts/guarded-live-release.sh` is prepared to promote only the already-uploaded version with prefix `1d3c3256` after an explicit terminal confirmation. It pins the original application commit and old 100% Worker ID, requires authenticated Codespace and expected branch, re-runs fixed fail-closed candidate verification, rechecks the Production migration ledger and expected D1 columns, confirms the candidate's Git configuration has no newly declared routes/triggers, resolves its **full** unique Worker version UUID, dry-runs `wrangler versions deploy`, and checks the old 100% active Worker again immediately before promotion. It does not call `wrangler deploy` (which would upload different code) or `wrangler triggers deploy` (no route changes requested), does not touch local edits, and does not merge PR #4.
+
+After the user explicitly enters `DEPLOY CORNERSPAN VERSION`, it requests `versions deploy` to 100% of traffic. Post-release GET checks cover seven public pages, the Admin login page, unauthenticated drafts API (expected 401), and sitemap (40+ routes). The script rechecks active Worker version. If a post-release smoke or active-version check fails after the promotion returns success, it attempts immediate rollback to the pinned previous Worker with an explicit version-based deployment; check the resulting deployment and site even if this reports success. This rollback restores Worker code/bindings, **not** D1 schema/history; the D1 migration is additive.
+
+**Do not assume a new Live version until the owner posts a successful terminal report and Live smoke results.** The script's `bash -n` and test checks may pass without running the remote release. A real production rollout can transiently affect public traffic while Cloudflare propagates Worker versions, so review the final output carefully.
+
+Owner-run command after successful GitHub CI:
+
+```bash
+cd /workspaces/cornerspan && git fetch origin feature/posts-admin-dashboard && git show cc9cd36e903b937c7103df57a916fca0d7eb139c:scripts/guarded-live-release.sh > /tmp/cornerspan-live-release.sh && bash /tmp/cornerspan-live-release.sh
+```
+
+Official references: https://developers.cloudflare.com/workers/versions-and-deployments/ and https://developers.cloudflare.com/workers/versions-and-deployments/rollbacks/.
+
 ## Candidate metadata and five public routes — PASS, 16 November 2026, 06:18 IST
 
 The owner ran `scripts/verify-production-candidate.cjs` from the authenticated Codespace. The supplied screenshot reports:
