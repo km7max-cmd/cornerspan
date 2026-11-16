@@ -1,4 +1,5 @@
 import { mediaBucket } from '../../../lib/cms-media-bucket';
+import { readImageFromD1, MAX_D1_IMAGE_BYTES } from '../../../lib/cms-d1-images';
 import { isUploadedImageName } from '../../../lib/cms-upload';
 
 export const runtime = 'nodejs';
@@ -9,17 +10,32 @@ export async function GET(_request: Request, { params }: { params: Promise<{ fil
   const { filename } = await params;
   if (!isUploadedImageName(filename)) return new Response('Not Found', { status: 404 });
   const storage = mediaBucket();
-  if (!storage) return new Response('Image storage unavailable', { status: 503 });
   try {
-    const object = await storage.get('cms/' + filename);
-    if (!object) return new Response('Not Found', { status: 404 });
-    const contentType = object.httpMetadata?.contentType;
-    if (!contentType || !['image/jpeg', 'image/png', 'image/webp'].includes(contentType)) {
+    let body: ReadableStream<Uint8Array> | Uint8Array;
+    let contentType: string;
+    let size: number;
+    if (storage) {
+      const object = await storage.get('cms/' + filename);
+      if (!object) return new Response('Not Found', { status: 404 });
+      contentType = object.httpMetadata?.contentType || '';
+      body = object.body;
+      size = object.size;
+    } else {
+      const row = await readImageFromD1(filename);
+      if (!row) return new Response('Not Found', { status: 404 });
+      if (row.byte_length < 12 || row.byte_length > MAX_D1_IMAGE_BYTES) return new Response('Not Found', { status: 404 });
+      const decoded = new Uint8Array(Buffer.from(row.data_base64, 'base64'));
+      if (decoded.byteLength !== row.byte_length) return new Response('Not Found', { status: 404 });
+      contentType = row.mime_type;
+      size = decoded.byteLength;
+      body = decoded;
+    }
+    if (!['image/jpeg', 'image/png', 'image/webp'].includes(contentType)) {
       return new Response('Not Found', { status: 404 });
     }
-    return new Response(object.body, { status: 200, headers: {
+    return new Response(body, { status: 200, headers: {
       'Content-Type': contentType,
-      'Content-Length': String(object.size),
+      'Content-Length': String(size),
       'Cache-Control': 'public, max-age=31536000, immutable',
       'Content-Disposition': 'inline',
       'X-Content-Type-Options': 'nosniff',
