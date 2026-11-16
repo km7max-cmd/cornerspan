@@ -11,7 +11,7 @@ After the user explicitly enters `DEPLOY CORNERSPAN VERSION`, it requests `versi
 Owner-run command after successful GitHub CI:
 
 ```bash
-cd /workspaces/cornerspan && git fetch origin feature/posts-admin-dashboard && git show cc9cd36e903b937c7103df57a916fca0d7eb139c:scripts/guarded-live-release.sh > /tmp/cornerspan-live-release.sh && bash /tmp/cornerspan-live-release.sh
+cd /workspaces/cornerspan && git fetch origin feature/posts-admin-dashboard && git show 04597c9c25666a133d17b4777c0cffdda736f110:scripts/guarded-live-release.sh > /tmp/cornerspan-live-release.sh && bash /tmp/cornerspan-live-release.sh
 ```
 
 Official references: https://developers.cloudflare.com/workers/versions-and-deployments/ and https://developers.cloudflare.com/workers/versions-and-deployments/rollbacks/.
