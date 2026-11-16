@@ -1,3 +1,17 @@
+## Production candidate uploaded, traffic unchanged — 16 November 2026, 06:09 IST
+
+The owner ran the clean Git-pinned candidate build/upload helper in the authenticated Codespace. The supplied terminal screenshot reports `PASS: Candidate uploaded; Production Worker still da4e7677-f159-4989-a9f1-d3ac60fbfcfc at 100%` and a Version URL `https://1d3c3256-cornerspan.eenadutech.workers.dev`. This is **not** a production deployment. The candidate was prepared from pinned Git commit `062419126fa6ecd702823d0d18499de9dae8011f`, with both required encrypted admin secrets passed together in the undeployed upload; the script reported success. This is owner-provided execution evidence; candidate's actual remote bindings and full ID still require read-only inspection.
+
+`scripts/verify-production-candidate.cjs` now provides safe read-only verification from the authenticated Codespace: check active Worker remains unchanged at 100%, identify the unique uploaded version from its `1d3c3256` prefix, inspect version metadata/Production D1 binding and required secret **names only**, compare 5 public routes' title/H1 with live, and verify the previous active version is retrievable. It does not log in, publish, mutate a database, change secrets, deploy, or merge. It must **not** be used to test draft writes on the Version URL, because Version URLs use the configured Production resources.
+
+Candidate upload and local/CI green tests do not alone establish code/Git parity or rollback readiness. If metadata message or public-route parity cannot be verified, keep release on hold; investigate rather than forcing production deployment. Verify Cloudflare build branch/route configuration and the deployment's rollback version before any launch. Preserve the four locally changed Codespace files.
+
+Authenticated Codespace next command:
+
+```bash
+cd /workspaces/cornerspan && git fetch origin feature/posts-admin-dashboard && git show e25095df5aaca469f3a46c7c5437f8cdbc5c2b89:scripts/verify-production-candidate.cjs > /tmp/cornerspan-verify-candidate.cjs && node /tmp/cornerspan-verify-candidate.cjs
+```
+
 ## Production D1 fully verified; clean undeployed candidate prepared — 16 November 2026, 05:53 IST
 
 The owner's 05:53 IST authenticated preflight screenshot confirms Production `ADMIN_DB` MATCH, all four expected administrative tables with complete columns, 0 rows in drafts/publications/login attempts/media, and `d1_migrations` with 4 rows. All four migrations `0001`–`0004` are reported **applied**. Production Worker `da4e7677-f159-4989-a9f1-d3ac60fbfcfc` remains active at **100%**, while both Production admin secret names remain **MISSING** on that version. Its code/Git match is unverified. The migration must not be rerun.
