@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { hasAdminAccess } from '../../../../lib/admin-auth';
 import { draftDatabase } from '../../../../lib/admin-drafts';
+import { mediaBucket } from '../../../../lib/cms-media-bucket';
 import { validateImage, type MediaImage } from '../../../../lib/cms-model';
 export const dynamic = 'force-dynamic';
 const headers = { 'Cache-Control': 'no-store' };
@@ -15,7 +16,7 @@ export async function GET() {
   const db = draftDatabase(); if (!db) return fail('Database unavailable', 503);
   try {
     const { results } = await db.prepare('SELECT * FROM admin_media ORDER BY updated_at DESC LIMIT 500').all<Row>();
-    return NextResponse.json({ media: results.map(mapRow), uploadAvailable: false }, { headers });
+    return NextResponse.json({ media: results.map(mapRow), uploadAvailable: Boolean(mediaBucket()) }, { headers });
   } catch { return fail('Media library unavailable. Apply the SEO/media migration in Preview first.', 503); }
 }
 export async function POST(request: NextRequest) {
