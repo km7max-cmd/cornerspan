@@ -6,7 +6,14 @@ const ts=require('typescript');
 if(!globalThis.crypto) globalThis.crypto=require('node:crypto').webcrypto;
 const root=path.resolve(__dirname,'..');
 const memory=new Map();
-let canLogin=false, boundR2=null;
+let canLogin=false, boundR2=null, d1Enabled=false;
+const d1Objects=new Map();
+const d1Images={
+  MAX_D1_IMAGE_BYTES:350*1024,
+  async d1ImagesReady(){return d1Enabled;},
+  async saveImageToD1(filename,bytes,mime){if(!d1Enabled||bytes.byteLength>350*1024)return false;d1Objects.set(filename,{filename,mime_type:mime,data_base64:Buffer.from(bytes).toString('base64'),byte_length:bytes.byteLength});return true;},
+  async readImageFromD1(filename){return d1Objects.get(filename)||null;},
+};
 let environment={};
 function load(filename){
   const full=path.join(root,filename);
@@ -20,6 +27,7 @@ function load(filename){
     if(id.endsWith('/lib/admin-auth'))return {hasAdminAccess:async()=>canLogin};
     if(id.endsWith('/lib/cms-upload'))return helpers;
     if(id.endsWith('/lib/cms-media-bucket'))return bucket;
+    if(id.endsWith('/lib/cms-d1-images'))return d1Images;
     throw Error('Unexpected dependency '+id+' in '+filename);
   };
   new Function('require','module','exports',code)(req,module,module.exports);
@@ -57,7 +65,20 @@ const webp=Uint8Array.from([0x52,0x49,0x46,0x46,0x0e,0,0,0,0x57,0x45,0x42,0x50,0
   assert.equal((await upload.GET()).status,200);
   assert.equal((await upload.GET()).then,undefined);
   assert.equal((await (await upload.GET()).json()).uploadAvailable,false);
-  assert.equal((await upload.POST(request(png))).status,503,'Missing bucket fails closed');
+  assert.equal((await upload.POST(request(png))).status,503,'Missing bucket and D1 migration fail closed');
+  d1Enabled=true;
+  assert.equal((await (await upload.GET()).json()).uploadAvailable,true,'D1 should enable direct uploads');
+  const storedInD1=await upload.POST(request(png));
+  assert.equal(storedInD1.status,201,'D1 image write should work with no R2 bucket');
+  const storedD1Info=await storedInD1.json();
+  const filename=storedD1Info.url.split('/').pop();
+  assert.equal(d1Objects.size,1);
+  const fromD1=await publicImages.GET(new Request('https://www.cornerspan.com'+storedD1Info.url),{params:Promise.resolve({filename})});
+  assert.equal(fromD1.status,200,'Small public image readable from D1');
+  assert.equal(fromD1.headers.get('content-type'),'image/png');
+  assert.deepEqual(new Uint8Array(await fromD1.arrayBuffer()),png);
+  assert.equal((await upload.POST(request(new Uint8Array(d1Images.MAX_D1_IMAGE_BYTES+1)))).status,413,'D1 media size limit enforced');
+  d1Enabled=false;
   environment.CMS_MEDIA_BUCKET={};
   assert.equal(bucket.mediaBucket(),null,'Wrong binding type fails closed');
   environment.CMS_MEDIA_BUCKET=boundR2={
@@ -93,7 +114,7 @@ const webp=Uint8Array.from([0x52,0x49,0x46,0x46,0x0e,0,0,0,0x57,0x45,0x42,0x50,0
   assert.equal((await publicImages.GET(null,{params:Promise.resolve({filename:'../wrong.png'})})).status,404);
   assert.equal((await publicImages.GET(null,{params:Promise.resolve({filename:'00000000-0000-0000-0000-000000000000.jpg'})})).status,404);
   environment.CMS_MEDIA_BUCKET=undefined;
-  assert.equal((await publicImages.GET(null,{params:Promise.resolve({filename:data.url.split('/').pop()})})).status,503,'Bucket unavailable fails safely');
+  assert.equal((await publicImages.GET(null,{params:Promise.resolve({filename:data.url.split('/').pop()})})).status,404,'No image exists in D1 for this filename');
   const config=JSON.parse(fs.readFileSync(path.join(root,'wrangler.jsonc'),'utf8'));
   const prod=config.r2_buckets.find(x=>x.binding==='CMS_MEDIA_BUCKET');
   const preview=config.previews?.r2_buckets?.find(x=>x.binding==='CMS_MEDIA_BUCKET');
@@ -105,5 +126,5 @@ const webp=Uint8Array.from([0x52,0x49,0x46,0x46,0x0e,0,0,0,0x57,0x45,0x42,0x50,0
   const ui=fs.readFileSync(path.join(root,'app/admin/media-manager.tsx'),'utf8');
   assert.match(ui,/type="file"/);
   assert.match(ui,/\/api\/admin\/media\/upload/);
-  console.log('PASS isolated R2 image magic/type/size checks, session auth, CSRF, missing storage, upload and public serving.');
+  console.log('PASS isolated R2/D1 image signatures, 350 KB D1 limit, auth, CSRF, upload and public serving.');
 })().catch(error=>{console.error(error);process.exitCode=1;});
