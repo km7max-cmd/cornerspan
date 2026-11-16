@@ -11,7 +11,7 @@ const persist = () => { localStorage.setItem('qa-drafts', JSON.stringify(drafts)
 const reply = (data, status = 200) => Promise.resolve(new Response(JSON.stringify(data), { status, headers: { 'Content-Type': 'application/json' } }));
 window.fetch = async (input, options = {}) => {
   const url = new URL(String(input), location.origin); const method = options.method || 'GET'; const path = url.pathname;
-  const payload = options.body ? JSON.parse(String(options.body)) : {};
+  const payload = typeof options.body === 'string' ? JSON.parse(options.body) : {};
   if (path === '/api/admin/drafts') {
     if (method === 'GET') return reply({ drafts: Object.values(drafts) });
     if (method === 'POST') {
@@ -26,8 +26,11 @@ window.fetch = async (input, options = {}) => {
     if (method === 'POST') { const draft = drafts[payload.slug]; const revision = (published[payload.slug]?.revision || 0) + 1; published[payload.slug] = { ...draft, revision }; persist(); return reply({ published: true, revision }); }
     if (method === 'DELETE') { delete published[url.searchParams.get('slug')]; persist(); return reply({ unpublished: true }); }
   }
+  if (path === '/api/admin/media/upload' && method === 'POST') {
+    return reply({ url: '/og-image.webp', contentType: 'image/png', size: options.body?.size || 0 }, 201);
+  }
   if (path === '/api/admin/media') {
-    if (method === 'GET') return reply({ media: Object.values(media), uploadAvailable: false });
+    if (method === 'GET') return reply({ media: Object.values(media), uploadAvailable: true });
     if (method === 'DELETE') {
       const id = url.searchParams.get('id'); const revision = Number(url.searchParams.get('revision'));
       if (!media[id] || media[id].revision !== revision) return reply({ error: 'Image changed or was already removed.' }, 409);
