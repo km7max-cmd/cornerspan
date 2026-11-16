@@ -1,3 +1,13 @@
+## Production schema read-only SQL evidence — 16 November 2026, 05:32 IST
+
+The owner executed the read-only Wrangler query against `cornerspan-admin` to inspect `sqlite_master` table and index definitions. The supplied lower-screen screenshot reports `success:true`, `changes:0`, `changed_db:false`, 16 rows read, and the stored `CREATE TABLE` definitions for `admin_post_drafts` and `admin_published_posts`.
+
+- Both visible table definitions match the shape of legacy migration files `0001_admin_post_drafts.sql` and `0002_admin_published_posts.sql`: they include the expected base columns and defaults, with no `seo_json` yet. A separate pinned preflight already checked expected base columns and found zero rows in each table.
+- The screenshot starts partway through the JSON output and **does not show the index entries**, so the expected three base indexes (`idx_admin_post_drafts_updated`, `idx_admin_published_posts_date`, and `idx_admin_login_attempts_window`) have not all been verified by this evidence.
+- No D1 writes or production release occurred. Do not interpret the SQL inspection as permission to skip the missing schema/ledger safety checks.
+
+Before an additive production migration, verify the presence and definitions of all three indexes via a short read-only sqlite_master query. Reconcile any deviation from migration files 0001–0003; do not invent ledger rows or run `0004` if a `seo_json` column already exists. Only then use Wrangler's built-in remote migration process with confirmation and backup, recheck every table/ledger entry/row count, and separately verify secrets and code lineage before moving production traffic.
+
 ## 16 November 2026: Authenticated remote Preview acceptance — PASS
 
 The owner ran `scripts/run-preview-acceptance.sh` in the authenticated Codespace and supplied a terminal screenshot at approximately 05:27 IST. The named Cloudflare feature Preview completed a new encrypted `ADMIN_SESSION_SECRET` deployment `ef79b40f-eba0-4fa5-abe1-514ad4fb106a` (the preceding password rotation is part of the owner-run helper; no secret values are recorded here).
