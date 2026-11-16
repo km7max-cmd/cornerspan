@@ -1,3 +1,19 @@
+## Production D1 fully verified; clean undeployed candidate prepared — 16 November 2026, 05:53 IST
+
+The owner's 05:53 IST authenticated preflight screenshot confirms Production `ADMIN_DB` MATCH, all four expected administrative tables with complete columns, 0 rows in drafts/publications/login attempts/media, and `d1_migrations` with 4 rows. All four migrations `0001`–`0004` are reported **applied**. Production Worker `da4e7677-f159-4989-a9f1-d3ac60fbfcfc` remains active at **100%**, while both Production admin secret names remain **MISSING** on that version. Its code/Git match is unverified. The migration must not be rerun.
+
+Created `scripts/prepare-production-candidate.sh` on the feature branch to stage a **new undeployed** Worker version with the exact reviewed Git commit `062419126fa6ecd702823d0d18499de9dae8011f` plus both required admin secrets *in the same upload*. It extracts a clean copy using `git archive`, leaving the owner's four modified Codespace files untouched; checks the pinned Production D1 binding, preview D1 separation, worker name, required secret names and stable Production deployment version; runs fresh dependencies, calculator generation, and Cloudflare build; reads a new Production login password with hidden input, generates an independent high-entropy session signing secret, writes a temporary 0600-permission JSON secret file only in a private temporary directory, and uses `wrangler versions upload --secrets-file` without deployment. It then rechecks that the original Production Worker remains active. The temporary secret file is cleaned up; neither credential belongs in chat, source or logs. A build, upload or integrity error stops the flow.
+
+The script has **not yet been executed in the owner's authenticated Codespace**. Passing CI's `bash -n` syntax check does not prove a remote upload. Never deploy an earlier secret-only Worker version or merge the PR as a shortcut. The final release must review the resulting version's exact D1 binding, both secret names, bundled code lineage and compatibility settings, Cloudflare's production build/branch behavior and a known-good rollback version before allowing production traffic. Uploading an undeployed version is not a Live release.
+
+Owner-run staging command (do not paste the password here):
+
+```bash
+cd /workspaces/cornerspan && git fetch origin feature/posts-admin-dashboard && git show e566a4bdd60ace2a3389a63c1b8f58e91cf25c3f:scripts/prepare-production-candidate.sh > /tmp/cornerspan-candidate.sh && bash /tmp/cornerspan-candidate.sh
+```
+
+Cloudflare documentation: https://developers.cloudflare.com/workers/wrangler/commands/workers/ (versions upload with `--secrets-file` does not deploy), https://developers.cloudflare.com/workers/configuration/secrets/ .
+
 ## Owner-run Production D1 migration completed — 16 November 2026, 05:48 IST
 
 The owner ran the pinned guarded migration helper from the authenticated Codespace after the 05:46 baseline passed for 3 legacy tables, 3 expected indexes, 0 records, and a Production D1 Time Travel bookmark. The owner then explicitly confirmed the guarded schema upgrade.
