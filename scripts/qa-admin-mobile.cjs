@@ -28,7 +28,12 @@ let browser;
         await page.getByLabel('Focus Keyword', { exact: true }).fill('concrete patio');
         // Reusable URL media workflow, including persistence and image ALT.
         await page.getByRole('button', { name: 'Choose from library', exact: true }).click();
-        await page.getByLabel('Library image URL', { exact: true }).fill('/og-image.webp');
+        // Simulated file upload tests the real mobile/desktop file chooser and preview fields.
+        const examplePng = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4z8DwHwAFgAI/ScuYXwAAAABJRU5ErkJggg==', 'base64');
+        await page.getByLabel('Upload library image from device').setInputFiles({ name: 'concrete-patio.png', mimeType: 'image/png', buffer: examplePng });
+        await page.getByText('Image uploaded. Add descriptive ALT text', { exact: false }).waitFor();
+        assert.equal(await page.getByLabel('Library image URL', { exact: true }).inputValue(), '/og-image.webp');
+
         await page.getByLabel('Library image ALT text', { exact: true }).fill('Concrete patio project diagram');
         await page.getByLabel('Library image title', { exact: true }).fill('Patio dimensions');
         await page.getByLabel('Library image click-through link', { exact: true }).fill('/calculators/concrete');
@@ -71,7 +76,7 @@ let browser;
         await page.goto(`${origin}/blog/preview-qa-${name}`);
         await page.getByRole('heading', { name: '404 — Article not published', exact: true }).waitFor();
         assert.equal(errors.length, 0, errors.join('\n'));
-        console.log(`PASS ${name}: responsive layout, editor, live SEO, media/ALT/delete, TOC, save/reload, preview, simulated publish/unpublish/delete`);
+        console.log(`PASS ${name}: responsive layout, editor, simulated mobile file upload/ALT/delete, live SEO, TOC, save/reload, preview, publish/unpublish/delete`);
       } catch (error) { await page.screenshot({ path: `qa-artifacts/admin-${name}-failure.png`, fullPage: true }); throw error; }
       finally { await context.close(); }
     }
