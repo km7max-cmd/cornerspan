@@ -1,3 +1,21 @@
+## LIVE RELEASE CONFIRMED — 16 November 2026, 06:47 IST
+
+**Owner-provided authenticated Codespace terminal evidence: successfully deployed to 100% of CornerSpan Production traffic.** The guarded script completed and reported `PASS: CornerSpan uploaded version 1d3c3256-4f2c-42da-977c-104e61cb0e5a is LIVE at 100% with public/auth smoke checks.` This was the previously reviewed and uploaded Worker candidate, associated with source commit `062419126fa6ecd702823d0d18499de9dae8011f`. Do not initiate another deployment for this release.
+
+Immediate post-release read-only smoke results, all PASS:
+
+- `GET /`, `/calculators`, `/calculators/concrete`, `/blog`, `/guides`, `/about`, `/privacy`: HTTP 200 and title/H1 presence.
+- `GET /admin/login`: HTTP 200 (page renders, not authenticated sign-in).
+- Unauthenticated `GET /api/admin/drafts`: HTTP 401, indicating the endpoint blocks anonymous reads.
+- `GET /sitemap.xml`: HTTP 200 and **48 URLs**.
+- Script rechecked active Worker version at 100% after the smoke tests, without requiring rollback.
+
+**Outstanding manual acceptance:** The owner should privately open `https://www.cornerspan.com/admin/login`, enter the Production admin password only in the site, sign in and confirm the editor/drafts/media/SEO screens render and can be viewed. No Production sample post/publication is needed; the authenticated create/edit/publish/unpublish flow previously passed on isolated real Preview D1. Protect existing Production content. Do not share passwords, cookies or API tokens.
+
+**Rollback available if necessary:** previous 100% Worker version `da4e7677-f159-4989-a9f1-d3ac60fbfcfc`, deployed with Cloudflare Wrangler `versions deploy` if a material regression occurs. This reverts Worker code/bindings; the additive D1 migration remains. Rollback has not been exercised and is not required for the successful smoke result.
+
+PR #4 remains open and draft, **not merged**. The live deployment was a version promotion, not a merge. Do not claim a PR merge or complete authenticated login acceptance.
+
 ## Final Worker rollout guard prepared — 16 November 2026, 06:18 IST evidence
 
 The owner completed the authenticated candidate verification: version metadata, pinned application Git SHA in upload message, `ADMIN_DB` production binding, both `secret_text` admin names, runtime compatibility flags, rollback target readability and **five Live-versus-Version URL public title/H1 comparisons all PASS**. Live remained on `da4e7677-f159-4989-a9f1-d3ac60fbfcfc` at 100%, as observed in the prior script. No D1 writes or Worker traffic changes occurred.
