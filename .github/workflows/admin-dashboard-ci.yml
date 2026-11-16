@@ -35,6 +35,8 @@ jobs:
         run: bash -n scripts/guarded-production-d1-migration.sh
       - name: Check clean Production candidate wrapper syntax (never upload in CI)
         run: bash -n scripts/prepare-production-candidate.sh
+      - name: Check read-only candidate verification script syntax (no remote access in CI)
+        run: node --check scripts/verify-production-candidate.cjs
       - name: Verify password sessions and D1 publication safeguards
         run: node scripts/test-admin-behavior.cjs
       - name: Preserve 21 legacy metadata outputs and calculator source
