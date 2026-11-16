@@ -1,3 +1,25 @@
+## Upload images from a phone — feature under development, 16 November 2026
+
+The owner reported that the LIVE Admin UI currently offers only image URLs. This is correct for the deployed Worker version `1d3c3256-4f2c-42da-977c-104e61cb0e5a`, which was built from pre-R2 commit `0624191`. The **feature branch** contains newer, unshipped UI and API code for direct JPG/PNG/WebP uploads to a private Cloudflare R2 bucket and image GET via `/cms-images/{uuid}.{ext}`. Do not claim direct upload is Live.
+
+`wrangler.jsonc` now names **two distinct R2 bucket bindings** with the same runtime binding `CMS_MEDIA_BUCKET`: Production bucket `cornerspan-cms-media`, and Preview bucket `cornerspan-cms-media-preview` under `previews.r2_buckets`. This follows Cloudflare's Preview isolation rules. These are desired resource names, **not** evidence that R2 buckets have been provisioned. No Cloudflare deployment, bucket creation or production post changes were made by the GitHub edit.
+
+**Owner-run setup** (Cloudflare authenticated Codespace required; R2 may require enabling R2/billing first):
+
+```sh
+cd /workspaces/cornerspan && git fetch origin feature/posts-admin-dashboard && git show 048dee455d76f9e2919a0fe1da8cecb4cf3e38ee:scripts/setup-admin-r2.sh > /tmp/cornerspan-setup-r2.sh && bash /tmp/cornerspan-setup-r2.sh
+```
+
+The script lists R2 buckets read-only, shows the two expected names, then requires the owner to type `CREATE CORNERSPAN R2` before creating missing **private** buckets. It does not enable public R2 endpoints, deploy Workers, rotate secrets, or write D1. Inspect any R2 charges/Cloudflare account requirements before accepting; stop on any permission or billing error.
+
+**After private buckets exist, Preview only**: verify the feature Preview's actual `CMS_MEDIA_BUCKET` binding resolves to `cornerspan-cms-media-preview` and the existing Preview D1/secrets remain intact. Using the owner's authenticated Preview login, upload a disposable small JPG/PNG/WebP file, confirm its URL displays under Preview `/cms-images/`, add ALT text, save a media record, set as featured in a draft, reload, verify SEO/social preview and cleanup draft/media metadata. Do NOT test writes against Production or Version URL, since Version URLs use Production resources. Uploaded image objects are intentionally not deleted when media records are deleted because already-published articles may reference them. Test objects can be removed explicitly from the Preview bucket later by an authorized owner.
+
+**Only after Preview passes**: stage a clean new undeployed Production Worker version from the reviewed commit with R2 binding and preserve the existing two admin secrets; verify account/bucket binding and public route parity; run guarded release with new version IDs and rollback to `1d3c3256-4f2c-42da-977c-104e61cb0e5a`. Do not use the old hard-coded release script for the previous candidate or merge PR #4. No existing posts, SEO, content or AdSense review should be edited.
+
+Image protections implemented in branch: authenticated POST with same-origin requirement, a strict 5MB streaming cap, JPG/PNG/WebP signature and MIME verification, random object names, and public read-only serving with `Content-Type`, `nosniff` and immutable cache. Browser has Upload from device and image URL fallback with ALT/caption/size fields. Direct upload is disabled in Media Library until R2 is actually bound; an unknown/absent binding must not silently use the Production bucket.
+
+References: https://developers.cloudflare.com/workers/previews/configuration/, https://developers.cloudflare.com/workers/wrangler/commands/r2/ , https://developers.cloudflare.com/r2/api/workers/workers-api-reference/ .
+
 ## LIVE RELEASE CONFIRMED — 16 November 2026, 06:47 IST
 
 **Owner-provided authenticated Codespace terminal evidence: successfully deployed to 100% of CornerSpan Production traffic.** The guarded script completed and reported `PASS: CornerSpan uploaded version 1d3c3256-4f2c-42da-977c-104e61cb0e5a is LIVE at 100% with public/auth smoke checks.` This was the previously reviewed and uploaded Worker candidate, associated with source commit `062419126fa6ecd702823d0d18499de9dae8011f`. Do not initiate another deployment for this release.
