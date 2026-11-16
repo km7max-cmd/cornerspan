@@ -64,10 +64,12 @@ node "$TMP/verify.cjs" || stop 'Candidate pre-release verification did not pass.
 
 git show "$APP_COMMIT:scripts/admin-release-preflight.cjs" > "$TMP/d1-check.cjs" || stop 'Cannot extract pinned D1 preflight.'
 node "$TMP/d1-check.cjs" > "$TMP/d1-report.txt" || stop 'Remote D1 read-only preflight failed.'
-sed -n '/^PRODUCTION D1/,/^PREVIEW D1/p' "$TMP/d1-report.txt"
-grep -Fq 'Migration ledger: 1=applied 2=applied 3=applied 4=applied' "$TMP/d1-report.txt" || stop 'Four Production migrations not confirmed.'
+sed -n '/^PRODUCTION D1/,/^PREVIEW D1/p' "$TMP/d1-report.txt" | sed '$d' > "$TMP/production-section.txt"
+cat "$TMP/production-section.txt"
+[[ -s "$TMP/production-section.txt" ]] || stop 'Production section was not found in read-only preflight.'
+grep -Fq 'Migration ledger: 1=applied 2=applied 3=applied 4=applied' "$TMP/production-section.txt" || stop 'Four Production migrations not confirmed.'
 for table in admin_post_drafts admin_published_posts admin_login_attempts admin_media; do
-  grep -Eq "^  $table: expected columns present;" "$TMP/d1-report.txt" || stop "Production table schema mismatched: $table"
+  grep -Eq "^  $table: expected columns present;" "$TMP/production-section.txt" || stop "Production table schema mismatched: $table"
 done
 echo 'PASS: Production D1 schema and four applied migrations.'
 
