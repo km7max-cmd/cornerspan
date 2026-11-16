@@ -11,7 +11,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ fil
   if (!isUploadedImageName(filename)) return new Response('Not Found', { status: 404 });
   const storage = mediaBucket();
   try {
-    let body: ReadableStream<Uint8Array> | Uint8Array;
+    let body: BodyInit;
     let contentType: string;
     let size: number;
     if (storage) {
@@ -24,11 +24,13 @@ export async function GET(_request: Request, { params }: { params: Promise<{ fil
       const row = await readImageFromD1(filename);
       if (!row) return new Response('Not Found', { status: 404 });
       if (row.byte_length < 12 || row.byte_length > MAX_D1_IMAGE_BYTES) return new Response('Not Found', { status: 404 });
-      const decoded = new Uint8Array(Buffer.from(row.data_base64, 'base64'));
+      const decoded = Buffer.from(row.data_base64, 'base64');
       if (decoded.byteLength !== row.byte_length) return new Response('Not Found', { status: 404 });
+      const bytes = new ArrayBuffer(decoded.byteLength);
+      new Uint8Array(bytes).set(decoded);
       contentType = row.mime_type;
       size = decoded.byteLength;
-      body = decoded;
+      body = bytes;
     }
     if (!['image/jpeg', 'image/png', 'image/webp'].includes(contentType)) {
       return new Response('Not Found', { status: 404 });
