@@ -1,9 +1,60 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type ChangeEvent } from 'react';
 import { emptyImage, safeUrl, type MediaImage, type MediaRecord } from '../../lib/cms-model';
+import { MAX_IMAGE_BYTES } from '../../lib/cms-upload';
+
 export function ImageFields({ value, onChange, prefix = 'Featured image' }: { value: MediaImage; onChange: (image: MediaImage) => void; prefix?: string }) {
+  const [uploading, setUploading] = useState(false);
+  const [uploadMessage, setUploadMessage] = useState('');
   const change = (key: keyof MediaImage, item: string | number | null) => onChange({ ...value, [key]: item });
+
+  async function uploadFromDevice(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.currentTarget.files?.[0];
+    event.currentTarget.value = '';
+    if (!file || uploading) return;
+    if (!file.size || file.size > MAX_IMAGE_BYTES) {
+      setUploadMessage('Choose an image that is 5 MB or smaller.');
+      return;
+    }
+    if (!['image/jpeg', 'image/png', 'image/webp', ''].includes(file.type)) {
+      setUploadMessage('Use a JPG, PNG or WebP image.');
+      return;
+    }
+    setUploading(true);
+    setUploadMessage('');
+    try {
+      const response = await fetch('/api/admin/media/upload', {
+        method: 'POST', credentials: 'same-origin', cache: 'no-store',
+        headers: { 'Content-Type': file.type || 'application/octet-stream' },
+        body: file,
+      });
+      const result = await response.json() as { url?: string; error?: string };
+      if (!response.ok || !result.url) throw Error(result.error || 'Image upload failed.');
+      let width: number | null = null;
+      let height: number | null = null;
+      try {
+        if (typeof createImageBitmap === 'function') {
+          const image = await createImageBitmap(file);
+          width = image.width; height = image.height; image.close();
+        }
+      } catch { /* The preview img can fill dimensions on load. */ }
+      const name = file.name.replace(/\.[^.]+$/, '').replace(/[_-]+/g, ' ').trim().slice(0, 150);
+      onChange({ ...value, url: result.url, title: value.title || name, width, height });
+      setUploadMessage('Image uploaded. Add descriptive ALT text and save these details to keep it in the library or draft.');
+    } catch (error) {
+      setUploadMessage(error instanceof Error ? error.message : 'Unable to upload image.');
+    } finally {
+      setUploading(false);
+    }
+  }
   return <>
+    <label className="cms-field">Upload {prefix.toLowerCase()} from your phone or computer
+      <input type="file" accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp"
+        onChange={uploadFromDevice} disabled={uploading} aria-label={`Upload ${prefix.toLowerCase()} from device`}/>
+    </label>
+    <p className="cms-help">JPG, PNG or WebP up to 5 MB. Upload needs Cloudflare R2; you can still use an image link.</p>
+    {uploading && <p className="cms-notice" role="status">Uploading image…</p>}
+    {uploadMessage && <p className={uploadMessage.startsWith('Image uploaded.') ? 'cms-notice' : 'cms-error'} role="status">{uploadMessage}</p>}
     <div className="cms-grid-two">{([['url', 'URL'], ['alt', 'ALT text'], ['title', 'title'], ['caption', 'caption'], ['sourceUrl', 'source URL'], ['linkUrl', 'click-through link']] as const).map(([key, label]) => <label className="cms-field" key={key}>{prefix} {label}<input type={key.includes('Url') || key === 'url' ? 'url' : 'text'} value={value[key]} onChange={e => change(key, e.target.value)} placeholder={key === 'url' ? 'https://… or /images/…' : key === 'alt' ? 'Describe what the image shows' : 'Optional'}/></label>)}</div>
     <div className="cms-grid-two">{(['width', 'height'] as const).map(key => <label className="cms-field" key={key}>{prefix} {key} (px)<input type="number" min="1" max="20000" value={value[key] ?? ''} onChange={e => change(key, e.target.value ? Number(e.target.value) : null)}/></label>)}</div>
     <p className="cms-help">Use a descriptive filename such as gravel-driveway-depth.webp. Add dimensions to reserve image space. Only use images you may publish.</p>
@@ -41,6 +92,6 @@ export default function MediaManager({ onUse }: { onUse: (image: MediaImage, pla
   return <div className="cms-media-layout"><section className="cms-card"><div className="cms-card-heading"><div><span className="cms-eyebrow">Reusable images</span><h2>Media Library</h2></div><span className="cms-badge">{media.length} images</span></div>
     <label className="cms-field">Search images<input type="search" value={query} onChange={e => setQuery(e.target.value)} placeholder="Title, ALT text or filename"/></label>
     <div className="cms-media-grid">{media.filter(m => `${m.url} ${m.title} ${m.alt}`.toLowerCase().includes(query.toLowerCase())).map(m => <div className="cms-media-item" key={m.id}><img src={m.url} alt={m.alt} loading="lazy"/><strong>{m.title || m.alt || 'Untitled image'}</strong><p>{m.width && m.height ? `${m.width} × ${m.height}` : 'Dimensions unknown'} · {m.alt ? 'ALT added' : 'Missing ALT'}</p><div className="cms-actions"><button onClick={() => onUse(m, 'featured')}>Set featured</button><button onClick={() => onUse(m, 'inline')}>Insert in article</button><button onClick={() => { setEdit(m); setForm(m); }}>Edit details</button><button className="cms-danger" disabled={busy} onClick={() => remove(m)}>Remove from library</button></div></div>)}</div>
-    {!media.length && <div className="cms-empty"><strong>Your image collection starts here</strong><p>Add a hosted image URL, ALT text and source details. Then reuse it in your articles.</p></div>}
-  </section><section className="cms-card"><h2>{edit ? 'Edit image details' : 'Add image by URL'}</h2><p className="cms-help">File uploads are unavailable: no verified R2 or other upload storage is configured. Hosted image URLs work now.</p><fieldset disabled={busy}><ImageFields value={form} onChange={setForm} prefix="Library image"/><div className="cms-actions"><button className="cms-primary" onClick={save}>{busy ? 'Saving…' : 'Save image'}</button>{edit && <button onClick={() => { setEdit(null); setForm(emptyImage()); }}>Cancel edit</button>}</div></fieldset>{message && <p role="status" className="cms-notice">{message}</p>}</section></div>;
+    {!media.length && <div className="cms-empty"><strong>Your image collection starts here</strong><p>Upload a JPG/PNG/WebP image from your device, or add an image URL. Save its ALT text and details to reuse it in your articles.</p></div>}
+  </section><section className="cms-card"><h2>{edit ? 'Edit image details' : 'Upload or link an image'}</h2><p className="cms-help">Choose a photo from your device, or paste a hosted image URL. Set the ALT text and click Save image to reuse it in posts. Upload requires an R2 bucket binding; links remain available.</p><fieldset disabled={busy}><ImageFields value={form} onChange={setForm} prefix="Library image"/><div className="cms-actions"><button className="cms-primary" onClick={save}>{busy ? 'Saving…' : 'Save image'}</button>{edit && <button onClick={() => { setEdit(null); setForm(emptyImage()); }}>Cancel edit</button>}</div></fieldset>{message && <p role="status" className="cms-notice">{message}</p>}</section></div>;
 }
