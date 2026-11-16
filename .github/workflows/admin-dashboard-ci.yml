@@ -41,6 +41,8 @@ jobs:
         run: bash -n scripts/guarded-live-release.sh
       - name: Verify password sessions and D1 publication safeguards
         run: node scripts/test-admin-behavior.cjs
+      - name: Verify R2 image signatures, secure upload and read-only serving (isolated mocks)
+        run: node scripts/test-admin-image-upload.cjs
       - name: Preserve 21 legacy metadata outputs and calculator source
         run: node scripts/test-legacy-preservation.cjs
       - name: Browser-like React editor workflow tests
