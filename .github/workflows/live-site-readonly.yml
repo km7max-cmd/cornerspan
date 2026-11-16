@@ -1,0 +1,23 @@
+name: CornerSpan live read-only audit
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  live-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate audit script syntax
+        run: node --check scripts/qa-live-readonly.cjs
+      - name: Audit live sitemap, page SEO and anonymous admin access (GET only)
+        run: node scripts/qa-live-readonly.cjs
