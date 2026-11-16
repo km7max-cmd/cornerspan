@@ -3,6 +3,8 @@ import { draftDatabase } from './admin-drafts';
 // Deliberately small to protect the shared D1 database and Workers Free quota.
 // These are _additional_ rows. Existing drafts and published posts stay untouched.
 export const MAX_D1_IMAGE_BYTES = 350 * 1024;
+// Conservative upper bound: 100 × 350 KB = about 34 MB of raw images.
+export const MAX_D1_IMAGE_RECORDS = 100;
 export type D1ImageRow = { filename: string; mime_type: string; data_base64: string; byte_length: number };
 
 export async function d1ImagesReady(): Promise<boolean> {
@@ -23,6 +25,8 @@ export async function saveImageToD1(filename: string, bytes: Uint8Array, mime: s
   if (!db || bytes.byteLength > MAX_D1_IMAGE_BYTES || bytes.byteLength < 12) return false;
   const data = Buffer.from(bytes).toString('base64');
   try {
+    const usage = await db.prepare('SELECT COUNT(*) AS total FROM admin_uploaded_images').first<{ total: number }>();
+    if (!usage || usage.total >= MAX_D1_IMAGE_RECORDS) return false;
     const result = await db.prepare(
       'INSERT INTO admin_uploaded_images (filename, mime_type, data_base64, byte_length) VALUES (?,?,?,?)'
     ).bind(filename, mime, data, bytes.byteLength).run();
