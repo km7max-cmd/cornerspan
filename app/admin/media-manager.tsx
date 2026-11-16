@@ -3,7 +3,7 @@ import { useEffect, useState, type ChangeEvent } from 'react';
 import { emptyImage, safeUrl, type MediaImage, type MediaRecord } from '../../lib/cms-model';
 import { MAX_IMAGE_BYTES } from '../../lib/cms-upload';
 
-export function ImageFields({ value, onChange, prefix = 'Featured image' }: { value: MediaImage; onChange: (image: MediaImage) => void; prefix?: string }) {
+export function ImageFields({ value, onChange, prefix = 'Featured image', uploadAvailable }: { value: MediaImage; onChange: (image: MediaImage) => void; prefix?: string; uploadAvailable?: boolean }) {
   const [uploading, setUploading] = useState(false);
   const [uploadMessage, setUploadMessage] = useState('');
   const change = (key: keyof MediaImage, item: string | number | null) => onChange({ ...value, [key]: item });
@@ -12,6 +12,7 @@ export function ImageFields({ value, onChange, prefix = 'Featured image' }: { va
     const file = event.currentTarget.files?.[0];
     event.currentTarget.value = '';
     if (!file || uploading) return;
+    if (uploadAvailable === false) { setUploadMessage('Image uploads need Cloudflare R2 storage. You can still paste an image URL.'); return; }
     if (!file.size || file.size > MAX_IMAGE_BYTES) {
       setUploadMessage('Choose an image that is 5 MB or smaller.');
       return;
@@ -50,7 +51,7 @@ export function ImageFields({ value, onChange, prefix = 'Featured image' }: { va
   return <>
     <label className="cms-field">Upload {prefix.toLowerCase()} from your phone or computer
       <input type="file" accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp"
-        onChange={uploadFromDevice} disabled={uploading} aria-label={`Upload ${prefix.toLowerCase()} from device`}/>
+        onChange={uploadFromDevice} disabled={uploading || uploadAvailable === false} aria-label={`Upload ${prefix.toLowerCase()} from device`}/>
     </label>
     <p className="cms-help">JPG, PNG or WebP up to 5 MB. Upload needs Cloudflare R2; you can still use an image link.</p>
     {uploading && <p className="cms-notice" role="status">Uploading image…</p>}
@@ -64,8 +65,9 @@ export function ImageFields({ value, onChange, prefix = 'Featured image' }: { va
 }
 export default function MediaManager({ onUse }: { onUse: (image: MediaImage, placement: 'featured' | 'inline') => void }) {
   const [media, setMedia] = useState<MediaRecord[]>([]); const [form, setForm] = useState<MediaImage>(emptyImage());
+  const [uploadAvailable, setUploadAvailable] = useState<boolean | null>(null);
   const [edit, setEdit] = useState<MediaRecord | null>(null); const [query, setQuery] = useState(''); const [message, setMessage] = useState(''); const [busy, setBusy] = useState(false);
-  useEffect(() => { let active = true; fetch('/api/admin/media', { cache: 'no-store' }).then(async r => { const data = await r.json(); if (!r.ok) throw Error(data.error); if (active) setMedia(data.media); }).catch(e => { if (active) setMessage(e.message); }); return () => { active = false; }; }, []);
+  useEffect(() => { let active = true; fetch('/api/admin/media', { cache: 'no-store' }).then(async r => { const data = await r.json(); if (!r.ok) throw Error(data.error); if (active) { setMedia(data.media); setUploadAvailable(data.uploadAvailable === true); } }).catch(e => { if (active) setMessage(e.message); }); return () => { active = false; }; }, []);
   async function save() {
     setBusy(true); setMessage('');
     try {
@@ -93,5 +95,5 @@ export default function MediaManager({ onUse }: { onUse: (image: MediaImage, pla
     <label className="cms-field">Search images<input type="search" value={query} onChange={e => setQuery(e.target.value)} placeholder="Title, ALT text or filename"/></label>
     <div className="cms-media-grid">{media.filter(m => `${m.url} ${m.title} ${m.alt}`.toLowerCase().includes(query.toLowerCase())).map(m => <div className="cms-media-item" key={m.id}><img src={m.url} alt={m.alt} loading="lazy"/><strong>{m.title || m.alt || 'Untitled image'}</strong><p>{m.width && m.height ? `${m.width} × ${m.height}` : 'Dimensions unknown'} · {m.alt ? 'ALT added' : 'Missing ALT'}</p><div className="cms-actions"><button onClick={() => onUse(m, 'featured')}>Set featured</button><button onClick={() => onUse(m, 'inline')}>Insert in article</button><button onClick={() => { setEdit(m); setForm(m); }}>Edit details</button><button className="cms-danger" disabled={busy} onClick={() => remove(m)}>Remove from library</button></div></div>)}</div>
     {!media.length && <div className="cms-empty"><strong>Your image collection starts here</strong><p>Upload a JPG/PNG/WebP image from your device, or add an image URL. Save its ALT text and details to reuse it in your articles.</p></div>}
-  </section><section className="cms-card"><h2>{edit ? 'Edit image details' : 'Upload or link an image'}</h2><p className="cms-help">Choose a photo from your device, or paste a hosted image URL. Set the ALT text and click Save image to reuse it in posts. Upload requires an R2 bucket binding; links remain available.</p><fieldset disabled={busy}><ImageFields value={form} onChange={setForm} prefix="Library image"/><div className="cms-actions"><button className="cms-primary" onClick={save}>{busy ? 'Saving…' : 'Save image'}</button>{edit && <button onClick={() => { setEdit(null); setForm(emptyImage()); }}>Cancel edit</button>}</div></fieldset>{message && <p role="status" className="cms-notice">{message}</p>}</section></div>;
+  </section><section className="cms-card"><h2>{edit ? 'Edit image details' : 'Upload or link an image'}</h2><p className="cms-help">Choose a photo from your device, or paste a hosted image URL. Set the ALT text and click Save image to reuse it in posts.</p>{uploadAvailable === false && <p className="cms-error" role="status">Cloudflare R2 image storage is not connected yet. Direct upload is disabled; image links still work.</p>}<fieldset disabled={busy}><ImageFields value={form} onChange={setForm} prefix="Library image" uploadAvailable={uploadAvailable === true}/><div className="cms-actions"><button className="cms-primary" onClick={save}>{busy ? 'Saving…' : 'Save image'}</button>{edit && <button onClick={() => { setEdit(null); setForm(emptyImage()); }}>Cancel edit</button>}</div></fieldset>{message && <p role="status" className="cms-notice">{message}</p>}</section></div>;
 }
