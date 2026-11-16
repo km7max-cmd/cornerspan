@@ -57,6 +57,7 @@ echo "Active Production Worker remains: $ACTIVE (100%)"
 echo "Extracted clean reviewed commit: $PIN; working tree and uncommitted files untouched."
 cd "$TMP/candidate"
 npm install --no-package-lock --no-audit --no-fund || fail 'Clean dependency install failed.'
+npm run prebuild || fail 'Calculator data generation failed.'
 npm run build:cloudflare || fail 'Clean Cloudflare build failed.'
 [[ -s .open-next/worker.js ]] || fail 'Cloudflare Worker output missing.'
 printf '\nA new Worker version will be UPLOADED but NOT DEPLOYED.\n'
