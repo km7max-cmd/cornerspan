@@ -108,8 +108,10 @@ async function main(){
   if(old.etag&&fresh.etag)console.log('Code bundle ETags differ: '+(old.etag!==fresh.etag));
   if(!configOk)throw Error('Candidate bindings or compatibility settings are incorrect. STOP.');
   const publicOk=await readOnlyPages();
-  console.log('VERDICT: '+(gitMatch&&publicOk?'VERSION METADATA & PUBLIC SMOKE PASS; release still requires route/build/rollback checks':'HOLD: incomplete commit evidence or public comparison.'));
+  const passed=gitMatch&&publicOk;
+  console.log('VERDICT: '+(passed?'VERSION METADATA & PUBLIC SMOKE PASS; release still requires route/build/rollback checks':'HOLD: incomplete commit evidence or public comparison.'));
   console.log('NO PRODUCTION DEPLOYMENT OR DATABASE WRITES PERFORMED.');
+  if(!passed)throw Error('Candidate verification HOLD. Do not deploy.');
  }finally{rmSync(dir,{recursive:true,force:true});}
 }
 if(require.main===module)main().catch(e=>{console.error('STOP: '+e.message);process.exitCode=1;});
