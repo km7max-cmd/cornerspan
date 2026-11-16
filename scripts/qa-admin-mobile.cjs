@@ -30,6 +30,7 @@ let browser;
         await page.getByRole('button', { name: 'Choose from library', exact: true }).click();
         // Simulated file upload tests the real mobile/desktop file chooser and preview fields.
         const examplePng = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4z8DwHwAFgAI/ScuYXwAAAABJRU5ErkJggg==', 'base64');
+        await page.waitForFunction(() => { const input = document.querySelector('input[aria-label="Upload library image from device"]'); return input && !input.disabled; });
         await page.getByLabel('Upload library image from device').setInputFiles({ name: 'concrete-patio.png', mimeType: 'image/png', buffer: examplePng });
         await page.getByText('Image uploaded. Add descriptive ALT text', { exact: false }).waitFor();
         assert.equal(await page.getByLabel('Library image URL', { exact: true }).inputValue(), '/og-image.webp');
