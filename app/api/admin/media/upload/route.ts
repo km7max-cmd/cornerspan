@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { hasAdminAccess } from '../../../../../lib/admin-auth';
 import { mediaBucket } from '../../../../../lib/cms-media-bucket';
+import { d1ImagesReady, saveImageToD1, MAX_D1_IMAGE_BYTES } from '../../../../../lib/cms-d1-images';
 import { cmsImageFilename, detectImage, MAX_IMAGE_BYTES } from '../../../../../lib/cms-upload';
 
 export const runtime = 'nodejs';
@@ -8,25 +9,27 @@ export const dynamic = 'force-dynamic';
 const headers = { 'Cache-Control': 'no-store', 'X-Robots-Tag': 'noindex' };
 const fail = (error: string, status: number) => NextResponse.json({ error }, { status, headers });
 
-/** Read the availability without disclosing storage credentials or bucket identifiers. */
+/** Private capability check; storage backend identifiers are never disclosed. */
 export async function GET() {
   if (!(await hasAdminAccess())) return fail('Unauthorized', 401);
-  return NextResponse.json({ uploadAvailable: Boolean(mediaBucket()), maxBytes: MAX_IMAGE_BYTES }, { headers });
+  const r2 = Boolean(mediaBucket());
+  return NextResponse.json({ uploadAvailable: r2 || await d1ImagesReady(), maxBytes: r2 ? MAX_IMAGE_BYTES : MAX_D1_IMAGE_BYTES }, { headers });
 }
 
-/** Raw-file uploads are streamed with a strict upper bound before touching R2. */
+/** Raw-file uploads stay in existing D1 if R2 is not enabled, with a strict size limit. */
 export async function POST(request: NextRequest) {
   if (!(await hasAdminAccess())) return fail('Unauthorized', 401);
   if (request.headers.get('origin') !== request.nextUrl.origin) return fail('Invalid request origin.', 403);
   const storage = mediaBucket();
-  if (!storage) return fail('Image upload storage is not configured. Use an image URL until R2 is connected.', 503);
+  if (!storage && !(await d1ImagesReady())) return fail('Image upload storage is not ready. Apply the additive image migration in Preview first.', 503);
+  const uploadLimit = storage ? MAX_IMAGE_BYTES : MAX_D1_IMAGE_BYTES;
 
   const claimedType = request.headers.get('content-type') || '';
   if (!['image/jpeg', 'image/png', 'image/webp', 'application/octet-stream'].includes(claimedType.toLowerCase().split(';')[0].trim())) {
     return fail('Use a JPG, PNG or WebP image.', 415);
   }
   const length = request.headers.get('content-length');
-  if (length && (!/^\d+$/.test(length) || Number(length) > MAX_IMAGE_BYTES)) return fail('Image must be 5 MB or less.', 413);
+  if (length && (!/^\d+$/.test(length) || Number(length) > uploadLimit)) return fail('Image is too large for the selected storage. Try a smaller compressed image.', 413);
   if (!request.body) return fail('No image data received.', 400);
 
   const reader = request.body.getReader();
@@ -38,7 +41,7 @@ export async function POST(request: NextRequest) {
       if (done) break;
       if (!value) continue;
       size += value.byteLength;
-      if (size > MAX_IMAGE_BYTES) {
+      if (size > uploadLimit) {
         await reader.cancel();
         return fail('Image must be 5 MB or less.', 413);
       }
@@ -60,11 +63,16 @@ export async function POST(request: NextRequest) {
   // Never use the untrusted user filename as a storage key or URL.
   const filename = cmsImageFilename() + '.' + type.extension;
   try {
-    await storage.put('cms/' + filename, bytes, { httpMetadata: { contentType: type.mime } });
+    if (storage) {
+      await storage.put('cms/' + filename, bytes, { httpMetadata: { contentType: type.mime } });
+    } else {
+      const saved = await saveImageToD1(filename, bytes, type.mime);
+      if (!saved) return fail('Could not store the optimized image in D1.', 503);
+    }
     return NextResponse.json({
       url: '/cms-images/' + filename, size, contentType: type.mime,
     }, { status: 201, headers });
   } catch {
-    return fail('Could not store image in Cloudflare R2.', 503);
+    return fail('Could not store image.', 503);
   }
 }
