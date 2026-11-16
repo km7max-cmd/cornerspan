@@ -1,3 +1,15 @@
+## Owner rejected R2 billing — D1-only image upload alternative (16 November 2026)
+
+**No new storage subscription, bucket provisioning, or Production deployment authorized.** The owner explicitly declined Cloudflare R2 billing after reviewing its activation screen. The R2 setup and R2-only Preview deployment scripts are now fail-closed, and `wrangler.jsonc` has no R2 bucket bindings.
+
+Feature branch now implements a **small-image fallback through existing D1**: additive `migrations/0005_admin_uploaded_images.sql` creates a dedicated image table without touching draft, publication or media records; client uploads JPG/PNG/WebP (initial size <= 5 MB) and optimizes large images locally to WebP; authenticated, same-origin uploads check magic/MIME and limit D1 payload to 350 KB. Each image gets a randomized `/cms-images/{uuid}.webp`-style URL with public binary retrieval. D1 storage is explicitly bounded to **100 images** (at most approximately 35 MB of raw images), rather than unbounded paid uploads. The existing Image URL workflow remains supported. The D1 backend must fail closed until migration 0005 is applied.
+
+**Billing caveat:** Cloudflare D1 is included in Workers Free with enforced usage/storage limits and no D1 usage charges within that plan; Workers Paid may bill over included quotas. The user's exact Cloudflare plan/usage has **not** been confirmed here, and free capacity is not a guarantee of perpetual zero charges. Do not perform a remote migration or upload before confirming that it matches the owner's no-billing requirement. The feature branch changes are code only.
+
+**Next technical release gate:** first inspect Cloudflare Workers billing/plan (read only); in isolated Preview D1, back up/recovery bookmark and apply migration 0005 only; deploy the reviewed Preview version with the Preview D1 binding; test small real phone image upload and public `/cms-images/` display, save media metadata and draft, cleanup disposable Preview records, verify no existing content changes. Only after this succeeds may a newly reviewed code candidate be promoted to Production, using the currently live Worker `1d3c3256-4f2c-42da-977c-104e61cb0e5a` as rollback. PR #4 remains unmerged.
+
+References: https://developers.cloudflare.com/d1/platform/pricing/ and https://developers.cloudflare.com/d1/platform/limits/ .
+
 ## Upload images from a phone — feature under development, 16 November 2026
 
 The owner reported that the LIVE Admin UI currently offers only image URLs. This is correct for the deployed Worker version `1d3c3256-4f2c-42da-977c-104e61cb0e5a`, which was built from pre-R2 commit `0624191`. The **feature branch** contains newer, unshipped UI and API code for direct JPG/PNG/WebP uploads to a private Cloudflare R2 bucket and image GET via `/cms-images/{uuid}.{ext}`. Do not claim direct upload is Live.
