@@ -1,3 +1,11 @@
+## Owner-run Production D1 migration completed — 16 November 2026, 05:48 IST
+
+The owner ran the pinned guarded migration helper from the authenticated Codespace after the 05:46 baseline passed for 3 legacy tables, 3 expected indexes, 0 records, and a Production D1 Time Travel bookmark. The owner then explicitly confirmed the guarded schema upgrade.
+
+The 05:48 screenshot shows the completed helper (`Migration command finished`) returned to `/workspaces/cornerspan` on the feature branch. Immediately above the Preview report, the visible tail of the Production migration ledger states `4=applied`; the helper's post-migration read-only preflight then shows Preview `admin_post_drafts`, `admin_published_posts`, and `admin_media` all having expected columns and 0 rows, with Preview ledger 1–4 applied. The Production schema/ledger details above the screen crop are not fully visible. **The Production migration command successfully exited, but obtain the complete Production verification to explicitly confirm all fields, ledger entries and row counts.** Do not rerun migrations.
+
+No Production Worker deployment or secret update was part of this script. The remaining release gates are two Production admin secrets on a reviewed candidate, candidate source/config/build provenance matching GitHub, stable Worker rollback verification, and Live smoke checks. Preserve Codespace's local four modified files. Do not merge as a deployment shortcut.
+
 ## Production base indexes verified; guarded migration prepared — 16 November 2026, 05:35 IST
 
 The owner's authenticated read-only `sqlite_master` query confirmed **all three expected base indexes** in `cornerspan-admin` match the original migration definitions:
