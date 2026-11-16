@@ -102,8 +102,14 @@ read -r -p 'Type DEPLOY CORNERSPAN VERSION to promote the reviewed candidate: ' 
 LATEST=$(get_active) || stop 'Could not recheck active version.'
 [[ "$LATEST" == "$OLD" ]] || stop 'Active Worker changed before promotion. Live unchanged by this script.'
 echo 'Deploying ONLY the reviewed uploaded version. Do not interrupt.'
-"$WR" versions deploy "$CANDIDATE@100%" --name "$WORKER" --config "$TMP/wrangler.json" --yes --message "CornerSpan SEO Admin CMS release $APP_COMMIT"
-PROMOTED=1
+if "$WR" versions deploy "$CANDIDATE@100%" --name "$WORKER" --config "$TMP/wrangler.json" --yes --message "CornerSpan SEO Admin CMS release $APP_COMMIT"; then
+  PROMOTED=1
+else
+  echo "ALERT: Wrangler reported a deployment error. Checking live deployment before cleanup." >&2
+  CURRENT=$(get_active || true)
+  [[ "$CURRENT" != "$CANDIDATE" ]] || PROMOTED=1
+  stop "Promotion command failed. Check active deployments before attempting another release."
+fi
 
 AFTER=$(get_active) || stop 'Could not read active deployment after promotion.'
 [[ "$AFTER" == "$CANDIDATE" ]] || stop 'Uploaded version is not the active 100% Worker.'
