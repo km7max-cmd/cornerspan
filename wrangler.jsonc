@@ -20,6 +20,12 @@
       "database_id": "4a41a0ba-360b-4c45-8929-1d21445eb5a0"
     }
   ],
+  "r2_buckets": [
+    {
+      "binding": "CMS_MEDIA_BUCKET",
+      "bucket_name": "cornerspan-cms-media"
+    }
+  ],
   "previews": {
     "d1_databases": [
       {
@@ -30,7 +36,13 @@
     ],
     "vars": {
       "CMS_ENVIRONMENT": "preview"
-    }
+    },
+    "r2_buckets": [
+      {
+        "binding": "CMS_MEDIA_BUCKET",
+        "bucket_name": "cornerspan-cms-media-preview"
+      }
+    ]
   },
   "secrets": {
     "required": [
