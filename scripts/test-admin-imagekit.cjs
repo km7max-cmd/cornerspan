@@ -29,10 +29,14 @@ const req=id=>{
 new Function('require','module','exports','fetch','btoa','Blob','FormData','AbortSignal',code)(
  req,moduleRef,moduleRef.exports,uploadFetch,btoa,Blob,FormData,AbortSignal,
 );
-const {imageKitKey,imageKitAvailable,uploadImageKit,IMAGEKIT_MAX_BYTES}=moduleRef.exports;
+const {isImageKitPrivateKey,imageKitKey,imageKitAvailable,uploadImageKit,IMAGEKIT_MAX_BYTES}=moduleRef.exports;
 (async()=>{
  assert.equal(imageKitKey(),secret);
  assert.equal(imageKitAvailable(),true);
+ assert.equal(isImageKitPrivateKey('private_abcdefgh+123/=='),true,'Private-key suffix alphabet should not be guessed');
+ for(const invalid of ['', 'public_abcdefgh123', 'private_***', 'private_abc def0123', 'private_abc:def0123', 'private_abc\\ndef0123']) {
+   assert.equal(isImageKitPrivateKey(invalid),false,'Reject unsafe/masked/nonprivate key');
+ }
  const filename='f0ac6b1d-6e42-46f1-8c55-c4c98070bad0.webp';
  const bytes=Uint8Array.from([82,73,70,70,12,0,0,0,87,69,66,80,10]);
  simulated={url:'https://ik.imagekit.io/cornerspan-test/cornerspan/'+filename,filePath:'/cornerspan/'+filename};
