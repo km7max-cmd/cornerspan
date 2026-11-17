@@ -43,6 +43,8 @@ jobs:
         run: node scripts/test-admin-behavior.cjs
       - name: Verify ImageKit free-plan upload and URL security (no external network)
         run: node scripts/test-admin-imagekit.cjs
+      - name: Lint safe ImageKit Preview setup (never connect to external accounts in CI)
+        run: bash -n scripts/connect-imagekit-free-preview.sh && node --check scripts/qa-imagekit-preview.cjs
       - name: Verify optional D1 storage and image-upload API (isolated mocks)
         run: node scripts/test-admin-image-upload.cjs
       - name: Check opt-in R2 setup helper syntax (no remote creation in CI)
