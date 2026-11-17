@@ -41,7 +41,9 @@ jobs:
         run: bash -n scripts/guarded-live-release.sh
       - name: Verify password sessions and D1 publication safeguards
         run: node scripts/test-admin-behavior.cjs
-      - name: Verify R2 image signatures, secure upload and read-only serving (isolated mocks)
+      - name: Verify ImageKit free-plan upload and URL security (no external network)
+        run: node scripts/test-admin-imagekit.cjs
+      - name: Verify optional D1 storage and image-upload API (isolated mocks)
         run: node scripts/test-admin-image-upload.cjs
       - name: Check opt-in R2 setup helper syntax (no remote creation in CI)
         run: bash -n scripts/setup-admin-r2.sh
