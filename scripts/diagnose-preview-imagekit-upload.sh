@@ -5,7 +5,7 @@ umask 077
 [[ -t 0 ]] || { echo 'STOP: Requires interactive terminal.' >&2; exit 1; }
 read -r -s -p 'Current PREVIEW Admin password (hidden): ' PW
 printf '\n'
-[[ \${#PW} -ge 20 && \${#PW} -le 256 ]] || { echo 'STOP: Preview password must be 20-256 characters.' >&2; exit 1; }
+[[ ${#PW} -ge 20 && ${#PW} -le 256 ]] || { echo 'STOP: Preview password must be 20-256 characters.' >&2; exit 1; }
 CMS_PREVIEW_TEST_PASSWORD="$PW" node <<'NODE'
 const origin='https://feature-posts-admin-dashboard-cornerspan.eenadutech.workers.dev';
 const pwd=process.env.CMS_PREVIEW_TEST_PASSWORD;
