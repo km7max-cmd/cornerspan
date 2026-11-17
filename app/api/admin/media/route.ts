@@ -3,6 +3,7 @@ import { hasAdminAccess } from '../../../../lib/admin-auth';
 import { draftDatabase } from '../../../../lib/admin-drafts';
 import { mediaBucket } from '../../../../lib/cms-media-bucket';
 import { d1ImagesReady } from '../../../../lib/cms-d1-images';
+import { imageKitAvailable } from '../../../../lib/cms-imagekit';
 import { validateImage, type MediaImage } from '../../../../lib/cms-model';
 export const dynamic = 'force-dynamic';
 const headers = { 'Cache-Control': 'no-store' };
@@ -17,7 +18,8 @@ export async function GET() {
   const db = draftDatabase(); if (!db) return fail('Database unavailable', 503);
   try {
     const { results } = await db.prepare('SELECT * FROM admin_media ORDER BY updated_at DESC LIMIT 500').all<Row>();
-    return NextResponse.json({ media: results.map(mapRow), uploadAvailable: Boolean(mediaBucket()) || await d1ImagesReady() }, { headers });
+    const provider = imageKitAvailable() ? 'imagekit' : mediaBucket() ? 'r2' : await d1ImagesReady() ? 'd1' : 'none';
+    return NextResponse.json({ media: results.map(mapRow), uploadAvailable: provider !== 'none', uploadProvider: provider }, { headers });
   } catch { return fail('Media library unavailable. Apply the SEO/media migration in Preview first.', 503); }
 }
 export async function POST(request: NextRequest) {
