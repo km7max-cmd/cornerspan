@@ -20,7 +20,7 @@ Key docs: https://imagekit.io/docs/api-keys/
 Within `/workspaces/cornerspan` on `feature/posts-admin-dashboard`:
 
 ```bash
-cd /workspaces/cornerspan && git fetch origin feature/posts-admin-dashboard && git show bc2b50de415cff04e34cd0283678ac512f03c6ed:scripts/complete-imagekit-release.sh > /tmp/cornerspan-imagekit.sh && bash -n /tmp/cornerspan-imagekit.sh && bash /tmp/cornerspan-imagekit.sh
+cd /workspaces/cornerspan && git fetch origin feature/posts-admin-dashboard && git show 154a7a6661ea5ad22bf9dc5cbe30bd22084d7fd6:scripts/complete-imagekit-release.sh > /tmp/cornerspan-imagekit.sh && bash -n /tmp/cornerspan-imagekit.sh && bash /tmp/cornerspan-imagekit.sh
 ```
 
 The script uses reviewed, **pinned Git application code**, not the owner's four uncommitted files. It requires the expected Cloudflare account and Worker, separate D1 Preview binding, active Live Worker version, and absence of any R2 subscription. It asks privately **in the terminal only** for (a) ImageKit private key, (b) existing Preview admin password, and (c) Production admin password (can be rotated; keep it safe). Both secret values remain out of GitHub and ChatGPT. It does not request any billing action.
@@ -51,7 +51,11 @@ If `STOP`, `ERROR`, or `ROLLBACK` appears, **do not rerun blindly**. Record the 
 ## Troubleshooting
 
 - `Connection to localhost closed`: SSH disconnected; reconnect with `gh codespace ssh -R km7max-cmd/cornerspan`, then reattach an existing tmux session.
-- `API key format invalid`: copy the ImageKit **private** key, not the public key; only paste at the hidden terminal prompt.
+- `No characters received`: Android paste did not reach the SSH terminal. Copy again, long-press at the hidden input prompt, select **Paste**, then press Enter. The pasted characters will not be displayed.
+- `You copied the PUBLIC key`: go to Developer options → API Keys, reveal the **Private API Key** (eye control), copy the entire value beginning with `private_`.
+- `does not start with private_`: you may have copied the URL endpoint, account ID or masked placeholder; do not paste it into chat. Reveal/copy the actual private key.
+- The current setup now accepts any printable, nonwhitespace ASCII suffix supported by the documented `private_` key prefix, rather than guessing an overly narrow alphabet.
+- Never paste screenshots that reveal a private key or send the key to ChatGPT.
 - `uploadAvailable: false`: account secret not provisioned in the active worker version; image URL is still supported.
 - `ImageKit limit reached`: stay on Forever Free; resize images, remove unused ImageKit media, or wait for the bandwidth reset. Do not enable paid overages.
 - Cloudflare Production login fails: save/enter the Production Admin password selected during the release, and remember that new signing secret invalidates previous sessions.
