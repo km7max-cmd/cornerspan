@@ -48,8 +48,11 @@ export async function uploadImageKit(
     const url = new URL(result.url);
     // Only the default no-paid-custom-domain ImageKit CDN URL is trusted.
     if (url.protocol !== 'https:' || url.hostname !== 'ik.imagekit.io'
-        || url.username || url.password || url.search || url.hash
+        || url.username || url.password || url.hash
         || !url.pathname.endsWith('/cornerspan/' + filename)) return null;
+    // ImageKit may append an immutable upload timestamp for CDN cache freshness.
+    const params = [...url.searchParams.entries()];
+    if (params.length > 1 || params.some(([key, value]) => key !== 'updatedAt' || !/^\\d{10,17}$/.test(value))) return null;
     if (typeof result.filePath === 'string' && result.filePath !== '/cornerspan/' + filename) return null;
     return url.toString();
   } catch {
