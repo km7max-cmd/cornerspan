@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { hasAdminAccess } from '../../../../../lib/admin-auth';
 import { mediaBucket } from '../../../../../lib/cms-media-bucket';
 import { d1ImagesReady, saveImageToD1, MAX_D1_IMAGE_BYTES } from '../../../../../lib/cms-d1-images';
+import { imageKitAvailable, uploadImageKit } from '../../../../../lib/cms-imagekit';
 import { cmsImageFilename, detectImage, MAX_IMAGE_BYTES } from '../../../../../lib/cms-upload';
 
 export const runtime = 'nodejs';
@@ -12,17 +13,26 @@ const fail = (error: string, status: number) => NextResponse.json({ error }, { s
 /** Private capability check; storage backend identifiers are never disclosed. */
 export async function GET() {
   if (!(await hasAdminAccess())) return fail('Unauthorized', 401);
+  const remote = imageKitAvailable();
   const r2 = Boolean(mediaBucket());
-  return NextResponse.json({ uploadAvailable: r2 || await d1ImagesReady(), maxBytes: r2 ? MAX_IMAGE_BYTES : MAX_D1_IMAGE_BYTES }, { headers });
+  const d1 = !remote && !r2 && await d1ImagesReady();
+  return NextResponse.json({
+    uploadAvailable: remote || r2 || d1,
+    maxBytes: remote || r2 ? MAX_IMAGE_BYTES : MAX_D1_IMAGE_BYTES,
+    provider: remote ? 'imagekit' : r2 ? 'r2' : d1 ? 'd1' : 'none',
+  }, { headers });
 }
 
 /** Raw-file uploads stay in existing D1 if R2 is not enabled, with a strict size limit. */
 export async function POST(request: NextRequest) {
   if (!(await hasAdminAccess())) return fail('Unauthorized', 401);
   if (request.headers.get('origin') !== request.nextUrl.origin) return fail('Invalid request origin.', 403);
-  const storage = mediaBucket();
-  if (!storage && !(await d1ImagesReady())) return fail('Image upload storage is not ready. Apply the additive image migration in Preview first.', 503);
-  const uploadLimit = storage ? MAX_IMAGE_BYTES : MAX_D1_IMAGE_BYTES;
+  const useImageKit = imageKitAvailable();
+  const storage = useImageKit ? null : mediaBucket();
+  if (!useImageKit && !storage && !(await d1ImagesReady())) {
+    return fail('Image upload is not configured. Add the ImageKit free-plan secret, or use an image URL.', 503);
+  }
+  const uploadLimit = useImageKit || storage ? MAX_IMAGE_BYTES : MAX_D1_IMAGE_BYTES;
 
   const claimedType = request.headers.get('content-type') || '';
   if (!['image/jpeg', 'image/png', 'image/webp', 'application/octet-stream'].includes(claimedType.toLowerCase().split(';')[0].trim())) {
@@ -43,7 +53,7 @@ export async function POST(request: NextRequest) {
       size += value.byteLength;
       if (size > uploadLimit) {
         await reader.cancel();
-        return fail('Image must be 5 MB or less.', 413);
+        return fail('Image exceeds the permitted storage size.', 413);
       }
       chunks.push(value);
     }
@@ -63,15 +73,20 @@ export async function POST(request: NextRequest) {
   // Never use the untrusted user filename as a storage key or URL.
   const filename = cmsImageFilename() + '.' + type.extension;
   try {
-    if (storage) {
+    let url: string;
+    if (useImageKit) {
+      const uploaded = await uploadImageKit(bytes, type.mime, filename);
+      if (!uploaded) return fail('The free image host could not accept this photo. Check its monthly limits and account status.', 503);
+      url = uploaded;
+    } else if (storage) {
       await storage.put('cms/' + filename, bytes, { httpMetadata: { contentType: type.mime } });
+      url = '/cms-images/' + filename;
     } else {
       const saved = await saveImageToD1(filename, bytes, type.mime);
       if (!saved) return fail('Could not store the optimized image in D1.', 503);
+      url = '/cms-images/' + filename;
     }
-    return NextResponse.json({
-      url: '/cms-images/' + filename, size, contentType: type.mime,
-    }, { status: 201, headers });
+    return NextResponse.json({ url, size, contentType: type.mime }, { status: 201, headers });
   } catch {
     return fail('Could not store image.', 503);
   }
