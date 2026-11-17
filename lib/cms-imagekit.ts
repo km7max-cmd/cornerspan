@@ -5,6 +5,17 @@ import { getCloudflareContext } from '@opennextjs/cloudflare';
  * encrypted secrets, never in Git, the browser, or D1. No new Cloudflare billing.
  */
 export const IMAGEKIT_MAX_BYTES = 5 * 1024 * 1024;
+
+/**
+ * ImageKit publicly guarantees the private_ prefix, not a fixed suffix alphabet.
+ * Accept printable ASCII (except the Basic-auth colon); reject whitespace/control.
+ * Do not log, echo, or send this value to the browser.
+ */
+export function isImageKitPrivateKey(key: unknown): key is string {
+  return typeof key === 'string' && key.startsWith('private_')
+    && key.length >= 12 && key.length <= 512
+    && !key.includes(':') && /^[\x21-\x7e]+$/.test(key);
+}
 const IMAGEKIT_UPLOAD_ENDPOINT = 'https://upload.imagekit.io/api/v1/files/upload';
 
 export function imageKitKey(): string | null {
@@ -12,7 +23,7 @@ export function imageKitKey(): string | null {
     const env = getCloudflareContext().env as unknown as Record<string, unknown>;
     const key = env.IMAGEKIT_PRIVATE_KEY;
     // Private keys are intentionally never returned by an API route or logged.
-    return typeof key === 'string' && /^private_[a-zA-Z0-9_-]{8,200}$/.test(key) ? key : null;
+    return isImageKitPrivateKey(key) ? key : null;
   } catch {
     return null;
   }
@@ -24,7 +35,7 @@ export async function uploadImageKit(
   bytes: Uint8Array, mime: 'image/png' | 'image/jpeg' | 'image/webp',
   filename: string, privateKey: string | null = imageKitKey(),
 ): Promise<string | null> {
-  if (!privateKey || !/^private_[a-zA-Z0-9_-]{8,200}$/.test(privateKey)) return null;
+  if (!isImageKitPrivateKey(privateKey)) return null;
   if (!/^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}\.(?:png|jpg|webp)$/i.test(filename)) return null;
   if (bytes.byteLength < 12 || bytes.byteLength > IMAGEKIT_MAX_BYTES) return null;
   const buffer = new ArrayBuffer(bytes.byteLength);
