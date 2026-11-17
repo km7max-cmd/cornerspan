@@ -6,7 +6,15 @@ const ts=require('typescript');
 if(!globalThis.crypto) globalThis.crypto=require('node:crypto').webcrypto;
 const root=path.resolve(__dirname,'..');
 const memory=new Map();
-let canLogin=false, boundR2=null, d1Enabled=false;
+let canLogin=false, boundR2=null, d1Enabled=false, ikEnabled=false;
+const imageKitCalls=[];
+const imagekit={
+  imageKitAvailable(){ return ikEnabled; },
+  async uploadImageKit(bytes,mime,filename){
+    imageKitCalls.push({length:bytes.byteLength,mime,filename});
+    return 'https://ik.imagekit.io/cornerspan-test/cornerspan/'+filename;
+  },
+};
 const d1Objects=new Map();
 const d1Images={
   MAX_D1_IMAGE_BYTES:350*1024,
@@ -28,6 +36,7 @@ function load(filename){
     if(id.endsWith('/lib/cms-upload'))return helpers;
     if(id.endsWith('/lib/cms-media-bucket'))return bucket;
     if(id.endsWith('/lib/cms-d1-images'))return d1Images;
+    if(id.endsWith('/lib/cms-imagekit'))return imagekit;
     throw Error('Unexpected dependency '+id+' in '+filename);
   };
   new Function('require','module','exports',code)(req,module,module.exports);
@@ -115,6 +124,19 @@ const webp=Uint8Array.from([0x52,0x49,0x46,0x46,0x0e,0,0,0,0x57,0x45,0x42,0x50,0
   assert.equal((await publicImages.GET(null,{params:Promise.resolve({filename:'00000000-0000-0000-0000-000000000000.jpg'})})).status,404);
   environment.CMS_MEDIA_BUCKET=undefined;
   assert.equal((await publicImages.GET(null,{params:Promise.resolve({filename:data.url.split('/').pop()})})).status,404,'No image exists in D1 for this filename');
+  ikEnabled=true;
+  const ikCapability=await (await upload.GET()).json();
+  assert.equal(ikCapability.uploadAvailable,true,'ImageKit should enable large image uploads');
+  assert.equal(ikCapability.provider,'imagekit');
+  assert.equal(ikCapability.maxBytes,helpers.MAX_IMAGE_BYTES);
+  const ikSaved=await upload.POST(request(png));
+  assert.equal(ikSaved.status,201,'ImageKit upload must work with only private backend key');
+  const ikResult=await ikSaved.json();
+  assert.match(ikResult.url,/^https:\/\/ik\.imagekit\.io\/cornerspan-test\/cornerspan\/[0-9a-f-]{36}\.png$/);
+  assert.equal(imageKitCalls.length,1);
+  assert.equal(imageKitCalls[0].mime,'image/png');
+  assert.equal(d1Objects.size,1,'ImageKit path must not touch D1 image records');
+  ikEnabled=false;
   const config=JSON.parse(fs.readFileSync(path.join(root,'wrangler.jsonc'),'utf8'));
   assert.equal(config.r2_buckets,undefined,'Do not require paid R2 activation');
   assert.equal(config.previews.r2_buckets,undefined,'Preview must not require R2 activation');
@@ -124,5 +146,5 @@ const webp=Uint8Array.from([0x52,0x49,0x46,0x46,0x0e,0,0,0,0x57,0x45,0x42,0x50,0
   const ui=fs.readFileSync(path.join(root,'app/admin/media-manager.tsx'),'utf8');
   assert.match(ui,/type="file"/);
   assert.match(ui,/\/api\/admin\/media\/upload/);
-  console.log('PASS isolated R2/D1 image signatures, 350 KB D1 limit, auth, CSRF, upload and public serving.');
+  console.log('PASS ImageKit free-plan upload priority; isolated R2/D1 signatures, D1 limit, auth, CSRF, serving.');
 })().catch(error=>{console.error(error);process.exitCode=1;});
