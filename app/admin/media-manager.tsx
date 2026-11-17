@@ -65,7 +65,27 @@ export function ImageFields({ value, onChange, prefix = 'Featured image', upload
     setUploading(true);
     setUploadMessage('');
     try {
-      const optimized = await optimizeForD1(file);
+      // The server picks ImageKit Forever Free when configured; D1 remains a small
+      // optional fallback. Never make the user compress to 350 KB for ImageKit.
+      const capabilityResponse = await fetch('/api/admin/media/upload', {
+        method: 'GET', credentials: 'same-origin', cache: 'no-store',
+      });
+      const capability = await capabilityResponse.json() as { uploadAvailable?: boolean; provider?: string; error?: string };
+      if (!capabilityResponse.ok || !capability.uploadAvailable) {
+        throw Error(capability.error || 'Image upload storage is not connected yet. An image URL still works.');
+      }
+      let optimized: { blob: Blob; width: number | null; height: number | null };
+      if (capability.provider === 'd1') {
+        optimized = await optimizeForD1(file);
+      } else {
+        let width: number | null = null;
+        let height: number | null = null;
+        try {
+          const image = await createImageBitmap(file);
+          width = image.width; height = image.height; image.close();
+        } catch { /* Browser may not support reading dimensions. */ }
+        optimized = { blob: file, width, height };
+      }
       const response = await fetch('/api/admin/media/upload', {
         method: 'POST', credentials: 'same-origin', cache: 'no-store',
         headers: { 'Content-Type': optimized.blob.type || file.type || 'application/octet-stream' },
@@ -89,7 +109,7 @@ export function ImageFields({ value, onChange, prefix = 'Featured image', upload
       <input type="file" accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp"
         onChange={uploadFromDevice} disabled={uploading || uploadAvailable === false} aria-label={`Upload ${prefix.toLowerCase()} from device`}/>
     </label>
-    <p className="cms-help">JPG, PNG or WebP up to 5 MB. Images are optimized to a small file before uploading to your existing D1 database. You can still use a link.</p>
+    <p className="cms-help">JPG, PNG or WebP up to 5 MB. ImageKit Forever Free stores full-size uploads (3 GB free storage, 20 GB delivery/month); small D1 backup uses automatic WebP compression. Image links still work.</p>
     {uploading && <p className="cms-notice" role="status">Uploading image…</p>}
     {uploadMessage && <p className={uploadMessage.startsWith('Image uploaded.') ? 'cms-notice' : 'cms-error'} role="status">{uploadMessage}</p>}
     <div className="cms-grid-two">{([['url', 'URL'], ['alt', 'ALT text'], ['title', 'title'], ['caption', 'caption'], ['sourceUrl', 'source URL'], ['linkUrl', 'click-through link']] as const).map(([key, label]) => <label className="cms-field" key={key}>{prefix} {label}<input type={key.includes('Url') || key === 'url' ? 'url' : 'text'} value={value[key]} onChange={e => change(key, e.target.value)} placeholder={key === 'url' ? 'https://… or /images/…' : key === 'alt' ? 'Describe what the image shows' : 'Optional'}/></label>)}</div>
@@ -131,5 +151,5 @@ export default function MediaManager({ onUse }: { onUse: (image: MediaImage, pla
     <label className="cms-field">Search images<input type="search" value={query} onChange={e => setQuery(e.target.value)} placeholder="Title, ALT text or filename"/></label>
     <div className="cms-media-grid">{media.filter(m => `${m.url} ${m.title} ${m.alt}`.toLowerCase().includes(query.toLowerCase())).map(m => <div className="cms-media-item" key={m.id}><img src={m.url} alt={m.alt} loading="lazy"/><strong>{m.title || m.alt || 'Untitled image'}</strong><p>{m.width && m.height ? `${m.width} × ${m.height}` : 'Dimensions unknown'} · {m.alt ? 'ALT added' : 'Missing ALT'}</p><div className="cms-actions"><button onClick={() => onUse(m, 'featured')}>Set featured</button><button onClick={() => onUse(m, 'inline')}>Insert in article</button><button onClick={() => { setEdit(m); setForm(m); }}>Edit details</button><button className="cms-danger" disabled={busy} onClick={() => remove(m)}>Remove from library</button></div></div>)}</div>
     {!media.length && <div className="cms-empty"><strong>Your image collection starts here</strong><p>Upload a JPG/PNG/WebP image from your device, or add an image URL. Save its ALT text and details to reuse it in your articles.</p></div>}
-  </section><section className="cms-card"><h2>{edit ? 'Edit image details' : 'Upload or link an image'}</h2><p className="cms-help">Choose a photo from your device, or paste a hosted image URL. Set the ALT text and click Save image to reuse it in posts.</p>{uploadAvailable === false && <p className="cms-error" role="status">Image upload is not ready until the D1 media migration is applied. Image links still work.</p>}<fieldset disabled={busy}><ImageFields value={form} onChange={setForm} prefix="Library image" uploadAvailable={uploadAvailable ?? undefined}/><div className="cms-actions"><button className="cms-primary" onClick={save}>{busy ? 'Saving…' : 'Save image'}</button>{edit && <button onClick={() => { setEdit(null); setForm(emptyImage()); }}>Cancel edit</button>}</div></fieldset>{message && <p role="status" className="cms-notice">{message}</p>}</section></div>;
+  </section><section className="cms-card"><h2>{edit ? 'Edit image details' : 'Upload or link an image'}</h2><p className="cms-help">Choose a photo from your device, or paste a hosted image URL. Set the ALT text and click Save image to reuse it in posts.</p>{uploadAvailable === false && <p className="cms-error" role="status">Image upload storage has not been connected yet. Add the ImageKit free-plan key securely; image links still work.</p>}<fieldset disabled={busy}><ImageFields value={form} onChange={setForm} prefix="Library image" uploadAvailable={uploadAvailable ?? undefined}/><div className="cms-actions"><button className="cms-primary" onClick={save}>{busy ? 'Saving…' : 'Save image'}</button>{edit && <button onClick={() => { setEdit(null); setForm(emptyImage()); }}>Cancel edit</button>}</div></fieldset>{message && <p role="status" className="cms-notice">{message}</p>}</section></div>;
 }
