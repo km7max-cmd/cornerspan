@@ -46,9 +46,28 @@ a.equal(c.previews?.vars?.CMS_ENVIRONMENT,'preview');
 console.log('PASS separate Preview D1, no R2 subscription.');
 NODE
 echo 'Use only an existing ImageKit FOREVER FREE account. No paid plan, no card.'
-IFS= read -r -s -p 'ImageKit PRIVATE key (hidden, enter only here): ' IMAGEKIT_KEY
+IFS= read -r -s -p 'Paste ImageKit PRIVATE key here (hidden), then press Enter: ' IMAGEKIT_KEY
 printf '\n'
-[[ "$IMAGEKIT_KEY" =~ ^private_[a-zA-Z0-9_-]{8,200}$ ]] || stop 'Invalid ImageKit key; no remote changes.'
+# Android clipboard pastes can include leading/trailing spaces or CR. Never print the key.
+IMAGEKIT_KEY="${IMAGEKIT_KEY#"${IMAGEKIT_KEY%%[![:space:]]*}"}"
+IMAGEKIT_KEY="${IMAGEKIT_KEY%"${IMAGEKIT_KEY##*[![:space:]]}"}"
+if [[ -z "$IMAGEKIT_KEY" ]]; then
+  stop 'No characters received. At the hidden prompt, long-press and tap Paste, then Enter. Nothing is echoed.'
+fi
+if [[ "$IMAGEKIT_KEY" == public_* ]]; then
+  stop 'You copied the PUBLIC key. In ImageKit Developer options → API keys, reveal/copy the PRIVATE key instead.'
+fi
+if [[ "$IMAGEKIT_KEY" != private_* ]]; then
+  stop 'Copied value does not start with private_. Reveal and copy the entire Private API key (not an endpoint, account ID or masked stars).'
+fi
+if ! printf '%s' "$IMAGEKIT_KEY" | node -e '
+let k="";process.stdin.setEncoding("utf8");process.stdin.on("data",s=>k+=s);
+process.stdin.on("end",()=>{if(!(k.startsWith("private_")&&k.length>=12&&k.length<=512&&!k.includes(":")&&/^[\x21-\x7e]+$/.test(k)))process.exit(1)});
+'; then
+  stop 'Private key has whitespace or unsupported characters. Copy the raw key using ImageKit Copy, not the masked text.'
+fi
+echo 'PASS: Private-key input format accepted (credentials not printed).'
+
 IFS= read -r -s -p 'CornerSpan PREVIEW Admin password (hidden): ' PREVIEW_PASSWORD
 printf '\n'
 [[ $(printf '%s' "$PREVIEW_PASSWORD" | wc -c) -ge 20 ]] || stop 'Preview password length incorrect.'
