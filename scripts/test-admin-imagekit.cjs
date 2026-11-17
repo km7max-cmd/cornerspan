@@ -34,7 +34,7 @@ const {isImageKitPrivateKey,imageKitKey,imageKitAvailable,uploadImageKit,IMAGEKI
  assert.equal(imageKitKey(),secret);
  assert.equal(imageKitAvailable(),true);
  assert.equal(isImageKitPrivateKey('private_abcdefgh+123/=='),true,'Private-key suffix alphabet should not be guessed');
- for(const invalid of ['', 'public_abcdefgh123', 'private_***', 'private_abc def0123', 'private_abc:def0123', 'private_abc\\ndef0123']) {
+ for(const invalid of ['', 'public_abcdefgh123', 'private_***', 'private_abc def0123', 'private_abc:def0123', 'private_abc' + String.fromCharCode(10) + 'def0123']) {
    assert.equal(isImageKitPrivateKey(invalid),false,'Reject unsafe/masked/nonprivate key');
  }
  const filename='f0ac6b1d-6e42-46f1-8c55-c4c98070bad0.webp';
