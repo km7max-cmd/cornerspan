@@ -5,7 +5,7 @@ set -euo pipefail
 umask 077
 ROOT=/workspaces/cornerspan
 BRANCH=feature/posts-admin-dashboard
-PIN=55913f89557425bda6b7999dc54ced6e4197f1a0
+PIN=ac7fb9d6e047f923dd2463410ef4d127bed560d5
 ACCOUNT=5a130ac4334b170f3f3472f3449841a8
 WORKER=cornerspan
 LIVE_VERSION=1d3c3256-4f2c-42da-977c-104e61cb0e5a
