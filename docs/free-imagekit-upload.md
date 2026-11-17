@@ -20,10 +20,12 @@ Key docs: https://imagekit.io/docs/api-keys/
 Within `/workspaces/cornerspan` on `feature/posts-admin-dashboard`:
 
 ```bash
-cd /workspaces/cornerspan && git fetch origin feature/posts-admin-dashboard && git show 154a7a6661ea5ad22bf9dc5cbe30bd22084d7fd6:scripts/complete-imagekit-release.sh > /tmp/cornerspan-imagekit.sh && bash -n /tmp/cornerspan-imagekit.sh && bash /tmp/cornerspan-imagekit.sh
+cd /workspaces/cornerspan && git fetch origin feature/posts-admin-dashboard && git show ed792c5a7ebfadcceea79894205d9b59bc9034f1:scripts/complete-imagekit-release.sh > /tmp/cornerspan-imagekit.sh && bash -n /tmp/cornerspan-imagekit.sh && bash /tmp/cornerspan-imagekit.sh
 ```
 
 The script uses reviewed, **pinned Git application code**, not the owner's four uncommitted files. It requires the expected Cloudflare account and Worker, separate D1 Preview binding, active Live Worker version, and absence of any R2 subscription. It asks privately **in the terminal only** for (a) ImageKit private key, (b) existing Preview admin password, and (c) Production admin password (can be rotated; keep it safe). Both secret values remain out of GitHub and ChatGPT. It does not request any billing action.
+
+**Preview login 401 recovery:** The script now asks for a **NEW Preview Admin password** twice in hidden terminal prompts, creates a fresh Preview session-signing secret, and applies all three Preview secrets **after** the code Preview deploy via one `wrangler preview secret bulk`. It verifies the three secret names and tests authenticated Preview login before touching any Production Worker version. The previous Preview password is intentionally replaced; **Production credentials remain unchanged until the explicit production release**.
 
 Execution sequence:
 1. Verify the old Worker is still Live at 100%.
