@@ -26,6 +26,7 @@ window.fetch = async (input, options = {}) => {
     if (method === 'POST') { const draft = drafts[payload.slug]; const revision = (published[payload.slug]?.revision || 0) + 1; published[payload.slug] = { ...draft, revision }; persist(); return reply({ published: true, revision }); }
     if (method === 'DELETE') { delete published[url.searchParams.get('slug')]; persist(); return reply({ unpublished: true }); }
   }
+  if (path === '/api/admin/media/upload' && method === 'GET') return reply({ uploadAvailable: true, maxBytes: 5 * 1024 * 1024, provider: 'imagekit' });
   if (path === '/api/admin/media/upload' && method === 'POST') {
     return reply({ url: '/og-image.webp', contentType: 'image/png', size: options.body?.size || 0 }, 201);
   }
