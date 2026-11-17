@@ -7,7 +7,7 @@ set -euo pipefail
 umask 077
 ROOT=/workspaces/cornerspan
 LIVE_VERSION=1d3c3256-4f2c-42da-977c-104e61cb0e5a
-CONNECT_COMMIT=247e7da4a57fc8ea47b766d830d72f9ff4f27cdd
+CONNECT_COMMIT=a19e2be74aa9deb2ca5105f28ae8d0a53888f614
 STOP(){ echo "STOP: $*" >&2; exit 1; }
 [[ -t 0 && "$(pwd -P)" == "$ROOT" ]] || STOP "Run in interactive authenticated Codespace under $ROOT."
 [[ "$(git branch --show-current)" == feature/posts-admin-dashboard ]] || STOP 'Wrong branch.'
@@ -17,7 +17,7 @@ git show "$CONNECT_COMMIT:scripts/connect-imagekit-free-preview.sh" > "$BOOTSTRA
 # Sourcing intentionally retains the hidden private key in memory for the subsequent secure production upload.
 source "$BOOTSTRAP"
 rm -f -- "$BOOTSTRAP"
-[[ -d "$TMP/app" && "$PIN" == 55913f89557425bda6b7999dc54ced6e4197f1a0 ]] || STOP 'Preview build source verification failed.'
+[[ -d "$TMP/app" && "$PIN" == ac7fb9d6e047f923dd2463410ef4d127bed560d5 ]] || STOP 'Preview build source verification failed.'
 echo 'PASS: Real isolated Preview upload acceptance. Production is still the unchanged previous Worker.'
 
 PROD_PASSWORD=''
@@ -41,7 +41,7 @@ printf '\n'
 [[ $(printf '%s' "$PROD_PASSWORD" | wc -c) -ge 20 ]] || STOP 'Production password must have at least 20 bytes.'
 printf '%s\0%s' "$PROD_PASSWORD" "$IMAGEKIT_KEY" | node -e '
 const crypto=require("node:crypto");let s="";process.stdin.setEncoding("utf8");process.stdin.on("data",b=>s+=b);
-process.stdin.on("end",()=>{const p=s.split("\0");if(p.length!==2||p[0].length<20||!/^private_[a-zA-Z0-9_-]{8,200}$/.test(p[1]))process.exit(2);
+process.stdin.on("end",()=>{const p=s.split("\0");if(p.length!==2||p[0].length<20||!(p[1].startsWith("private_")&&p[1].length>=12&&p[1].length<=512&&!p[1].includes(":")&&/^[\x21-\x7e]+$/.test(p[1])))process.exit(2);
 process.stdout.write(JSON.stringify({ADMIN_LOGIN_PASSWORD:p[0],ADMIN_SESSION_SECRET:crypto.randomBytes(48).toString("base64url"),IMAGEKIT_PRIVATE_KEY:p[1]}));});' > "$TMP/prod-secrets.json" || STOP 'Could not construct private temporary Worker secret file.'
 chmod 600 "$TMP/prod-secrets.json"
 PROD_PASSWORD=''
