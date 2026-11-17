@@ -7,7 +7,7 @@ set -euo pipefail
 umask 077
 ROOT=/workspaces/cornerspan
 LIVE_VERSION=1d3c3256-4f2c-42da-977c-104e61cb0e5a
-CONNECT_COMMIT=a19e2be74aa9deb2ca5105f28ae8d0a53888f614
+CONNECT_COMMIT=c41e05f02d4d657cf0a859aa04f0c6ce8a5ebe32
 STOP(){ echo "STOP: $*" >&2; exit 1; }
 [[ -t 0 && "$(pwd -P)" == "$ROOT" ]] || STOP "Run in interactive authenticated Codespace under $ROOT."
 [[ "$(git branch --show-current)" == feature/posts-admin-dashboard ]] || STOP 'Wrong branch.'
