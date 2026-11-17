@@ -49,6 +49,8 @@ jobs:
         run: bash -n scripts/complete-imagekit-release.sh
       - name: Prevent Preview 401 secret-loss regression (static only)
         run: node scripts/test-preview-secret-release-order.cjs
+      - name: Verify non-deploying Preview image upload 401 diagnostic syntax
+        run: bash -n scripts/diagnose-preview-imagekit-upload.sh
       - name: Verify optional D1 storage and image-upload API (isolated mocks)
         run: node scripts/test-admin-image-upload.cjs
       - name: Check opt-in R2 setup helper syntax (no remote creation in CI)
