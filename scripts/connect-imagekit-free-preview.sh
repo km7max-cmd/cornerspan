@@ -68,17 +68,53 @@ process.stdin.on("end",()=>{if(!(k.startsWith("private_")&&k.length>=12&&k.lengt
 fi
 echo 'PASS: Private-key input format accepted (credentials not printed).'
 
-IFS= read -r -s -p 'CornerSpan PREVIEW Admin password (hidden): ' PREVIEW_PASSWORD
+echo 'Set a NEW private PREVIEW Admin password now (20–256 characters). This affects Preview only.'
+IFS= read -r -s -p 'New CornerSpan PREVIEW Admin password (hidden): ' PREVIEW_PASSWORD
 printf '\n'
-[[ $(printf '%s' "$PREVIEW_PASSWORD" | wc -c) -ge 20 ]] || stop 'Preview password length incorrect.'
+[[ $(printf '%s' "$PREVIEW_PASSWORD" | wc -c) -ge 20 && $(printf '%s' "$PREVIEW_PASSWORD" | wc -c) -le 256 ]] || stop 'Preview password must be 20–256 bytes.'
+PREVIEW_CONFIRM=''
+IFS= read -r -s -p 'Confirm the NEW PREVIEW password (hidden): ' PREVIEW_CONFIRM
+printf '\n'
+[[ "$PREVIEW_CONFIRM" == "$PREVIEW_PASSWORD" ]] || stop 'Preview passwords do not match; no remote changes.'
+unset PREVIEW_CONFIRM
+# Build an owner-only encrypted-secret payload before any Preview deployment.
+printf '%s\0%s' "$PREVIEW_PASSWORD" "$IMAGEKIT_KEY" | node -e '
+const crypto=require("node:crypto");let input="";
+process.stdin.setEncoding("utf8");
+process.stdin.on("data",b=>input+=b);
+process.stdin.on("end",()=>{
+ const p=input.split("\0");
+ if(p.length!==2||p[0].length<20||p[0].length>256||!p[1].startsWith("private_")||p[1].length<12||p[1].length>512)process.exit(1);
+ process.stdout.write(JSON.stringify({
+  ADMIN_LOGIN_PASSWORD:p[0],
+  ADMIN_SESSION_SECRET:crypto.randomBytes(48).toString("base64url"),
+  IMAGEKIT_PRIVATE_KEY:p[1]
+ }));
+});' > "$TMP/preview-secrets.json" || stop 'Unable to prepare private Preview secrets.'
+chmod 600 "$TMP/preview-secrets.json"
+echo 'PASS: Preview-only password and ImageKit key prepared; no secrets printed.'
 cd "$TMP/app"
 npm install --no-package-lock --no-audit --no-fund || stop 'Clean npm install failed.'
 npm run prebuild || stop 'Calculator prebuild failed.'
 npm run build:cloudflare || stop 'Cloudflare build failed.'
 [[ -s .open-next/worker.js ]] || stop 'Worker bundle missing.'
 cd "$ROOT"
-printf '%s' "$IMAGEKIT_KEY" | "$WR" preview secret put IMAGEKIT_PRIVATE_KEY --name "$BRANCH" --worker-name "$WORKER" || stop 'Preview secret update failed.'
+# A Preview redeploy may discard secrets set by earlier `preview secret put`.
+# Deploy the code FIRST; then publish all three secrets together in one
+# preview-secret-bulk operation to ensure they belong to the latest deployment.
 "$WR" preview --name "$BRANCH" --worker-name "$WORKER" --config "$TMP/app/wrangler.jsonc" --message "ImageKit free image upload Preview $PIN" || stop 'Preview deployment failed.'
+"$WR" preview secret bulk "$TMP/preview-secrets.json" --name "$BRANCH" --worker-name "$WORKER" --message "Preview-only authentication and ImageKit secrets after build" || stop 'Preview secret bulk failed; no Production changes.'
+"$WR" preview secret list --name "$BRANCH" --worker-name "$WORKER" --json > "$TMP/preview-secret-names.json" || stop 'Cannot inspect Preview secret names.'
+node - "$TMP/preview-secret-names.json" <<'NODE' || stop 'Required Preview secret names were not present; do not attempt login or release.'
+const fs=require('node:fs'),a=require('node:assert/strict'),input=JSON.parse(fs.readFileSync(process.argv[2],'utf8'));
+const list=Array.isArray(input)?input:Array.isArray(input?.secrets)?input.secrets:input?.result;
+a.ok(Array.isArray(list),'Unexpected secret-name listing');
+const names=list.map(x=>typeof x==='string'?x:x?.name);
+for(const key of ['ADMIN_LOGIN_PASSWORD','ADMIN_SESSION_SECRET','IMAGEKIT_PRIVATE_KEY']){
+ a.ok(names.includes(key),'Preview secret not configured: '+key);
+ console.log('PASS Preview secret PRESENT: '+key);
+}
+NODE
 git show "$PIN:scripts/qa-imagekit-preview.cjs" > "$TMP/qa-imagekit-preview.cjs"
 CMS_PREVIEW_URL="$PREVIEW_URL" CMS_PREVIEW_TEST_PASSWORD="$PREVIEW_PASSWORD" node "$TMP/qa-imagekit-preview.cjs" || stop 'Isolated real upload/CDN QA failed. Do not deploy Production.'
 [[ "$(active)" == "$LIVE_VERSION" ]] || stop 'Unexpected Production active version change.'
