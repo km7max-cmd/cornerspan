@@ -48,7 +48,9 @@ export async function uploadImageKit(
   try {
     const response = await fetch(IMAGEKIT_UPLOAD_ENDPOINT, {
       method: 'POST',
-      redirect: 'error',
+      // Workers does not support redirect:'error' (throws TypeError before fetch).
+      // 'manual' plus the strict 200/201 and trusted-host checks below fails closed on 3xx.
+      redirect: 'manual',
       headers: { Authorization: 'Basic ' + btoa(privateKey + ':') },
       body: multipart,
       signal: AbortSignal.timeout(30000),
