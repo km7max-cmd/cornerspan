@@ -13,7 +13,8 @@ const uploadFetch=async (url,opts)=>{
   requests++;
   assert.equal(url,'https://upload.imagekit.io/api/v1/files/upload');
   assert.equal(opts.method,'POST');
-  assert.equal(opts.redirect,'error');
+  // Cloudflare Workers throws TypeError if redirect: 'error' is used.
+  assert.equal(opts.redirect,'manual','Workers fetch must use manual redirect to avoid runtime TypeError');
   assert.equal(opts.headers.Authorization,'Basic '+Buffer.from(secret+':').toString('base64'));
   assert.equal(opts.body.get('folder'),'/cornerspan');
   assert.equal(opts.body.get('useUniqueFileName'),'false');
@@ -54,6 +55,8 @@ const {isImageKitPrivateKey,imageKitKey,imageKitAvailable,uploadImageKit,IMAGEKI
    simulated=bad;
    assert.equal(await uploadImageKit(bytes,'image/webp',filename),null,'Untrusted provider URL/file path must be refused');
  }
+ status=302;
+ assert.equal(await uploadImageKit(bytes,'image/webp',filename),null,'Redirect responses must never be followed, even if provider responds 3xx');
  status=429;
  assert.equal(await uploadImageKit(bytes,'image/webp',filename),null,'Free plan rate/usage cap must fail closed');
  status=401;
