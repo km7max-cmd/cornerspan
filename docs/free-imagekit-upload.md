@@ -2,6 +2,12 @@
 
 **Status:** All source code and isolated tests are on GitHub PR #4. This integration is **not live** until the owner creates/connects an ImageKit account and the real Preview and Production release gates succeed. PR #4 is still draft; no merge required for Cloudflare Worker version promotion.
 
+## Cloudflare Worker upload HTTP 503 correction (18 November 2026)
+
+ImageKit key authentication HTTP 200, direct ImageKit upload HTTP 200, trusted CDN response HTTP 200, and Preview admin auth/image MIME tests all passed. Yet real Preview upload POST returned HTTP 503. Root cause identified in the earlier upload adapter: Cloudflare Workers does not support `redirect: 'error'` on `fetch`; it throws a `TypeError` before sending the request. Official documentation: https://developers.cloudflare.com/workers/runtime-apis/request/#parameters . The Worker adapter now uses `redirect: 'manual'` and explicitly accepts only HTTP 200/201, refusing any 3xx redirect. Isolated regression tests cover both. The pinned Preview source and guarded full release command are updated.
+
+**Important:** This is an evidence-based code correction, not yet a verified remote Preview upload. Do not call Live complete until a freshly deployed Preview achieves real ImageKit POST 201 and CDN GET 200, followed by explicit owner release approval and Live smoke checks.
+
 ## Why ImageKit
 
 ImageKit's **Forever Free** plan includes **3 GB fixed media storage** and **20 GB/month image delivery**. Signing up for this plan does not require a credit card. On free-plan limits, storage uploads or image delivery *stop* until capacity is freed or the monthly period resets. **Media delivery may fail publicly if the monthly bandwidth limit is hit**, so monitor traffic. Do not switch to Lite/Pro, enter a card, or enable Cloudflare R2. Confirm plan selection before any connection.
@@ -20,7 +26,7 @@ Key docs: https://imagekit.io/docs/api-keys/
 Within `/workspaces/cornerspan` on `feature/posts-admin-dashboard`:
 
 ```bash
-cd /workspaces/cornerspan && git fetch origin feature/posts-admin-dashboard && git show ed792c5a7ebfadcceea79894205d9b59bc9034f1:scripts/complete-imagekit-release.sh > /tmp/cornerspan-imagekit.sh && bash -n /tmp/cornerspan-imagekit.sh && bash /tmp/cornerspan-imagekit.sh
+cd /workspaces/cornerspan && git fetch origin feature/posts-admin-dashboard && git show 60a4121cffcd2b351d32f5ad7b7ee97c2c369890:scripts/complete-imagekit-release.sh > /tmp/cornerspan-imagekit.sh && bash -n /tmp/cornerspan-imagekit.sh && bash /tmp/cornerspan-imagekit.sh
 ```
 
 The script uses reviewed, **pinned Git application code**, not the owner's four uncommitted files. It requires the expected Cloudflare account and Worker, separate D1 Preview binding, active Live Worker version, and absence of any R2 subscription. It asks privately **in the terminal only** for (a) ImageKit private key, (b) existing Preview admin password, and (c) Production admin password (can be rotated; keep it safe). Both secret values remain out of GitHub and ChatGPT. It does not request any billing action.
