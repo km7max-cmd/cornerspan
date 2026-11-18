@@ -53,6 +53,8 @@ jobs:
         run: |
           bash -n scripts/diagnose-preview-imagekit-upload.sh
           awk '/^CMS_PREVIEW_TEST_PASSWORD=/ {printing=1; next} /^NODE$/ {printing=0} printing {print}' scripts/diagnose-preview-imagekit-upload.sh | node --check
+      - name: Syntax-check direct ImageKit upload provider diagnostic (no remote calls in CI)
+        run: bash -n scripts/run-imagekit-provider-diagnostic.sh && node --check scripts/diagnose-imagekit-provider.cjs
       - name: Verify optional D1 storage and image-upload API (isolated mocks)
         run: node scripts/test-admin-image-upload.cjs
       - name: Check opt-in R2 setup helper syntax (no remote creation in CI)
