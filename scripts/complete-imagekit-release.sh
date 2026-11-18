@@ -7,7 +7,7 @@ set -euo pipefail
 umask 077
 ROOT=/workspaces/cornerspan
 LIVE_VERSION=1d3c3256-4f2c-42da-977c-104e61cb0e5a
-CONNECT_COMMIT=c41e05f02d4d657cf0a859aa04f0c6ce8a5ebe32
+CONNECT_COMMIT=0816ec7edacc572cbb0f1ace84a3e642305b503b
 STOP(){ echo "STOP: $*" >&2; exit 1; }
 [[ -t 0 && "$(pwd -P)" == "$ROOT" ]] || STOP "Run in interactive authenticated Codespace under $ROOT."
 [[ "$(git branch --show-current)" == feature/posts-admin-dashboard ]] || STOP 'Wrong branch.'
@@ -17,7 +17,7 @@ git show "$CONNECT_COMMIT:scripts/connect-imagekit-free-preview.sh" > "$BOOTSTRA
 # Sourcing intentionally retains the hidden private key in memory for the subsequent secure production upload.
 source "$BOOTSTRAP"
 rm -f -- "$BOOTSTRAP"
-[[ -d "$TMP/app" && "$PIN" == ac7fb9d6e047f923dd2463410ef4d127bed560d5 ]] || STOP 'Preview build source verification failed.'
+[[ -d "$TMP/app" && "$PIN" == e01f9eb6c6dea13f6571f8549c156ee02f77d213 ]] || STOP 'Preview build source verification failed.'
 echo 'PASS: Real isolated Preview upload acceptance. Production is still the unchanged previous Worker.'
 
 PROD_PASSWORD=''
