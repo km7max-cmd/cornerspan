@@ -10,7 +10,8 @@ on:
 jobs:
   site-quality:
     name: Build, content and mobile calculator QA
-    runs-on: ubuntu-latest
+    # Playwright 1.56 Chromium setup supports Ubuntu 24.04; ubuntu-latest currently selects unsupported 26.04.
+    runs-on: ubuntu-24.04
     timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
