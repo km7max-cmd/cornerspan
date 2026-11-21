@@ -1,0 +1,917 @@
+{
+  "baselineCommit": "e1c61d4337c16c1c99bb4e80b7638f1e9235b0e5",
+  "hashes": {
+    "app/calculators/.gitkeep": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "app/calculators/CalculatorDirectory.tsx": "800be03c88274f7cd0c32d8599bb124cec5995542e8cca90cffe2eb7864cce67",
+    "app/calculators/area/AreaCalculator.tsx": "3abd0b83c83d6265a9108f7e4534995c8c1c7cc5b25c0249067d5d32c5c4d748",
+    "app/calculators/area/AreaGuide.tsx": "d5c1492d1753f71b5e6681404d5354a4f35ae1d43cee03fbdf8c337aff7169f4",
+    "app/calculators/area/AreaTransferLinks.tsx": "ba418c23c1554c640ed27821aa96e953c4cc0ecd7456de95981ee24ec7fb6fd1",
+    "app/calculators/area/MultiSectionArea.tsx": "90e4bce62dee8289a2b18367aa04d339257a077f5cf4a9db0ea21b4e2aa62f61",
+    "app/calculators/area/areaMath.ts": "0ad8704e980601fa7204102236eb2d8085f9bff10d87ba82db9a5d8806bb3ccb",
+    "app/calculators/area/page.tsx": "dd9a3aed70d4635d7b924be6fbe7732e7c904955cb0fa01711cbeb455ad7dc79",
+    "app/calculators/area/reference.ts": "e41187e58ede8362f6309cadd74e28afab0e376610d04837f6c4e3d4daeb3033",
+    "app/calculators/area/sections.ts": "66d27a7694c4bb571fded182e2b9a7c2c17cd0cce69173a1df16ae537df18228",
+    "app/calculators/asphalt/AsphaltCalculator.tsx": "47db5184ba4dfd69390285f1132fdb94fd4a11085ab79e8c4174127e8a124f47",
+    "app/calculators/asphalt/page.tsx": "02a714627a47a2a085f670d10729da75db780238bccad38aca6e89b84372c6fc",
+    "app/calculators/brick/BrickCalculatorClient.tsx": "06318b2a22be18295338f99453c94b49e44ea2e7fc705aedee3f24e533a8e7b0",
+    "app/calculators/brick/components/BrickDetails.tsx": "77f0c2d75177985e0ce42be9928cd214d9e45734146e356b964ce56086a525de",
+    "app/calculators/brick/components/BrickDiagram.tsx": "e49828a691dbd108e17fa42c37230d2596d058b93dacdfa8269e9ae6d7927609",
+    "app/calculators/brick/components/CalculatorSections.tsx": "069982e46e44276ca3026d3726e31aa3a1e5234d8f6595631edb5cc574e841e3",
+    "app/calculators/brick/components/CostDetails.tsx": "db8a4cf6b94059f62f20893f15a7db07ab9764d5d2eed96e0df33c3dcf34529b",
+    "app/calculators/brick/components/MortarDetails.tsx": "0240b7c399a823614232fdbeb06337249a5ff2b1c967377e36d43a0d29579ac5",
+    "app/calculators/brick/components/OpeningDetails.tsx": "8d24682754eac4b03e7ff6519c38059d59c235afc9d8b7b695c5fa9c91f22495",
+    "app/calculators/brick/components/ResultCard.tsx": "d1a06303b165a4af0b8072a4113cf6b05b05d0a76e7310caf95dd56da1f5dbc6",
+    "app/calculators/brick/components/UnitSelect.tsx": "3eaf092c7f382270e83496d5056dca0ade3725433adc4264fe9032b582dad766",
+    "app/calculators/brick/components/WallDetails.tsx": "f33f930baaf86db6e756ac10fda72462ef15c4c3c1f0a16d3c108003d15686b9",
+    "app/calculators/brick/data/brickOptions.ts": "103b4837ee9ae6f7419532198b31782706c62c272baf5230f80d2c92c521dacb",
+    "app/calculators/brick/page.tsx": "842fefb71b43b81f14f98062bede435cd85fd6cc2a321769c61d352a3bc902d3",
+    "app/calculators/brick/types.ts": "48778efbbc7bbe66a317d5958b732b74dc5ceb9e73b8aa5beb53d433a190cb2d",
+    "app/calculators/brick/units.ts": "037efa5e320c6b33f2014042bb3788b016f86f2bfad0cb965bf50b1313dfc80c",
+    "app/calculators/brick/utils/calculations.ts": "4a1a987c7233d6b5235ac20d667a1a0241ec8a218a177b345f4e059609f52f0a",
+    "app/calculators/components/RelatedCalculators.tsx": "1c16d91e6097190f0b17d1010c9cc53a55046646666bc3a22318a5fdd1b811c8",
+    "app/calculators/concrete/.gitkeep": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "app/calculators/concrete/ConcreteCalculator.tsx": "8eaead5c547b65a0be8cf004e8f8cd1e5989f7867f042853c8299bacc4f32f0d",
+    "app/calculators/concrete/components/AboutCalculator.tsx": "262377fd09fa8bf7d2884620ca1ae603b61ea48169b8cd6cc1d415dc7e3e9101",
+    "app/calculators/concrete/components/CalculatorForm.tsx": "df3bef87a48857d8c2088ccd009d0370d36ad8649a4d136565a35f5863351ee0",
+    "app/calculators/concrete/components/Example.tsx": "2b061a661e901db1ddd44bb3d07668c36cadb70825c0650c6db1bc9d665be609",
+    "app/calculators/concrete/components/FAQ.tsx": "13adb04c9dc18c07c77949332cc17c2c87ad0635cf81c4199820c2bb828bec9b",
+    "app/calculators/concrete/components/Formula.tsx": "7248afff879b3ba9e17302f0a6aed9f426eaccc19c2e5ace0dbbd12a5f48ebff",
+    "app/calculators/concrete/components/Hero.tsx": "7969c08584598f712c4d32f6bd9bf1d9b39df19cc718761fcb674ab8ca8e1ca5",
+    "app/calculators/concrete/components/History.tsx": "629cf726cc61e9c8563632cf2b5e632e65595606e70aaeae972cf4767b2c0d1d",
+    "app/calculators/concrete/components/ResultCard.tsx": "b054cd396126cd8743fc51588c628f401e859c9ef615a336b2d087b27e3848fb",
+    "app/calculators/concrete/page.tsx": "78701f4abce86c5bb57e03853c5a6abd01251c11a10176a629f5225c94fd9f9b",
+    "app/calculators/concrete/utils/calculateConcrete.ts": "881e0f6cd1d853fdd542115a1e74bf88dab9635213ea2986ec0000222655f15c",
+    "app/calculators/fence/FenceCalculator.tsx": "fcb60ca380437f0afe16768c98a5f47ae7fd4c11ddf61fe8adfe95a573e53e0b",
+    "app/calculators/fence/calculations.ts": "d8bc2a7059b921f57d1648a97c3d0322e3b45b4cabdf6aa8546d3595edc7397d",
+    "app/calculators/fence/page.tsx": "3c8491ee44408ea85ac780783990a1d6d0f90f9ca2744ce373b0c4f18ce34494",
+    "app/calculators/gravel/GravelCalculator.tsx": "73cc9a62bdf073998e34d0757ddc2f827a63d3a4d6867eaba16753bac8e60f30",
+    "app/calculators/gravel/page.tsx": "ab60489559d08b83e7debb1f0234c3fcdb724f9eaf6ee385c8216a53a4021a96",
+    "app/calculators/page.tsx": "4a80e47e81d00e2f772330efe9455bcf1a16975e21465bc3ed000ec643fec180",
+    "app/calculators/paint/PaintCalculator.tsx": "0e12e6ec717a0fe4c6afaddbccc4b07a42f56951ae42e4e151bde1c740571d9e",
+    "app/calculators/paint/SurfacePaintCalculator.tsx": "b278be1323ed52c0bc75c6a59b5245c3648debc57705e0dba382e93d027bd266",
+    "app/calculators/paint/components/PaintGuide.tsx": "7f294ac8601e73effc144af3536bdf481730c7e142e9cdeb7bb3b79333f2f811",
+    "app/calculators/paint/components/PaintInputs.tsx": "2e1fc88de16a593b56c95523e06a635dce10bfe4b5050dfe0143f1f1f78be07b",
+    "app/calculators/paint/components/PaintResults.tsx": "ef3657cd0e8426c9df5ccda886503ac82bd3aefc3bc6389d9037dc28e56f3e43",
+    "app/calculators/paint/components/PaintTips.tsx": "dfaef8e217a0d0d5ccd0f27238b5a7a915950e33850dcbe3f5d53454be894a79",
+    "app/calculators/paint/page.tsx": "e7776b1c525936f2b2734a2a16e2a64910ed8c5b66b76c752d4689e7330334ed",
+    "app/calculators/paint/utils/calculations.ts": "dbae81e82c5af75434568bd6cd5320912dbc63970901ec6e24475cfba923c8ec",
+    "app/calculators/paver/PaverCalculator.tsx": "dcd9008b44896c604d5b123b367e2836f2da2727eb3285b282df00aeea12a846",
+    "app/calculators/paver/calculations.ts": "5426e1f328ce2f9d791a8bc62bdabf03445db656c38224188cf8c829442355ce",
+    "app/calculators/paver/page.tsx": "1b25bc361827e71bbaf86aabefa0cebca42eba17ef9aedd404cc33c1544d4389",
+    "app/calculators/roofing/RoofingCalculator.tsx": "3a5513ad14b9d7d8c4dee1030fbf96a7bdab0654ab64337642a368458477a9ed",
+    "app/calculators/roofing/page.tsx": "a9a9dd088f461311621e2f19a73ec7503ac698144d2b0547eee6d829dab10a1c",
+    "app/calculators/shared/areaTransfer.ts": "2f080fc7d0a58b199a89738537d9a1162553df37e84f7cb6277a49dd0aba3cee",
+    "app/calculators/shared/numbers.ts": "e494ba3dfafcb685d14fc76cb02b2f71cb00d2f890c811fd58fb5fce413ba6b9",
+    "app/calculators/sod-turf/SodTurfCalculator.tsx": "808dcc728c78e0e491334999ee8cabab0994f38c623fa8801784b479f6183683",
+    "app/calculators/sod-turf/page.tsx": "935608dd9e10c3074b9cc2e27dc872943f2323cd24325ec5690e6e47092779d2",
+    "app/calculators/square-footage/calculations.ts": "94d67caf2ce5434ada201e68d5e6c415d91d0a55396055cc41d6a9999b2b8d43",
+    "app/calculators/square-footage/components/CalculatorForm.tsx": "99835043d6b90f7b3c6fef773dff1aa7224d102770c308eae4acb4c3ec61669b",
+    "app/calculators/square-footage/components/InputField.tsx": "a7db3dfc0ba178e302d9a7930a3ae4e8fec1818359479ac8b77603234df74191",
+    "app/calculators/square-footage/components/ResultBox.tsx": "7c1991404fdc714d2e377916ae5d31b9a79fb04e128a62bec9eed27941b0ec93",
+    "app/calculators/square-footage/components/ShapeDiagram.tsx": "2734271d145bf1a6b8dfff33224b45a5d0835833e82d8cea923a5e270b8cd4fb",
+    "app/calculators/square-footage/page.tsx": "39415adedb224ec29fa39d9ca4a30d41a6c6d45579d913dc17a20db56606310d",
+    "app/calculators/square-footage/types.ts": "92cf1b4704d004ff9f699a1448b4d99d4ebe1fe68e120523a3abbbd52585fddc",
+    "app/calculators/steel/SteelCalculator.tsx": "13ae2cf8f21a0052facfa920a2e9a781b786e40faf6f24cb42a913cd8e859584",
+    "app/calculators/steel/calculations.ts": "3dd8e9494d850df30a63edbc5be5a466841d0d42720bcaace5b16c2612f806c9",
+    "app/calculators/steel/page.tsx": "b40ce2405b16a809d21ecc4c21790607cf62d5852df70feb13b7963257ce4c92",
+    "app/calculators/tile/TileCalculator.tsx": "3456c2ec3f2d77c93a51a17fa00a4b1b6c4940be25d46150f66025be17dad346",
+    "app/calculators/tile/page.tsx": "4527b58afdd951e1f514a36bc3ba82342a5f0e030170adf8f3aa7ffef13e2fee",
+    "app/calculators/topsoil/TopsoilCalculator.tsx": "3450c36ca5282182fcc81df0d9e0f58f521877db6c286c23f78ec2c585a51a69",
+    "app/calculators/topsoil/page.tsx": "28e8a433b7bab536cd7104e04a4b5d95f435ec6b9ec7f5355c54b086d28c2131",
+    "components/blog/CalculatorArticle.tsx": "798e914758912f1c4e39dc6aa77bd449f4b30232087c662216595159a6cca35a",
+    "components/blog/RetainingWallArticle.tsx": "7e7a36d68c3b38eac3389cb0c5d7e58be5d0b4e64988779904f2713440c39813",
+    "components/blog/RoofPitchHelper.tsx": "f23ed224795daa5ed3b0a1d8d5a184a54bbac60c619a3987d657f88cebcf3d2e",
+    "components/blog/TrapezoidAreaArticle.tsx": "6f91e5bbe5167eedea9cb34e6cce5342f1c1643bdfad0fd5434fa9c626606e0f",
+    "data/article-images.ts": "fd8294fa5ff6db961ca9821361e314acc20ee923099a048c0fe6460b4e6b7f0f",
+    "data/blog.ts": "47d03fe06b867c0a5abd550d71cabbd3dacf58979b36106f9e7e0a1ed38e115f",
+    "data/calculator-articles.ts": "bf7c0a9032e1344822b20c2196d5c5d20009004aef30c53c495edd78df2bdcdf"
+  },
+  "metadata": {
+    "concrete-calculation-guide": {
+      "title": "Concrete for a 20x12 Slab: Cubic Yards & Bag Counts",
+      "description": "Calculate concrete for a 20x12 slab. Compare 4- and 6-inch thickness, cubic yards, 60- and 80-lb premix bags, and clearly stated ordering allowances.",
+      "alternates": {
+        "canonical": "/blog/concrete-calculation-guide"
+      },
+      "openGraph": {
+        "title": "Concrete for a 20x12 Slab: Cubic Yards & Bag Counts",
+        "description": "Calculate concrete for a 20x12 slab. Compare 4- and 6-inch thickness, cubic yards, 60- and 80-lb premix bags, and clearly stated ordering allowances.",
+        "type": "article",
+        "url": "https://www.cornerspan.com/blog/concrete-calculation-guide",
+        "locale": "en_US",
+        "publishedTime": "2026-08-25",
+        "modifiedTime": "2026-10-29",
+        "images": [
+          {
+            "url": "/images/guides/concrete-20x12-slab.webp",
+            "alt": "A 20 by 12 foot slab at 4 inches thick equals 80 cubic feet or about 2.96 cubic yards before allowance."
+          }
+        ]
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Concrete for a 20x12 Slab: Cubic Yards & Bag Counts",
+        "description": "Calculate concrete for a 20x12 slab. Compare 4- and 6-inch thickness, cubic yards, 60- and 80-lb premix bags, and clearly stated ordering allowances.",
+        "images": [
+          "/images/guides/concrete-20x12-slab.webp"
+        ]
+      },
+      "robots": {
+        "index": true,
+        "follow": true,
+        "googleBot": {
+          "index": true,
+          "follow": true,
+          "max-image-preview": "large"
+        }
+      }
+    },
+    "brick-calculation-guide": {
+      "title": "How Many Bricks for a 12x8 Wall With a Window?",
+      "description": "Estimate bricks for a 12x8 wall with a 3x4 window using brick face size and mortar joints. See a 5% allowance, a solid-wall comparison and material cost.",
+      "alternates": {
+        "canonical": "/blog/brick-calculation-guide"
+      },
+      "openGraph": {
+        "title": "How Many Bricks for a 12x8 Wall With a Window?",
+        "description": "Estimate bricks for a 12x8 wall with a 3x4 window using brick face size and mortar joints. See a 5% allowance, a solid-wall comparison and material cost.",
+        "type": "article",
+        "url": "https://www.cornerspan.com/blog/brick-calculation-guide",
+        "locale": "en_US",
+        "publishedTime": "2026-08-25",
+        "modifiedTime": "2026-10-26",
+        "images": [
+          {
+            "url": "/brick-calculation-guide.png",
+            "alt": "How Many Bricks for a 12x8 Wall With a Window?"
+          }
+        ]
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "How Many Bricks for a 12x8 Wall With a Window?",
+        "description": "Estimate bricks for a 12x8 wall with a 3x4 window using brick face size and mortar joints. See a 5% allowance, a solid-wall comparison and material cost.",
+        "images": [
+          "/brick-calculation-guide.png"
+        ]
+      },
+      "robots": {
+        "index": true,
+        "follow": true,
+        "googleBot": {
+          "index": true,
+          "follow": true,
+          "max-image-preview": "large"
+        }
+      }
+    },
+    "square-footage-calculation-guide": {
+      "title": "Square Footage for Flooring: Feet, Inches & Cartons",
+      "description": "Calculate room square footage with feet and inches. Follow L-shaped room and wall examples, then compare flooring waste, carton coverage and purchase costs.",
+      "alternates": {
+        "canonical": "/blog/square-footage-calculation-guide"
+      },
+      "openGraph": {
+        "title": "Square Footage for Flooring: Feet, Inches & Cartons",
+        "description": "Calculate room square footage with feet and inches. Follow L-shaped room and wall examples, then compare flooring waste, carton coverage and purchase costs.",
+        "type": "article",
+        "url": "https://www.cornerspan.com/blog/square-footage-calculation-guide",
+        "locale": "en_US",
+        "publishedTime": "2026-08-25",
+        "modifiedTime": "2026-10-28",
+        "images": [
+          {
+            "url": "/square-footage-guide.webp",
+            "alt": "How to calculate square footage: CornerSpan measurement guide"
+          }
+        ]
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Square Footage for Flooring: Feet, Inches & Cartons",
+        "description": "Calculate room square footage with feet and inches. Follow L-shaped room and wall examples, then compare flooring waste, carton coverage and purchase costs.",
+        "images": [
+          "/square-footage-guide.webp"
+        ]
+      },
+      "robots": {
+        "index": true,
+        "follow": true,
+        "googleBot": {
+          "index": true,
+          "follow": true,
+          "max-image-preview": "large"
+        }
+      }
+    },
+    "how-many-bricks-10-foot-retaining-wall": {
+      "title": "10-Foot Retaining Wall: Brick vs. Block Quantities",
+      "description": "Compare facing-brick and retaining-block quantities for a 10-foot wall. Count courses, buried blocks and caps separately using stated product dimensions.",
+      "alternates": {
+        "canonical": "/blog/how-many-bricks-10-foot-retaining-wall"
+      },
+      "openGraph": {
+        "title": "10-Foot Retaining Wall: Brick vs. Block Quantities",
+        "description": "Compare facing-brick and retaining-block quantities for a 10-foot wall. Count courses, buried blocks and caps separately using stated product dimensions.",
+        "type": "article",
+        "images": [
+          {
+            "url": "/images/guides/retaining-wall-course-count.webp",
+            "width": 1200,
+            "height": 675,
+            "alt": "For a 10-foot run, seven stock 18-inch blocks per course give 21 blocks for three exposed courses, plus seven for one assumed buried course; caps are separate."
+          }
+        ],
+        "locale": "en_US",
+        "url": "https://www.cornerspan.com/blog/how-many-bricks-10-foot-retaining-wall",
+        "publishedTime": "2026-10-18",
+        "modifiedTime": "2026-10-29"
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "images": [
+          "/images/guides/retaining-wall-course-count.webp"
+        ],
+        "title": "10-Foot Retaining Wall: Brick vs. Block Quantities",
+        "description": "Compare facing-brick and retaining-block quantities for a 10-foot wall. Count courses, buried blocks and caps separately using stated product dimensions."
+      },
+      "robots": {
+        "index": true,
+        "follow": true
+      }
+    },
+    "trapezoid-area-calculation": {
+      "title": "How to Calculate the Area of a Trapezoid",
+      "description": "Learn the trapezoid area formula with step-by-step examples in square feet and square meters, a calculation table, and practical measurement tips.",
+      "keywords": [
+        "trapezoid area",
+        "area of a trapezoid",
+        "trapezoid area formula",
+        "how to calculate trapezoid area",
+        "trapezoid area calculator",
+        "trapezoid formula",
+        "trapezoid area examples",
+        "calculate trapezoid area in square feet"
+      ],
+      "alternates": {
+        "canonical": "https://www.cornerspan.com/blog/trapezoid-area-calculation"
+      },
+      "openGraph": {
+        "title": "How to Calculate the Area of a Trapezoid",
+        "description": "Learn the trapezoid area formula with worked examples, measurement guidance, and common mistakes.",
+        "type": "article",
+        "url": "https://www.cornerspan.com/blog/trapezoid-area-calculation",
+        "siteName": "CornerSpan",
+        "images": [
+          {
+            "url": "https://www.cornerspan.com/trapezoid-area-guide.webp",
+            "width": 1672,
+            "height": 941,
+            "alt": "How to Calculate the Area of a Trapezoid - CornerSpan"
+          }
+        ]
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "How to Calculate the Area of a Trapezoid | CornerSpan",
+        "description": "Understand the trapezoid area formula with clear examples in square feet and square meters.",
+        "images": [
+          "https://www.cornerspan.com/trapezoid-area-guide.webp"
+        ]
+      },
+      "robots": {
+        "index": true,
+        "follow": true,
+        "googleBot": {
+          "index": true,
+          "follow": true,
+          "max-image-preview": "large"
+        }
+      }
+    },
+    "how-to-calculate-roof-pitch": {
+      "title": "Roof Pitch Calculator: Rise, Run & Degrees",
+      "description": "Calculate roof pitch from rise and run, convert pitch to degrees, and check a 2:12–12:12 chart with worked examples and roof area multipliers.",
+      "alternates": {
+        "canonical": "/blog/how-to-calculate-roof-pitch"
+      },
+      "openGraph": {
+        "title": "Roof Pitch Calculator: Rise, Run & Degrees",
+        "description": "Calculate roof pitch from rise and run, convert pitch to degrees, and check a 2:12–12:12 chart with worked examples and roof area multipliers.",
+        "type": "article",
+        "url": "https://www.cornerspan.com/blog/how-to-calculate-roof-pitch",
+        "locale": "en_US",
+        "publishedTime": "2026-10-29",
+        "modifiedTime": "2026-10-29",
+        "images": [
+          {
+            "url": "/images/guides/roof-pitch-rise-run.webp",
+            "alt": "Right triangle with a 12-inch horizontal run and 6-inch vertical rise: 6:12 pitch, 26.57 degrees, 50 percent slope and a 1.118034 area multiplier."
+          }
+        ]
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Roof Pitch Calculator: Rise, Run & Degrees",
+        "description": "Calculate roof pitch from rise and run, convert pitch to degrees, and check a 2:12–12:12 chart with worked examples and roof area multipliers.",
+        "images": [
+          "/images/guides/roof-pitch-rise-run.webp"
+        ]
+      },
+      "robots": {
+        "index": true,
+        "follow": true,
+        "googleBot": {
+          "index": true,
+          "follow": true,
+          "max-image-preview": "large"
+        }
+      }
+    },
+    "how-to-calculate-square-footage-of-an-l-shaped-room": {
+      "title": "L-Shaped Room Square Footage: Formula & Example",
+      "description": "Measure an L-shaped room in square feet using two rectangles or a missing-corner subtraction. See a 272 sq ft example and flooring carton estimate.",
+      "alternates": {
+        "canonical": "/blog/how-to-calculate-square-footage-of-an-l-shaped-room"
+      },
+      "openGraph": {
+        "title": "L-Shaped Room Square Footage: Formula & Example",
+        "description": "Measure an L-shaped room in square feet using two rectangles or a missing-corner subtraction. See a 272 sq ft example and flooring carton estimate.",
+        "type": "article",
+        "url": "https://www.cornerspan.com/blog/how-to-calculate-square-footage-of-an-l-shaped-room",
+        "locale": "en_US",
+        "publishedTime": "2026-11-01",
+        "modifiedTime": "2026-11-01",
+        "images": [
+          {
+            "url": "/og-image.webp",
+            "alt": "Scale drawing of an L-shaped floor with a 20 by 10 ft section of 200 sq ft, a 12 by 6 ft section of 72 sq ft, and an 8 by 6 ft missing corner; total 272 sq ft."
+          }
+        ]
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "L-Shaped Room Square Footage: Formula & Example",
+        "description": "Measure an L-shaped room in square feet using two rectangles or a missing-corner subtraction. See a 272 sq ft example and flooring carton estimate.",
+        "images": [
+          "/og-image.webp"
+        ]
+      },
+      "robots": {
+        "index": true,
+        "follow": true,
+        "googleBot": {
+          "index": true,
+          "follow": true,
+          "max-image-preview": "large"
+        }
+      }
+    },
+    "how-to-use-a-construction-calculator": {
+      "title": "How to Use a Construction Calculator",
+      "description": "Choose the right construction calculator, enter feet and inches correctly, and check area, volume and purchase quantities with a reproducible example.",
+      "alternates": {
+        "canonical": "/blog/how-to-use-a-construction-calculator"
+      },
+      "openGraph": {
+        "title": "How to Use a Construction Calculator",
+        "description": "Choose the right construction calculator, enter feet and inches correctly, and check area, volume and purchase quantities with a reproducible example.",
+        "type": "article",
+        "url": "https://www.cornerspan.com/blog/how-to-use-a-construction-calculator",
+        "locale": "en_US",
+        "publishedTime": "2026-10-28",
+        "modifiedTime": "2026-10-29",
+        "images": [
+          {
+            "url": "/images/guides/construction-calculator-units.webp",
+            "alt": "An 11 foot 6 inch by 9 foot 4 inch room measures 107 and one third square feet; an 8 percent allowance gives 115.92 square feet, requiring eight 15.5-square-foot cartons."
+          }
+        ]
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "How to Use a Construction Calculator",
+        "description": "Choose the right construction calculator, enter feet and inches correctly, and check area, volume and purchase quantities with a reproducible example.",
+        "images": [
+          "/images/guides/construction-calculator-units.webp"
+        ]
+      },
+      "robots": {
+        "index": true,
+        "follow": true,
+        "googleBot": {
+          "index": true,
+          "follow": true,
+          "max-image-preview": "large"
+        }
+      }
+    },
+    "construction-material-takeoff-checklist": {
+      "title": "Construction Material Takeoff Checklist",
+      "description": "Build a traceable material takeoff for a 12x10 patio: separate pavers, base, bedding and edging, record units, and check packaging and missing scope.",
+      "alternates": {
+        "canonical": "/blog/construction-material-takeoff-checklist"
+      },
+      "openGraph": {
+        "title": "Construction Material Takeoff Checklist",
+        "description": "Build a traceable material takeoff for a 12x10 patio: separate pavers, base, bedding and edging, record units, and check packaging and missing scope.",
+        "type": "article",
+        "url": "https://www.cornerspan.com/blog/construction-material-takeoff-checklist",
+        "locale": "en_US",
+        "publishedTime": "2026-10-28",
+        "modifiedTime": "2026-10-29",
+        "images": [
+          {
+            "url": "/images/guides/patio-material-takeoff.webp",
+            "alt": "A 12 by 10 foot patio has 120 square feet of surface, 44 feet of perimeter and separate surface, bedding and base material lines."
+          }
+        ]
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Construction Material Takeoff Checklist",
+        "description": "Build a traceable material takeoff for a 12x10 patio: separate pavers, base, bedding and edging, record units, and check packaging and missing scope.",
+        "images": [
+          "/images/guides/patio-material-takeoff.webp"
+        ]
+      },
+      "robots": {
+        "index": true,
+        "follow": true,
+        "googleBot": {
+          "index": true,
+          "follow": true,
+          "max-image-preview": "large"
+        }
+      }
+    },
+    "how-to-calculate-construction-project-cost": {
+      "title": "How to Calculate Construction Project Cost",
+      "description": "Turn measured quantities into a project budget. Compare supplier quotes, calculate person-hours, separate delivery and equipment, and label missing costs.",
+      "alternates": {
+        "canonical": "/blog/how-to-calculate-construction-project-cost"
+      },
+      "openGraph": {
+        "title": "How to Calculate Construction Project Cost",
+        "description": "Turn measured quantities into a project budget. Compare supplier quotes, calculate person-hours, separate delivery and equipment, and label missing costs.",
+        "type": "article",
+        "url": "https://www.cornerspan.com/blog/how-to-calculate-construction-project-cost",
+        "locale": "en_US",
+        "publishedTime": "2026-10-28",
+        "modifiedTime": "2026-10-29",
+        "images": [
+          {
+            "url": "/images/guides/construction-project-budget.webp",
+            "alt": "Illustrative partial patio budget: materials 584 dollars, delivery 85, labor 480 and equipment 75 total 1224 dollars; a 10 percent contingency gives 1346 dollars and 40 cents."
+          }
+        ]
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "How to Calculate Construction Project Cost",
+        "description": "Turn measured quantities into a project budget. Compare supplier quotes, calculate person-hours, separate delivery and equipment, and label missing costs.",
+        "images": [
+          "/images/guides/construction-project-budget.webp"
+        ]
+      },
+      "robots": {
+        "index": true,
+        "follow": true,
+        "googleBot": {
+          "index": true,
+          "follow": true,
+          "max-image-preview": "large"
+        }
+      }
+    },
+    "paver-calculation-guide": {
+      "title": "How Many Pavers for a 10x10 Patio? Sizes & Waste",
+      "description": "Estimate pavers for a 10x10 patio with 12x12 or 4x8 units. Compare counts, cutting allowances, pallet coverage and a worked material-cost example.",
+      "alternates": {
+        "canonical": "/blog/paver-calculation-guide"
+      },
+      "openGraph": {
+        "title": "How Many Pavers for a 10x10 Patio? Sizes & Waste",
+        "description": "Estimate pavers for a 10x10 patio with 12x12 or 4x8 units. Compare counts, cutting allowances, pallet coverage and a worked material-cost example.",
+        "type": "article",
+        "url": "https://www.cornerspan.com/blog/paver-calculation-guide",
+        "locale": "en_US",
+        "publishedTime": "2026-10-26",
+        "modifiedTime": "2026-10-26",
+        "images": [
+          {
+            "url": "/cornerspan-paver-calculator-hero.webp",
+            "alt": "How Many Pavers for a 10x10 Patio? Sizes & Waste"
+          }
+        ]
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "How Many Pavers for a 10x10 Patio? Sizes & Waste",
+        "description": "Estimate pavers for a 10x10 patio with 12x12 or 4x8 units. Compare counts, cutting allowances, pallet coverage and a worked material-cost example.",
+        "images": [
+          "/cornerspan-paver-calculator-hero.webp"
+        ]
+      },
+      "robots": {
+        "index": true,
+        "follow": true,
+        "googleBot": {
+          "index": true,
+          "follow": true,
+          "max-image-preview": "large"
+        }
+      }
+    },
+    "tile-calculation-guide": {
+      "title": "How Many 12x12 Tiles for 100 Square Feet?",
+      "description": "Find how many 12x12 tiles and boxes cover 100 square feet with a 10% allowance. Compare 12x24 tiles, carton rounding and a tile-only cost example.",
+      "alternates": {
+        "canonical": "/blog/tile-calculation-guide"
+      },
+      "openGraph": {
+        "title": "How Many 12x12 Tiles for 100 Square Feet?",
+        "description": "Find how many 12x12 tiles and boxes cover 100 square feet with a 10% allowance. Compare 12x24 tiles, carton rounding and a tile-only cost example.",
+        "type": "article",
+        "url": "https://www.cornerspan.com/blog/tile-calculation-guide",
+        "locale": "en_US",
+        "publishedTime": "2026-10-26",
+        "modifiedTime": "2026-10-26",
+        "images": [
+          {
+            "url": "/cornerspan-tile-calculator-hero.webp",
+            "alt": "How Many 12x12 Tiles for 100 Square Feet?"
+          }
+        ]
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "How Many 12x12 Tiles for 100 Square Feet?",
+        "description": "Find how many 12x12 tiles and boxes cover 100 square feet with a 10% allowance. Compare 12x24 tiles, carton rounding and a tile-only cost example.",
+        "images": [
+          "/cornerspan-tile-calculator-hero.webp"
+        ]
+      },
+      "robots": {
+        "index": true,
+        "follow": true,
+        "googleBot": {
+          "index": true,
+          "follow": true,
+          "max-image-preview": "large"
+        }
+      }
+    },
+    "paint-calculation-guide": {
+      "title": "How Much Paint for a 10x10 Room? Walls & Ceiling",
+      "description": "Estimate paint for a 10x10 room with 8-foot walls and two coats. See gallon rounding, a separate ceiling estimate and a comparison with a 10x12 room.",
+      "alternates": {
+        "canonical": "/blog/paint-calculation-guide"
+      },
+      "openGraph": {
+        "title": "How Much Paint for a 10x10 Room? Walls & Ceiling",
+        "description": "Estimate paint for a 10x10 room with 8-foot walls and two coats. See gallon rounding, a separate ceiling estimate and a comparison with a 10x12 room.",
+        "type": "article",
+        "url": "https://www.cornerspan.com/blog/paint-calculation-guide",
+        "locale": "en_US",
+        "publishedTime": "2026-10-26",
+        "modifiedTime": "2026-10-26",
+        "images": [
+          {
+            "url": "/paint-calculator.webp",
+            "alt": "How Much Paint for a 10x10 Room? Walls & Ceiling"
+          }
+        ]
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "How Much Paint for a 10x10 Room? Walls & Ceiling",
+        "description": "Estimate paint for a 10x10 room with 8-foot walls and two coats. See gallon rounding, a separate ceiling estimate and a comparison with a 10x12 room.",
+        "images": [
+          "/paint-calculator.webp"
+        ]
+      },
+      "robots": {
+        "index": true,
+        "follow": true,
+        "googleBot": {
+          "index": true,
+          "follow": true,
+          "max-image-preview": "large"
+        }
+      }
+    },
+    "asphalt-calculation-guide": {
+      "title": "How Many Tons of Asphalt for a 20x50 Driveway?",
+      "description": "Calculate asphalt tons for a 20x50 driveway at 2, 3 or 4 inches. See density assumptions, compacted volume, a 5% allowance and a material-cost example.",
+      "alternates": {
+        "canonical": "/blog/asphalt-calculation-guide"
+      },
+      "openGraph": {
+        "title": "How Many Tons of Asphalt for a 20x50 Driveway?",
+        "description": "Calculate asphalt tons for a 20x50 driveway at 2, 3 or 4 inches. See density assumptions, compacted volume, a 5% allowance and a material-cost example.",
+        "type": "article",
+        "url": "https://www.cornerspan.com/blog/asphalt-calculation-guide",
+        "locale": "en_US",
+        "publishedTime": "2026-10-26",
+        "modifiedTime": "2026-10-26",
+        "images": [
+          {
+            "url": "/cornerspan-asphalt-calculator-hero.webp",
+            "alt": "How Many Tons of Asphalt for a 20x50 Driveway?"
+          }
+        ]
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "How Many Tons of Asphalt for a 20x50 Driveway?",
+        "description": "Calculate asphalt tons for a 20x50 driveway at 2, 3 or 4 inches. See density assumptions, compacted volume, a 5% allowance and a material-cost example.",
+        "images": [
+          "/cornerspan-asphalt-calculator-hero.webp"
+        ]
+      },
+      "robots": {
+        "index": true,
+        "follow": true,
+        "googleBot": {
+          "index": true,
+          "follow": true,
+          "max-image-preview": "large"
+        }
+      }
+    },
+    "gravel-calculation-guide": {
+      "title": "How Much Gravel for a 10x20 Area? Yards & Tons",
+      "description": "Estimate gravel for a 10x20 area at 3 or 4 inches deep. Convert cubic yards to US tons with a stated density, add an allowance and check delivery units.",
+      "alternates": {
+        "canonical": "/blog/gravel-calculation-guide"
+      },
+      "openGraph": {
+        "title": "How Much Gravel for a 10x20 Area? Yards & Tons",
+        "description": "Estimate gravel for a 10x20 area at 3 or 4 inches deep. Convert cubic yards to US tons with a stated density, add an allowance and check delivery units.",
+        "type": "article",
+        "url": "https://www.cornerspan.com/blog/gravel-calculation-guide",
+        "locale": "en_US",
+        "publishedTime": "2026-10-26",
+        "modifiedTime": "2026-10-26",
+        "images": [
+          {
+            "url": "/cornerspan-gravel-calculator-hero.webp",
+            "alt": "How Much Gravel for a 10x20 Area? Yards & Tons"
+          }
+        ]
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "How Much Gravel for a 10x20 Area? Yards & Tons",
+        "description": "Estimate gravel for a 10x20 area at 3 or 4 inches deep. Convert cubic yards to US tons with a stated density, add an allowance and check delivery units.",
+        "images": [
+          "/cornerspan-gravel-calculator-hero.webp"
+        ]
+      },
+      "robots": {
+        "index": true,
+        "follow": true,
+        "googleBot": {
+          "index": true,
+          "follow": true,
+          "max-image-preview": "large"
+        }
+      }
+    },
+    "topsoil-calculation-guide": {
+      "title": "How Much Topsoil for 200 Square Feet? Yards & Bags",
+      "description": "Calculate topsoil for 200 square feet at 3 or 6 inches deep. Compare bulk cubic yards and 0.75-cubic-foot bags, with a clear allowance and rounding example.",
+      "alternates": {
+        "canonical": "/blog/topsoil-calculation-guide"
+      },
+      "openGraph": {
+        "title": "How Much Topsoil for 200 Square Feet? Yards & Bags",
+        "description": "Calculate topsoil for 200 square feet at 3 or 6 inches deep. Compare bulk cubic yards and 0.75-cubic-foot bags, with a clear allowance and rounding example.",
+        "type": "article",
+        "url": "https://www.cornerspan.com/blog/topsoil-calculation-guide",
+        "locale": "en_US",
+        "publishedTime": "2026-10-26",
+        "modifiedTime": "2026-10-27",
+        "images": [
+          {
+            "url": "/cornerspan-topsoil-calculator-hero-optimized.webp",
+            "alt": "How Much Topsoil for 200 Square Feet? Yards & Bags"
+          }
+        ]
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "How Much Topsoil for 200 Square Feet? Yards & Bags",
+        "description": "Calculate topsoil for 200 square feet at 3 or 6 inches deep. Compare bulk cubic yards and 0.75-cubic-foot bags, with a clear allowance and rounding example.",
+        "images": [
+          "/cornerspan-topsoil-calculator-hero-optimized.webp"
+        ]
+      },
+      "robots": {
+        "index": true,
+        "follow": true,
+        "googleBot": {
+          "index": true,
+          "follow": true,
+          "max-image-preview": "large"
+        }
+      }
+    },
+    "fence-calculation-guide": {
+      "title": "How Many Fence Posts for 100 Feet? Spacing & Gates",
+      "description": "Count fence posts for a straight 100-foot run at 6- or 8-foot spacing. See section rounding, gate and corner adjustments, and a worked picket estimate.",
+      "alternates": {
+        "canonical": "/blog/fence-calculation-guide"
+      },
+      "openGraph": {
+        "title": "How Many Fence Posts for 100 Feet? Spacing & Gates",
+        "description": "Count fence posts for a straight 100-foot run at 6- or 8-foot spacing. See section rounding, gate and corner adjustments, and a worked picket estimate.",
+        "type": "article",
+        "url": "https://www.cornerspan.com/blog/fence-calculation-guide",
+        "locale": "en_US",
+        "publishedTime": "2026-10-26",
+        "modifiedTime": "2026-10-28",
+        "images": [
+          {
+            "url": "/cornerspan-fence-calculator-hero.webp",
+            "alt": "How Many Fence Posts for 100 Feet? Spacing & Gates"
+          }
+        ]
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "How Many Fence Posts for 100 Feet? Spacing & Gates",
+        "description": "Count fence posts for a straight 100-foot run at 6- or 8-foot spacing. See section rounding, gate and corner adjustments, and a worked picket estimate.",
+        "images": [
+          "/cornerspan-fence-calculator-hero.webp"
+        ]
+      },
+      "robots": {
+        "index": true,
+        "follow": true,
+        "googleBot": {
+          "index": true,
+          "follow": true,
+          "max-image-preview": "large"
+        }
+      }
+    },
+    "roofing-calculation-guide": {
+      "title": "How Many Shingle Bundles for a 20x30 Roof?",
+      "description": "Estimate shingle bundles from a 20x30 roof footprint, pitch and waste. Compare 3:12 and 6:12 slopes, roofing squares and product-specific bundle coverage.",
+      "alternates": {
+        "canonical": "/blog/roofing-calculation-guide"
+      },
+      "openGraph": {
+        "title": "How Many Shingle Bundles for a 20x30 Roof?",
+        "description": "Estimate shingle bundles from a 20x30 roof footprint, pitch and waste. Compare 3:12 and 6:12 slopes, roofing squares and product-specific bundle coverage.",
+        "type": "article",
+        "url": "https://www.cornerspan.com/blog/roofing-calculation-guide",
+        "locale": "en_US",
+        "publishedTime": "2026-10-26",
+        "modifiedTime": "2026-10-26",
+        "images": [
+          {
+            "url": "/roofing-calculator-hero.webp",
+            "alt": "How Many Shingle Bundles for a 20x30 Roof?"
+          }
+        ]
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "How Many Shingle Bundles for a 20x30 Roof?",
+        "description": "Estimate shingle bundles from a 20x30 roof footprint, pitch and waste. Compare 3:12 and 6:12 slopes, roofing squares and product-specific bundle coverage.",
+        "images": [
+          "/roofing-calculator-hero.webp"
+        ]
+      },
+      "robots": {
+        "index": true,
+        "follow": true,
+        "googleBot": {
+          "index": true,
+          "follow": true,
+          "max-image-preview": "large"
+        }
+      }
+    },
+    "sod-turf-calculation-guide": {
+      "title": "How Much Sod for 200 Square Feet? Rolls & Pallets",
+      "description": "Estimate sod for 200 square feet using roll coverage and a cutting allowance. Compare a 500-square-foot lawn, whole pallets and the actual purchase cost.",
+      "alternates": {
+        "canonical": "/blog/sod-turf-calculation-guide"
+      },
+      "openGraph": {
+        "title": "How Much Sod for 200 Square Feet? Rolls & Pallets",
+        "description": "Estimate sod for 200 square feet using roll coverage and a cutting allowance. Compare a 500-square-foot lawn, whole pallets and the actual purchase cost.",
+        "type": "article",
+        "url": "https://www.cornerspan.com/blog/sod-turf-calculation-guide",
+        "locale": "en_US",
+        "publishedTime": "2026-10-26",
+        "modifiedTime": "2026-10-26",
+        "images": [
+          {
+            "url": "/cornerspan-sod-turf-calculator-hero.webp",
+            "alt": "How Much Sod for 200 Square Feet? Rolls & Pallets"
+          }
+        ]
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "How Much Sod for 200 Square Feet? Rolls & Pallets",
+        "description": "Estimate sod for 200 square feet using roll coverage and a cutting allowance. Compare a 500-square-foot lawn, whole pallets and the actual purchase cost.",
+        "images": [
+          "/cornerspan-sod-turf-calculator-hero.webp"
+        ]
+      },
+      "robots": {
+        "index": true,
+        "follow": true,
+        "googleBot": {
+          "index": true,
+          "follow": true,
+          "max-image-preview": "large"
+        }
+      }
+    },
+    "steel-calculation-guide": {
+      "title": "How Much Do 10-Foot 12 mm Steel Bars Weigh?",
+      "description": "Calculate the weight of 10-foot 12 mm solid steel bars in pounds and kilograms. Compare 10 or 20 bars, US #4 rebar and a clearly stated price assumption.",
+      "alternates": {
+        "canonical": "/blog/steel-calculation-guide"
+      },
+      "openGraph": {
+        "title": "How Much Do 10-Foot 12 mm Steel Bars Weigh?",
+        "description": "Calculate the weight of 10-foot 12 mm solid steel bars in pounds and kilograms. Compare 10 or 20 bars, US #4 rebar and a clearly stated price assumption.",
+        "type": "article",
+        "url": "https://www.cornerspan.com/blog/steel-calculation-guide",
+        "locale": "en_US",
+        "publishedTime": "2026-10-26",
+        "modifiedTime": "2026-11-08",
+        "images": [
+          {
+            "url": "/og-image.webp",
+            "alt": "Ten 10-foot 12 mm solid steel bars weigh approximately 27.09 kilograms or 59.73 pounds before an allowance."
+          }
+        ]
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "How Much Do 10-Foot 12 mm Steel Bars Weigh?",
+        "description": "Calculate the weight of 10-foot 12 mm solid steel bars in pounds and kilograms. Compare 10 or 20 bars, US #4 rebar and a clearly stated price assumption.",
+        "images": [
+          "/og-image.webp"
+        ]
+      },
+      "robots": {
+        "index": true,
+        "follow": true,
+        "googleBot": {
+          "index": true,
+          "follow": true,
+          "max-image-preview": "large"
+        }
+      }
+    },
+    "area-calculation-guide": {
+      "title": "Area in Square Feet: 8 Shapes, Formulas & Examples",
+      "description": "Calculate area in square feet for eight shapes and combined layouts. Follow rectangle, circle and triangle examples, then convert square feet to acres.",
+      "alternates": {
+        "canonical": "/blog/area-calculation-guide"
+      },
+      "openGraph": {
+        "title": "Area in Square Feet: 8 Shapes, Formulas & Examples",
+        "description": "Calculate area in square feet for eight shapes and combined layouts. Follow rectangle, circle and triangle examples, then convert square feet to acres.",
+        "type": "article",
+        "url": "https://www.cornerspan.com/blog/area-calculation-guide",
+        "locale": "en_US",
+        "publishedTime": "2026-10-26",
+        "modifiedTime": "2026-10-27",
+        "images": [
+          {
+            "url": "/cornerspan-area-calculator-hero.webp",
+            "alt": "Area in Square Feet: 8 Shapes, Formulas & Examples"
+          }
+        ]
+      },
+      "twitter": {
+        "card": "summary_large_image",
+        "title": "Area in Square Feet: 8 Shapes, Formulas & Examples",
+        "description": "Calculate area in square feet for eight shapes and combined layouts. Follow rectangle, circle and triangle examples, then convert square feet to acres.",
+        "images": [
+          "/cornerspan-area-calculator-hero.webp"
+        ]
+      },
+      "robots": {
+        "index": true,
+        "follow": true,
+        "googleBot": {
+          "index": true,
+          "follow": true,
+          "max-image-preview": "large"
+        }
+      }
+    }
+  }
+}

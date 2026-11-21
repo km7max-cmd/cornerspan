@@ -1,0 +1,10 @@
+{
+  "d1_databases": [
+    {
+      "binding": "PREVIEW_DB",
+      "database_name": "cornerspan-admin-preview",
+      "database_id": "971ff2ce-5283-4df7-9ee4-a0deb0d558f9",
+      "migrations_dir": "migrations"
+    }
+  ]
+}
