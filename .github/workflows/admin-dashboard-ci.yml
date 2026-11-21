@@ -43,6 +43,8 @@ jobs:
         run: node scripts/test-admin-behavior.cjs
       - name: Verify ImageKit free-plan upload and URL security (no external network)
         run: node scripts/test-admin-imagekit.cjs
+      - name: Check fast mobile image preparation and quality fallbacks (isolated)
+        run: node scripts/test-admin-imagekit-client.cjs
       - name: Lint safe ImageKit Preview setup (never connect to external accounts in CI)
         run: bash -n scripts/connect-imagekit-free-preview.sh && node --check scripts/qa-imagekit-preview.cjs
       - name: Lint opt-in full ImageKit release and rollback (never execute in CI)
