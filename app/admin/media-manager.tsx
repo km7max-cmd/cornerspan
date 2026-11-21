@@ -3,6 +3,7 @@ import { useEffect, useState, type ChangeEvent } from 'react';
 import { emptyImage, safeUrl, type MediaImage, type MediaRecord } from '../../lib/cms-model';
 import { MAX_IMAGE_BYTES } from '../../lib/cms-upload';
 import { MAX_D1_IMAGE_BYTES } from '../../lib/cms-d1-images';
+import { prepareForImageKit, IMAGEKIT_OPTIMIZE_THRESHOLD } from '../../lib/cms-upload-optimizer';
 
 
 /** Optimize only in the browser. Keeps each D1 image small and avoids a new storage subscription. */
@@ -44,8 +45,9 @@ async function optimizeForD1(file: File): Promise<{ blob: Blob; width: number | 
   }
 }
 
-export function ImageFields({ value, onChange, prefix = 'Featured image', uploadAvailable, compact = false }: { value: MediaImage; onChange: (image: MediaImage) => void; prefix?: string; uploadAvailable?: boolean; compact?: boolean }) {
+export function ImageFields({ value, onChange, prefix = 'Featured image', uploadAvailable, uploadProvider = null, compact = false }: { value: MediaImage; onChange: (image: MediaImage) => void; prefix?: string; uploadAvailable?: boolean; uploadProvider?: string | null; compact?: boolean }) {
   const [uploading, setUploading] = useState(false);
+  const [uploadPhase, setUploadPhase] = useState('Uploading image…');
   const [uploadMessage, setUploadMessage] = useState('');
   const change = (key: keyof MediaImage, item: string | number | null) => onChange({ ...value, [key]: item });
 
@@ -63,20 +65,35 @@ export function ImageFields({ value, onChange, prefix = 'Featured image', upload
       return;
     }
     setUploading(true);
+    setUploadPhase('Uploading image…');
     setUploadMessage('');
     try {
       // The server picks ImageKit Forever Free when configured; D1 remains a small
       // optional fallback. Never make the user compress to 350 KB for ImageKit.
-      const capabilityResponse = await fetch('/api/admin/media/upload', {
-        method: 'GET', credentials: 'same-origin', cache: 'no-store',
-      });
-      const capability = await capabilityResponse.json() as { uploadAvailable?: boolean; provider?: string; error?: string };
-      if (!capabilityResponse.ok || !capability.uploadAvailable) {
+      // Media Library already fetched the provider when it loaded; avoid a second
+      // mobile network round-trip. Other image fields keep their private capability GET.
+      let capability: { uploadAvailable?: boolean; provider?: string; error?: string };
+      if (uploadProvider && uploadAvailable === true) {
+        capability = { uploadAvailable: true, provider: uploadProvider };
+      } else {
+        const capabilityResponse = await fetch('/api/admin/media/upload', {
+          method: 'GET', credentials: 'same-origin', cache: 'no-store',
+        });
+        capability = await capabilityResponse.json() as { uploadAvailable?: boolean; provider?: string; error?: string };
+        if (!capabilityResponse.ok) {
+          throw Error(capability.error || 'Image upload storage is not connected yet.');
+        }
+      }
+      if (!capability.uploadAvailable) {
         throw Error(capability.error || 'Image upload storage is not connected yet. An image URL still works.');
       }
       let optimized: { blob: Blob; width: number | null; height: number | null };
       if (capability.provider === 'd1') {
+        setUploadPhase('Preparing image…');
         optimized = await optimizeForD1(file);
+      } else if (capability.provider === 'imagekit') {
+        if (file.size >= IMAGEKIT_OPTIMIZE_THRESHOLD) setUploadPhase('Optimizing photo for faster upload…');
+        optimized = await prepareForImageKit(file);
       } else {
         let width: number | null = null;
         let height: number | null = null;
@@ -86,6 +103,7 @@ export function ImageFields({ value, onChange, prefix = 'Featured image', upload
         } catch { /* Browser may not support reading dimensions. */ }
         optimized = { blob: file, width, height };
       }
+      setUploadPhase('Uploading image…');
       const response = await fetch('/api/admin/media/upload', {
         method: 'POST', credentials: 'same-origin', cache: 'no-store',
         headers: { 'Content-Type': optimized.blob.type || file.type || 'application/octet-stream' },
@@ -112,7 +130,7 @@ export function ImageFields({ value, onChange, prefix = 'Featured image', upload
         aria-label={`Upload ${prefix.toLowerCase()} from device`}/>
     </label>
     <p className="cms-help">{compact ? 'JPG, PNG or WebP · 5 MB max' : 'JPG, PNG or WebP up to 5 MB. ImageKit Forever Free stores full-size uploads (3 GB free storage, 20 GB delivery/month); small D1 backup uses automatic WebP compression. Image links still work.'}</p>
-    {uploading && <p className="cms-notice" role="status">Uploading image…</p>}
+    {uploading && <p className="cms-notice" role="status">{uploadPhase}</p>}
     {uploadMessage && <p className={uploadMessage.startsWith('Image uploaded.') ? 'cms-notice' : 'cms-error'} role="status">{uploadMessage}</p>}
     {compact ? <>
       <label className="cms-field">Image URL (or paste a link)
@@ -146,8 +164,9 @@ export function ImageFields({ value, onChange, prefix = 'Featured image', upload
 export default function MediaManager({ onUse }: { onUse: (image: MediaImage, placement: 'featured' | 'inline') => void }) {
   const [media, setMedia] = useState<MediaRecord[]>([]); const [form, setForm] = useState<MediaImage>(emptyImage());
   const [uploadAvailable, setUploadAvailable] = useState<boolean | null>(null);
+  const [uploadProvider, setUploadProvider] = useState<string | null>(null);
   const [edit, setEdit] = useState<MediaRecord | null>(null); const [query, setQuery] = useState(''); const [message, setMessage] = useState(''); const [busy, setBusy] = useState(false);
-  useEffect(() => { let active = true; fetch('/api/admin/media', { cache: 'no-store' }).then(async r => { const data = await r.json(); if (!r.ok) throw Error(data.error); if (active) { setMedia(data.media); setUploadAvailable(data.uploadAvailable === true); } }).catch(e => { if (active) setMessage(e.message); }); return () => { active = false; }; }, []);
+  useEffect(() => { let active = true; fetch('/api/admin/media', { cache: 'no-store' }).then(async r => { const data = await r.json(); if (!r.ok) throw Error(data.error); if (active) { setMedia(data.media); setUploadAvailable(data.uploadAvailable === true); setUploadProvider(typeof data.uploadProvider === 'string' ? data.uploadProvider : null); } }).catch(e => { if (active) setMessage(e.message); }); return () => { active = false; }; }, []);
   async function save() {
     setBusy(true); setMessage('');
     try {
@@ -178,7 +197,7 @@ export default function MediaManager({ onUse }: { onUse: (image: MediaImage, pla
       <div className="cms-card-heading"><h2>{edit ? 'Edit image' : 'Add image'}</h2></div>
       {uploadAvailable === false && <p className="cms-error" role="status">Upload is not available. You can still paste an image link.</p>}
       <fieldset disabled={busy}>
-        <ImageFields value={form} onChange={setForm} prefix="Library image" uploadAvailable={uploadAvailable ?? undefined} compact/>
+        <ImageFields value={form} onChange={setForm} prefix="Library image" uploadAvailable={uploadAvailable ?? undefined} uploadProvider={uploadProvider} compact/>
         <div className="cms-actions">
           <button type="button" className="cms-primary" disabled={busy || !safeUrl(form.url, { image: true })} onClick={save}>{busy ? 'Saving…' : edit ? 'Save changes' : 'Save image'}</button>
           {(form.url || edit) && <button type="button" onClick={() => { setEdit(null); setForm(emptyImage()); setMessage(''); }}>{edit ? 'Cancel' : 'Clear form'}</button>}
