@@ -44,7 +44,7 @@ async function optimizeForD1(file: File): Promise<{ blob: Blob; width: number | 
   }
 }
 
-export function ImageFields({ value, onChange, prefix = 'Featured image', uploadAvailable }: { value: MediaImage; onChange: (image: MediaImage) => void; prefix?: string; uploadAvailable?: boolean }) {
+export function ImageFields({ value, onChange, prefix = 'Featured image', uploadAvailable, compact = false }: { value: MediaImage; onChange: (image: MediaImage) => void; prefix?: string; uploadAvailable?: boolean; compact?: boolean }) {
   const [uploading, setUploading] = useState(false);
   const [uploadMessage, setUploadMessage] = useState('');
   const change = (key: keyof MediaImage, item: string | number | null) => onChange({ ...value, [key]: item });
@@ -104,20 +104,44 @@ export function ImageFields({ value, onChange, prefix = 'Featured image', upload
       setUploading(false);
     }
   }
+
   return <>
-    <label className="cms-field">Upload {prefix.toLowerCase()} from your phone or computer
+    <label className="cms-field">{compact ? 'Upload image' : `Upload ${prefix.toLowerCase()} from your phone or computer`}
       <input type="file" accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp"
-        onChange={uploadFromDevice} disabled={uploading || uploadAvailable === false} aria-label={`Upload ${prefix.toLowerCase()} from device`}/>
+        onChange={uploadFromDevice} disabled={uploading || uploadAvailable === false}
+        aria-label={`Upload ${prefix.toLowerCase()} from device`}/>
     </label>
-    <p className="cms-help">JPG, PNG or WebP up to 5 MB. ImageKit Forever Free stores full-size uploads (3 GB free storage, 20 GB delivery/month); small D1 backup uses automatic WebP compression. Image links still work.</p>
+    <p className="cms-help">{compact ? 'JPG, PNG or WebP · 5 MB max' : 'JPG, PNG or WebP up to 5 MB. ImageKit Forever Free stores full-size uploads (3 GB free storage, 20 GB delivery/month); small D1 backup uses automatic WebP compression. Image links still work.'}</p>
     {uploading && <p className="cms-notice" role="status">Uploading image…</p>}
     {uploadMessage && <p className={uploadMessage.startsWith('Image uploaded.') ? 'cms-notice' : 'cms-error'} role="status">{uploadMessage}</p>}
-    <div className="cms-grid-two">{([['url', 'URL'], ['alt', 'ALT text'], ['title', 'title'], ['caption', 'caption'], ['sourceUrl', 'source URL'], ['linkUrl', 'click-through link']] as const).map(([key, label]) => <label className="cms-field" key={key}>{prefix} {label}<input type={key.includes('Url') || key === 'url' ? 'url' : 'text'} value={value[key]} onChange={e => change(key, e.target.value)} placeholder={key === 'url' ? 'https://… or /images/…' : key === 'alt' ? 'Describe what the image shows' : 'Optional'}/></label>)}</div>
-    <div className="cms-grid-two">{(['width', 'height'] as const).map(key => <label className="cms-field" key={key}>{prefix} {key} (px)<input type="number" min="1" max="20000" value={value[key] ?? ''} onChange={e => change(key, e.target.value ? Number(e.target.value) : null)}/></label>)}</div>
-    <p className="cms-help">Use a descriptive filename such as gravel-driveway-depth.webp. Add dimensions to reserve image space. Only use images you may publish.</p>
+    {compact ? <>
+      <label className="cms-field">Image URL (or paste a link)
+        <input type="url" value={value.url} onChange={e => change('url', e.target.value)} placeholder="https://…"/>
+      </label>
+      <label className="cms-field">ALT text
+        <input type="text" maxLength={300} value={value.alt} onChange={e => change('alt', e.target.value)} placeholder="Describe the image"/>
+      </label>
+      <details className="cms-media-extra">
+        <summary>More details (optional)</summary>
+        <div className="cms-grid-two">
+          {([['title', 'Title'], ['caption', 'Caption'], ['sourceUrl', 'Source URL'], ['linkUrl', 'Click-through link']] as const).map(([key, label]) =>
+            <label className="cms-field" key={key}>{label}<input type={key.includes('Url') ? 'url' : 'text'} value={value[key]} onChange={e => change(key, e.target.value)} placeholder="Optional"/></label>)}
+        </div>
+        <div className="cms-grid-two">
+          {(['width', 'height'] as const).map(key => <label className="cms-field" key={key}>{key} (px)<input type="number" min="1" max="20000" value={value[key] ?? ''} onChange={e => change(key, e.target.value ? Number(e.target.value) : null)}/></label>)}
+        </div>
+      </details>
+    </> : <>
+      <div className="cms-grid-two">{([['url', 'URL'], ['alt', 'ALT text'], ['title', 'title'], ['caption', 'caption'], ['sourceUrl', 'source URL'], ['linkUrl', 'click-through link']] as const).map(([key, label]) => <label className="cms-field" key={key}>{prefix} {label}<input type={key.includes('Url') || key === 'url' ? 'url' : 'text'} value={value[key]} onChange={e => change(key, e.target.value)} placeholder={key === 'url' ? 'https://… or /images/…' : key === 'alt' ? 'Describe what the image shows' : 'Optional'}/></label>)}</div>
+      <div className="cms-grid-two">{(['width', 'height'] as const).map(key => <label className="cms-field" key={key}>{prefix} {key} (px)<input type="number" min="1" max="20000" value={value[key] ?? ''} onChange={e => change(key, e.target.value ? Number(e.target.value) : null)}/></label>)}</div>
+      <p className="cms-help">Use a descriptive filename such as gravel-driveway-depth.webp. Add dimensions to reserve image space. Only use images you may publish.</p>
+    </>}
     {value.url && !safeUrl(value.url, { image: true }) && <p className="cms-error">Enter an HTTPS or site-relative image URL.</p>}
-    {value.url && safeUrl(value.url, { image: true }) && <figure className="cms-image-preview"><img src={value.url} alt={value.alt} onLoad={e => { if (!value.width && !value.height) onChange({ ...value, width: e.currentTarget.naturalWidth || null, height: e.currentTarget.naturalHeight || null }); }}/><figcaption>{value.width && value.height ? `${value.width} × ${value.height} px` : 'Dimensions not recorded'}{!value.alt.trim() && ' · ALT text is missing'}</figcaption></figure>}
-  </>;
+    {value.url && safeUrl(value.url, { image: true }) && <figure className="cms-image-preview">
+      <img src={value.url} alt={value.alt} onLoad={e => { if (!value.width && !value.height) onChange({ ...value, width: e.currentTarget.naturalWidth || null, height: e.currentTarget.naturalHeight || null }); }}/>
+      {!compact && <figcaption>{value.width && value.height ? `${value.width} × ${value.height} px` : 'Dimensions not recorded'}{!value.alt.trim() && ' · ALT text is missing'}</figcaption>}
+    </figure>}
+  </>
 }
 export default function MediaManager({ onUse }: { onUse: (image: MediaImage, placement: 'featured' | 'inline') => void }) {
   const [media, setMedia] = useState<MediaRecord[]>([]); const [form, setForm] = useState<MediaImage>(emptyImage());
@@ -133,7 +157,7 @@ export default function MediaManager({ onUse }: { onUse: (image: MediaImage, pla
     } catch (e) { setMessage(e instanceof Error ? e.message : 'Could not save image'); } finally { setBusy(false); }
   }
   async function remove(record: MediaRecord) {
-    if (busy || !window.confirm('Delete this image from the media library? Images already used in articles will not change.')) return;
+    if (busy || !window.confirm('Delete this image from the Media Library? Existing articles and the hosted ImageKit file will not be deleted.')) return;
     setBusy(true);
     setMessage('');
     try {
@@ -142,14 +166,48 @@ export default function MediaManager({ onUse }: { onUse: (image: MediaImage, pla
       if (!response.ok) throw Error(data.error || 'Could not delete image');
       setMedia(old => old.filter(item => item.id !== record.id));
       if (edit?.id === record.id) { setEdit(null); setForm(emptyImage()); }
-      setMessage('Image removed from the media library. Existing article images were not changed.');
+      setMessage('Deleted from Media Library. Existing article images and hosted files were not changed.');
     } catch (error) {
       setMessage(error instanceof Error ? error.message : 'Could not delete image');
     } finally { setBusy(false); }
   }
-  return <div className="cms-media-layout"><section className="cms-card"><div className="cms-card-heading"><div><span className="cms-eyebrow">Reusable images</span><h2>Media Library</h2></div><span className="cms-badge">{media.length} images</span></div>
-    <label className="cms-field">Search images<input type="search" value={query} onChange={e => setQuery(e.target.value)} placeholder="Title, ALT text or filename"/></label>
-    <div className="cms-media-grid">{media.filter(m => `${m.url} ${m.title} ${m.alt}`.toLowerCase().includes(query.toLowerCase())).map(m => <div className="cms-media-item" key={m.id}><img src={m.url} alt={m.alt} loading="lazy"/><strong>{m.title || m.alt || 'Untitled image'}</strong><p>{m.width && m.height ? `${m.width} × ${m.height}` : 'Dimensions unknown'} · {m.alt ? 'ALT added' : 'Missing ALT'}</p><div className="cms-actions"><button onClick={() => onUse(m, 'featured')}>Set featured</button><button onClick={() => onUse(m, 'inline')}>Insert in article</button><button onClick={() => { setEdit(m); setForm(m); }}>Edit details</button><button className="cms-danger" disabled={busy} onClick={() => remove(m)}>Remove from library</button></div></div>)}</div>
-    {!media.length && <div className="cms-empty"><strong>Your image collection starts here</strong><p>Upload a JPG/PNG/WebP image from your device, or add an image URL. Save its ALT text and details to reuse it in your articles.</p></div>}
-  </section><section className="cms-card"><h2>{edit ? 'Edit image details' : 'Upload or link an image'}</h2><p className="cms-help">Choose a photo from your device, or paste a hosted image URL. Set the ALT text and click Save image to reuse it in posts.</p>{uploadAvailable === false && <p className="cms-error" role="status">Image upload storage has not been connected yet. Add the ImageKit free-plan key securely; image links still work.</p>}<fieldset disabled={busy}><ImageFields value={form} onChange={setForm} prefix="Library image" uploadAvailable={uploadAvailable ?? undefined}/><div className="cms-actions"><button className="cms-primary" onClick={save}>{busy ? 'Saving…' : 'Save image'}</button>{edit && <button onClick={() => { setEdit(null); setForm(emptyImage()); }}>Cancel edit</button>}</div></fieldset>{message && <p role="status" className="cms-notice">{message}</p>}</section></div>;
+
+  const visibleMedia = media.filter(m => `${m.url} ${m.title} ${m.alt}`.toLowerCase().includes(query.toLowerCase()));
+  return <div className="cms-media-layout cms-media-compact">
+    <section className="cms-card cms-media-upload-card">
+      <div className="cms-card-heading"><h2>{edit ? 'Edit image' : 'Add image'}</h2></div>
+      {uploadAvailable === false && <p className="cms-error" role="status">Upload is not available. You can still paste an image link.</p>}
+      <fieldset disabled={busy}>
+        <ImageFields value={form} onChange={setForm} prefix="Library image" uploadAvailable={uploadAvailable ?? undefined} compact/>
+        <div className="cms-actions">
+          <button type="button" className="cms-primary" disabled={busy || !safeUrl(form.url, { image: true })} onClick={save}>{busy ? 'Saving…' : edit ? 'Save changes' : 'Save image'}</button>
+          {(form.url || edit) && <button type="button" onClick={() => { setEdit(null); setForm(emptyImage()); setMessage(''); }}>{edit ? 'Cancel' : 'Clear form'}</button>}
+        </div>
+      </fieldset>
+      {message && <p role="status" className="cms-notice">{message}</p>}
+    </section>
+    <section className="cms-card cms-media-library-card">
+      <div className="cms-card-heading"><h2>Media Library</h2><span className="cms-badge">{media.length} images</span></div>
+      {media.length >= 8 && <label className="cms-field">Search images<input type="search" value={query} onChange={e => setQuery(e.target.value)} placeholder="Find an image"/></label>}
+      <div className="cms-media-grid">
+        {visibleMedia.map(m => <article className="cms-media-item" key={m.id}>
+          <img src={m.url} alt={m.alt || m.title || 'Saved image'} loading="lazy"/>
+          <strong title={m.title || m.alt}>{m.title || m.alt || 'Untitled image'}</strong>
+          <div className="cms-media-tile-actions">
+            <details className="cms-media-use-menu">
+              <summary>Use</summary>
+              <div>
+                <button type="button" onClick={() => onUse(m, 'featured')}>Featured image</button>
+                <button type="button" onClick={() => onUse(m, 'inline')}>Insert in article</button>
+              </div>
+            </details>
+            <button type="button" onClick={() => { setEdit(m); setForm(m); setMessage(''); }}>Edit</button>
+            <button type="button" className="cms-danger" disabled={busy} onClick={() => remove(m)} aria-label={`Delete ${m.title || m.alt || 'image'} from library`}>Delete</button>
+          </div>
+        </article>)}
+      </div>
+      {!visibleMedia.length && <p className="cms-help">{query ? 'No matching images.' : 'No saved images yet. Upload one above.'}</p>}
+      <p className="cms-help cms-media-delete-note">Delete removes a library entry only. Images used in posts and files stored in ImageKit stay unchanged.</p>
+    </section>
+  </div>;
 }
