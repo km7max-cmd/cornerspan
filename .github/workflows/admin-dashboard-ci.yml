@@ -67,6 +67,8 @@ jobs:
         run: bash -n scripts/run-imagekit-provider-diagnostic.sh && node --check scripts/diagnose-imagekit-provider.cjs
       - name: Verify optional D1 storage and image-upload API (isolated mocks)
         run: node scripts/test-admin-image-upload.cjs
+      - name: Verify branded CornerSpan image links and safe public proxy (no network)
+        run: node scripts/test-branded-image-links.cjs
       - name: Check opt-in R2 setup helper syntax (no remote creation in CI)
         run: bash -n scripts/setup-admin-r2.sh
       - name: Check isolated R2 Preview deploy script syntax (no remote deploy in CI)
