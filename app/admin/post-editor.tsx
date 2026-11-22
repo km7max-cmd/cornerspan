@@ -102,7 +102,13 @@ export default function AdminPostEditor({ posts, environment = "Environment not 
   }, [reloadNonce]);
   const allPosts = useMemo(() => {
     const combined = new Map(posts.map(p => [p.slug, p]));
-    Object.values(drafts).forEach(post => combined.set(post.slug, post));
+    Object.values(drafts).forEach(post => {
+      // Keep an editor's chosen keyword; prefill only a missing keyword in an existing draft.
+      const suggestedKeyword = combined.get(post.slug)?.seo?.focusKeyword?.trim();
+      combined.set(post.slug, !post.seo?.focusKeyword?.trim() && suggestedKeyword
+        ? { ...post, seo: { ...seoSettings(post.seo), focusKeyword: suggestedKeyword } }
+        : post);
+    });
     return [...combined.values()];
   }, [posts, drafts]);
   function openPost(post: Post) {
