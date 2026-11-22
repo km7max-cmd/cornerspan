@@ -5,7 +5,7 @@ set -euo pipefail
 umask 077
 ROOT=/workspaces/cornerspan
 OLD=8dc43ea7-c85c-4991-a3e1-37675b2ea082
-PIN=9c087af38096b8463de15355d4ebb3279a2059f0
+PIN=a7d83fae67369bb46033eade986bb22a197085e5
 DB=4a41a0ba-360b-4c45-8929-1d21445eb5a0
 ACCOUNT=5a130ac4334b170f3f3472f3449841a8
 stop(){ echo "STOP: $*" >&2; exit 1; }
