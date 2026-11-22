@@ -3,6 +3,7 @@ import { hasAdminAccess } from '../../../../../lib/admin-auth';
 import { mediaBucket } from '../../../../../lib/cms-media-bucket';
 import { d1ImagesReady, saveImageToD1, MAX_D1_IMAGE_BYTES } from '../../../../../lib/cms-d1-images';
 import { imageKitAvailable, uploadImageKit } from '../../../../../lib/cms-imagekit';
+import { imageKitBrandedUrl } from '../../../../../lib/cms-branded-image';
 import { cmsImageFilename, detectImage, MAX_IMAGE_BYTES } from '../../../../../lib/cms-upload';
 
 export const runtime = 'nodejs';
@@ -77,7 +78,7 @@ export async function POST(request: NextRequest) {
     if (useImageKit) {
       const uploaded = await uploadImageKit(bytes, type.mime, filename);
       if (!uploaded) return fail('The free image host could not accept this photo. Check its monthly limits and account status.', 503);
-      url = uploaded;
+      url = imageKitBrandedUrl(uploaded, request.nextUrl.origin);
     } else if (storage) {
       await storage.put('cms/' + filename, bytes, { httpMetadata: { contentType: type.mime } });
       url = '/cms-images/' + filename;
