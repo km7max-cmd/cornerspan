@@ -12,7 +12,7 @@ const imagekit={
   imageKitAvailable(){ return ikEnabled; },
   async uploadImageKit(bytes,mime,filename){
     imageKitCalls.push({length:bytes.byteLength,mime,filename});
-    return 'https://ik.imagekit.io/cornerspan-test/cornerspan/'+filename;
+    return 'https://ik.imagekit.io/cornerspan/cornerspan/'+filename;
   },
 };
 const d1Objects=new Map();
@@ -37,12 +37,14 @@ function load(filename){
     if(id.endsWith('/lib/cms-media-bucket'))return bucket;
     if(id.endsWith('/lib/cms-d1-images'))return d1Images;
     if(id.endsWith('/lib/cms-imagekit'))return imagekit;
+    if(id.endsWith('/lib/cms-branded-image'))return branded;
     throw Error('Unexpected dependency '+id+' in '+filename);
   };
   new Function('require','module','exports',code)(req,module,module.exports);
   return module.exports;
 }
 const helpers=load('lib/cms-upload.ts');
+const branded=load('lib/cms-branded-image.ts');
 const bucket=load('lib/cms-media-bucket.ts');
 const upload=load('app/api/admin/media/upload/route.ts');
 const publicImages=load('app/cms-images/[filename]/route.ts');
@@ -132,7 +134,7 @@ const webp=Uint8Array.from([0x52,0x49,0x46,0x46,0x0e,0,0,0,0x57,0x45,0x42,0x50,0
   const ikSaved=await upload.POST(request(png));
   assert.equal(ikSaved.status,201,'ImageKit upload must work with only private backend key');
   const ikResult=await ikSaved.json();
-  assert.match(ikResult.url,/^https:\/\/ik\.imagekit\.io\/cornerspan-test\/cornerspan\/[0-9a-f-]{36}\.png$/);
+  assert.match(ikResult.url,/^https:\/\/www\.cornerspan\.com\/media\/images\/[0-9a-f-]{36}\.png$/);
   assert.equal(imageKitCalls.length,1);
   assert.equal(imageKitCalls[0].mime,'image/png');
   assert.equal(d1Objects.size,1,'ImageKit path must not touch D1 image records');
