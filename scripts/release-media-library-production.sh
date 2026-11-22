@@ -83,7 +83,9 @@ NODE
   stop 'Dry run failed. Not deployed.'
 printf '\nProduction remains %s at 100%%.\n' "$OLD"
 printf 'New candidate %s is verified by metadata/route checks.\n' "$CANDIDATE"
-echo 'IMPORTANT: Preview real upload must also be manually verified before deployment.'
+echo 'Preview uploaded image must be visible and its URL must open before Production rollout.'
+read -r -p 'Type PREVIEW UPLOAD PASS only after real Preview upload+CDN works: ' PREVIEW_RESULT
+[[ "$PREVIEW_RESULT" == 'PREVIEW UPLOAD PASS' ]] || stop 'Preview upload not confirmed; Live unchanged.'
 read -r -p 'Type DEPLOY COMPACT MEDIA LIBRARY to approve 100% rollout: ' ANSWER
 [[ "$ANSWER" == 'DEPLOY COMPACT MEDIA LIBRARY' ]] || stop 'Owner cancelled. Live unchanged.'
 [[ "$(active)" == "$OLD" ]] || stop 'Active Production changed. Release cancelled.'
