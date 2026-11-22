@@ -1,4 +1,4 @@
-import { imageKitUpstreamUrl } from '../../../lib/cms-branded-image';
+import { imageKitUpstreamUrl } from '../../../../lib/cms-branded-image';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
