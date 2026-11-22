@@ -40,8 +40,8 @@ const fetchTimeout=(url,opts={})=>fetch(url,{redirect:'manual',signal:AbortSigna
   const result=await upload.json();
   const url=new URL(result.url);
   assert.equal(url.protocol,'https:');
-  assert.equal(url.hostname,'ik.imagekit.io');
-  assert.match(url.pathname,/\/cornerspan\/[0-9a-f-]{36}\.png$/);
+  assert.equal(url.origin,origin,'Image links must use the Preview site domain.');
+  assert.match(url.pathname,/^\/media\/images\/[0-9a-f-]{36}\.png$/);
   let visible=false;
   for(let i=0;i<4;i++){
     try{
@@ -53,10 +53,10 @@ const fetchTimeout=(url,opts={})=>fetch(url,{redirect:'manual',signal:AbortSigna
     }catch{}
     if(i<3)await new Promise(resolve=>setTimeout(resolve,1500));
   }
-  assert.ok(visible,'ImageKit CDN did not serve the newly uploaded Preview image.');
+  assert.ok(visible,'CornerSpan public image URL did not deliver the new ImageKit photo.');
   const admin=await fetchTimeout(origin+'/admin',{headers});
   assert.equal(admin.status,200,'Preview Admin page must be available after upload.');
-  console.log('PASS authenticated ImageKit FREE Preview image upload + CDN GET + CSRF + private capability.');
+  console.log('PASS authenticated ImageKit FREE Preview upload + CornerSpan-domain image GET + CSRF + private capability.');
   console.log('One tiny disposable test asset was stored under /cornerspan/ in ImageKit; it can be removed from the ImageKit Media Library.');
   console.log('NO Production Worker deployment, existing post modification, or Production D1 writes.');
 })().catch(e=>{console.error('STOP Preview upload QA: '+e.message);process.exitCode=1;});
