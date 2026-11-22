@@ -3,6 +3,7 @@ import { defaultSeo } from "../../lib/cms-model";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { blogPosts } from "../../data/blog";
+import { blogFocusKeywords } from "../../data/blog-focus-keywords";
 import { calculatorArticles, type CalculatorArticle } from "../../data/calculator-articles";
 import { hasAdminAccess } from "../../lib/admin-auth";
 import { listPublishedPosts } from "../../lib/published-posts";
@@ -53,7 +54,7 @@ export default async function AdminPage() {
       slug, title, description, category, tags, publishedAt,
       body: article ? articleToMarkdown(article) : "",
       builtIn: true, bodyOverride: false,
-      seo: { ...defaultSeo(), metaTitle: article?.seoTitle || title },
+      seo: { ...defaultSeo(), metaTitle: article?.seoTitle || title, focusKeyword: blogFocusKeywords[slug] || "" },
     };
   });
   const posts = new Map<string, Post>(catalog.map(post => [post.slug, post]));
@@ -66,7 +67,10 @@ export default async function AdminPage() {
       category: published.category,
       tags: published.tags,
       publishedAt: old?.publishedAt || published.publishedAt,
-      seo: published.seo, body: published.bodyOverride ? published.body : (old?.body || ""),
+      seo: published.seo
+        ? { ...published.seo, focusKeyword: published.seo.focusKeyword.trim() || old?.seo?.focusKeyword || "" }
+        : old?.seo,
+      body: published.bodyOverride ? published.body : (old?.body || ""),
       builtIn: old?.builtIn ?? false, bodyOverride: published.bodyOverride,
     });
   }
