@@ -65,18 +65,34 @@ const msg=v.metadata?.annotations?.['workers/message']||v.annotations?.['workers
 a.ok(msg.includes(process.argv[5]),'Pinned code SHA missing');
 console.log('PASS verified source, encrypted secret bindings, D1 and rollback version.');
 NODE
-node - "$CANDIDATE" <<'NODE' || stop 'Candidate public/private read-only checks failed.'
-const a=require('node:assert/strict'),base='https://'+process.argv[2].slice(0,8)+'-cornerspan.eenadutech.workers.dev';
+node - "$CANDIDATE" <<'NODE' || stop 'Candidate public/live parity or private API checks failed.'
+const a=require('node:assert/strict');
+const preview='https://'+process.argv[2].slice(0,8)+'-cornerspan.eenadutech.workers.dev';
+const live='https://www.cornerspan.com';
+async function read(origin,path){
+ const r=await fetch(origin+path,{redirect:'manual',signal:AbortSignal.timeout(25000)});
+ const body=await r.text();
+ const title=(body.match(/<title[^>]*>([\s\S]*?)<\/title>/i)||[])[1]||'';
+ const h1=(body.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i)||[])[1]||'';
+ return {status:r.status,title,h1};
+}
 (async()=>{
-for(const path of ['/','/calculators','/calculators/concrete','/blog','/guides','/about','/privacy','/admin/login','/sitemap.xml']){
- const r=await fetch(base+path,{redirect:'manual',signal:AbortSignal.timeout(25000)});
- a.equal(r.status,200,'Candidate GET '+path);
-}
-for(const path of ['/api/admin/drafts','/api/admin/media/upload']){
- const r=await fetch(base+path,{redirect:'manual',signal:AbortSignal.timeout(25000)});
- a.equal(r.status,401,'Unauthorized '+path);
-}
-console.log('PASS candidate routes and private APIs.');
+ for(const path of ['/','/calculators','/calculators/concrete','/blog','/guides','/about','/privacy']){
+  const [next,current]=await Promise.all([read(preview,path),read(live,path)]);
+  a.equal(next.status,200,'Candidate GET '+path);
+  a.equal(current.status,200,'Production GET '+path);
+  a.ok(next.title && next.h1,'Candidate missing title/H1 on '+path);
+  a.equal(next.title,current.title,'Title changed '+path);
+  a.equal(next.h1,current.h1,'H1 changed '+path);
+  console.log('PASS candidate/Production title & H1 parity '+path);
+ }
+ for(const path of ['/admin/login','/sitemap.xml']){
+  a.equal((await read(preview,path)).status,200,'Candidate GET '+path);
+ }
+ for(const path of ['/api/admin/drafts','/api/admin/media/upload']){
+  a.equal((await read(preview,path)).status,401,'Unauthorized '+path);
+ }
+ console.log('PASS candidate routes, public page parity and private APIs.');
 })().catch(e=>{console.error(e.message);process.exitCode=1});
 NODE
 "$WR" versions deploy "$CANDIDATE@100%" --name cornerspan --dry-run ||
