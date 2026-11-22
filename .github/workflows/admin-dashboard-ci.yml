@@ -55,6 +55,8 @@ jobs:
         run: bash -n scripts/check-media-library-production-ready.sh
       - name: Check isolated current Media Library Preview acceptance script syntax
         run: bash -n scripts/preview-compact-media-library.sh
+      - name: Check branded domain Preview acceptance script syntax
+        run: bash -n scripts/preview-branded-image-links.sh
       - name: Check isolated Preview alias/version login diagnostic syntax
         run: bash -n scripts/diagnose-media-preview-login.sh
       - name: Prevent Preview 401 secret-loss regression (static only)
