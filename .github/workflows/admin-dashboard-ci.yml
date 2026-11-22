@@ -57,6 +57,8 @@ jobs:
         run: bash -n scripts/preview-compact-media-library.sh
       - name: Check branded domain Preview acceptance script syntax
         run: bash -n scripts/preview-branded-image-links.sh
+      - name: Lint branded-image release staging and rollback commands (no remote operations)
+        run: bash -n scripts/stage-branded-image-production.sh && bash -n scripts/release-branded-image-production.sh
       - name: Check isolated Preview alias/version login diagnostic syntax
         run: bash -n scripts/diagnose-media-preview-login.sh
       - name: Prevent Preview 401 secret-loss regression (static only)
