@@ -49,6 +49,8 @@ jobs:
         run: bash -n scripts/connect-imagekit-free-preview.sh && node --check scripts/qa-imagekit-preview.cjs
       - name: Lint opt-in full ImageKit release and rollback (never execute in CI)
         run: bash -n scripts/complete-imagekit-release.sh
+      - name: Lint Media Library production staging and guarded rollout (no remote changes in CI)
+        run: bash -n scripts/stage-media-library-production.sh && bash -n scripts/release-media-library-production.sh
       - name: Prevent Preview 401 secret-loss regression (static only)
         run: node scripts/test-preview-secret-release-order.cjs
       - name: Verify non-deploying Preview image upload 401 diagnostic syntax
