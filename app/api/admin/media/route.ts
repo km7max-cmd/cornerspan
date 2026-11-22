@@ -4,22 +4,23 @@ import { draftDatabase } from '../../../../lib/admin-drafts';
 import { mediaBucket } from '../../../../lib/cms-media-bucket';
 import { d1ImagesReady } from '../../../../lib/cms-d1-images';
 import { imageKitAvailable } from '../../../../lib/cms-imagekit';
+import { imageKitBrandedUrl } from '../../../../lib/cms-branded-image';
 import { validateImage, type MediaImage } from '../../../../lib/cms-model';
 export const dynamic = 'force-dynamic';
 const headers = { 'Cache-Control': 'no-store' };
 const fail = (error: string, status: number) => NextResponse.json({ error }, { status, headers });
 type Row = { id: string; image_json: string; revision: number; updated_at: string };
-function mapRow(row: Row) {
+function mapRow(row: Row, origin: string) {
   const image = JSON.parse(row.image_json) as MediaImage;
-  return { ...image, id: row.id, revision: row.revision, updatedAt: row.updated_at };
+  return { ...image, url: imageKitBrandedUrl(image.url, origin), id: row.id, revision: row.revision, updatedAt: row.updated_at };
 }
-export async function GET() {
+export async function GET(request: NextRequest) {
   if (!(await hasAdminAccess())) return fail('Unauthorized', 401);
   const db = draftDatabase(); if (!db) return fail('Database unavailable', 503);
   try {
     const { results } = await db.prepare('SELECT * FROM admin_media ORDER BY updated_at DESC LIMIT 500').all<Row>();
     const provider = imageKitAvailable() ? 'imagekit' : mediaBucket() ? 'r2' : await d1ImagesReady() ? 'd1' : 'none';
-    return NextResponse.json({ media: results.map(mapRow), uploadAvailable: provider !== 'none', uploadProvider: provider }, { headers });
+    return NextResponse.json({ media: results.map(row => mapRow(row, request.nextUrl.origin)), uploadAvailable: provider !== 'none', uploadProvider: provider }, { headers });
   } catch { return fail('Media library unavailable. Apply the SEO/media migration in Preview first.', 503); }
 }
 export async function POST(request: NextRequest) {
@@ -31,6 +32,8 @@ export async function POST(request: NextRequest) {
     const input = JSON.parse(raw);
     if (!input || typeof input !== 'object' || Array.isArray(input)) return fail('Invalid image', 400);
     const issue = validateImage(input.image); if (issue) return fail(issue, 400);
+    // Normalize trusted legacy ImageKit links on save without touching published posts.
+    input.image.url = imageKitBrandedUrl(input.image.url, request.nextUrl.origin);
     if (!input.image.url) return fail('Image URL is required', 400);
     const id = input.id || crypto.randomUUID();
     if (typeof id !== 'string' || !/^[a-zA-Z0-9-]{1,64}$/.test(id) || !Number.isSafeInteger(input.expectedRevision) || input.expectedRevision < 0) return fail('Invalid image revision', 400);
@@ -39,7 +42,7 @@ export async function POST(request: NextRequest) {
       : await db.prepare("UPDATE admin_media SET image_json=?,revision=revision+1,updated_at=strftime('%Y-%m-%dT%H:%M:%fZ','now') WHERE id=? AND revision=?").bind(JSON.stringify(input.image), id, input.expectedRevision).run();
     if (!result.success || result.meta?.changes !== 1) return fail('Image changed elsewhere. Reload the library.', 409);
     const row = await db.prepare('SELECT * FROM admin_media WHERE id=?').bind(id).first<Row>();
-    return NextResponse.json({ media: row ? mapRow(row) : null }, { headers });
+    return NextResponse.json({ media: row ? mapRow(row, request.nextUrl.origin) : null }, { headers });
   } catch { return fail('Unable to save image record. Check the media migration and input.', 503); }
 }
 
