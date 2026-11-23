@@ -306,7 +306,7 @@ const articles: CalculatorArticle[] = [
     ],
     "calculatorHref": "/calculators/paint",
     "publishedAt": "2026-10-26",
-    "modifiedAt": "2026-10-26",
+    "modifiedAt": "2026-11-23",
     "intro": [
       "For a 10-by-10-foot bedroom with 8-foot walls, two coats usually call for about 2 gallons of wall paint. Here's the arithmetic: there are 320 square feet of walls, and two coats mean covering those walls twice. At an assumed 350 square feet per gallon per coat, that's 640 ÷ 350, or 1.83 gallons before taking out the door and windows.",
       "A 10x10 room sounds like a small job. But the 10x10 measurement is the floor, not the walls, and the coverage printed on a paint can generally means one coat. That's where the one-gallon guess often goes wrong.",
