@@ -295,27 +295,28 @@ const articles: CalculatorArticle[] = [
   },
   {
     "slug": "paint-calculation-guide",
-    "title": "How Much Paint for a 10x10 Room? Walls & Ceiling",
-    "description": "Estimate paint for a 10x10 room with 8-foot walls and two coats. See gallon rounding, a separate ceiling estimate and a comparison with a 10x12 room.",
+    "title": "How Much Paint for a 10x10 Room? Walls, Windows & Two Coats",
+    "seoTitle": "How Much Paint for a 10x10 Room? Two-Coat Guide",
+    "description": "Painting a 10x10 room? See why two coats can take about 2 gallons, how doors and windows affect the amount, and what to buy for the ceiling.",
     "category": "Painting",
     "tags": [
       "paint",
-      "material-estimates",
-      "construction"
+      "room-painting",
+      "wall-area"
     ],
     "calculatorHref": "/calculators/paint",
     "publishedAt": "2026-10-26",
     "modifiedAt": "2026-10-26",
     "intro": [
-      "A 10x10 room with 8-foot walls needs about 1.83 gallons for two coats at 350 square feet per gallon, before subtracting openings. Rounded to quarter-gallon purchases, buy 2 gallons for the walls.",
-      "A 10x10 room describes the floor, but you're painting the walls. Wall height and the number of coats are what change the answer. Keep the ceiling, trim and primer as separate jobs, especially when they use different products.",
-      "Use the coverage on the chosen paint’s label or technical data sheet. The examples below assume 350 square feet per gallon per coat; texture, porosity, preparation and application can change actual usage."
+      "For a 10-by-10-foot bedroom with 8-foot walls, two coats usually call for about 2 gallons of wall paint. Here's the arithmetic: there are 320 square feet of walls, and two coats mean covering those walls twice. At an assumed 350 square feet per gallon per coat, that's 640 ÷ 350, or 1.83 gallons before taking out the door and windows.",
+      "A 10x10 room sounds like a small job. But the 10x10 measurement is the floor, not the walls, and the coverage printed on a paint can generally means one coat. That's where the one-gallon guess often goes wrong.",
+      "Before buying anything, measure the wall height and check the can you're planning to use. We'll walk through a straightforward room, then look at the little decisions that make a difference at the paint counter: openings, ceiling paint, quarts, and keeping a bit of the original color for later touch-ups."
     ],
-    "formula": "Gallons = net painted area (sq ft) × coats ÷ coverage (sq ft per gallon per coat)",
+    "formula": "Wall paint (US gal) = [(room perimeter × wall height) − unpainted door/window area] × number of coats ÷ product coverage (sq ft per US gallon per coat). Leave out the opening deduction if you have not measured those openings.",
     "example": [
       [
-        "Room walls",
-        "2 × (10 + 10) × 8",
+        "Four walls",
+        "(10 + 10 + 10 + 10) ft × 8 ft",
         "320 sq ft"
       ],
       [
@@ -324,113 +325,137 @@ const articles: CalculatorArticle[] = [
         "640 coat-sq-ft"
       ],
       [
-        "At 350 sq ft/gallon",
+        "At 350 sq ft per gallon",
         "640 ÷ 350",
-        "1.83 gallons"
+        "1.83 US gallons"
       ],
       [
-        "Quarter-gallon purchase rounding",
-        "Round 1.8286 up to next 0.25",
+        "Whole-gallon purchase",
+        "Round 1.83 gallons up",
         "2 gallons"
       ],
       [
-        "At $45/gallon",
-        "2 × $45",
-        "$90"
+        "Optional door and window",
+        "320 − (3 × 7) − (3 × 4)",
+        "287 sq ft"
+      ],
+      [
+        "Two coats, openings removed",
+        "287 × 2 ÷ 350",
+        "1.64 US gallons"
       ]
     ],
     "sections": [
       {
-        "id": "size-comparison",
-        "title": "Paint for a 10x12 room and a separate ceiling",
+        "id": "where-the-320-comes-from",
+        "title": "First, measure the walls—not the floor",
         "paragraphs": [
-          "A 10x12 room with 8-foot walls has 352 square feet of wall area before openings. Two coats at 350 square feet per gallon need about 2.01 gallons, rounded up to 2.25 gallons if purchasing in quarts. A 10x10 ceiling alone needs about 0.57 gallon for two coats at the same coverage, rounded to 0.75 gallon. Check product coverage and available can sizes."
+          "Picture a square bedroom that measures 10 feet along each wall. Walk around the room and you cover 40 feet. If the ceiling is 8 feet high, multiply 40 by 8. That's 320 square feet of wall space. The floor is only 100 square feet, which is useful when you're buying flooring but not when you're figuring out wall paint.",
+          "If the walls aren't all the same height, measure them one at a time instead of relying on the perimeter shortcut. A room with a sloping ceiling or an open doorway may need a little more measuring, but the idea is the same: count the surfaces you'll actually roll or brush.",
+          "Now think about coats. The first pass uses paint, and the second uses paint too. For 320 square feet of wall, two coats mean 640 square feet of coverage. Using 350 square feet per gallon as an example, 640 divided by 350 gives 1.83 gallons. If you're buying only full gallons, that's two cans."
         ]
       },
       {
-        "id": "section-1",
-        "title": "Calculate the wall area first",
+        "id": "the-door-and-window-question",
+        "title": "Do you really need to count the door and window?",
         "paragraphs": [
-          "For a rectangular room, multiply the perimeter by wall height. A 10 × 10 ft room with 8 ft walls has 40 ft of perimeter and 320 sq ft of wall area before openings. Measure each wall separately when heights vary.",
-          "Deduct significant unpainted openings when making a net-area estimate, but confirm the dimensions rather than assuming every door or window is identical. CornerSpan’s room options use standard opening allowances; account separately for openings that differ materially."
+          "You can leave openings in your first rough estimate. It gives you a little breathing room. But if you're trying to get a tighter number, measure the door and window rather than using a made-up allowance for every room.",
+          "Say the room has one door that's 3 feet wide and 7 feet tall, plus a window that's 3 by 4 feet. The door takes up 21 square feet and the window takes up 12. Subtract 33 from the original 320, and you're left with 287 square feet of walls to paint. Two coats at 350 square feet per gallon work out to about 1.64 gallons.",
+          "That's less than the original 1.83 gallons, but it doesn't suddenly make this a one-gallon job. And if you plan to paint the door or the trim, count those separately. They're often done with a different finish."
         ]
       },
       {
-        "id": "section-2",
-        "title": "Estimate a ceiling separately",
+        "id": "one-gallon-plus-quarts",
+        "title": "Should you buy two gallons or a gallon and a few quarts?",
         "paragraphs": [
-          "A flat ceiling uses length × width. The same 10 × 10 ft room has a 100 sq ft ceiling. Two coats at 350 sq ft per gallon require about 0.57 gallon before purchase rounding; ceiling height is not needed for that flat-area calculation.",
-          "The calculator rounds US purchases to quarter-gallon increments. This ceiling example becomes 0.75 gallon. That is a quantity estimate, not a promise that the selected product is available in every container size or that quarts cost one-quarter of a gallon’s price."
+          "With the door and window subtracted, the calculated need is 1.64 gallons. If you're choosing from gallon and quart cans, you'd need one gallon and three quarts to reach 1.75 gallons. Without subtracting openings, the 1.83-gallon estimate points to two full gallons. These are buying quantities, not exact amounts you will pour onto the walls.",
+          "A gallon and three quarts may sound like the thrifty choice, but compare prices before deciding. Three separate quarts can cost more than the extra paint in a second gallon. A sealed second can also gives you matching paint for scuffs or small repairs down the road. On the other hand, if you're changing the color again soon, leftover paint may not be useful.",
+          "For a simple price example, suppose your paint costs $45 per gallon. Two full gallons would be $90 before tax and supplies. That $45 is an example, not a current store price. Don't assume a quart costs exactly $11.25; check the price of the actual product and finish."
         ]
       },
       {
-        "id": "section-3",
-        "title": "Choose coverage and coats from the product",
+        "id": "ceiling-paint-is-a-separate-decision",
+        "title": "Painting the ceiling too? Keep it on a separate line",
         "paragraphs": [
-          "Sherwin-Williams describes its paint calculator as an approximate planning tool and recommends confirming quantities for the project. Use the specific paint’s coverage instead of assuming all finishes and surfaces consume the same amount.",
-          "Calculate primer separately if it has a different coverage rate or coat count. A major color change, rough substrate or unfinished surface may require a different system than the example. Do not treat extra coats as a substitute for suitable preparation."
+          "A flat 10x10 ceiling covers 100 square feet. With two coats and the same illustrative 350-square-foot coverage, it needs 200 ÷ 350, or about 0.57 gallon. In quart-size steps, you'd round that to three quarts (0.75 gallon). Depending on store pricing and packaging, one gallon may be the simpler purchase.",
+          "Don't automatically add the ceiling paint to your wall-paint total. A ceiling may be white while the walls are another color, and a flat ceiling paint can be a different product from the wall finish. If the ceiling is vaulted, measure the sloped surface rather than the floor footprint.",
+          "The same goes for baseboards and door frames. They don't need much paint compared with the walls, but a trim product may have a different sheen and coverage. It's easier to shop when you keep each job separate."
         ]
       },
       {
-        "id": "ordering-decisions",
-        "title": "What changes when you subtract a door and window?",
+        "id": "the-10x12-surprise",
+        "title": "A slightly bigger room can push you past two gallons",
         "paragraphs": [
-          "Start with the example's 320 square feet of walls. A 3x7-foot door removes 21 square feet, and a 3x4-foot window removes another 12. That leaves 287 square feet to coat. At two coats and 350 square feet per gallon, the calculated amount falls to 1.64 gallons.",
-          "Buying in quarter-gallon increments would round that to 1.75 gallons. Compare the actual shelf price of a gallon plus three quarts with two gallons; the smaller volume isn't automatically the cheaper purchase. Keep some matching paint for touch-ups if that is part of your plan.",
-          "An opening deduction only belongs in the wall total. It doesn't reduce the ceiling area, and it doesn't account for painting the door or trim with a different finish. If the label gives a coverage range, compare the result at both ends before choosing a quantity."
+          "A 10x12-foot room with 8-foot walls has a 44-foot perimeter. Multiply that by 8 and you get 352 square feet. Two coats bring the coverage total to 704 square feet. At 350 square feet per gallon, that's 2.01 gallons before subtracting openings.",
+          "That tiny amount above two gallons matters if you're ordering by the number on the calculator alone. In gallon-and-quart sizes you'd need 2.25 gallons, unless measured doors and windows bring the estimate back below two. If the shop only has gallon cans in your chosen product, you might be choosing between two and three gallons. Measuring the openings first is worth the minute it takes."
         ]
       },
       {
-        "id": "section-4",
-        "title": "Build a realistic paint budget",
+        "id": "read-the-label",
+        "title": "The number on the can matters more than a rule of thumb",
         "paragraphs": [
-          "At the illustrative $45 per gallon, the two-gallon wall purchase is $90. CornerSpan estimates quart costs proportionally from a per-gallon price, so replace that estimate with actual shelf or contractor pricing before purchasing.",
-          "The calculator’s optional labor rate applies to net painted surface area, not area multiplied by coat count. Verify the scope of a labor quote. Add primer, tape, rollers, protection, repairs, tax and delivery separately. Enter the actual dimensions, coats and coverage in the Paint Calculator and check the result before ordering."
+          "We've used 350 square feet per gallon for these examples. It's a reasonable planning figure, not a guarantee. Sherwin-Williams gives a typical range of roughly 350–400 square feet per gallon, while the amount you actually use depends on the specific paint, surface, and application. Start with the coverage on the product label or data sheet.",
+          "Fresh drywall, a rough wall, patched spots, or a strong color change can affect how the job goes. If you're going from a dark wall to a light shade, don't assume the same two-coat plan will always hide the old color. Follow the paint maker's preparation and primer instructions, and price primer on its own line when needed.",
+          "One more thing: a calculator gives you an estimate, not a promise that there will be half a quart left over. If you're close to a can-size boundary, look at the wall condition and the cost of another store trip before choosing the smallest possible purchase."
+        ]
+      },
+      {
+        "id": "before-you-check-out",
+        "title": "A quick check before you head to the register",
+        "paragraphs": [
+          "Write down the room dimensions, ceiling height, any openings you measured, how many coats you want, and the coverage listed for the paint you're buying. Decide whether you're also painting the ceiling, trim, or doors. Those small notes are more useful at the counter than a single number scribbled on your phone.",
+          "You can put your actual measurements into the CornerSpan Paint Calculator and change the coats and coverage to match the label. For the basic 10x10 example here—8-foot walls, no opening deductions, two coats, 350 square feet per gallon—the result should be about 1.83 gallons, or two gallons when rounded to full cans. The calculator may also show a quart-based purchase estimate; compare that with the containers the store actually sells.",
+          "If you've picked a color, keep the product name, finish, color code, and can label somewhere you can find them. That's what helps when you need a matching touch-up later."
         ]
       }
     ],
     "mistakes": [
-      "Using floor area for wall paint.",
-      "Multiplying by coat count twice.",
-      "Assuming primer and finish paint share a coverage rate.",
-      "Treating an estimated quart price as a supplier quote."
+      "Basing wall paint on the 100-square-foot floor instead of the 320-square-foot walls.",
+      "Forgetting that a coverage number normally applies to one coat.",
+      "Subtracting the same door or window twice.",
+      "Mixing the ceiling and wall totals when you'll use different paints.",
+      "Treating a calculator's quart-based amount as the exact package or price available in the store."
     ],
     "faqs": [
       {
-        "question": "Does a 10-by-10 room need one gallon?",
-        "answer": "Not automatically. The walls in this example need about 1.83 gallons for two coats before container rounding."
+        "question": "Is one gallon enough for a 10x10 room?",
+        "answer": "For one coat on smooth 8-foot walls, it may be. In the two-coat example used here, the walls take about 1.83 gallons before openings or 1.64 gallons after subtracting one measured door and one window, using 350 square feet per gallon."
       },
       {
-        "question": "Does a ceiling calculation need height?",
-        "answer": "A flat ceiling uses length and width only. Vaulted or sloped ceilings need their actual surface area."
+        "question": "Does the 2-gallon estimate include the ceiling?",
+        "answer": "No. It's for the four walls. A flat 10x10 ceiling is another 100 square feet, and two coats would use roughly 0.57 gallon at the same assumed coverage."
       },
       {
-        "question": "How does the calculator round US paint purchases?",
-        "answer": "It rounds up to the next quarter gallon, then expresses that as gallons and quarts."
+        "question": "Should I subtract windows and doors?",
+        "answer": "Yes, if you want a closer estimate and can measure them. For a quick shopping estimate, leaving them in adds some margin. Remember that trim and doors painted in another finish need their own estimate."
       },
       {
-        "question": "Can I use liters?",
-        "answer": "Yes. Use the metric setting and the coverage appropriate to liters and square meters."
+        "question": "How much paint do I need for a 10x12 room?",
+        "answer": "With 8-foot walls and two coats, a 10x12 room has 704 square feet of total coat coverage. At 350 square feet per gallon, that's about 2.01 gallons before subtracting openings."
       },
       {
-        "question": "Should primer be included in the same total?",
-        "answer": "Calculate primer separately when its coverage or coat count differs from the finish paint."
+        "question": "Can I use the same paint for walls and ceiling?",
+        "answer": "Sometimes, if the chosen paint and finish suit both surfaces. If they're different colors or products, calculate and buy them separately."
       },
       {
-        "question": "Are openings always deducted exactly?",
-        "answer": "Preset openings are approximations. Measure unusual openings and adjust the estimate accordingly."
+        "question": "How do I know if I'll need primer?",
+        "answer": "Check the condition of the wall and the paint manufacturer's directions. Bare drywall, repaired areas, stains, and major color changes may need their own preparation or primer rather than an extra finish coat alone."
       }
     ],
     "sources": [
       {
-        "label": "Sherwin-Williams paint calculator guidance",
-        "href": "https://www.sherwin-williams.com/homeowners/color/color-tools/paint-calculator"
+        "label": "Sherwin-Williams: Paint Calculator and Coverage Guidance",
+        "href": "https://www.sherwin-williams.com/en-us/color/color-tools/paint-calculator"
+      },
+      {
+        "label": "Benjamin Moore: Paint Calculator",
+        "href": "https://www.benjaminmoore.com/en-us/paint-calculator"
       }
     ],
     "image": "/paint-calculator.webp",
     "related": [
-      "/blog/tile-calculation-guide",
-      "/blog/area-calculation-guide"
+      "/blog/area-calculation-guide",
+      "/blog/square-footage-calculation-guide"
     ]
   },
   {
