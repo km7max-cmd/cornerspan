@@ -1,0 +1,89 @@
+name: Admin dashboard checks
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Install dependencies (no lockfile in repository)
+        run: npm install --no-package-lock --no-audit --no-fund
+      - name: Generate calculator data
+        run: npm run prebuild
+      - name: Validate D1 migrations with SQLite
+        run: python3 scripts/test-admin-migrations.py
+      - name: Verify read-only release preflight and redaction
+        run: node --test scripts/test-admin-release-preflight.cjs
+      - name: Check Preview acceptance script syntax (never run remote writes in CI)
+        run: node --check scripts/qa-admin-preview.cjs
+      - name: Check owner-run Preview-only wrapper syntax (never run remote writes in CI)
+        run: bash -n scripts/run-preview-acceptance.sh
+      - name: Check guarded Production D1 migration wrapper syntax (never run remote writes in CI)
+        run: bash -n scripts/guarded-production-d1-migration.sh
+      - name: Check clean Production candidate wrapper syntax (never upload in CI)
+        run: bash -n scripts/prepare-production-candidate.sh
+      - name: Check read-only candidate verification script syntax (no remote access in CI)
+        run: node --check scripts/verify-production-candidate.cjs
+      - name: Check guarded live release wrapper syntax (never deploy in CI)
+        run: bash -n scripts/guarded-live-release.sh
+      - name: Verify password sessions and D1 publication safeguards
+        run: node scripts/test-admin-behavior.cjs
+      - name: Verify ImageKit free-plan upload and URL security (no external network)
+        run: node scripts/test-admin-imagekit.cjs
+      - name: Check fast mobile image preparation and quality fallbacks (isolated)
+        run: node scripts/test-admin-imagekit-client.cjs
+      - name: Lint safe ImageKit Preview setup (never connect to external accounts in CI)
+        run: bash -n scripts/connect-imagekit-free-preview.sh && node --check scripts/qa-imagekit-preview.cjs
+      - name: Lint opt-in full ImageKit release and rollback (never execute in CI)
+        run: bash -n scripts/complete-imagekit-release.sh
+      - name: Lint Media Library production staging and guarded rollout (no remote changes in CI)
+        run: bash -n scripts/stage-media-library-production.sh && bash -n scripts/release-media-library-production.sh
+      - name: Lint read-only candidate readiness gate
+        run: bash -n scripts/check-media-library-production-ready.sh
+      - name: Check isolated current Media Library Preview acceptance script syntax
+        run: bash -n scripts/preview-compact-media-library.sh
+      - name: Check branded domain Preview acceptance script syntax
+        run: bash -n scripts/preview-branded-image-links.sh
+      - name: Lint branded-image release staging and rollback commands (no remote operations)
+        run: bash -n scripts/stage-branded-image-production.sh && bash -n scripts/release-branded-image-production.sh
+      - name: Check isolated Preview alias/version login diagnostic syntax
+        run: bash -n scripts/diagnose-media-preview-login.sh
+      - name: Prevent Preview 401 secret-loss regression (static only)
+        run: node scripts/test-preview-secret-release-order.cjs
+      - name: Verify non-deploying Preview image upload 401 diagnostic syntax
+        run: |
+          bash -n scripts/diagnose-preview-imagekit-upload.sh
+          awk '/^CMS_PREVIEW_TEST_PASSWORD=/ {printing=1; next} /^NODE$/ {printing=0} printing {print}' scripts/diagnose-preview-imagekit-upload.sh | node --check
+      - name: Syntax-check direct ImageKit upload provider diagnostic (no remote calls in CI)
+        run: bash -n scripts/run-imagekit-provider-diagnostic.sh && node --check scripts/diagnose-imagekit-provider.cjs
+      - name: Verify optional D1 storage and image-upload API (isolated mocks)
+        run: node scripts/test-admin-image-upload.cjs
+      - name: Verify branded CornerSpan image links and safe public proxy (no network)
+        run: node scripts/test-branded-image-links.cjs
+      - name: Check opt-in R2 setup helper syntax (no remote creation in CI)
+        run: bash -n scripts/setup-admin-r2.sh
+      - name: Check isolated R2 Preview deploy script syntax (no remote deploy in CI)
+        run: bash -n scripts/deploy-image-upload-preview.sh
+      - name: Preserve 21 legacy metadata outputs and calculator source
+        run: node scripts/test-legacy-preservation.cjs
+      - name: Browser-like React editor workflow tests
+        run: node scripts/test-admin-editor-ui.cjs
+      - name: TypeScript check
+        run: npx tsc --noEmit
+      - name: Next.js production build
+        run: npm run build
+      - name: Admin security route smoke tests
+        run: node scripts/qa-admin-security.cjs
